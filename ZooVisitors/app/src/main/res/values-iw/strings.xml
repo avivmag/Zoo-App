@@ -7,6 +7,8 @@
     <string name="language_heb">עברית</string>
     <string name="language_arb">ערבית</string>
     <string name="language_rus">רוסית</string>
+
+    <!-- Animal Activity -->
     <string name="title_activity_animal">החיות שלנו</string>
     <string name="about_animal">על החיות שלנו</string>
     <string name="about_species">על המין</string>
@@ -17,4 +19,15 @@
     <string name="distribution">תפוצה: דרום אמריקה</string>
     <string name="reproduction">רבייה: 50,000</string>
     <string name="food">אוכל: בננות. יאמממם!</string>
+
+    <!-- General Info -->
+    <string name="title_activity_general_info">מידע כללי:</string>
+    <string name="contact_info">יצירת קשר</string>
+    <string name="prices">מחירון</string>
+    <string name="opening_hours">שעות פתיחה</string>
+    <string name="about_us">עלינו</string>
+    <string name="about_us_full">אנחנו, בגן החיות בבאר שבע, לא נמצאים כאן בשביל הכסף.\n אנחנו מכאן בשביל לתת.\n לתת לכם.\n לתת לחיות.\n לתת לסביבה.\n בגן החיות משקמים חיות פצועות שלא יכולות לחזור לטבע.\n</string>
+    <string name="contact_us_headline">דרכי התקשרות:</string>
+    <string name="opening_hours_headline">זמני פתיחה:</string>
+    <string name="prices_headline">מחירון:</string>
 </resources>

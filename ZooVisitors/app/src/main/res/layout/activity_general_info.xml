@@ -8,7 +8,7 @@
     tools:context="com.zoovisitors.pl.animalActivity.AnimalActivity">
 
     <LinearLayout
-        android:id="@+id/linear_animal_activity"
+        android:id="@+id/linear_general_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -19,42 +19,47 @@
         tools:layout_editor_absoluteY="0dp">
 
         <TextView
-            android:id="@+id/animal_activity_label"
+            android:id="@+id/general_info_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_activity_animal"
+            android:text="@string/title_activity_general_info"
             android:textAlignment="center"
             android:textSize="24sp" />
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/animalTab"
+            android:id="@+id/generalInfoTab"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/holo_green_dark">
 
             <android.support.design.widget.TabItem
-                android:id="@+id/about_animal"
+                android:id="@+id/general_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/about_animal" />
+                android:text="@string/contact_info" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/about_species"
+                android:id="@+id/opening_hours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/about_species" />
+                android:text="@string/opening_hours" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/prices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prices" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_us" />
 
         </android.support.design.widget.TabLayout>
 
-        <ImageView
-            android:id="@+id/olive"
-            android:layout_width="match_parent"
-            android:layout_height="218dp"
-            android:baselineAligned="false"
-            app:srcCompat="@drawable/olive" />
-
         <android.support.v4.view.ViewPager
-            android:id="@+id/animal_viewpager"
+            android:id="@+id/general_info_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white" />
