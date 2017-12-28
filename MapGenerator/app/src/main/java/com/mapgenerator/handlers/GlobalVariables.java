@@ -5,5 +5,6 @@ package com.mapgenerator.handlers;
  * Created by aviv on 08-Dec-17.
  */
 public class GlobalVariables {
-    public static String ApplicationTag = "MapGenerator";
+    public static final String APPLICATION_TAG = "MapGenerator";
+    public static final boolean DEBUG = true;
 }

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -12,12 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -69,8 +62,8 @@ public class ServicesHandler {
         LocationManager locationManager = (LocationManager) parentActivity.getSystemService(LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
-        try { gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); } catch(Exception ex) {Log.e(GlobalVariables.ApplicationTag, ex.toString());}
-        try { network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); } catch(Exception ex) {Log.e(GlobalVariables.ApplicationTag, ex.toString());}
+        try { gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); } catch(Exception ex) {Log.e(GlobalVariables.APPLICATION_TAG, ex.toString());}
+        try { network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); } catch(Exception ex) {Log.e(GlobalVariables.APPLICATION_TAG, ex.toString());}
 
         if(!gps_enabled && !network_enabled) {
             // notify user
