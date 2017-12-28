@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Zoo Visitors</string>
+    <string name="app_name">Negev Zoo</string>
+    <string name="notifications">notifications</string>
+    <string name="language">language</string>
+    <string name="language_eng">english</string>
+    <string name="language_heb">hebrew</string>
+    <string name="language_arb">arabic</string>
+    <string name="language_rus">russian</string>
 </resources>

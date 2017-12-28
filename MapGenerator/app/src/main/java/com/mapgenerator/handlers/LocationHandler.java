@@ -28,6 +28,8 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by aviv on 06-Dec-17.
  */
 public class LocationHandler {
+    private static int MIN_TIME = 0;
+    private static int MIN_DISTANCE = 0;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Activity parentActivity;
@@ -59,7 +61,7 @@ public class LocationHandler {
      */
     @SuppressLint("MissingPermission")
     public void start() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, locationListener);
         //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
