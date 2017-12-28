@@ -9,15 +9,19 @@
         android:roundIcon="@mipmap/enclosure0"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pl.EnclosureListActivity">
-
+        <activity android:name=".pl.AnimalActivity"
+            android:label="@string/title_activity_animal">
+        </activity>
+            <activity android:name=".pl.MainActivity">
+            android:name=".pl.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".pl.MainActivity"></activity>
+            <activity android:name=".pl.EnclosureListActivity"></activity>
     </application>
 
 </manifest>

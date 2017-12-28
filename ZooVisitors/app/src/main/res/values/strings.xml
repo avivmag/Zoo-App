@@ -1,9 +1,23 @@
 <resources>
     <string name="app_name">Negev Zoo</string>
+    <string name="animal_name">Olive Baboon</string>
     <string name="notifications">notifications</string>
     <string name="language">language</string>
     <string name="language_eng">english</string>
     <string name="language_heb">hebrew</string>
     <string name="language_arb">arabic</string>
     <string name="language_rus">russian</string>
+
+    <!-- Animal Activity -->
+    <string name="title_activity_animal">AnimalActivity</string>
+    <string name="about_animal">About our animals</string>
+    <string name="about_species">About the species</string>
+    <string name="story">Gilor, our 22-year-old olive baboon was born in the deep forests of Brazil.\n Yossi used to run from poachers and because of that he is not very friendly.\n But you can bribe him with some bananas!</string>
+    <string name="category">Category: Killer Apes</string>
+    <string name="series">Series: M6</string>
+    <string name="family">Family: Apes</string>
+    <string name="distribution">Distribution: South America</string>
+    <string name="reproduction">Reproduction: 50,000</string>
+    <string name="food">Food: BANANAS! YUMMM</string>
+
 </resources>
