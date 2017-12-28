@@ -1,5 +1,8 @@
 <resources>
+
+    <!--//Main Menu/-->
     <string name="app_name">Negev Zoo</string>
+    //preferences
     <string name="animal_name">Olive Baboon</string>
     <string name="notifications">notifications</string>
     <string name="language">language</string>
@@ -7,6 +10,12 @@
     <string name="language_heb">hebrew</string>
     <string name="language_arb">arabic</string>
     <string name="language_rus">russian</string>
+    //main menu buttons
+    <string name="watch_all_feed">watch all</string>
+    <string name="our_enclosures">Our Enclosures</string>
+    <string name="schedule">Schedule</string>
+    <string name="map">Map</string>
+    <string name="other_info">Other Info</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">AnimalActivity</string>

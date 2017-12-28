@@ -1,5 +1,7 @@
 <resources>
+    <!--Main Menu-->
     <string name="app_name">נגב ZOO</string>
+    //preferences
     <string name="animal_name">בבון הזית</string>
     <string name="notifications">התראות</string>
     <string name="language">שפה</string>
@@ -7,6 +9,12 @@
     <string name="language_heb">עברית</string>
     <string name="language_arb">ערבית</string>
     <string name="language_rus">רוסית</string>
+    //main menu buttons
+    <string name="watch_all_feed">הצג הכל</string>
+    <string name="our_enclosures">המתחמים שלנו</string>
+    <string name="schedule">לוח שנה</string>
+    <string name="map">מפה</string>
+    <string name="other_info">מידע נוסף</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">החיות שלנו</string>
