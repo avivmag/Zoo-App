@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.animalActivity;
 
 
 import android.os.Bundle;
@@ -13,10 +13,10 @@ import com.zoovisitors.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class about_species_fragment extends Fragment {
+public class aboutSpeciesFragment extends Fragment {
 
 
-    public about_species_fragment() {
+    public aboutSpeciesFragment() {
         // Required empty public constructor
     }
 

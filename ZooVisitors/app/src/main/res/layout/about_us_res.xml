@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+
     <LinearLayout
-        android:id="@+id/linear_about_animal"
+        android:id="@+id/linear_about_us"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -15,15 +16,16 @@
             android:id="@+id/animal_story_headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Yossi's Story:\n"
+            android:text="About us:\n"
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/animal_story"
+            android:id="@+id/animal_story_full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/story"
+            android:text="@string/about_us_full"
             android:textSize="24sp" />
 
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

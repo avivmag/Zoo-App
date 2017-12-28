@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.GeneralInfo;
 
 
 import android.os.Bundle;
@@ -14,17 +14,17 @@ import com.zoovisitors.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class about_animal_fragment extends Fragment {
+public class openingHoursFragment extends Fragment {
 
 
-    public about_animal_fragment() {
+    public openingHoursFragment() {
         // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup                  container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.about_animal_res, container, false);
+        View rootView = inflater.inflate(R.layout.opening_hours_res, container, false);
 
         return rootView;
     }
