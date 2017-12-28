@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
-
-
         MenuItem subm = menu.findItem(R.id.language);
         langMenu = (Menu)subm.getSubMenu();
         return true;

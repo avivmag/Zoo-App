@@ -2,6 +2,7 @@
     <!--Main Menu-->
     <string name="app_name">נגב ZOO</string>
     //preferences
+    <string name="animal_name">בבון הזית</string>
     <string name="notifications">התראות</string>
     <string name="language">שפה</string>
     <string name="language_eng">אנגלית</string>
@@ -14,4 +15,27 @@
     <string name="schedule">לוח שנה</string>
     <string name="map">מפה</string>
     <string name="other_info">מידע נוסף</string>
+
+    <!-- Animal Activity -->
+    <string name="title_activity_animal">החיות שלנו</string>
+    <string name="about_animal">על החיות שלנו</string>
+    <string name="about_species">על המין</string>
+    <string name="story">גיל-אור, קוף הזית שלנו בן ה-22, נולד ביערות ברזיל.\n יוסי נהג לבחור מציידים ובגלל זה הוא לא ידידותי במיוחד.\n אבל אפשר לשחד אותו בעזרת בננות.</string>
+    <string name="category">קטגוריה: קופים רוצחים</string>
+    <string name="series">סדרה: מ6</string>
+    <string name="family">משפחה: קופי אדם</string>
+    <string name="distribution">תפוצה: דרום אמריקה</string>
+    <string name="reproduction">רבייה: 50,000</string>
+    <string name="food">אוכל: בננות. יאמממם!</string>
+
+    <!-- General Info -->
+    <string name="title_activity_general_info">מידע כללי:</string>
+    <string name="contact_info">יצירת קשר</string>
+    <string name="prices">מחירון</string>
+    <string name="opening_hours">שעות פתיחה</string>
+    <string name="about_us">עלינו</string>
+    <string name="about_us_full">אנחנו, בגן החיות בבאר שבע, לא נמצאים כאן בשביל הכסף.\n אנחנו מכאן בשביל לתת.\n לתת לכם.\n לתת לחיות.\n לתת לסביבה.\n בגן החיות משקמים חיות פצועות שלא יכולות לחזור לטבע.\n</string>
+    <string name="contact_us_headline">דרכי התקשרות:</string>
+    <string name="opening_hours_headline">זמני פתיחה:</string>
+    <string name="prices_headline">מחירון:</string>
 </resources>
