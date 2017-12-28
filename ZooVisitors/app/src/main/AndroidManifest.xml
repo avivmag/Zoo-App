@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/monkeys_enclosure"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pl.AnimalActivity"
-            android:label="@string/title_activity_animal">
-        </activity>
-            <activity android:name=".pl.EnclosureListActivity">
+        <activity
+            android:name=".pl.animalActivity.AnimalActivity"
+            android:label="@string/title_activity_animal"></activity>
+
+        <activity android:name=".pl.MainActivity">
             android:name=".pl.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,8 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".pl.MainActivity"></activity>
         <activity android:name=".pl.EnclosureActivity" />
+
+
+        <activity
+            android:name=".pl.GeneralInfo.GeneralInfoActivity"
+            android:label="@string/title_activity_general_info"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+
+        <activity android:name=".pl.EnclosureListActivity"></activity>
     </application>
 
 </manifest>

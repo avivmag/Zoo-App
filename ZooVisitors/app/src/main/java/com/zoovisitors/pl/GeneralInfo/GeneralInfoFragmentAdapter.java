@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.GeneralInfo;
 
 /**
  * Created by oripa on 12/28/2017.
@@ -10,13 +10,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import com.zoovisitors.R;
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class GeneralInfoFragmentAdapter extends FragmentPagerAdapter {
     private Context mContext;
 
-    // tab titles
-    private String[] tabTitles = new String[]{"about_animal", "about_species"};
-
-    public FragmentAdapter(Context context, FragmentManager fm) {
+    public GeneralInfoFragmentAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
     }
@@ -25,16 +22,20 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new about_animal_fragment();
+            return new aboutUsFragment();
+        } else if (position == 1){
+            return new pricesFragment();
+        } else if (position == 2) {
+            return new openingHoursFragment();
         } else {
-            return new about_species_fragment();
+            return new contactInfoFragment();
         }
     }
 
     // This determines the number of tabs
     @Override
     public int getCount() {
-        return tabTitles.length;
+        return 4;
     }
 
     // This determines the title for each tab
@@ -43,9 +44,13 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         // Generate title based on item position
         switch (position) {
             case 0:
-                return mContext.getString(R.string.about_animal);
+                return mContext.getString(R.string.about_us);
             case 1:
-                return mContext.getString(R.string.about_species);
+                return mContext.getString(R.string.prices);
+            case 2:
+                return mContext.getString(R.string.opening_hours);
+            case 3:
+                return mContext.getString(R.string.contact_info);
             default:
                 return null;
         }
