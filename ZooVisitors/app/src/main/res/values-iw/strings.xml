@@ -17,4 +17,8 @@
     <string name="distribution">תפוצה: דרום אמריקה</string>
     <string name="reproduction">רבייה: 50,000</string>
     <string name="food">אוכל: בננות. יאמממם!</string>
+    <string name="shareOnFacebook">שתף בפייסבוק</string>
+    <string name="showOnMap">הראה במפה</string>
+
+
 </resources>
