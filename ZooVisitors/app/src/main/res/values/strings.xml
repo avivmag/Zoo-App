@@ -28,6 +28,9 @@
     <string name="distribution">Distribution: South America</string>
     <string name="reproduction">Reproduction: 50,000</string>
     <string name="food">Food: BANANAS! YUMMM</string>
+    <string name="searchPlaceHolder">Type enclosure or animal</string>
+    <string name="shareOnFacebook">Share on facebook</string>
+    <string name="showOnMap">Show on map</string>
     <string name="title_activity_general_info">GeneralInfoActivity</string>
 
     <!-- General Info -->
