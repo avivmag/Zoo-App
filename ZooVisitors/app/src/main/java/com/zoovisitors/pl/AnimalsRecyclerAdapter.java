@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+import com.zoovisitors.pl.animalActivity.AnimalActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +63,12 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-                    Intent intent = new Intent(tempActivity, EnclosureActivity.class);
+                    Intent intent = new Intent(tempActivity, AnimalActivity.class);
                     Bundle clickedEnclosure = new Bundle();
                     clickedEnclosure.putInt("image", images[pos]); //Clicked image
                     clickedEnclosure.putString("name", animalsNames[pos]);
-                    intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+                    intent.putExtras(clickedEnclosure);
                     tempActivity.startActivity(intent);
-
-//                    Snackbar.make(v, "Click" + pos, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
         }

@@ -2,6 +2,7 @@ package com.zoovisitors.pl;
 
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,11 +10,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.zoovisitors.R;
+import com.zoovisitors.pl.GeneralInfo.GeneralInfoActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +53,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startAutoScrolling();
+            }
+        });
+
+        //enclosure button
+        ((Button) findViewById(R.id.enclosureListButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent enclosureIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
+                startActivity(enclosureIntent);
+            }
+        });
+
+        //other info button
+        ((Button) findViewById(R.id.otherInfoButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherInfoIntent = new Intent(MainActivity.this, GeneralInfoActivity.class);
+                startActivity(otherInfoIntent);
+            }
+        });
+
+        //map button
+        ((Button) findViewById(R.id.mapButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherInfoIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
+                startActivity(otherInfoIntent);
             }
         });
 

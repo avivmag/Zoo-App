@@ -22,7 +22,7 @@
         android:id="@+id/enclosureImage"
         android:layout_width="match_parent"
         android:layout_height="123dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:srcCompat="@color/cardview_light_background" />
 
     <TextView
@@ -84,6 +84,6 @@
         android:id="@+id/enclosure_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         app:srcCompat="@android:drawable/btn_star" />
 </LinearLayout>

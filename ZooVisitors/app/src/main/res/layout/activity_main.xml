@@ -60,7 +60,7 @@
                 android:text="@string/schedule" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/enclosureListButton"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -74,7 +74,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/otherInfoButton"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -82,7 +82,7 @@
                 android:text="@string/other_info" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/mapButton"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_weight="1"
