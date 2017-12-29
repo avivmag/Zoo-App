@@ -6,4 +6,5 @@
     <string name="language_heb">עברית</string>
     <string name="language_arb">ערבית</string>
     <string name="language_rus">רוסית</string>
+    <string name="choose_route">בחר מסלול</string>
 </resources>

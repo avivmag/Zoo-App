@@ -6,4 +6,6 @@
     <string name="language_heb">hebrew</string>
     <string name="language_arb">arabic</string>
     <string name="language_rus">russian</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="choose_route">Choose a Route</string>
 </resources>
