@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <item android:id="@+id/notifications"
+    android:layout_height="match_parent"
+    android:id="@+id/settings_menu_item">
+    <item
+        android:id="@+id/notifications"
         android:title="@string/notifications"
         android:checkable="true">
     </item>
-    <item android:id="@+id/file"
+    <item android:id="@+id/language"
         android:title="@string/language" >
-        <!-- "file" submenu -->
+        <!-- "language" submenu -->
         <menu>
             <item android:id="@+id/language_eng"
-                android:title="@string/language_eng" />
+                android:title="@string/language_eng"
+                android:checkable="true"
+                android:checked="false"
+                android:onClick="onSelectLangauge">
+            </item>
+                <!--/>-->
             <item android:id="@+id/language_heb"
-                android:title="@string/language_heb" />
+                android:title="@string/language_heb"
+                android:checkable="true"
+                android:checked="true"
+                android:onClick="onSelectLangauge"></item>
+                <!--/>-->
             <item android:id="@+id/language_arb"
-                android:title="@string/language_arb" />
+                android:title="@string/language_arb"
+                android:checkable="true"
+                android:checked="false"
+                android:onClick="onSelectLangauge"></item>
             <item android:id="@+id/language_rus"
-                android:title="@string/language_rus" />
+                android:title="@string/language_rus"
+                android:checkable="true"
+                android:checked="false"
+                android:onClick="onSelectLangauge"/>
         </menu>
     </item>
 </menu>

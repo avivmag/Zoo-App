@@ -36,7 +36,7 @@ public class MapActivity extends AppCompatActivity implements View.OnTouchListen
             add(new OnMapImageView(map_frame, 0, 0, "zoo_background","", false));
             for(int i = 0; i<5;i++)
             {
-                add(new OnMapImageView(map_frame,150 + 150*i, 400 + (int)(Math.random()*100), "animal_" + i,"", true));
+                add(new OnMapImageView(map_frame,150 + 150*i, 200 + (int)(Math.random()*100), "animal_" + i,"", true));
             }
         }};
         seekBar.setOnSeekBarChangeListener(this);
