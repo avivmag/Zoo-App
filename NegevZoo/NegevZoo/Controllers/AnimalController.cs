@@ -4,25 +4,70 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using NegevZoo.Models;
+using Backend;
+using Backend.Models;
 
 namespace NegevZoo.Controllers
 {
     public class AnimalController : ApiController
     {
-        Animal[] animals = new[]
-        {
-            new Animal { Id = 5, name = "baboon", description = "I R BABOON", enclosure = "Monkeys" },
-            new Animal { Id = 6, name = "weasel", description = "I AM WEASEL", enclosure = "maniacs" },
-            new Animal { Id = 7, name = "donkey", description = "donkeykong", enclosure = "donkeys" },
-            new Animal { Id = 8, name = "kingkong", description = "kingkong", enclosure = "Monkeys" }
-        };
+        private DummyDB db = new DummyDB();
 
         [HttpGet]
-        [Route("animals")]
-        public IHttpActionResult GetAllAnimals()
+        [Route("animals/{language}")]
+        public IEnumerable<Animal> GetAllAnimals(int language = 1)
         {
-            return Ok(this.animals);
+            try
+            {
+                return db.GetAnimals(language);
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        [HttpGet]
+        [Route("enclosures/{language}")]
+        public IEnumerable<Enclosure> GetAllEnclosures(int language = 1)
+        {
+            try
+            {
+                return db.GetEnclosures(language);
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        [HttpPost]
+        [Route("animals")]
+        public void UpdateAnimals(IEnumerable<Animal> animals)
+        {
+            try
+            {
+                db.SetAnimals(animals);
+            }
+            catch
+            {
+            }
+        }
+
+        [HttpPost]
+        [Route("enclosures")]
+        public void UpdateEnclosures(IEnumerable<Enclosure> enclosures)
+        {
+            try
+            {
+                db.SetEnclosures(enclosures);
+
+            }
+            catch
+            {
+            }
         }
     }
 }
