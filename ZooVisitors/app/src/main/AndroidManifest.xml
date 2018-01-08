@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".pl.EnclosureActivity" />
-
+        <activity android:name=".pl.MapActivity" />
 
         <activity
             android:name=".pl.GeneralInfo.GeneralInfoActivity"

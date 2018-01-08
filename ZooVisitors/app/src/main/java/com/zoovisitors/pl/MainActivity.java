@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.mapButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent otherInfoIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
+                Intent otherInfoIntent = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(otherInfoIntent);
             }
         });

@@ -1,5 +1,4 @@
 <resources>
-    <!--Main Menu-->
     <string name="app_name">נגב ZOO</string>
     //preferences
     <string name="animal_name">בבון הזית</string>
@@ -40,5 +39,6 @@
     <string name="contact_us_headline">דרכי התקשרות:</string>
     <string name="opening_hours_headline">זמני פתיחה:</string>
     <string name="prices_headline">מחירון:</string>
-
+    <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
+    <string name="choose_route">בחר מסלול</string>
 </resources>
