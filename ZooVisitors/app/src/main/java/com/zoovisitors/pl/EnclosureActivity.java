@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+import com.zoovisitors.dal.network.NetworkImpl;
+import com.zoovisitors.dal.network.NetworkInterface;
+import com.zoovisitors.dal.network.ResponseInterface;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -36,6 +40,21 @@ public class EnclosureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure);
+
+        // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
+        NetworkInterface ni = new NetworkImpl(this);
+        ni.post("animals/1", new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e("AVIV", "success: " + response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("AVIV", "failure: " + response);
+            }
+        });
+
 
         closesEventMap = new HashMap<String, String>();
         closesEventMap.put("african_enclosure_closesEvent", "Closes event: 10:00-11:00 Feeding");
