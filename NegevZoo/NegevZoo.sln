@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NegevZoo", "NegevZoo\NegevZoo.csproj", "{07A0246B-8ADD-4201-9455-05B83A4F4968}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooTests", "ZooTests\ZooTests.csproj", "{F46B89EE-B94C-4CDD-ADF9-E0F99FF7E83B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{457A9C23-6FB4-4344-A572-13D1656D21DE} = {457A9C23-6FB4-4344-A572-13D1656D21DE}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{457A9C23-6FB4-4344-A572-13D1656D21DE}"
 EndProject
