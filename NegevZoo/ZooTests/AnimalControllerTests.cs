@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NegevZoo.Controllers;
+using Backend;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ZooTests
@@ -6,9 +8,24 @@ namespace ZooTests
     [TestClass]
     public class AnimalControllerTests
     {
-        [TestMethod]
-        public void TestMethod1()
+        private  AnimalController animalsController;
+
+        [TestInitialize]
+        public void SetUp()
         {
+            animalsController = new AnimalController();
+        }
+
+        [TestMethod]
+        public void getAllAnimals()
+        {
+            Assert.AreEqual(3, animalsController.GetAllAnimals().Count());
+        }
+
+        [TestMethod]
+        public void getAnimalById()
+        {
+            //Assert.AreEqual(3, animalsController.GetAllAnimals(1).Count());
         }
     }
 }

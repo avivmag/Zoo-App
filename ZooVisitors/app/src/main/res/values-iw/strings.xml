@@ -1,5 +1,4 @@
 <resources>
-    <!--Main Menu-->
     <string name="app_name">נגב ZOO</string>
     //preferences
     <string name="animal_name">בבון הזית</string>
@@ -27,6 +26,8 @@
     <string name="distribution">תפוצה: דרום אמריקה</string>
     <string name="reproduction">רבייה: 50,000</string>
     <string name="food">אוכל: בננות. יאמממם!</string>
+    <string name="shareOnFacebook">שתף בפייסבוק</string>
+    <string name="showOnMap">הראה במפה</string>
 
     <!-- General Info -->
     <string name="title_activity_general_info">מידע כללי:</string>
@@ -38,4 +39,6 @@
     <string name="contact_us_headline">דרכי התקשרות:</string>
     <string name="opening_hours_headline">זמני פתיחה:</string>
     <string name="prices_headline">מחירון:</string>
+    <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
+    <string name="choose_route">בחר מסלול</string>
 </resources>
