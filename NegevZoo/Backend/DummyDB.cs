@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend.Models;
 using Backend;
+using System.Data.Entity;
 
 namespace Backend
 {
     public class DummyDB
     {
-        private List<Enclosure> Enclosures = new List<Enclosure>
+        #region DummyEntities
+
+        public List<Enclosure> Enclosures = new List<Enclosure>
         {
             new Enclosure
             {
@@ -29,7 +32,7 @@ namespace Backend
             }
         };
 
-        private List<Animal> Animals        = new List<Animal>
+        public List<Animal> Animals        = new List<Animal>
         {
             new Animal
             {
@@ -86,40 +89,6 @@ namespace Backend
             }
         };
 
-        /// <summary>
-        /// Dummy Getter for db enclosures.
-        /// </summary>
-        /// <returns>The dummy enclosures.</returns>
-        public IEnumerable<Enclosure> GetEnclosures(int language)
-        {
-            return this.Enclosures.Where(e => e.Language == language).ToArray();
-        }
-
-        /// <summary>
-        /// Dummy getter for db animals.
-        /// </summary>
-        /// <returns>The dummy animals.</returns>
-        public IEnumerable<Animal> GetAnimals(int language)
-        {
-            return this.Animals.Where(a => a.Language == language).ToArray();
-        }
-
-        /// <summary>
-        /// Dummy setter for db enclosures.
-        /// </summary>
-        /// <param name="enclosures">The enclosures to set.</param>
-        public void SetEnclosures(IEnumerable<Enclosure> enclosures)
-        {
-            this.Enclosures = new List<Enclosure>(enclosures);
-        }
-
-        /// <summary>
-        /// Dummy setter for db animals.
-        /// </summary>
-        /// <param name="animals">The animals to set.</param>
-        public void SetAnimals(IEnumerable<Animal> animals)
-        {
-            this.Animals = new List<Animal>(animals);
-        }
+        #endregion
     }
 }
