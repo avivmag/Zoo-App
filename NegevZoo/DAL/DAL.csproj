@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="DummyDB.cs" />
+    <Compile Include="IZooDB.cs" />
+    <Compile Include="TestDbSet.cs" />
     <Compile Include="ZooContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -16,7 +16,6 @@ namespace DAL
         // TODO:: Mark isTesting to false when the database it ready.
         public ZooContext(bool isTesting = true)
         {
-
             if (isTesting)
             {
                 zooDB = new DummyDB();

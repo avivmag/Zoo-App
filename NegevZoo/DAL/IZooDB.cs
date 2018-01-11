@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend.Models;
 
-namespace Backend
+namespace DAL
 {
     public abstract class IZooDB : DbContext
     {

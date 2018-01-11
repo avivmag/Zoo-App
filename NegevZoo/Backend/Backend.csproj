@@ -51,13 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DummyDB.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="IZooDB.cs" />
     <Compile Include="Models\Animal.cs" />
     <Compile Include="Models\Enclosure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDbSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

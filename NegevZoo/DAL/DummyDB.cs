@@ -7,7 +7,7 @@ using Backend.Models;
 using Backend;
 using System.Data.Entity;
 
-namespace Backend
+namespace DAL
 {
     /// <summary>
     /// Mock Database for unit testing.

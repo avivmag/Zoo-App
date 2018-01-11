@@ -14,7 +14,7 @@ using System.Threading.Tasks;
  * https://msdn.microsoft.com/en-us/library/dn314431(v=vs.113).aspx
  */
 
-namespace Backend
+namespace DAL
 {
     public class TestDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity>
     where TEntity : class
