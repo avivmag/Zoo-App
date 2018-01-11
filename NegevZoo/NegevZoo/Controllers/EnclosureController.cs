@@ -27,7 +27,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new ZooContext())
+                using (var db = this.GetContext())
                 {
                     return db.GetEnclosures(language);
                 }
@@ -53,7 +53,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new ZooContext())
+                using (var db = this.GetContext())
                 {
                     db.AddEnclosures(enclosures);
                 }

@@ -10,5 +10,11 @@ namespace NegevZoo.Controllers
 {
     public class ControllerBase : ApiController
     {
+        static bool isTesting = true;
+
+        public ZooContext GetContext()
+        {
+            return new ZooContext(isTesting);
+        }
     }
 }

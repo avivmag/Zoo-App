@@ -28,7 +28,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new ZooContext())
+                using (var db = this.GetContext())
                 {
                     return db.GetAnimals(language);
                 }
@@ -51,7 +51,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new ZooContext())
+                using (var db = this.GetContext())
                 {
                     return db.GetAnimalById(language, id);
                 }
@@ -76,7 +76,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new ZooContext())
+                using (var db = this.GetContext())
                 {
                     db.AddAnimals(animals);
                 }
