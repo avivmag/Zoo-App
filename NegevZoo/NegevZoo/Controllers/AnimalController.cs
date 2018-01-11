@@ -13,7 +13,7 @@ namespace NegevZoo.Controllers
     /// <summary>
     /// Controller that holds all animal functionality.
     /// </summary>
-    public class AnimalController : ApiController
+    public class AnimalController : ControllerBase
     {
         #region Getters
 
@@ -28,7 +28,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new DBContext())
+                using (var db = new ZooContext())
                 {
                     return db.GetAnimals(language);
                 }
@@ -51,7 +51,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new DBContext())
+                using (var db = new ZooContext())
                 {
                     return db.GetAnimalById(language, id);
                 }
@@ -76,9 +76,9 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new DBContext())
+                using (var db = new ZooContext())
                 {
-                    db.SetAnimals(animals);
+                    db.AddAnimals(animals);
                 }
             }
             catch

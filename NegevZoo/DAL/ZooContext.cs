@@ -5,18 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend;
 using Backend.Models;
+using System.Data.Entity;
 
 namespace DAL
 {
-    public class DBContext : IDisposable
+    public class ZooContext : IDisposable 
     {
-        private static DummyDB db = null;
+        private IZooDB zooDB;
 
-        public DBContext()
+        // TODO:: Mark isTesting to false when the database it ready.
+        public ZooContext(bool isTesting = true)
         {
-            if (db == null)
+
+            if (isTesting)
             {
-                db = new DummyDB();
+                zooDB = new DummyDB();
+            }
+            else
+            {
+                // TODO:: whenever the database will be ready - initialize it here.
             }
         }
 
@@ -27,7 +34,7 @@ namespace DAL
         /// <returns>The dummy enclosures.</returns>
         public IEnumerable<Enclosure> GetEnclosures(int language)
         {
-            return db.Enclosures.Where(e => e.Language == language).ToArray();
+            return zooDB.Enclosures.Where(e => e.Language == language).ToArray();
         }
 
         /// <summary>
@@ -36,30 +43,30 @@ namespace DAL
         /// <returns>The dummy animals.</returns>
         public IEnumerable<Animal> GetAnimals(int language)
         {
-            return db.Animals.Where(a => a.Language == language).ToArray();
+            return zooDB.Animals.Where(a => a.Language == language).ToArray();
         }
 
         public Animal GetAnimalById(int language, int id)
         {
-            return db.Animals.SingleOrDefault(a => a.Language == language && a.Id == id);
+            return zooDB.Animals.SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
         /// <summary>
-        /// Dummy setter for db enclosures.
+        /// Dummy updater for db enclosures.
         /// </summary>
         /// <param name="enclosures">The enclosures to set.</param>
-        public void SetEnclosures(IEnumerable<Enclosure> enclosures)
+        public void AddEnclosures(IEnumerable<Enclosure> enclosures)
         {
-            db.Enclosures = new List<Enclosure>(enclosures);
+            zooDB.Enclosures.AddRange(enclosures);
         }
 
         /// <summary>
         /// Dummy setter for db animals.
         /// </summary>
         /// <param name="animals">The animals to set.</param>
-        public void SetAnimals(IEnumerable<Animal> animals)
+        public void AddAnimals(IEnumerable<Animal> animals)
         {
-            db.Animals = new List<Animal>(animals);
+            zooDB.Animals.AddRange(animals);
         }
 
         public void Dispose()

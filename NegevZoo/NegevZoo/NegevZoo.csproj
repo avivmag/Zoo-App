@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AnimalController.cs" />
+    <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\EnclosureController.cs" />
     <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\ZooInfoController.cs" />

@@ -12,7 +12,7 @@ namespace NegevZoo.Controllers
     /// <summary>
     /// Controller that holds all enclosure functionality.
     /// </summary>
-    public class EnclosureController : ApiController
+    public class EnclosureController : ControllerBase
     {
         #region Getters
 
@@ -27,7 +27,7 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new DBContext())
+                using (var db = new ZooContext())
                 {
                     return db.GetEnclosures(language);
                 }
@@ -53,9 +53,9 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = new DBContext())
+                using (var db = new ZooContext())
                 {
-                    db.SetEnclosures(enclosures);
+                    db.AddEnclosures(enclosures);
                 }
 
             }
