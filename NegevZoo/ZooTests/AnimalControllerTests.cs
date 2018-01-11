@@ -13,6 +13,8 @@ namespace ZooTests
         [TestInitialize]
         public void SetUp()
         {
+            // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
+            ControllerBase.isTesting = true;
             animalsController = new AnimalController();
         }
 
