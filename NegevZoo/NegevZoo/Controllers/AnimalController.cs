@@ -6,21 +6,32 @@ using System.Net.Http;
 using System.Web.Http;
 using Backend;
 using Backend.Models;
+using DAL;
 
 namespace NegevZoo.Controllers
 {
-    public class AnimalController : ApiController
+    /// <summary>
+    /// Controller that holds all animal functionality.
+    /// </summary>
+    public class AnimalController : ControllerBase
     {
-        private DummyDB db = new DummyDB();
+        #region Getters
 
+        /// <summary>
+        /// Gets all animals data in the given langauge.
+        /// </summary>
+        /// <param name="language">The data language.</param>
+        /// <returns>Animals with that langauge.</returns>
         [HttpGet]
         [Route("animals/{language}")]
         public IEnumerable<Animal> GetAllAnimals(int language = 1)
         {
             try
             {
-                return db.GetAnimals(language);
-
+                using (var db = this.GetContext())
+                {
+                    return db.GetAnimals(language);
+                }
             }
             catch
             {
@@ -28,14 +39,22 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the animal by its Id, in the given language.
+        /// </summary>
+        /// <param name="id">The animal's Id.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
-        [Route("enclosures/{language}")]
-        public IEnumerable<Enclosure> GetAllEnclosures(int language = 1)
+        [Route("animals/{id}/{language}")]
+        public Animal GetAnimalById(int id, int language)
         {
             try
             {
-                return db.GetEnclosures(language);
-
+                using (var db = this.GetContext())
+                {
+                    return db.GetAnimalById(language, id);
+                }
             }
             catch
             {
@@ -43,31 +62,30 @@ namespace NegevZoo.Controllers
             }
         }
 
-        [HttpPost]
+        #endregion
+
+        #region Setters
+
+        /// <summary>
+        /// Updates the animals list.
+        /// </summary>
+        /// <param name="animals">The animals to update to.</param>
+        [HttpPut]
         [Route("animals")]
         public void UpdateAnimals(IEnumerable<Animal> animals)
         {
             try
             {
-                db.SetAnimals(animals);
+                using (var db = this.GetContext())
+                {
+                    db.AddAnimals(animals);
+                }
             }
             catch
             {
             }
         }
 
-        [HttpPost]
-        [Route("enclosures")]
-        public void UpdateEnclosures(IEnumerable<Enclosure> enclosures)
-        {
-            try
-            {
-                db.SetEnclosures(enclosures);
-
-            }
-            catch
-            {
-            }
-        }
+        #endregion
     }
 }
