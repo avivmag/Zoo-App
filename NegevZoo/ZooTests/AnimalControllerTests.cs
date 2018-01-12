@@ -1,5 +1,5 @@
 ﻿using NegevZoo.Controllers;
-using Backend;
+using Backend.Models;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,7 +27,20 @@ namespace ZooTests
         [TestMethod]
         public void getAnimalById()
         {
-            //Assert.AreEqual(3, animalsController.GetAllAnimals(1).Count());
+            var animal = animalsController.GetAnimalById(1, 1);
+            Assert.IsInstanceOfType(animal, typeof(Animal));
+            Animal animalObject = (Animal)animal;
+
+            Assert.AreEqual(1, animalObject.Id);
+            Assert.AreEqual("בבון הזית", animalObject.Name);
+        }
+
+        [TestMethod]
+        public void getAnimalByIdWrongId()
+        {
+            var animal = animalsController.GetAnimalById(-4, 1);
+
+            Assert.AreEqual(null, animal);
         }
     }
 }
