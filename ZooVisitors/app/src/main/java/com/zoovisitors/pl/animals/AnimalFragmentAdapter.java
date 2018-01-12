@@ -1,4 +1,4 @@
-package com.zoovisitors.pl.animalActivity;
+package com.zoovisitors.pl.animals;
 
 /**
  * Created by oripa on 12/28/2017.

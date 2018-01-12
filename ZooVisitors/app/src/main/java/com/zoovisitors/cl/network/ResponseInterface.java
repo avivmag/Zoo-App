@@ -1,4 +1,4 @@
-package com.zoovisitors.dal.network;
+package com.zoovisitors.cl.network;
 
 /**
  * Created by aviv on 08-Jan-18.

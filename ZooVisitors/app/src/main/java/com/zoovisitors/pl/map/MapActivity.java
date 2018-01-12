@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.map;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 

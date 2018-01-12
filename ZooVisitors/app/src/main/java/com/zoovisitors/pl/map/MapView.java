@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.map;
 
 import android.content.Context;
 import android.content.res.TypedArray;

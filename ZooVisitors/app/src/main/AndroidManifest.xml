@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".pl.animalActivity.AnimalActivity"
+            android:name=".pl.animals.AnimalActivity"
             android:label="@string/title_activity_animal"></activity>
 
         <activity android:name=".pl.MainActivity">
@@ -24,16 +24,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".pl.EnclosureActivity" />
-        <activity android:name=".pl.MapActivity" />
+        <activity android:name=".pl.enclosures.EnclosureActivity" />
+        <activity android:name=".pl.map.MapActivity" />
 
         <activity
-            android:name=".pl.GeneralInfo.GeneralInfoActivity"
+            android:name=".pl.general_info.GeneralInfoActivity"
             android:label="@string/title_activity_general_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
 
-        <activity android:name=".pl.EnclosureListActivity"></activity>
+        <activity android:name=".pl.enclosures.EnclosureListActivity"></activity>
     </application>
 </manifest>

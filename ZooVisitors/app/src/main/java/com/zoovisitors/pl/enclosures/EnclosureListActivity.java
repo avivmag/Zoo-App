@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.enclosures;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

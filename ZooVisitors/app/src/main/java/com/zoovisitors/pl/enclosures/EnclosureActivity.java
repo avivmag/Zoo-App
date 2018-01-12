@@ -1,4 +1,4 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
-import com.zoovisitors.dal.network.NetworkImpl;
-import com.zoovisitors.dal.network.NetworkInterface;
-import com.zoovisitors.dal.network.ResponseInterface;
+import com.zoovisitors.cl.network.NetworkImpl;
+import com.zoovisitors.cl.network.NetworkInterface;
+import com.zoovisitors.cl.network.ResponseInterface;
 
 /**
  * Created by Gili on 28/12/2017.
