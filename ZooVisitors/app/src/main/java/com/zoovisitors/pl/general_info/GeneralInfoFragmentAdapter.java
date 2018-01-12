@@ -1,4 +1,4 @@
-package com.zoovisitors.pl.GeneralInfo;
+package com.zoovisitors.pl.general_info;
 
 /**
  * Created by oripa on 12/28/2017.

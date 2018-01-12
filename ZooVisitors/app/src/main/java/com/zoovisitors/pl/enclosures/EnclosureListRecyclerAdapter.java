@@ -1,18 +1,17 @@
-package com.zoovisitors.pl;
+package com.zoovisitors.pl.enclosures;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
-import com.zoovisitors.pl.animalActivity.AnimalActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,29 +20,29 @@ import java.util.List;
  * Created by Gili on 28/12/2017.
  */
 
-public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
+public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<EnclosureListRecyclerAdapter.ViewHolder> {
 
-    private String[] animalsImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private String[] animalsNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    private String[] enclosuresImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    private String[] enclosuresNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
 
     private AppCompatActivity tempActivity;
     private int[] images;
 
-    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames){
+    public EnclosureListRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames){
         this.tempActivity = appCompatActivity;
-        this.animalsImages = enclosuresImages;
-        this.animalsNames = enclosuresNames;
+        this.enclosuresImages = enclosuresImages;
+        this.enclosuresNames = enclosuresNames;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         public int currentItem;
-        public ImageView animal_card_image;
-        public TextView animalName;
+        public ImageView enclosure_card_image;
+        public TextView enclosureName;
 
         public ViewHolder(View itemView){
             super(itemView);
             List<Integer> imagesList = new ArrayList<Integer>();
-            for (String image : animalsImages) {
+            for (String image : enclosuresImages) {
 //                AppCompatActivity tempActivity = new AppCompatActivity();
                 imagesList.add(tempActivity.getResources().getIdentifier(image, "mipmap", tempActivity.getPackageName()));
             }
@@ -54,8 +53,8 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
             images = ret;
 
-            animal_card_image = (ImageView) itemView.findViewById(R.id.animal_card_image);
-            animalName = (TextView) itemView.findViewById(R.id.animal_card_text);
+            enclosure_card_image = (ImageView) itemView.findViewById(R.id.enclosure_card_image);
+            enclosureName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -63,12 +62,14 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-                    Intent intent = new Intent(tempActivity, AnimalActivity.class);
+                    Intent intent = new Intent(tempActivity, EnclosureActivity.class);
                     Bundle clickedEnclosure = new Bundle();
                     clickedEnclosure.putInt("image", images[pos]); //Clicked image
-                    clickedEnclosure.putString("name", animalsNames[pos]);
-                    intent.putExtras(clickedEnclosure);
+                    clickedEnclosure.putString("name", enclosuresNames[pos]);
+                    intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                     tempActivity.startActivity(intent);
+
+//                    Snackbar.make(v, "Click" + pos, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
         }
@@ -77,19 +78,19 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.animal_card, viewGroup, false);
+                .inflate(R.layout.enclosure_card, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        viewHolder.animalName.setText(animalsNames[i]);
-        viewHolder.animal_card_image.setImageResource(images[i]);
+        viewHolder.enclosureName.setText(enclosuresNames[i]);
+        viewHolder.enclosure_card_image.setImageResource(images[i]);
     }
 
     @Override
     public int getItemCount() {
-        return animalsNames.length;
+        return enclosuresNames.length;
     }
 }

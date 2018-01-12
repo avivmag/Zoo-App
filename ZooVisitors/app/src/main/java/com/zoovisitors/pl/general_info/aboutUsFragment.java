@@ -1,4 +1,4 @@
-package com.zoovisitors.pl.GeneralInfo;
+package com.zoovisitors.pl.general_info;
 
 
 import android.os.Bundle;
@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.support.v4.app.FragmentPagerAdapter;
 
 import com.zoovisitors.R;
 
