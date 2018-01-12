@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -33,9 +35,36 @@ public class EnclosureActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
 
+
+    private String exampleJson = "[{\n" +
+            "\t\"Id\": 1,\n" +
+            "\t\"Name\": \"בבון הזית\",\n" +
+            "\t\"Story\": \"גילאור בבון הזית מאוד חמוד\",\n" +
+            "\t\"EncId\": 1,\n" +
+            "\t\"Language\": 1\n" +
+            "},\n" +
+            "{\n" +
+            "\t\"Id\": 2,\n" +
+            "\t\"Name\": \"גורילה\",\n" +
+            "\t\"Story\": \"שרק הוא וואחד גורילה!\",\n" +
+            "\t\"EncId\": 1,\n" +
+            "\t\"Language\": 1\n" +
+            "},\n" +
+            "{\n" +
+            "\t\"Id\": 3,\n" +
+            "\t\"Name\": \"קוף\",\n" +
+            "\t\"Story\": \"קופיקו הוא הקוף של מרקו.\",\n" +
+            "\t\"EncId\": 1,\n" +
+            "\t\"Language\": 1\n" +
+            "}]";
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure);
+
+        //Gson gson = new Gson();
+
 
         closesEventMap = new HashMap<String, String>();
         closesEventMap.put("african_enclosure_closesEvent", "Closes event: 10:00-11:00 Feeding");
