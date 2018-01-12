@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
-//import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
+import com.zoovisitors.dal.network.NetworkImpl;
+import com.zoovisitors.dal.network.NetworkInterface;
+import com.zoovisitors.dal.network.ResponseInterface;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -35,35 +37,23 @@ public class EnclosureActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
 
-
-    private String exampleJson = "[{\n" +
-            "\t\"Id\": 1,\n" +
-            "\t\"Name\": \"בבון הזית\",\n" +
-            "\t\"Story\": \"גילאור בבון הזית מאוד חמוד\",\n" +
-            "\t\"EncId\": 1,\n" +
-            "\t\"Language\": 1\n" +
-            "},\n" +
-            "{\n" +
-            "\t\"Id\": 2,\n" +
-            "\t\"Name\": \"גורילה\",\n" +
-            "\t\"Story\": \"שרק הוא וואחד גורילה!\",\n" +
-            "\t\"EncId\": 1,\n" +
-            "\t\"Language\": 1\n" +
-            "},\n" +
-            "{\n" +
-            "\t\"Id\": 3,\n" +
-            "\t\"Name\": \"קוף\",\n" +
-            "\t\"Story\": \"קופיקו הוא הקוף של מרקו.\",\n" +
-            "\t\"EncId\": 1,\n" +
-            "\t\"Language\": 1\n" +
-            "}]";
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure);
 
-        //Gson gson = new Gson();
+        // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
+        NetworkInterface ni = new NetworkImpl(this);
+        ni.post("animals/1", new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e("AVIV", "success: " + response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("AVIV", "failure: " + response);
+            }
+        });
 
 
         closesEventMap = new HashMap<String, String>();

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zoovisitors">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/monkeys_enclosure"
@@ -23,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".pl.EnclosureActivity" />
-
+        <activity android:name=".pl.MapActivity" />
 
         <activity
             android:name=".pl.GeneralInfo.GeneralInfoActivity"
@@ -34,5 +36,4 @@
 
         <activity android:name=".pl.EnclosureListActivity"></activity>
     </application>
-
 </manifest>
