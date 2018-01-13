@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Backend;
 using Backend.Models;
-using DAL;
+using BL;
 
 namespace NegevZoo.Controllers
 {

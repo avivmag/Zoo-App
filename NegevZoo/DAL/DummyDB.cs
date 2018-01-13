@@ -16,12 +16,20 @@ namespace DAL
     {
         public DummyDB()
         {
-            Animals         = new TestDbSet<Animal>();
-            Enclosures      = new TestDbSet<Enclosure>();
+            this.Animals         = new TestDbSet<Animal>();
+            this.Enclosures      = new TestDbSet<Enclosure>();
 
-            Animals.AddRange(InitializeAnimals());
-            var x = Animals.Where(a => a.Language == 1);
-            Enclosures.AddRange(InitializeEnclosures());
+            this.Animals.AddRange(InitializeAnimals());
+            this.Enclosures.AddRange(InitializeEnclosures());
+        }
+
+        protected override List<TEntity> GetFromCache<TEntity>()
+        {
+            return null;
+        }
+
+        protected override void SetInCache<TEntity>(List<TEntity> entity)
+        {
         }
 
         #region Initializers

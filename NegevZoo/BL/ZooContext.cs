@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Backend;
 using Backend.Models;
-using System.Data.Entity;
+using DAL;
 
-namespace DAL
+namespace BL
 {
     public class ZooContext : IDisposable 
     {
@@ -33,7 +30,7 @@ namespace DAL
         /// <returns>The dummy enclosures.</returns>
         public IEnumerable<Enclosure> GetEnclosures(int language)
         {
-            return zooDB.Enclosures.Where(e => e.Language == language).ToArray();
+            return zooDB.GetEnclosures().Where(e => e.Language == language).ToArray();
         }
 
         /// <summary>
@@ -42,12 +39,12 @@ namespace DAL
         /// <returns>The dummy animals.</returns>
         public IEnumerable<Animal> GetAnimals(int language)
         {
-            return zooDB.Animals.Where(a => a.Language == language).ToArray();
+            return zooDB.GetAnimals().Where(a => a.Language == language).ToArray();
         }
 
         public Animal GetAnimalById(int language, int id)
         {
-            return zooDB.Animals.SingleOrDefault(a => a.Language == language && a.Id == id);
+            return zooDB.GetAnimals().SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
         /// <summary>
@@ -56,7 +53,7 @@ namespace DAL
         /// <param name="enclosures">The enclosures to set.</param>
         public void AddEnclosures(IEnumerable<Enclosure> enclosures)
         {
-            zooDB.Enclosures.AddRange(enclosures);
+            zooDB.GetEnclosures().AddRange(enclosures);
         }
 
         /// <summary>
@@ -65,12 +62,12 @@ namespace DAL
         /// <param name="animals">The animals to set.</param>
         public void AddAnimals(IEnumerable<Animal> animals)
         {
-            zooDB.Animals.AddRange(animals);
+            zooDB.GetAnimals().AddRange(animals);
         }
 
         public void Dispose()
         {
-            // dummyDB.saveChanges()
+            // zooDB.saveChanges();
         }
     }
 }

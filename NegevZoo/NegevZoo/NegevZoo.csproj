@@ -112,9 +112,9 @@
       <Project>{457a9c23-6fb4-4344-a572-13d1656d21de}</Project>
       <Name>Backend</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DAL\DAL.csproj">
-      <Project>{e226b580-03bc-41ec-83f9-927145953d01}</Project>
-      <Name>DAL</Name>
+    <ProjectReference Include="..\BL\BL.csproj">
+      <Project>{a462e0d4-8b51-4e82-b5cd-e5cb6311035c}</Project>
+      <Name>BL</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
