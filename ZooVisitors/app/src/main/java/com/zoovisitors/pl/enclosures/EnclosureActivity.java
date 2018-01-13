@@ -14,15 +14,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
 
+
 /**
  * Created by Gili on 28/12/2017.
  */
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EnclosureActivity extends AppCompatActivity {
@@ -31,15 +37,20 @@ public class EnclosureActivity extends AppCompatActivity {
     private ImageView enclosureImageView;
     private Map<String, String> closesEventMap;
     private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
-    private String[] animalsNames = {"chimpanse", "gorilla", "olive_baboon"};
+    private String[] animalsNames;// = {"chimpanse", "gorilla", "olive_baboon"};
     private AppCompatActivity tempActivity = this;
     private RecyclerView recycleView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
 
+    private String json;
+
+    private Gson gson;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enclosure);
+
+        gson = new Gson();
 
         // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
         NetworkInterface ni = new NetworkImpl(this);
@@ -47,6 +58,9 @@ public class EnclosureActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String response) {
                 Log.e("AVIV", "success: " + response);
+                json = response;
+                readFromJson();
+                draw();
             }
 
             @Override
@@ -56,6 +70,18 @@ public class EnclosureActivity extends AppCompatActivity {
         });
 
 
+
+    }
+
+    private void readFromJson(){
+            Animal[] animals = gson.fromJson(json, Animal[].class);
+            animalsNames = new String[animals.length];
+            for (int i = 0; i < animals.length; i++)
+                animalsNames[i] = animals[i].getName();
+    }
+
+    private void draw(){
+        setContentView(R.layout.activity_enclosure);
         closesEventMap = new HashMap<String, String>();
         closesEventMap.put("african_enclosure_closesEvent", "Closes event: 10:00-11:00 Feeding");
         closesEventMap.put("monkeys_enclosure_closesEvent", "Closes event: 14:00-15:00 Dancing");
