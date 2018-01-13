@@ -6,14 +6,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.Species;
 
 public class AnimalActivity extends AppCompatActivity {
+
+    private Animal animal;
+    private Species species;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal);
-
+        animal = (Animal) savedInstanceState.getSerializable("animal");
 //        ((VideoView) findViewById(R.id.youtubeVideo)).setVideoURI(Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA"));
 
 //        simpleVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fishvideo));
@@ -24,6 +29,9 @@ public class AnimalActivity extends AppCompatActivity {
 
         // Create an adapter that knows which fragment should be shown on each page
         AnimalFragmentAdapter adapter = new AnimalFragmentAdapter(this, getSupportFragmentManager());
+        adapter.setAppCompatActivity(this);
+        adapter.setStory(animal.getStory());
+        adapter.setSpecies(species.getAbout());
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(adapter);

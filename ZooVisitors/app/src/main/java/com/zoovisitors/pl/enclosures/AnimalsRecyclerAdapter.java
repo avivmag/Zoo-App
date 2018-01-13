@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
 import com.zoovisitors.pl.animals.AnimalActivity;
 
 import java.util.ArrayList;
@@ -28,11 +29,13 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
     private AppCompatActivity tempActivity;
     private int[] images;
+    private Animal[] animals;
 
-    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames){
+    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames, Animal[] animals){
         this.tempActivity = appCompatActivity;
         this.animalsImages = enclosuresImages;
         this.animalsNames = enclosuresNames;
+        this.animals = animals;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -67,7 +70,9 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                     Bundle clickedEnclosure = new Bundle();
                     clickedEnclosure.putInt("image", images[pos]); //Clicked image
                     clickedEnclosure.putString("name", animalsNames[pos]);
+
                     intent.putExtras(clickedEnclosure);
+                    intent.putExtra("animal", animals[pos]);
                     tempActivity.startActivity(intent);
                 }
             });
