@@ -44,18 +44,18 @@ namespace NegevZoo.Controllers
         #region Setters
 
         /// <summary>
-        /// Sets the enclosures in that park.
+        /// Adds or updates an enclosure.
         /// </summary>
-        /// <param name="enclosures">The enclosures to set.</param>
+        /// <param name="enclosures">The enclosures to update.</param>
         [HttpPut]
         [Route("enclosures")]
-        public void UpdateEnclosures(IEnumerable<Enclosure> enclosures)
+        public void UpdateEnclosure(Enclosure enclosure)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.AddEnclosures(enclosures);
+                    db.UpdateEnclosure(enclosure);
                 }
 
             }

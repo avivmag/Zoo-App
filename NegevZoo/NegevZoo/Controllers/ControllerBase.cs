@@ -12,6 +12,10 @@ namespace NegevZoo.Controllers
     {
         public static bool isTesting = true;
 
+        /// <summary>
+        /// Gets the zoo Context.
+        /// </summary>
+        /// <returns>The zoo context.</returns>
         public ZooContext GetContext()
         {
             return new ZooContext(isTesting);

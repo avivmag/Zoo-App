@@ -25,44 +25,60 @@ namespace BL
 
         
         /// <summary>
-        /// Dummy Getter for db enclosures.
+        /// Gets the enclosures.
         /// </summary>
-        /// <returns>The dummy enclosures.</returns>
+        /// <param name="language">The enclosure's data language.</param>
+        /// <returns>The enclosures.</returns>
         public IEnumerable<Enclosure> GetEnclosures(int language)
         {
             return zooDB.GetEnclosures().Where(e => e.Language == language).ToArray();
         }
 
         /// <summary>
-        /// Dummy getter for db animals.
+        /// Gets the animals.
         /// </summary>
-        /// <returns>The dummy animals.</returns>
+        /// <param name="language">The animal's data language.</param>
+        /// <returns>The animals.</returns>
         public IEnumerable<Animal> GetAnimals(int language)
         {
             return zooDB.GetAnimals().Where(a => a.Language == language).ToArray();
         }
 
+        /// <summary>
+        /// Gets the animal by Id and language.
+        /// </summary>
+        /// <param name="language">The data's language</param>
+        /// <param name="id">The animal's Id.</param>
+        /// <returns>The animal.</returns>
         public Animal GetAnimalById(int language, int id)
         {
             return zooDB.GetAnimals().SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
         /// <summary>
-        /// Dummy updater for db enclosures.
+        /// Updates The enclosure.
         /// </summary>
-        /// <param name="enclosures">The enclosures to set.</param>
-        public void AddEnclosures(IEnumerable<Enclosure> enclosures)
+        /// <param name="enclosures">The enclosures to update.</param>
+        public void UpdateEnclosure(Enclosure enclosure)
         {
-            zooDB.GetEnclosures().AddRange(enclosures);
+            var enclosures = zooDB.GetEnclosures();
+            if (!enclosures.Contains(enclosure))
+            {
+                enclosures.Add(enclosure);
+            }
         }
 
         /// <summary>
-        /// Dummy setter for db animals.
+        /// Updates the animal.
         /// </summary>
-        /// <param name="animals">The animals to set.</param>
-        public void AddAnimals(IEnumerable<Animal> animals)
+        /// <param name="animals">The animal to update.</param>
+        public void UpdateAnimal(Animal animal)
         {
-            zooDB.GetAnimals().AddRange(animals);
+            var animals = zooDB.GetAnimals();
+            if (!animals.Contains(animal))
+            {
+                animals.Add(animal);
+            }
         }
 
         public void Dispose()
