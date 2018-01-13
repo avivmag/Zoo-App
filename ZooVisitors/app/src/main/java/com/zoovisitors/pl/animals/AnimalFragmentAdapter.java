@@ -8,10 +8,28 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.app.AppCompatActivity;
+
 import com.zoovisitors.R;
 
 public class AnimalFragmentAdapter extends FragmentPagerAdapter {
     private Context mContext;
+
+    public void setAppCompatActivity(AppCompatActivity appCompatActivity) {
+        this.appCompatActivity = appCompatActivity;
+    }
+
+    public void setStory(String story) {
+        this.story = story;
+    }
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    private AppCompatActivity appCompatActivity;
+    private String story;
+    private String species;
 
     // tab titles
     private String[] tabTitles = new String[]{"about_animal", "about_species"};
@@ -25,7 +43,10 @@ public class AnimalFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new aboutAnimalFragment();
+            aboutAnimalFragment aboutAnimalFragment =  new aboutAnimalFragment();
+            aboutAnimalFragment.setAppCompatActivity(appCompatActivity);
+            aboutAnimalFragment.setStory(story);
+            return aboutAnimalFragment;
         } else {
             return new aboutSpeciesFragment();
         }

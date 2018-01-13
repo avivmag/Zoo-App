@@ -5,7 +5,7 @@ package com.zoovisitors.backend;
  */
 import com.google.gson.annotations.SerializedName;
 
-public class Animal {
+public class Animal implements java.io.Serializable{
     @SerializedName("Id")
     private int id;
     @SerializedName("Name")

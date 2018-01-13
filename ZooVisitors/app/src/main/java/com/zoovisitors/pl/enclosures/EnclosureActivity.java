@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,20 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.cl.network.NetworkImpl;
-import com.zoovisitors.cl.network.NetworkInterface;
-import com.zoovisitors.cl.network.ResponseInterface;
+import com.zoovisitors.bl.BusinessLayerImpl;
+import com.zoovisitors.bl.BusinessLayer;
 
 
 /**
  * Created by Gili on 28/12/2017.
  */
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EnclosureActivity extends AppCompatActivity {
@@ -44,40 +39,19 @@ public class EnclosureActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
 
     private String json;
-
+    private BusinessLayer bl;
     private Gson gson;
+    private Animal[] animals;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bl = new BusinessLayerImpl();
 
-        gson = new Gson();
-
-        // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
-        NetworkInterface ni = new NetworkImpl(this);
-        ni.post("animals/1", new ResponseInterface() {
-            @Override
-            public void onSuccess(String response) {
-                Log.e("AVIV", "success: " + response);
-                json = response;
-                readFromJson();
-                draw();
-            }
-
-            @Override
-            public void onFailure(String response) {
-                Log.e("AVIV", "failure: " + response);
-            }
-        });
-
-
-
-    }
-
-    private void readFromJson(){
-            Animal[] animals = gson.fromJson(json, Animal[].class);
-            animalsNames = new String[animals.length];
-            for (int i = 0; i < animals.length; i++)
-                animalsNames[i] = animals[i].getName();
+        animals = bl.getAnimals();//
+        animalsNames = new String[animals.length];
+        for (int i = 0; i < animals.length; i++)
+            animalsNames[i] = animals[i].getName();
+        draw();
     }
 
     private void draw(){
@@ -108,7 +82,7 @@ public class EnclosureActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycleView.setLayoutManager(layoutManager);
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames);
+        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames, animals);
         recycleView.setAdapter(adapter);
         ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
         imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
