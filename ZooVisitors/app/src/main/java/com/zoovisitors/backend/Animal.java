@@ -3,13 +3,20 @@ package com.zoovisitors.backend;
 /**
  * Created by Gili on 12/01/2018.
  */
+import com.google.gson.annotations.SerializedName;
 
 public class Animal {
-
+    @SerializedName("Id")
+    private int id;
+    @SerializedName("Name")
     private String name;
+    @SerializedName("Story")
     private String story;
+    @SerializedName("EncId")
     private int encId;
+    @SerializedName("Language")
     private int language;
+
 
     public Animal(String name, String story, int encId, int language, int id) {
         this.name = name;
@@ -26,8 +33,6 @@ public class Animal {
     public void setId(int id) {
         this.id = id;
     }
-
-    private int id;
 
     public String getName() {
         return name;
@@ -62,4 +67,14 @@ public class Animal {
 
     }
 
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "name='" + name + '\'' +
+                ", story='" + story + '\'' +
+                ", encId=" + encId +
+                ", language=" + language +
+                ", id=" + id +
+                '}';
+    }
 }
