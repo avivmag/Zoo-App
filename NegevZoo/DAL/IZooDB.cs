@@ -12,8 +12,30 @@ namespace DAL
     {
         #region DbSets
 
-        public DbSet<Animal> Animals { get; set; }
-        public DbSet<Enclosure> Enclosures { get; set; }
+        protected DbSet<Animal> Animals { get; set; }
+        protected DbSet<Enclosure> Enclosures { get; set; }
+
+        #endregion 
+
+        #region Getters
+
+        public DbSet<Animal> GetAnimals()
+        {
+            return Animals;
+        }
+
+        public DbSet<Enclosure> GetEnclosures()
+        {
+            return Enclosures;
+        }
+
+        #endregion
+
+        #region Cache
+
+        protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
+
+        protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
 
         #endregion
     }

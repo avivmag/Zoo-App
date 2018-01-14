@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Backend;
 using Backend.Models;
-using DAL;
+using BL;
 
 namespace NegevZoo.Controllers
 {
@@ -67,18 +67,18 @@ namespace NegevZoo.Controllers
         #region Setters
 
         /// <summary>
-        /// Updates the animals list.
+        /// Adds or updates an animal.
         /// </summary>
-        /// <param name="animals">The animals to update to.</param>
+        /// <param name="animals">The animal to update.</param>
         [HttpPut]
         [Route("animals")]
-        public void UpdateAnimals(IEnumerable<Animal> animals)
+        public void UpdateAnimal(Animal animal)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.AddAnimals(animals);
+                    db.UpdateAnimal(animal);
                 }
             }
             catch

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NegevZoo", "NegevZoo\NegevZoo.csproj", "{07A0246B-8ADD-4201-9455-05B83A4F4968}"
 EndProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{457A9C23-6FB4-4344-A572-13D1656D21DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{E226B580-03BC-41EC-83F9-927145953D01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{E226B580-03BC-41EC-83F9-927145953D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E226B580-03BC-41EC-83F9-927145953D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E226B580-03BC-41EC-83F9-927145953D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
