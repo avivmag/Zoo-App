@@ -23,10 +23,9 @@ public class BusinessLayerImpl implements BusinessLayer {
     private Gson gson;
     private String json;
 
-    public BusinessLayerImpl() {
-        ni = new NetworkImpl(new AppCompatActivity());
+    public BusinessLayerImpl(AppCompatActivity appCompatActivity) {
+        ni = new NetworkImpl(appCompatActivity);
         gson = new Gson();
-
     }
 
 
@@ -47,14 +46,27 @@ public class BusinessLayerImpl implements BusinessLayer {
 
 
     @Override
-    public Animal[] getAnimals() {
+    public void getAnimals(int pos, final GetObjectInterface goi) {
 
         // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
-        getJson("animals/1");
+        pos++;
+        Log.e("POS", "" + pos);
+        ni.post("animals/" + pos, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Animal[] animals = gson.fromJson(response, Animal[].class);
+                goi.onSuccess(animals);
+            }
 
-        while (json==null);
-        Animal[] animals = gson.fromJson(json, Animal[].class);
-        return animals;
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(null);
+            }
+        });
+
+
+
+        //getJson("animals/1");
     }
 
     @Override

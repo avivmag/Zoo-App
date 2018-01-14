@@ -67,12 +67,12 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                     int pos = getAdapterPosition();
 
                     Intent intent = new Intent(tempActivity, AnimalActivity.class);
-                    Bundle clickedEnclosure = new Bundle();
-                    clickedEnclosure.putInt("image", images[pos]); //Clicked image
-                    clickedEnclosure.putString("name", animalsNames[pos]);
+                    Bundle clickedAnimal = new Bundle();
+                    clickedAnimal.putInt("image", images[pos]); //Clicked image
+                    clickedAnimal.putString("name", animalsNames[pos]);
+                    clickedAnimal.putSerializable("animal", animals[pos]);
 
-                    intent.putExtras(clickedEnclosure);
-                    intent.putExtra("animal", animals[pos]);
+                    intent.putExtras(clickedAnimal);
                     tempActivity.startActivity(intent);
                 }
             });

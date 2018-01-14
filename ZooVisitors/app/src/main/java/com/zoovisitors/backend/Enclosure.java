@@ -1,15 +1,21 @@
 package com.zoovisitors.backend;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Gili on 12/01/2018.
  */
 
 public class Enclosure {
+    @SerializedName("Id")
     private int id;
     private int[] animalsInEnc;
+    @SerializedName("Name")
     private String name;
     private String closestEvent;
     private String youtubeVideoUrl;
+
+
     //TODO:: Or I need the image of the enclosure and images of the animals
 
     public int getId() {

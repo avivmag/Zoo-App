@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.bl.GetObjectInterface;
 
 
 /**
@@ -42,16 +44,31 @@ public class EnclosureActivity extends AppCompatActivity {
     private BusinessLayer bl;
     private Gson gson;
     private Animal[] animals;
+    private Bundle clickedEnclosure;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bl = new BusinessLayerImpl();
+        clickedEnclosure = getIntent().getExtras();
+        bl = new BusinessLayerImpl(this);
+        int pos = clickedEnclosure.getInt("pos");
 
-        animals = bl.getAnimals();//
-        animalsNames = new String[animals.length];
-        for (int i = 0; i < animals.length; i++)
-            animalsNames[i] = animals[i].getName();
-        draw();
+        bl.getAnimals(pos, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                animals = (Animal[]) response;
+
+                animalsNames = new String[animals.length];
+                for (int i = 0; i < animals.length; i++)
+                    animalsNames[i] = animals[i].getName();
+                draw();
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("GILI", "Callback failed");
+            }
+        });
+
     }
 
     private void draw(){
@@ -65,7 +82,7 @@ public class EnclosureActivity extends AppCompatActivity {
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
 
-        Bundle clickedEnclosure = getIntent().getExtras();
+
         int enclosureImageNumber = -1;
         String enclosureName = "";
         if(clickedEnclosure != null) {

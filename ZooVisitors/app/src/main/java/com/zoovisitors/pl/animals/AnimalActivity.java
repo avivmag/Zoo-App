@@ -13,12 +13,14 @@ public class AnimalActivity extends AppCompatActivity {
 
     private Animal animal;
     private Species species;
+    private Bundle clickedAnimal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        clickedAnimal = getIntent().getExtras();
         setContentView(R.layout.activity_animal);
-        animal = (Animal) savedInstanceState.getSerializable("animal");
+        animal = (Animal) clickedAnimal.getSerializable("animal");
 //        ((VideoView) findViewById(R.id.youtubeVideo)).setVideoURI(Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA"));
 
 //        simpleVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fishvideo));
@@ -31,7 +33,7 @@ public class AnimalActivity extends AppCompatActivity {
         AnimalFragmentAdapter adapter = new AnimalFragmentAdapter(this, getSupportFragmentManager());
         adapter.setAppCompatActivity(this);
         adapter.setStory(animal.getStory());
-        adapter.setSpecies(species.getAbout());
+//        adapter.setSpecies(species.getAbout());
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(adapter);

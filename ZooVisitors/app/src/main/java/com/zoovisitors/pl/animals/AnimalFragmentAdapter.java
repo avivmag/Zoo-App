@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.TextView;
 
 import com.zoovisitors.R;
 
@@ -45,7 +47,10 @@ public class AnimalFragmentAdapter extends FragmentPagerAdapter {
         if (position == 0) {
             aboutAnimalFragment aboutAnimalFragment =  new aboutAnimalFragment();
             aboutAnimalFragment.setAppCompatActivity(appCompatActivity);
+            Log.e("Story", story);
             aboutAnimalFragment.setStory(story);
+            TextView storyTextView = (TextView) appCompatActivity.findViewById(R.id.animal_story);
+            //storyTextView.setText(story);
             return aboutAnimalFragment;
         } else {
             return new aboutSpeciesFragment();
