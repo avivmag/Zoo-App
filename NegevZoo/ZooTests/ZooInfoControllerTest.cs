@@ -13,6 +13,7 @@ namespace ZooTests
     public class ZooInfoControllerTest
     {
         private ZooInfoController ZooInfoController;
+        private int nonExistantLangauge;
 
         [TestInitialize]
         public void SetUp()
@@ -20,6 +21,7 @@ namespace ZooTests
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             ZooInfoController = new ZooInfoController();
+            nonExistantLangauge = 100;
         }
 
         [TestMethod]
@@ -35,9 +37,9 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void GetAllWallFeedNotExist()
+        public void GetAllWallFeedLanguageNotExist()
         {
-            Assert.AreEqual(ZooInfoController.GetAllFeeds(8).Count(), 0);
+            Assert.AreEqual(ZooInfoController.GetAllFeeds(nonExistantLangauge).Count(), 0);
         }
 
         [TestMethod]
@@ -51,9 +53,9 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void GetAllPricesNotExist()
+        public void GetAllPricesLanguageNotExist()
         {
-            var prices = ZooInfoController.GetPrices(6);
+            var prices = ZooInfoController.GetPrices(nonExistantLangauge);
             
             Assert.AreEqual(prices.Count(), 0);
         }
@@ -69,9 +71,9 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void GetAboutUsNotExist()
+        public void GetAboutUsLangaugeNotExist()
         {
-            var aboutUs = ZooInfoController.GetZooAboutInfo(5);
+            var aboutUs = ZooInfoController.GetZooAboutInfo(nonExistantLangauge);
 
             Assert.AreEqual(aboutUs.Count(), 0);
         }

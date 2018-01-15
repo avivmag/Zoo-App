@@ -52,7 +52,8 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalById(int language, int id)
         {
-            return zooDB.GetAnimals().SingleOrDefault(a => a.Language == language && a.Id == id);
+            return zooDB.GetAnimals()
+                .SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
         /// <summary>
