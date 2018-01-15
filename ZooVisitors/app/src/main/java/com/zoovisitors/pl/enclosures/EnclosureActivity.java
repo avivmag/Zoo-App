@@ -14,10 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.zoovisitors.R;
-import com.zoovisitors.cl.network.NetworkImpl;
-import com.zoovisitors.cl.network.NetworkInterface;
-import com.zoovisitors.cl.network.ResponseInterface;
+import com.zoovisitors.backend.Animal;
+import com.zoovisitors.bl.BusinessLayerImpl;
+import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.bl.GetObjectInterface;
+
 
 /**
  * Created by Gili on 28/12/2017.
@@ -31,31 +34,45 @@ public class EnclosureActivity extends AppCompatActivity {
     private ImageView enclosureImageView;
     private Map<String, String> closesEventMap;
     private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
-    private String[] animalsNames = {"chimpanse", "gorilla", "olive_baboon"};
+    private String[] animalsNames;// = {"chimpanse", "gorilla", "olive_baboon"};
     private AppCompatActivity tempActivity = this;
     private RecyclerView recycleView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
 
+    private String json;
+    private BusinessLayer bl;
+    private Gson gson;
+    private Animal[] animals;
+    private Bundle clickedEnclosure;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enclosure);
+        clickedEnclosure = getIntent().getExtras();
+        bl = new BusinessLayerImpl(this);
+        int pos = clickedEnclosure.getInt("pos");
 
-        // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
-        NetworkInterface ni = new NetworkImpl(this);
-        ni.post("animals/1", new ResponseInterface() {
+        bl.getAnimals(pos, new GetObjectInterface() {
             @Override
-            public void onSuccess(String response) {
-                Log.e("AVIV", "success: " + response);
+            public void onSuccess(Object response) {
+                animals = (Animal[]) response;
+
+                animalsNames = new String[animals.length];
+                for (int i = 0; i < animals.length; i++)
+                    animalsNames[i] = animals[i].getName();
+                draw();
             }
 
             @Override
-            public void onFailure(String response) {
-                Log.e("AVIV", "failure: " + response);
+            public void onFailure(Object response) {
+                Log.e("GILI", "Callback failed");
             }
         });
 
+    }
 
+    private void draw(){
+        setContentView(R.layout.activity_enclosure);
         closesEventMap = new HashMap<String, String>();
         closesEventMap.put("african_enclosure_closesEvent", "Closes event: 10:00-11:00 Feeding");
         closesEventMap.put("monkeys_enclosure_closesEvent", "Closes event: 14:00-15:00 Dancing");
@@ -65,7 +82,7 @@ public class EnclosureActivity extends AppCompatActivity {
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
 
-        Bundle clickedEnclosure = getIntent().getExtras();
+
         int enclosureImageNumber = -1;
         String enclosureName = "";
         if(clickedEnclosure != null) {
@@ -82,7 +99,7 @@ public class EnclosureActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycleView.setLayoutManager(layoutManager);
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames);
+        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames, animals);
         recycleView.setAdapter(adapter);
         ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
         imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
