@@ -43,7 +43,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All Prices with that language.</returns>
         [HttpGet]
-        [Route("wallfeed/{language}")]
+        [Route("prices/{language}")]
         public IEnumerable<Price> GetPrices(int language = 1)
         {
             try
