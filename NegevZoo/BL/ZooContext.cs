@@ -110,7 +110,10 @@ namespace BL
         /// <returns>The zoo's about info.</returns>
         public IEnumerable<String> GetZooAboutInfo(int language)
         {
-            return zooDB.GetGeneralInfo().Where(ge => ge.Language == language).Select(ge => ge.aboutUs).ToArray();
+            return zooDB.GetGeneralInfo()
+                .Where(ge => ge.Language == language)
+                .Select(ge => ge.aboutUs)
+                .ToArray();
         }
 
         public void Dispose()

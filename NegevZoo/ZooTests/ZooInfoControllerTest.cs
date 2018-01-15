@@ -80,7 +80,7 @@ namespace ZooTests
         public void GetAboutUs()
         {
             var aboutUs = ZooInfoController.GetZooAboutInfo(1);
-            Assert.IsInstanceOfType(aboutUs, typeof(String[]));
+            Assert.IsInstanceOfType(aboutUs, typeof(ZooInfoController.AboutUsResult[]));
 
             Assert.AreEqual(aboutUs.Count(), 1);
         }

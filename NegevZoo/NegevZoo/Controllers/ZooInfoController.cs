@@ -67,13 +67,19 @@ namespace NegevZoo.Controllers
         /// <returns>The zoo's about info.</returns>
         [HttpGet]
         [Route("about/{language}")]
-        public IEnumerable<String> GetZooAboutInfo(int language = 1)
+        public IEnumerable<AboutUsResult> GetZooAboutInfo(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.GetZooAboutInfo(language);
+                    return db.GetZooAboutInfo(language)
+                        .Select(zi =>
+                            new AboutUsResult
+                            {
+                                aboutUs = zi
+                            })
+                        .ToArray();
                 }
 
             }
@@ -89,6 +95,18 @@ namespace NegevZoo.Controllers
         #region Setters
 
         #endregion
+
+        #region ModelClasses
+
+        public class AboutUsResult
+        {
+            public String aboutUs { get; set; }
+        }
+
+        #endregion
     }
 
+    
+
+    
 }
