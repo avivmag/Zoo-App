@@ -66,6 +66,7 @@
     <Compile Include="AnimalControllerTests.cs" />
     <Compile Include="EncloureControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZooInfoControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

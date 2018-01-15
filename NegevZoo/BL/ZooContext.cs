@@ -34,6 +34,11 @@ namespace BL
             return zooDB.GetEnclosures().Where(e => e.Language == language).ToArray();
         }
 
+        public IEnumerable<WallFeed> GetWallFeed(int language)
+        {
+            return zooDB.GetWallFeed().Where(e => e.Language == language).ToArray();
+        }
+
         /// <summary>
         /// Gets the animals.
         /// </summary>

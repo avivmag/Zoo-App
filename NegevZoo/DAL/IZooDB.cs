@@ -14,6 +14,7 @@ namespace DAL
 
         protected DbSet<Animal> Animals { get; set; }
         protected DbSet<Enclosure> Enclosures { get; set; }
+        protected DbSet<WallFeed> WallFeeds { get; set; }
 
         #endregion 
 
@@ -29,6 +30,11 @@ namespace DAL
             return Enclosures;
         }
 
+        public IEnumerable<WallFeed> GetWallFeed()
+        {
+            return WallFeeds;
+        }
+
         #endregion
 
         #region Cache
@@ -36,6 +42,8 @@ namespace DAL
         protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
+
+     
 
         #endregion
     }
