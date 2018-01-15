@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Backend.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,33 @@ namespace ZooTests
         [TestMethod]
         public void getAllWallFeed()
         {
-            Assert.AreEqual(4, ZooInfoController.getWallFeed().Count());
+            Assert.AreEqual(4, ZooInfoController.GetAllFeeds().Count());
         }
 
         [TestMethod]
-        public void getAllWallFeedLangHeb()
+        public void getAllWallFeedLangEng()
         {
-            Assert.AreEqual(4, ZooInfoController.getWallFeed(2).Count());
+            Assert.AreEqual(4, ZooInfoController.GetAllFeeds(2).Count());
+        }
+
+        [TestMethod]
+        public void getAllPrices()
+        {
+            var prices = ZooInfoController.GetPrices();
+            Assert.IsInstanceOfType(prices, typeof(Price[]));
+            
+            Assert.AreEqual(5, prices.Count());
+            Assert.IsTrue(prices.Any(p=>p.Population=="מבוגר"));
+        }
+
+        [TestMethod]
+        public void getAllPricesLangEng()
+        {
+            var prices = ZooInfoController.GetPrices(2);
+            Assert.IsInstanceOfType(prices, typeof(Price[]));
+
+            Assert.AreEqual(5, prices.Count());
+            Assert.IsTrue(prices.Any(p => p.Population == "Adult"));
         }
     }
 }

@@ -16,11 +16,11 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Gets all the WallFeed with data in that language.
         /// </summary>
-        /// <param name="language">The data language</param>
+        /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All WallFeed with that language.</returns>
         [HttpGet]
         [Route("wallfeed/{language}")]
-        public IEnumerable<WallFeed> getWallFeed(int language = 1)
+        public IEnumerable<WallFeed> GetAllFeeds(int language = 1)
         {
             try
             {
@@ -35,6 +35,58 @@ namespace NegevZoo.Controllers
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// Gets all the Price with data in that language.
+        /// </summary>
+        /// <param name="language">The data language. Default is Hebrew</param>
+        /// <returns>All Prices with that language.</returns>
+        [HttpGet]
+        [Route("wallfeed/{language}")]
+        public IEnumerable<Price> GetPrices(int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetPrices(language);
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the zoo's about info.
+        /// </summary>
+        /// <param name="language">The data language. Default is Hebrew</param>
+        /// <returns>The zoo's about info.</returns>
+        [HttpGet]
+        [Route("about/{language}")]
+        public String GetZooAboutInfo(int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetZooAboutInfo(language);
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        #endregion
+
+        #region Setters
 
         #endregion
     }
