@@ -23,21 +23,27 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void getAllWallFeed()
+        public void GetAllWallFeedLangHe()
         {
-            Assert.AreEqual(4, ZooInfoController.GetAllFeeds().Count());
+            Assert.AreEqual(32, ZooInfoController.GetAllFeeds(1).Count());
         }
 
         [TestMethod]
-        public void getAllWallFeedLangEng()
+        public void GetAllWallFeedLangEng()
         {
-            Assert.AreEqual(4, ZooInfoController.GetAllFeeds(2).Count());
+            Assert.AreEqual(32, ZooInfoController.GetAllFeeds(2).Count());
         }
 
         [TestMethod]
-        public void getAllPrices()
+        public void GetAllWallFeedNotExist()
         {
-            var prices = ZooInfoController.GetPrices();
+            Assert.AreEqual(ZooInfoController.GetAllFeeds(8).Count(), 0);
+        }
+
+        [TestMethod]
+        public void GetAllPricesLangHe()
+        {
+            var prices = ZooInfoController.GetPrices(1);
             Assert.IsInstanceOfType(prices, typeof(Price[]));
             
             Assert.AreEqual(5, prices.Count());
@@ -45,13 +51,38 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void getAllPricesLangEng()
+        public void GetAllPricesNotExist()
+        {
+            var prices = ZooInfoController.GetPrices(6);
+            
+            Assert.AreEqual(prices.Count(), 0);
+        }
+
+        [TestMethod]
+        public void GetAllPricesLangEng()
         {
             var prices = ZooInfoController.GetPrices(2);
             Assert.IsInstanceOfType(prices, typeof(Price[]));
 
             Assert.AreEqual(5, prices.Count());
             Assert.IsTrue(prices.Any(p => p.Population == "Adult"));
+        }
+
+        [TestMethod]
+        public void GetAboutUsNotExist()
+        {
+            var aboutUs = ZooInfoController.GetZooAboutInfo(5);
+
+            Assert.AreEqual(aboutUs.Count(), 0);
+        }
+
+        [TestMethod]
+        public void GetAboutUs()
+        {
+            var aboutUs = ZooInfoController.GetZooAboutInfo(1);
+            Assert.IsInstanceOfType(aboutUs, typeof(String[]));
+
+            Assert.AreEqual(aboutUs.Count(), 1);
         }
     }
 }

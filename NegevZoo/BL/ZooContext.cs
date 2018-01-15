@@ -108,9 +108,9 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the about info is in.</param>
         /// <returns>The zoo's about info.</returns>
-        public String GetZooAboutInfo(int language)
+        public IEnumerable<String> GetZooAboutInfo(int language)
         {
-            return zooDB.GetGeneralInfo().Single(e => e.Language == language).aboutUs;
+            return zooDB.GetGeneralInfo().Where(ge => ge.Language == language).Select(ge => ge.aboutUs).ToArray();
         }
 
         public void Dispose()

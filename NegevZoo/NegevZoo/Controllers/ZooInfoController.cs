@@ -67,7 +67,7 @@ namespace NegevZoo.Controllers
         /// <returns>The zoo's about info.</returns>
         [HttpGet]
         [Route("about/{language}")]
-        public String GetZooAboutInfo(int language = 1)
+        public IEnumerable<String> GetZooAboutInfo(int language = 1)
         {
             try
             {
