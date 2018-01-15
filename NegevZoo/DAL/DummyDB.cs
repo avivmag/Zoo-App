@@ -18,9 +18,11 @@ namespace DAL
         {
             this.Animals         = new TestDbSet<Animal>();
             this.Enclosures      = new TestDbSet<Enclosure>();
+            this.WallFeeds       = new TestDbSet<WallFeed>();
 
             this.Animals.AddRange(InitializeAnimals());
             this.Enclosures.AddRange(InitializeEnclosures());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -119,6 +121,72 @@ namespace DAL
                         Id          = 1,
                         Name        = "תצוגת הקופים",
                         Story       = "הקופים שלנו הם הכי הכי!",
+                        Language    = (int)Languages.he
+                    }
+                };
+        }
+
+        /// <summary>
+        /// Initializes the wall feeds mock.
+        /// </summary>
+        /// <returns>Mock wall feeds list.</returns>
+        private IEnumerable<WallFeed> InitializeWallFeeds()
+        {
+            return new List<WallFeed>
+                {
+                    new WallFeed
+                    {
+                        Id          = 1,
+                        Stories        = "Purim Events",
+                        Language    = (int)Languages.en
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 1,
+                        Stories        = "אירועי פורים",
+                        Language    = (int)Languages.he
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 2,
+                        Stories        = "Passeover Events",
+                        Language    = (int)Languages.en
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 2,
+                        Stories        = "אירועי פסח",
+                        Language    = (int)Languages.he
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 3,
+                        Stories        = "Shavuut Events",
+                        Language    = (int)Languages.en
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 3,
+                        Stories        = "אירועי שבועות",
+                        Language    = (int)Languages.he
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 4,
+                        Stories        = "Sukut Events",
+                        Language    = (int)Languages.en
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 4,
+                        Stories        = "אירועי סוכות",
                         Language    = (int)Languages.he
                     }
                 };
