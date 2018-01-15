@@ -66,10 +66,9 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
                     Bundle clickedEnclosure = new Bundle();
                     clickedEnclosure.putInt("image", images[pos]); //Clicked image
                     clickedEnclosure.putString("name", enclosuresNames[pos]);
+                    clickedEnclosure.putInt("pos", pos);
                     intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                     tempActivity.startActivity(intent);
-
-//                    Snackbar.make(v, "Click" + pos, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
         }
