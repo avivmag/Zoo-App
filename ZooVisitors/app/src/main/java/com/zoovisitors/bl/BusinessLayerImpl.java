@@ -29,22 +29,6 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
 
-    private void getJson(String url){
-        ni.post(url, new ResponseInterface() {
-            @Override
-            public void onSuccess(String response) {
-                Log.e("AVIV", "success: " + response);
-                json = response;
-            }
-
-            @Override
-            public void onFailure(String response) {
-                Log.e("AVIV", "failure: " + response);
-            }
-        });
-    }
-
-
     @Override
     public void getAnimals(int pos, final GetObjectInterface goi) {
 
@@ -70,38 +54,38 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public Enclosure[] getEnclosures() {
-        getJson("");
+    public void getEnclosures() {
 
-        while (json==null);
         Enclosure[] enclosures = gson.fromJson(json, Enclosure[].class);
-        return enclosures;
     }
 
     @Override
-    public AboutZoo getAboutZoo() {
-        getJson("");
-
-        while (json==null);
+    public void getAboutZoo() {;
         AboutZoo aboutZoo = gson.fromJson(json, AboutZoo.class);
-        return aboutZoo;
     }
 
     @Override
-    public NewsFeed getNewsFeed() {
-        getJson("");
+    public void getNewsFeed(final GetObjectInterface goi) {
 
-        while (json==null);
-        NewsFeed newsFeed = gson.fromJson(json, NewsFeed.class);
-        return newsFeed;
+        ni.post("wallfeed/1", new ResponseInterface() {
+
+
+
+            @Override
+            public void onSuccess(String response) {
+                NewsFeed[] newsFeed = gson.fromJson(response, NewsFeed[].class);
+                goi.onSuccess(newsFeed);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("FEED", "Can't get feed from server");
+            }
+        });
     }
 
     @Override
-    public Species getSpecies() {
-        getJson("");
-
-        while (json==null);
+    public void getSpecies() {
         Species species = gson.fromJson(json, Species.class);
-        return species;
     }
 }
