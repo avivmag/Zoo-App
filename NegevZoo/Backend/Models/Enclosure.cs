@@ -11,6 +11,8 @@ namespace Backend.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Story { get; set; }
+        public double latitude { get; set; }
+        public double longitude { get; set; }
         public int Language { get; set; }
     }
 }

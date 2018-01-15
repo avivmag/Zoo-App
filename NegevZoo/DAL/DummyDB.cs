@@ -16,11 +16,17 @@ namespace DAL
     {
         public DummyDB()
         {
+            #region DbSetInit
+
             this.Animals            = new TestDbSet<Animal>();
             this.Enclosures         = new TestDbSet<Enclosure>();
             this.WallFeeds          = new TestDbSet<WallFeed>();
             this.Prices             = new TestDbSet<Price>();
             this.GeneralInfo        = new TestDbSet<GeneralInfo>();
+
+            #endregion
+
+            #region DataInit
 
             this.Animals.AddRange(InitializeAnimals());
             this.Enclosures.AddRange(InitializeEnclosures());
@@ -34,6 +40,8 @@ namespace DAL
             this.WallFeeds.AddRange(InitializeWallFeeds());
             this.Prices.AddRange(InitializePrices());
             this.GeneralInfo.AddRange(InitializeGeneralInfo());
+
+            #endregion
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -123,6 +131,8 @@ namespace DAL
                     {
                         Id          = 1,
                         Name        = "Monkeys",
+                        latitude    = 425,
+                        longitude   = 642,
                         Story       = "Our monkeys have been great! They are awesome.",
                         Language    = (int)Languages.en
                     },
@@ -131,6 +141,8 @@ namespace DAL
                     {
                         Id          = 1,
                         Name        = "תצוגת הקופים",
+                        latitude    = 425,
+                        longitude   = 642,
                         Story       = "הקופים שלנו הם הכי הכי!",
                         Language    = (int)Languages.he
                     }
