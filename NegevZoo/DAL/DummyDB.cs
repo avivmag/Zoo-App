@@ -25,12 +25,13 @@ namespace DAL
             this.Animals.AddRange(InitializeAnimals());
             this.Enclosures.AddRange(InitializeEnclosures());
             this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.Prices.AddRange(InitializePrices());
-            this.Prices.AddRange(InitializePrices());
-            this.Prices.AddRange(InitializePrices());
-            this.Prices.AddRange(InitializePrices());
-            this.Prices.AddRange(InitializePrices());
-            this.Prices.AddRange(InitializePrices());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
             this.Prices.AddRange(InitializePrices());
             this.GeneralInfo.AddRange(InitializeGeneralInfo());
         }
