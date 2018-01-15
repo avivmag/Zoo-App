@@ -16,13 +16,24 @@ namespace DAL
     {
         public DummyDB()
         {
-            this.Animals         = new TestDbSet<Animal>();
-            this.Enclosures      = new TestDbSet<Enclosure>();
-            this.WallFeeds       = new TestDbSet<WallFeed>();
+            this.Animals            = new TestDbSet<Animal>();
+            this.Enclosures         = new TestDbSet<Enclosure>();
+            this.WallFeeds          = new TestDbSet<WallFeed>();
+            this.Prices             = new TestDbSet<Price>();
+            this.GeneralInfo        = new TestDbSet<GeneralInfo>();
 
             this.Animals.AddRange(InitializeAnimals());
             this.Enclosures.AddRange(InitializeEnclosures());
             this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.WallFeeds.AddRange(InitializeWallFeeds());
+            this.Prices.AddRange(InitializePrices());
+            this.GeneralInfo.AddRange(InitializeGeneralInfo());
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -192,6 +203,123 @@ namespace DAL
                 };
         }
 
+        /// <summary>
+        /// Initializes the prices mock.
+        /// </summary>
+        /// <returns>Mock prices list.</returns>
+        private IEnumerable<Price> InitializePrices()
+        {
+            return new List<Price>
+                {
+                    new Price
+                    {
+                        Id          = 1,
+                        Population  = "Adult",
+                        PricePop    = 40,
+                        Language    = (int)Languages.en
+                    },
+
+                    new Price
+                    {
+                        Id          = 1,
+                        Population  = "מבוגר",
+                        PricePop    = 40,
+                        Language    = (int)Languages.he
+                    },
+
+                    new Price
+                    {
+                        Id          = 2,
+                        Population  = "Children under 18",
+                        PricePop    = 25,
+                        Language    = (int)Languages.en
+                    },
+
+                    new Price
+                    {
+                        Id          = 2,
+                        Population  = "ילד מתחת לגיל 18",
+                        PricePop    = 25,
+                        Language    = (int)Languages.he
+                    },
+
+                    new Price
+                    {
+                        Id          = 3,
+                        Population  = "Soldier",
+                        PricePop    = 25,
+                        Language    = (int)Languages.en
+                    },
+
+                    new Price
+                    {
+                        Id          = 3,
+                        Population  = "חייל",
+                        PricePop    = 25,
+                        Language    = (int)Languages.he
+                    },
+
+                    new Price
+                    {
+                        Id          = 4,
+                        Population  = "Pensioner",
+                        PricePop    = 10,
+                        Language    = (int)Languages.en
+                    },
+
+                    new Price
+                    {
+                        Id          = 4,
+                        Population  = "פנסיונר",
+                        PricePop    = 25,
+                        Language    = (int)Languages.he
+                    },
+
+                    new Price
+                    {
+                        Id          = 5,
+                        Population  = "Student",
+                        PricePop    = 10,
+                        Language    = (int)Languages.en
+                    },
+
+                    new Price
+                    {
+                        Id          = 5,
+                        Population  = "סטודנט",
+                        PricePop    = 25,
+                        Language    = (int)Languages.he
+                    }
+            };
+        }
+
+        /// <summary>
+        /// Initializes the General Info mock.
+        /// </summary>
+        /// <returns>Mock general info list.</returns>
+        private IEnumerable<GeneralInfo> InitializeGeneralInfo()
+        {
+            return new List<GeneralInfo>
+                {
+                    new GeneralInfo
+                    {
+                        Name                = "NegevZoo",
+                        aboutUs             = "We are Negev Zoo!!! We love animals",
+                        contactInfoNote     = "Contact between 08:00 - 22:00",
+                        openingHoursNote    = "This is the opening hours note. todo: fill",
+                        Language            = (int)Languages.en
+                    },
+
+                    new GeneralInfo
+                    {
+                        Name                = "נגב זו",
+                        aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
+                        contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
+                        openingHoursNote    = "משהו על שעות פתיחה",
+                        Language            = (int)Languages.he
+                    }
+            };
+        }
         #endregion
     }
 }

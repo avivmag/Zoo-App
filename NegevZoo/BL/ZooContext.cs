@@ -34,11 +34,6 @@ namespace BL
             return zooDB.GetEnclosures().Where(e => e.Language == language).ToArray();
         }
 
-        public IEnumerable<WallFeed> GetWallFeed(int language)
-        {
-            return zooDB.GetWallFeed().Where(e => e.Language == language).ToArray();
-        }
-
         /// <summary>
         /// Gets the animals.
         /// </summary>
@@ -57,7 +52,8 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalById(int language, int id)
         {
-            return zooDB.GetAnimals().SingleOrDefault(a => a.Language == language && a.Id == id);
+            return zooDB.GetAnimals()
+                .SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
         /// <summary>
@@ -84,6 +80,41 @@ namespace BL
             {
                 animals.Add(animal);
             }
+        }
+
+        /// <summary>
+        /// Gets all the feed walls messages.
+        /// </summary>
+        /// <param name="language">The wallfeed's data language</param>
+        /// <returns>The WallFeeds messages.</returns>
+        public IEnumerable<WallFeed> GetWallFeed(int language)
+        {
+            return zooDB.GetWallFeed().Where(e => e.Language == language).ToArray();
+        }
+
+
+
+        /// <summary>
+        /// Gets all the Price elements.
+        /// </summary>
+        /// <param name="language">The Price's data language.</param>
+        /// <returns>The prices entitiess.</returns>
+        public IEnumerable<Price> GetPrices(int language)
+        {
+            return zooDB.GetPrices().Where(e => e.Language == language).ToArray();
+        }
+
+        /// <summary>
+        /// Gets the zoo's about info.
+        /// </summary>
+        /// <param name="language">The language the about info is in.</param>
+        /// <returns>The zoo's about info.</returns>
+        public IEnumerable<String> GetZooAboutInfo(int language)
+        {
+            return zooDB.GetGeneralInfo()
+                .Where(ge => ge.Language == language)
+                .Select(ge => ge.aboutUs)
+                .ToArray();
         }
 
         public void Dispose()
