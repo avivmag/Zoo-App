@@ -14,5 +14,6 @@ namespace Backend.Models
         public DateTime StartHour { get; set; }
         public DateTime EndHour { get; set; }
         public int Language { get; set; }
+        public int EncId { get; set; }
     }
 }
