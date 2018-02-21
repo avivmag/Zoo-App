@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <md-card class="login-card centered" layout="column">
+        <md-toolbar class="login-card-toolbar">
+            <md-card-title>
+                <md-card-title-text>
+                    מסך התחברות
+                </md-card-title-text>
+            </md-card-title>
+        </md-toolbar>
+
+        <md-card-content>
+            <md-input-container>
+            <label>אנא הכנס שם משתמש</label>
+                <input ng-model="username" required type="text">
+            </md-input-container>
+
+            <md-input-container style="float: right">
+                <label>אנא הכנס סיסמא</label>
+                <input ng-model="password" required type="text">
+            </md-input-container>
+        </md-card-content>
+
+        <md-button class="md-raised md-primary" ng-click="login(username, password)">התחברות</md-button>
+    </md-card>
+</body>
+</html>
