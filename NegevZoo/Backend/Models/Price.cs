@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace Backend.Models
 {
-    public class Enclosure
+    public class Price
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Story { get; set; }
+        public string Population { get; set; }
+        public double PricePop { get; set; }
         public int Language { get; set; }
-        public Double Longtitude { get; set; }
-        public Double Latitude{ get; set; }
-
     }
 }

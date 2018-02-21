@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.zoovisitors.R;
+import com.zoovisitors.backend.NewsFeed;
+import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.bl.BusinessLayerImpl;
+import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.map.MapActivity;
@@ -23,36 +28,48 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView sv;
     private LinearLayout ll;
     private Menu langMenu;
+    private BusinessLayer bl;
+    private NewsFeed[] feed;
+    private AppCompatActivity appCompatActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        bl = new BusinessLayerImpl(this);
         //Scroller initalize
-        List<String> feedDummy = new ArrayList<>();
 
-        for (int i = 0; i<100; i++) {
-            feedDummy.add("Kaki"+i);
-        }
 
-        //feed wall initiation
-        sv = findViewById(R.id.feedWall);
-        sv.setClickable(false);
-        ll = findViewById(R.id.feedWallLayout);
-
-        for (String s: feedDummy) {
-            TextView tv = new TextView(this);
-            tv.setText(s);
-            ll.addView(tv);
-        }
-
-        sv.post(new Runnable() {
+        bl.getNewsFeed(new GetObjectInterface() {
             @Override
-            public void run() {
-                startAutoScrolling();
+            public void onSuccess(Object response) {
+
+                feed = (NewsFeed[]) response;
+
+                //feed wall initiation
+                sv = findViewById(R.id.feedWall);
+                sv.setClickable(false);
+                ll = findViewById(R.id.feedWallLayout);
+                for (NewsFeed s: feed) {
+                    TextView tv = new TextView(appCompatActivity);
+                    tv.setText(s.getStory());
+                    ll.addView(tv);
+                }
+
+                sv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startAutoScrolling();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("FEED", "Cant get feed");
             }
         });
+
 
         //enclosure button
         findViewById(R.id.enclosureListButton).setOnClickListener(new View.OnClickListener() {
