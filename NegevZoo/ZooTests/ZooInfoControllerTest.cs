@@ -45,7 +45,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAllPricesLangHe()
         {
-            var prices = ZooInfoController.GetPrices(1);
+            var prices = ZooInfoController.GetAllPrices(1);
             Assert.IsInstanceOfType(prices, typeof(Price[]));
             
             Assert.AreEqual(5, prices.Count());
@@ -55,7 +55,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAllPricesLanguageNotExist()
         {
-            var prices = ZooInfoController.GetPrices(nonExistantLangauge);
+            var prices = ZooInfoController.GetAllPrices(nonExistantLangauge);
             
             Assert.AreEqual(prices.Count(), 0);
         }
@@ -63,7 +63,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAllPricesLangEng()
         {
-            var prices = ZooInfoController.GetPrices(2);
+            var prices = ZooInfoController.GetAllPrices(2);
             Assert.IsInstanceOfType(prices, typeof(Price[]));
 
             Assert.AreEqual(5, prices.Count());
