@@ -1,0 +1,32 @@
+﻿.login-card {
+    background-color: antiquewhite;
+    border-color: black !important;
+    border-style: solid;
+    border-width: thin;
+    width: 320px;
+}
+
+.login-card-toolbar {
+    background-color: cornflowerblue !important;
+    border-color: black !important;
+    border-style: solid;
+    border-width: thin;
+    text-align: center !important;
+    color: black !important;
+    height: 10px !important;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.md-datepicker-input {
+    margin-right: 20px !important;
+}
+
+md-datepicker {
+    margin-top: 17px !important;
+}
