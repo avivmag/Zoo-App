@@ -410,26 +410,29 @@ namespace ZooTests
         #endregion
 
         #region DeleteEnclosure
-       /* [TestMethod]
+        [TestMethod]
         public void DeleteEnclosureValidInput()
         {
             var encsHeb = enclosureController.GetAllEnclosures();
             Assert.IsNotNull(encsHeb);
             Assert.AreEqual(2, encsHeb.Count());
 
-            var monkHeb = encsHeb.SingleOrDefault(en => en.Name == "תצוגת הקופים");
+            var monkHeb = encsHeb.SingleOrDefault(en => en.Name == "קופי אדם");
             Assert.IsNotNull(monkHeb);
 
+            //delete animals
             AnimalController anCont = new AnimalController();
-            anCont.GetAllAnimals().ToList().RemoveAll(an => an.EncId == monkHeb.Id);
-            
+            anCont.DeleteAnimal(6);
+
+            //delete reccuringEvents
+            enclosureController.GetRecurringEvents(monkHeb.Id).ToList().Clear();
 
 
             enclosureController.DeleteEnclosure(monkHeb.Id);
             encsHeb = enclosureController.GetAllEnclosures();
 
             Assert.AreEqual(1, encsHeb.Count());
-        }*/
+        }
         #endregion
 
         [TestCleanup]
