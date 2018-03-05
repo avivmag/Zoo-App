@@ -61,7 +61,7 @@ namespace NegevZoo.Controllers
         /// Deletes the Price element.
         /// </summary>
         /// <param name="id">The element's id to delete</param>
-        [HttpPost]
+        [HttpDelete]
         [Route("prices/{id}")]
         public void DeletePrice(int id)
         {
@@ -128,7 +128,7 @@ namespace NegevZoo.Controllers
         /// Deletes the OpeningHour element.
         /// </summary>
         /// <param name="id">The element's id to delete</param>
-        [HttpGet]
+        [HttpDelete]
         [Route("OpeningHours/{id}")]
         public void DeleteOpeningHour(int id)
         {
@@ -196,7 +196,7 @@ namespace NegevZoo.Controllers
         /// Deletes the ContactInfo element.
         /// </summary>
         /// <param name="id">The element's id to delete</param>
-        [HttpGet]
+        [HttpDelete]
         [Route("ContactInfos/{id}")]
         public void DeleteContactInfo(int id)
         {
@@ -289,7 +289,7 @@ namespace NegevZoo.Controllers
         /// Deletes the SpecialEvent element.
         /// </summary>
         /// <param name="id">The element's id to delete</param>
-        [HttpGet]
+        [HttpDelete]
         [Route("SpecialEvents/{id}")]
         public void DeleteSpecialEvent(int id)
         {
@@ -358,7 +358,7 @@ namespace NegevZoo.Controllers
         /// Removes a WallFeed.
         /// </summary>
         /// <param name="id">The WallFeed's id to deletes</param>
-        [HttpPost]
+        [HttpDelete]
         [Route("wallfeed/{id}")]
         public void DeleteWallFeed(int id)
         {

@@ -26,7 +26,7 @@ namespace DAL
 
         #region Getters
 
-        public DbSet<Animal> GetAnimals()
+        public DbSet<Animal> GetAllAnimals()
         {
             return Animals;
         }

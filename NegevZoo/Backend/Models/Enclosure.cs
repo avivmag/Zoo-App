@@ -14,6 +14,5 @@ namespace Backend.Models
         public int Language { get; set; }
         public Double Longtitude { get; set; }
         public Double Latitude{ get; set; }
-
     }
 }
