@@ -35,7 +35,7 @@
             feedWall.push({ title: 'הקלד עדכון', isNew: true });
         }
     }])
-.directive('zooFeedWall', function () {
+.directive('zooMap', function () {
     return {
         templateUrl: 'mainMenu/feedWall/feedWall.html'
     };

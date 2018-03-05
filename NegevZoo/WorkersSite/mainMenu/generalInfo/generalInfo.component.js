@@ -1,15 +1,15 @@
-﻿app.controller('zooEventsCtrl', ['$scope', '$mdDialog',
-    function zooEventsController($scope, $mdDialog) {
-        $scope.events = [
+﻿app.controller('generalInfoCtrl', ['$scope', '$mdDialog',
+    function generalInfoController($scope, $mdDialog) {
+        $scope.feedWall = [
             { title: 'בשבוע הקרוב 50% הנחה על כל השתיה בפארק', date: '28.11.18' },
             { title: 'קייטנת נגב זו יוצאת לדרך!', date: '28.11.18' },
         ];
 
-        addEmptyEvent($scope.events);
+        addEmptyFeed($scope.feedWall);
 
-        $scope.confirmDeleteEvent = function (ev, event, events) {
+        $scope.confirmDeleteFeed = function (ev, feed, feedWall) {
             var confirm = $mdDialog.confirm()
-                .title('האם אתה בטוח שברצונך למחוק את אירוע זה?')
+                .title('האם אתה בטוח שברצונך למחוק את תוכן זה?')
                 .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
                 .targetEvent(ev)
                 .ok('אישור')
@@ -17,10 +17,14 @@
 
             $mdDialog.show(confirm).then(function () {
                 // TODO:: Remove the feed from the wall.
-                feedWall.splice(events.indexOf(event), 1);
+                feedWall.splice(feedWall.indexOf(feed), 1);
             }, function () {
                 console.log('the user had canceled deletion');
             });
+        }
+
+        $scope.addFeedToWall = function (feed, feedWall) {
+            addEmptyFeed(feedWall);
         }
 
         $scope.addFeed = function (feed) {
@@ -28,11 +32,11 @@
         }
 
         function addEmptyFeed(feedWall) {
-            feedWall.push({ title: 'הקלד שם אירוע', isNew: true });
+            feedWall.push({ title: 'הקלד עדכון', isNew: true });
         }
     }])
-.directive('zooEvents', function () {
+.directive('zooGeneralInfo', function () {
     return {
-        templateUrl: 'mainMenu/feedWall/feedWall.html'
+        templateUrl: 'mainMenu/generalInfo/generalInfo.html'
     };
 });
