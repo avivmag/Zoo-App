@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using Backend;
 using Backend.Models;
 using DAL;
 
@@ -32,6 +35,11 @@ namespace BL
         /// <returns>The enclosures.</returns>
         public IEnumerable<Enclosure> GetAllEnclosures(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
             return zooDB.GetAllEnclosures().Where(e => e.Language == language).ToArray();
         }
 
@@ -43,7 +51,21 @@ namespace BL
         /// <returns>The enclosure.</returns>
         public Enclosure GetEnclosureById(int id, int language)
         {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Id == id);
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            Enclosure enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Id == id);
+
+            if (enc == null)
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired enclosure");
+            }
+            else
+            {
+                return enc;
+            }
         }
 
         /// <summary>
@@ -52,9 +74,22 @@ namespace BL
         /// <param name="language">The enclosure's data language.</param>
         /// <param name="name">The enclosure's name.</param>
         /// <returns>The enclosure.</returns>
-        public Enclosure GetEnclosureByName(string name, int language)
+        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language)
         {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Name == name);
+            //TODO: should a wrong name return empty list or exception?
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            //var enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Name == name);
+
+            //if (enc == null)
+            //{
+            //    throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the wanted enclosure.");
+            //}
+
+            return zooDB.GetAllEnclosures().Where(e => e.Language == language && e.Name.Contains(name));
         }
 
         /// <summary>
@@ -79,7 +114,22 @@ namespace BL
         /// <returns>The enclosure's recurring events.</returns>
         public IEnumerable<RecurringEvent> GetRecurringEvents (int encId, int language)
         {
-            return zooDB.GetAllRecuringEvents().Where(re => re.Language == language && re.EncId == encId).ToList();
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            var enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Id == encId);
+
+            if(enc == null)
+            {
+                throw new HttpRequestException("Status code " +  HttpStatusCode.NotFound + ", could not found the wanted enclosure.");
+            }
+            else
+            {
+                return zooDB.GetAllRecuringEvents().Where(re => re.Language == language && re.EncId == encId).ToList();
+
+            }
         }
 
         /// <summary>
@@ -88,9 +138,36 @@ namespace BL
         /// <param name="enclosures">The enclosures to update.</param>
         public void UpdateEnclosure(Enclosure enclosure)
         {
-            var enclosures = zooDB.GetAllEnclosures();
-            if (!enclosures.Contains(enclosure))
+            //validate enclosure attributes
+            //1. lang
+            if (!ValidLanguage(enclosure.Language))
             {
+                throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+            }
+
+            //2. enclosure name
+            if (enclosure.Name == "")
+            {
+                throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+            }
+
+            //TODO: add a check to latitude or longtitude out of the range of the zoo.
+
+            var enclosures = zooDB.GetAllEnclosures();
+
+            if (enclosures.Where(en => en.Id == enclosure.Id).Count() == 0)
+            {
+                //valiate new enclosure attributes
+                if (enclosures.Where(en => en.Name == en.Name).Count() > 0)
+                {
+                    throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+                }
+                
+                enclosures.Add(enclosure);
+            }
+            else
+            {
+                enclosures.Remove(enclosures.SingleOrDefault(en => en.Id == enclosure.Id));
                 enclosures.Add(enclosure);
             }
         }
@@ -499,6 +576,11 @@ namespace BL
         public void Dispose()
         {
             // zooDB.saveChanges();
+        }
+
+        private bool ValidLanguage(int langauge)
+        {
+            return (langauge >= (int)Enum.Parse(typeof(Languages), "he") && langauge <= (int)Enum.Parse(typeof(Languages), "ar"));
         }
     }
 }

@@ -11,8 +11,8 @@ namespace Backend.Models
         public int Id { get; set;}
         public string Descroption { get; set; }
         public string Day { get; set; }
-        public DateTime StartHour { get; set; }
-        public DateTime EndHour { get; set; }
+        public Double StartHour { get; set; }
+        public Double EndHour { get; set; }
         public int Language { get; set; }
         public int EncId { get; set; }
     }
