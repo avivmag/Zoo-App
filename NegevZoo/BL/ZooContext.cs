@@ -11,18 +11,26 @@ namespace BL
 {
     public class ZooContext : IDisposable 
     {
-        private IZooDB zooDB;
+        private static IZooDB zooDB;
 
         // TODO:: Mark isTesting to false when the database it ready.
         public ZooContext(bool isTesting = true)
         {
             if (isTesting)
             {
-                zooDB = new DummyDB();
+                zooDB = zooDB ?? new DummyDB();
             }
             else
             {
                 // TODO:: whenever the database will be ready - initialize it here.
+            }
+        }
+
+        public static void CleanDb(bool isTesting = true)
+        {
+            if (isTesting)
+            {
+                zooDB = null;
             }
         }
 
@@ -142,32 +150,39 @@ namespace BL
             //1. lang
             if (!ValidLanguage(enclosure.Language))
             {
-                throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+                throw new ArgumentException("Wrong input. Wrong language.");
             }
 
             //2. enclosure name
-            if (enclosure.Name == "")
+            if (String.IsNullOrWhiteSpace(enclosure.Name))
             {
-                throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+                throw new ArgumentException("Wrong input. enclosure name is empty");
             }
 
             //TODO: add a check to latitude or longtitude out of the range of the zoo.
 
             var enclosures = zooDB.GetAllEnclosures();
 
-            if (enclosures.Where(en => en.Id == enclosure.Id).Count() == 0)
+            if (enclosure.Id == default(int)) //add a new enclosure
             {
-                //valiate new enclosure attributes
-                if (enclosures.Where(en => en.Name == en.Name).Count() > 0)
+                
+                if (enclosures.Any(en => en.Name == enclosure.Name))
                 {
-                    throw new HttpRequestException("Wrong input. Status code: " + HttpStatusCode.Conflict);
+                    throw new ArgumentException("Wrong input. Name already exists");
                 }
                 
                 enclosures.Add(enclosure);
             }
-            else
+            else //update existing enclosure
             {
-                enclosures.Remove(enclosures.SingleOrDefault(en => en.Id == enclosure.Id));
+                Enclosure oldEnc = enclosures.SingleOrDefault(en => en.Id == enclosure.Id);
+
+                if (oldEnc.Name != enclosure.Name && enclosures.Any(en => en.Name == enclosure.Name))//The name changed
+                {
+                    throw new ArgumentException("Wrong input. Name already exsits");
+                }
+
+                enclosures.Remove(oldEnc);
                 enclosures.Add(enclosure);
             }
         }
@@ -179,10 +194,27 @@ namespace BL
         public void DeleteEnclosure(int id)
         {
             Enclosure enclosure = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Id == id);
-            if (enclosure != null)
+
+            //Check that can delete athe enclosure
+            //1.enclosure exists
+            if (enclosure == null)
             {
-                zooDB.GetAllEnclosures().Remove(enclosure);
+                throw new ArgumentException("Wrong input. enclosure ID doesn't exists.");
             }
+
+            //2. no animals
+            if (zooDB.GetAllAnimals().Any(an => an.EncId == id))
+            {
+                throw new InvalidOperationException("Threre are animals that related to this enclosure");
+            }
+
+            //3. exsits recurring events
+            if (zooDB.GetAllRecuringEvents().Any(re => re.EncId == id))
+            {
+                throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
+            }
+
+            zooDB.GetAllEnclosures().Remove(enclosure);
         }
 
         #endregion
@@ -196,7 +228,7 @@ namespace BL
         /// <returns>The animals.</returns>
         public IEnumerable<Animal> GetAnimals(int language)
         {
-            return zooDB.GetAnimals().Where(a => a.Language == language).ToArray();
+            return zooDB.GetAllAnimals().Where(a => a.Language == language).ToArray();
         }
 
         /// <summary>
@@ -207,7 +239,7 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalById(int id, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
@@ -219,7 +251,7 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalByName(string name, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .SingleOrDefault(a => a.Language == language && a.Name == name);
         }
 
@@ -231,7 +263,7 @@ namespace BL
         /// <returns>The animals in the enclosure.</returns>
         public IEnumerable<Animal> GetAnimalsByEnclosure(int encId, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .Where(a => a.Language == language && a.EncId == encId).ToList();
         }
 
@@ -241,7 +273,7 @@ namespace BL
         /// <param name="animals">The animal to update.</param>
         public void UpdateAnimal(Animal animal)
         {
-            var animals = zooDB.GetAnimals();
+            var animals = zooDB.GetAllAnimals();
             if (!animals.Contains(animal))
             {
                 animals.Add(animal);
@@ -254,10 +286,10 @@ namespace BL
         /// <param name="id">The animal's id to delete.</param>
         public void DeleteAnimal(int id)
         {
-            Animal animal = zooDB.GetAnimals().SingleOrDefault(a => a.Id == id);
+            Animal animal = zooDB.GetAllAnimals().SingleOrDefault(a => a.Id == id);
             if (animal != null)
             {
-                zooDB.GetAnimals().Remove(animal);
+                zooDB.GetAllAnimals().Remove(animal);
             }
         }
 

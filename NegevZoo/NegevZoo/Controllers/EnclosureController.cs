@@ -119,7 +119,7 @@ namespace NegevZoo.Controllers
         /// <param name="encId">The eclosure's encId</param>
         /// <returns>The recurring events according to the enclosure encId.</returns>
         [HttpGet]
-        [Route("enclosures/{encId}/{language}")]
+        [Route("enclosures/{encId}/recurring/{language}")]
         public IEnumerable<RecurringEvent> GetRecurringEvents(int encId, int language = 1)
         {
             try
@@ -159,6 +159,8 @@ namespace NegevZoo.Controllers
             }
             catch
             {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
         }
@@ -181,6 +183,8 @@ namespace NegevZoo.Controllers
             }
             catch
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
