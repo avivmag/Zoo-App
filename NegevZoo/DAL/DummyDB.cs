@@ -70,16 +70,16 @@ namespace DAL
 
                     new Animal
                     {
-                        Id          = 1,
+                        Id          = 2,
                         Name        = "בבון הזית",
-                        EncId       = 1,
+                        EncId       = 2,
                         Story       = "גילאור בבון הזית מאוד חמוד",
                         Language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 2,
+                        Id          = 3,
                         Name        = "Gorilla",
                         EncId       = 1,
                         Story       = "Shrek the mighty gorilla!",
@@ -88,27 +88,27 @@ namespace DAL
 
                     new Animal
                     {
-                        Id          = 2,
+                        Id          = 4,
                         Name        = "גורילה",
-                        EncId       = 1,
+                        EncId       = 2,
                         Story       = "שרק הוא וואחד גורילה!",
                         Language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 3,
+                        Id          = 5,
                         Name        = "Monkey",
-                        EncId       = 1,
+                        EncId       = 3,
                         Story       = "Kofifo is Marco's monkey.",
                         Language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 3,
+                        Id          = 6,
                         Name        = "קוף",
-                        EncId       = 1,
+                        EncId       = 4,
                         Story       = "קופיקו הוא הקוף של מרקו.",
                         Language    = (int)Languages.he
                     }
