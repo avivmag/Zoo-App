@@ -16,24 +16,28 @@ namespace DAL
     {
         public DummyDB()
         {
-            this.Animals            = new TestDbSet<Animal>();
-            this.Enclosures         = new TestDbSet<Enclosure>();
-            this.WallFeeds          = new TestDbSet<WallFeed>();
-            this.Prices             = new TestDbSet<Price>();
-            this.GeneralInfo        = new TestDbSet<GeneralInfo>();
+            Animals            = new TestDbSet<Animal>();
+            Enclosures         = new TestDbSet<Enclosure>();
+            WallFeeds          = new TestDbSet<WallFeed>();
+            Prices             = new TestDbSet<Price>();
+            GeneralInfo        = new TestDbSet<GeneralInfo>();
+            RecurringEvents    = new TestDbSet<RecurringEvent>();
+            SpecialEvents      = new TestDbSet<SpecialEvent>();
 
-            this.Animals.AddRange(InitializeAnimals());
-            this.Enclosures.AddRange(InitializeEnclosures());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.WallFeeds.AddRange(InitializeWallFeeds());
-            this.Prices.AddRange(InitializePrices());
-            this.GeneralInfo.AddRange(InitializeGeneralInfo());
+            Animals.AddRange(InitializeAnimals());
+            Enclosures.AddRange(InitializeEnclosures());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            WallFeeds.AddRange(InitializeWallFeeds());
+            Prices.AddRange(InitializePrices());
+            GeneralInfo.AddRange(InitializeGeneralInfo());
+            RecurringEvents.AddRange(InitialRecurringEvents());
+            SpecialEvents.AddRange(InitialSpecialEvents());
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -129,9 +133,25 @@ namespace DAL
 
                     new Enclosure
                     {
-                        Id          = 1,
+                        Id          = 2,
                         Name        = "תצוגת הקופים",
                         Story       = "הקופים שלנו הם הכי הכי!",
+                        Language    = (int)Languages.he
+                    },
+
+                    new Enclosure
+                    {
+                        Id          = 3,
+                        Name        = "Houman Monkeys",
+                        Story       = "Computer Science students.",
+                        Language    = (int)Languages.en
+                    },
+
+                    new Enclosure
+                    {
+                        Id          = 4,
+                        Name        = "קופי אדם",
+                        Story       = "הקופים שלנו הם הכי חכמים!",
                         Language    = (int)Languages.he
                     }
                 };
@@ -318,6 +338,72 @@ namespace DAL
                         openingHoursNote    = "משהו על שעות פתיחה",
                         Language            = (int)Languages.he
                     }
+            };
+        }
+
+        private IEnumerable<RecurringEvent> InitialRecurringEvents()
+        {
+            return new List<RecurringEvent>
+            {
+                new RecurringEvent
+                {
+                    Id                      = 1,
+                    EncId                   = 1,
+                    Day                     = "Sunday",
+                    Descroption             = "Feeding",
+                    StartHour               = 10.30,
+                    EndHour                 = 11.00,
+                    Language                = (int) Languages.en
+                },
+                new RecurringEvent
+                {
+                    Id                      = 2,
+                    EncId                   = 2,
+                    Day                     = "ראשון",
+                    Descroption             = "האכלה",
+                    StartHour               = 10.30,
+                    EndHour                 = 11.00,
+                    Language                = (int) Languages.he
+                }
+            };
+        }
+
+        private IEnumerable<SpecialEvent> InitialSpecialEvents()
+        {
+            return new List<SpecialEvent>
+            {
+                new SpecialEvent
+                {
+                    Id                      = 1,
+                    Description             = "1קקי",
+                    StartDate               = new DateTime(2018,3,5),
+                    EndDate                 = new DateTime(2018,3,8),
+                    Language                = (int) Languages.he
+                },
+                new SpecialEvent
+                {
+                    Id                      = 2,
+                    Description             = "Kaki",
+                    StartDate               = new DateTime(2018,3,5),
+                    EndDate                 = new DateTime(2018,3,8),
+                    Language                = (int) Languages.en
+                },
+                new SpecialEvent
+                {
+                    Id                      = 3,
+                    Description             = "אירועי פורים",
+                    StartDate               = new DateTime(2018,3,1),
+                    EndDate                 = new DateTime(2018,3,8),
+                    Language                = (int) Languages.he
+                },
+                new SpecialEvent
+                {
+                    Id                      = 4,
+                    Description             = "Purim Events",
+                    StartDate               = new DateTime(2018,3,1),
+                    EndDate                 = new DateTime(2018,3,8),
+                    Language                = (int) Languages.en
+                }
             };
         }
         #endregion
