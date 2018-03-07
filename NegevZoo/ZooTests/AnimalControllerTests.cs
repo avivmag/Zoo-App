@@ -35,12 +35,12 @@ namespace ZooTests
         [TestMethod]
         public void getAnimalById()
         {
-            var animal = animalsController.GetAnimalById(1, (int)Languages.he);
+            var animal = animalsController.GetAnimalById(1, (int)Languages.en);
             Assert.IsInstanceOfType(animal, typeof(Animal));
             Animal animalObject = (Animal)animal;
 
             Assert.AreEqual(1, animalObject.Id);
-            Assert.AreEqual("בבון הזית", animalObject.Name);
+            Assert.AreEqual("Olive Baboon", animalObject.Name);
         }
 
         [TestMethod]

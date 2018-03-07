@@ -40,13 +40,13 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// Gets enclosure by it's id.
+        /// Gets enclosure by it's encId.
         /// </summary>
         /// <param name="language">The data language</param>
-        /// <param name="id">The eclosure's id</param>
-        /// <returns>The enclosures with this id and language.</returns>
+        /// <param name="id">The eclosure's encId</param>
+        /// <returns>The enclosures with this encId and language.</returns>
         [HttpGet]
-        [Route("enclosures/{id}/{language}")]
+        [Route("enclosures/{encId}/{language}")]
         public Enclosure GetEnclosureById(int id, int language = 1)
         {
             try
@@ -71,7 +71,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this name and language.</returns>
         [HttpGet]
         [Route("enclosures/{name}/{language}")]
-        public Enclosure GetEnclosureByname(string name, int language = 1)
+        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language = 1)
         {
             try
             {
@@ -113,26 +113,27 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// Gets the enclosure's recurring events by it's id.
+        /// Gets the enclosure's recurring events by it's encId.
         /// </summary>
         /// <param name="language">The data language</param>
-        /// <param name="id">The eclosure's id</param>
-        /// <returns>The recurring events according to the enclosure id.</returns>
+        /// <param name="encId">The eclosure's encId</param>
+        /// <returns>The recurring events according to the enclosure encId.</returns>
         [HttpGet]
-        [Route("enclosures/{id}/{language}")]
-        public IEnumerable<RecurringEvent> GetRecurringEvents(int id, int language = 1)
+        [Route("enclosures/{encId}/recurring/{language}")]
+        public IEnumerable<RecurringEvent> GetRecurringEvents(int encId, int language = 1)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetRecurringEvents(id, language);
+                    return db.GetRecurringEvents(encId, language);
                 }
 
             }
-            catch
+            catch 
             {
-                return null;
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -158,15 +159,18 @@ namespace NegevZoo.Controllers
             }
             catch
             {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
             }
         }
 
         /// <summary>
         /// Deletes an enclosure.
         /// </summary>
-        /// <param name="id">The enclosure's id to delete.</param>
+        /// <param name="id">The enclosure's encId to delete.</param>
         [HttpPost]
-        [Route("enclosures/{id}")]
+        [Route("enclosures/{encId}")]
         public void DeleteEnclosure(int id)
         {
             try
@@ -179,9 +183,10 @@ namespace NegevZoo.Controllers
             }
             catch
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
         #endregion
     }
 }

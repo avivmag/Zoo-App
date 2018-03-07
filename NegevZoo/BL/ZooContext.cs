@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using Backend;
 using Backend.Models;
 using DAL;
 
@@ -8,18 +11,26 @@ namespace BL
 {
     public class ZooContext : IDisposable 
     {
-        private IZooDB zooDB;
+        private static IZooDB zooDB;
 
         // TODO:: Mark isTesting to false when the database it ready.
         public ZooContext(bool isTesting = true)
         {
             if (isTesting)
             {
-                zooDB = new DummyDB();
+                zooDB = zooDB ?? new DummyDB();
             }
             else
             {
                 // TODO:: whenever the database will be ready - initialize it here.
+            }
+        }
+
+        public static void CleanDb(bool isTesting = true)
+        {
+            if (isTesting)
+            {
+                zooDB = null;
             }
         }
 
@@ -32,6 +43,11 @@ namespace BL
         /// <returns>The enclosures.</returns>
         public IEnumerable<Enclosure> GetAllEnclosures(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
             return zooDB.GetAllEnclosures().Where(e => e.Language == language).ToArray();
         }
 
@@ -43,7 +59,21 @@ namespace BL
         /// <returns>The enclosure.</returns>
         public Enclosure GetEnclosureById(int id, int language)
         {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Id == id);
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            Enclosure enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Id == id);
+
+            if (enc == null)
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired enclosure");
+            }
+            else
+            {
+                return enc;
+            }
         }
 
         /// <summary>
@@ -52,9 +82,22 @@ namespace BL
         /// <param name="language">The enclosure's data language.</param>
         /// <param name="name">The enclosure's name.</param>
         /// <returns>The enclosure.</returns>
-        public Enclosure GetEnclosureByName(string name, int language)
+        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language)
         {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => e.Language == language && e.Name == name);
+            //TODO: should a wrong name return empty list or exception?
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            //var enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Name == name);
+
+            //if (enc == null)
+            //{
+            //    throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the wanted enclosure.");
+            //}
+
+            return zooDB.GetAllEnclosures().Where(e => e.Language == language && e.Name.Contains(name));
         }
 
         /// <summary>
@@ -79,7 +122,22 @@ namespace BL
         /// <returns>The enclosure's recurring events.</returns>
         public IEnumerable<RecurringEvent> GetRecurringEvents (int encId, int language)
         {
-            return zooDB.GetAllRecuringEvents().Where(re => re.Language == language && re.EncId == encId).ToList();
+            if (!ValidLanguage(language))
+            {
+                throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the desired langauge");
+            }
+
+            var enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Id == encId);
+
+            if(enc == null)
+            {
+                throw new HttpRequestException("Status code " +  HttpStatusCode.NotFound + ", could not found the wanted enclosure.");
+            }
+            else
+            {
+                return zooDB.GetAllRecuringEvents().Where(re => re.Language == language && re.EncId == encId).ToList();
+
+            }
         }
 
         /// <summary>
@@ -88,9 +146,43 @@ namespace BL
         /// <param name="enclosures">The enclosures to update.</param>
         public void UpdateEnclosure(Enclosure enclosure)
         {
-            var enclosures = zooDB.GetAllEnclosures();
-            if (!enclosures.Contains(enclosure))
+            //validate enclosure attributes
+            //1. lang
+            if (!ValidLanguage(enclosure.Language))
             {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            //2. enclosure name
+            if (String.IsNullOrWhiteSpace(enclosure.Name))
+            {
+                throw new ArgumentException("Wrong input. enclosure name is empty");
+            }
+
+            //TODO: add a check to latitude or longtitude out of the range of the zoo.
+
+            var enclosures = zooDB.GetAllEnclosures();
+
+            if (enclosure.Id == default(int)) //add a new enclosure
+            {
+                
+                if (enclosures.Any(en => en.Name == enclosure.Name))
+                {
+                    throw new ArgumentException("Wrong input. Name already exists");
+                }
+                
+                enclosures.Add(enclosure);
+            }
+            else //update existing enclosure
+            {
+                Enclosure oldEnc = enclosures.SingleOrDefault(en => en.Id == enclosure.Id);
+
+                if (oldEnc.Name != enclosure.Name && enclosures.Any(en => en.Name == enclosure.Name))//The name changed
+                {
+                    throw new ArgumentException("Wrong input. Name already exsits");
+                }
+
+                enclosures.Remove(oldEnc);
                 enclosures.Add(enclosure);
             }
         }
@@ -102,10 +194,27 @@ namespace BL
         public void DeleteEnclosure(int id)
         {
             Enclosure enclosure = zooDB.GetAllEnclosures().SingleOrDefault(e => e.Id == id);
-            if (enclosure != null)
+
+            //Check that can delete athe enclosure
+            //1.enclosure exists
+            if (enclosure == null)
             {
-                zooDB.GetAllEnclosures().Remove(enclosure);
+                throw new ArgumentException("Wrong input. enclosure ID doesn't exists.");
             }
+
+            //2. no animals
+            if (zooDB.GetAllAnimals().Any(an => an.EncId == id))
+            {
+                throw new InvalidOperationException("Threre are animals that related to this enclosure");
+            }
+
+            //3. exsits recurring events
+            if (zooDB.GetAllRecuringEvents().Any(re => re.EncId == id))
+            {
+                throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
+            }
+
+            zooDB.GetAllEnclosures().Remove(enclosure);
         }
 
         #endregion
@@ -119,7 +228,7 @@ namespace BL
         /// <returns>The animals.</returns>
         public IEnumerable<Animal> GetAnimals(int language)
         {
-            return zooDB.GetAnimals().Where(a => a.Language == language).ToArray();
+            return zooDB.GetAllAnimals().Where(a => a.Language == language).ToArray();
         }
 
         /// <summary>
@@ -130,7 +239,7 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalById(int id, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .SingleOrDefault(a => a.Language == language && a.Id == id);
         }
 
@@ -142,7 +251,7 @@ namespace BL
         /// <returns>The animal.</returns>
         public Animal GetAnimalByName(string name, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .SingleOrDefault(a => a.Language == language && a.Name == name);
         }
 
@@ -154,7 +263,7 @@ namespace BL
         /// <returns>The animals in the enclosure.</returns>
         public IEnumerable<Animal> GetAnimalsByEnclosure(int encId, int language)
         {
-            return zooDB.GetAnimals()
+            return zooDB.GetAllAnimals()
                 .Where(a => a.Language == language && a.EncId == encId).ToList();
         }
 
@@ -164,7 +273,7 @@ namespace BL
         /// <param name="animals">The animal to update.</param>
         public void UpdateAnimal(Animal animal)
         {
-            var animals = zooDB.GetAnimals();
+            var animals = zooDB.GetAllAnimals();
             if (!animals.Contains(animal))
             {
                 animals.Add(animal);
@@ -177,10 +286,10 @@ namespace BL
         /// <param name="id">The animal's id to delete.</param>
         public void DeleteAnimal(int id)
         {
-            Animal animal = zooDB.GetAnimals().SingleOrDefault(a => a.Id == id);
+            Animal animal = zooDB.GetAllAnimals().SingleOrDefault(a => a.Id == id);
             if (animal != null)
             {
-                zooDB.GetAnimals().Remove(animal);
+                zooDB.GetAllAnimals().Remove(animal);
             }
         }
 
@@ -499,6 +608,11 @@ namespace BL
         public void Dispose()
         {
             // zooDB.saveChanges();
+        }
+
+        private bool ValidLanguage(int langauge)
+        {
+            return (langauge >= (int)Enum.Parse(typeof(Languages), "he") && langauge <= (int)Enum.Parse(typeof(Languages), "ar"));
         }
     }
 }

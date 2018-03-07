@@ -93,7 +93,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language.</param>
         /// <returns>The animals that are in the enclosure.</returns>
         [HttpGet]
-        [Route("animals/{encId}/{language}")]
+        [Route("animals/enclosure/{encId}/{language}")]
         public IEnumerable<Animal> GetAnimalsByEnclosure(int encId, int language)
         {
             try
