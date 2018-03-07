@@ -1,8 +1,12 @@
 ﻿app.controller('indexController', 
 	['$scope', 
-	 '$state', 
+     '$state', 
+     'enclosureService',
 	 
-	    function indexController($scope, $state) 
-	    {
-	        $state.go('login');
+	    function indexController($scope, $state, enclosureService) 
+        {
+            allEnclosuresQuery = enclosureService.getAllEnclosures(1);
+
+            $state.go('login');
+
 }]);
