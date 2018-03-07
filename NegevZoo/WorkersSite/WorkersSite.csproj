@@ -75,6 +75,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api\enclosures.service.js" />
+    <Content Include="app.config.js" />
     <Content Include="index.controller.js" />
     <Content Include="index.html" />
     <Content Include="login\login.controller.js" />

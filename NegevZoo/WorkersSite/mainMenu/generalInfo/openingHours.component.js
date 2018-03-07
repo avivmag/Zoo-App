@@ -1,6 +1,6 @@
-﻿app.controller('zooEventsCtrl', ['$scope', '$mdDialog',
-    function zooSpecialEventsController($scope, $mdDialog) {
-        $scope.specialEvents = [
+﻿app.controller('zooOpeningHoursCtrl', ['$scope', '$mdDialog',
+    function zooOpeningHoursController($scope, $mdDialog) {
+        $scope.openingHours = [
             { title: 'בשבוע הקרוב 50% הנחה על כל השתיה בפארק', date: '28.11.18' },
             { title: 'קייטנת נגב זו יוצאת לדרך!', date: '28.11.18' },
         ];
