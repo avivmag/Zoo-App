@@ -50,9 +50,9 @@ public class EnclosureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
         bl = new BusinessLayerImpl(this);
-        int pos = clickedEnclosure.getInt("pos");
+        int id = clickedEnclosure.getInt("id");
 
-        bl.getAnimals(pos, new GetObjectInterface() {
+        bl.getAnimals(id, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 animals = (Animal[]) response;

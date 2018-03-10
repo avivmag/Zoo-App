@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.AboutZoo;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
@@ -30,12 +31,11 @@ public class BusinessLayerImpl implements BusinessLayer {
 
 
     @Override
-    public void getAnimals(int pos, final GetObjectInterface goi) {
+    public void getAnimals(int id, final GetObjectInterface goi) {
 
         // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
-        pos++;
-        Log.e("POS", "" + pos);
-        ni.post("animals/" + pos, new ResponseInterface() {
+        Log.e("ID", "" + id);
+        ni.post("/animals/enclosure/" + id + "/" + GlobalVariables.language, new ResponseInterface() {
             @Override
             public void onSuccess(String response) {
                 Animal[] animals = gson.fromJson(response, Animal[].class);
@@ -54,9 +54,19 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public void getEnclosures() {
+    public void getEnclosures(final GetObjectInterface goi) {
+        ni.post("enclosures/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
+                goi.onSuccess(enc);
+            }
 
-        Enclosure[] enclosures = gson.fromJson(json, Enclosure[].class);
+            @Override
+            public void onFailure(String response) {
+                Log.e("ENCLOSURES", "Can't get enclosures from server");
+            }
+        });
     }
 
     @Override

@@ -16,6 +16,7 @@
     <string name="schedule">Schedule</string>
     <string name="map">Map</string>
     <string name="other_info">Other Info</string>
+    <string name="nav">Navigate to Negev Zoo</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">AnimalActivity</string>

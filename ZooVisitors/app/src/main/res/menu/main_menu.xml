@@ -16,25 +16,25 @@
                 android:title="@string/language_eng"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLangauge">
+                android:onClick="onSelectLanguage">
             </item>
                 <!--/>-->
             <item android:id="@+id/language_heb"
                 android:title="@string/language_heb"
                 android:checkable="true"
                 android:checked="true"
-                android:onClick="onSelectLangauge"></item>
+                android:onClick="onSelectLanguage"></item>
                 <!--/>-->
             <item android:id="@+id/language_arb"
                 android:title="@string/language_arb"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLangauge"></item>
+                android:onClick="onSelectLanguage"></item>
             <item android:id="@+id/language_rus"
                 android:title="@string/language_rus"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLangauge"/>
+                android:onClick="onSelectLanguage"/>
         </menu>
     </item>
 </menu>
