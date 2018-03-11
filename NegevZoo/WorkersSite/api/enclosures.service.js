@@ -6,11 +6,7 @@
 
         $http({
             url: 'http://negevzoo.sytes.net:50000/animals/1',
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Access-Control-Allow-Origin': '*'
-            }
+            method: 'GET'
         }).then(function () { console.log('hi'); });
     }
 
