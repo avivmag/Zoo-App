@@ -66,6 +66,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app.config.local.js" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -79,6 +80,7 @@
     <Content Include="app.config.js" />
     <Content Include="index.controller.js" />
     <Content Include="index.html" />
+    <Content Include="index.local.html" />
     <Content Include="login\login.controller.js" />
     <Content Include="login\login.css" />
     <Content Include="login\login.html" />

@@ -22,7 +22,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language</param>
         /// <returns>All enclosures with that language.</returns>
         [HttpGet]
-        [Route("enclosures/{language}")]
+        [Route("enclosures/all/{language}")]
         public IEnumerable<Enclosure> GetAllEnclosures(int language = 1)
         {
             try
@@ -35,7 +35,7 @@ namespace NegevZoo.Controllers
             }
             catch
             {
-                return null;
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -46,20 +46,20 @@ namespace NegevZoo.Controllers
         /// <param name="id">The eclosure's encId</param>
         /// <returns>The enclosures with this encId and language.</returns>
         [HttpGet]
-        [Route("enclosures/{encId}/{language}")]
-        public Enclosure GetEnclosureById(int id, int language = 1)
+        [Route("enclosures/id/{encId}/{language}")]
+        public Enclosure GetEnclosureById(int encId, int language = 1)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetEnclosureById(id, language);
+                    return db.GetEnclosureById(encId, language);
                 }
 
             }
             catch
             {
-                return null;
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -70,7 +70,7 @@ namespace NegevZoo.Controllers
         /// <param name="name">The eclosure's name</param>
         /// <returns>The enclosures with this name and language.</returns>
         [HttpGet]
-        [Route("enclosures/{name}/{language}")]
+        [Route("enclosures/name/{name}/{language}")]
         public IEnumerable<Enclosure> GetEnclosureByName(string name, int language = 1)
         {
             try
@@ -83,7 +83,7 @@ namespace NegevZoo.Controllers
             }
             catch
             {
-                return null;
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -95,7 +95,7 @@ namespace NegevZoo.Controllers
         /// <param name="latitude">The eclosure's latitude</param>
         /// <returns>The enclosures with this aproximate position.</returns>
         [HttpGet]
-        [Route("enclosures/{longtitude}/{latitude}/{language}")]
+        [Route("enclosures/position/{longtitude}/{latitude}/{language}")]
         public Enclosure GetEnclosureByPosition(int longtitude, int latitude, int language = 1)
         {
             try
@@ -108,7 +108,7 @@ namespace NegevZoo.Controllers
             }
             catch
             {
-                return null;
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -119,7 +119,7 @@ namespace NegevZoo.Controllers
         /// <param name="encId">The eclosure's encId</param>
         /// <returns>The recurring events according to the enclosure encId.</returns>
         [HttpGet]
-        [Route("enclosures/{encId}/recurring/{language}")]
+        [Route("enclosures/recurring/{encId}/{language}")]
         public IEnumerable<RecurringEvent> GetRecurringEvents(int encId, int language = 1)
         {
             try
@@ -169,15 +169,15 @@ namespace NegevZoo.Controllers
         /// Deletes an enclosure.
         /// </summary>
         /// <param name="id">The enclosure's encId to delete.</param>
-        [HttpPost]
-        [Route("enclosures/{encId}")]
-        public void DeleteEnclosure(int id)
+        [HttpDelete]
+        [Route("enclosures/delete/{encId}")]
+        public void DeleteEnclosure(int encId)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosure(id);
+                    db.DeleteEnclosure(encId);
                 }
 
             }

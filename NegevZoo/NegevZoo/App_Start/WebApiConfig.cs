@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace NegevZoo
 {
@@ -10,7 +11,26 @@ namespace NegevZoo
     {
         public static void Register(HttpConfiguration config)
         {
-            config.EnableCors();
+            var corsConfig = new EnableCorsAttribute(
+                "*",
+                string.Join(
+                    ",",
+                    "Accept",
+                    "Accept-Encoding",
+                    "Authorization",
+                    "Origin",
+                    "Content-Type",
+                    "X-Csrf-Token"),
+                string.Join(
+                    ",",
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE"))
+            {
+                SupportsCredentials = true
+            };
+            config.EnableCors(corsConfig);
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
