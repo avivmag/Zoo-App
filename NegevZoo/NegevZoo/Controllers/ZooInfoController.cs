@@ -528,7 +528,6 @@ namespace NegevZoo.Controllers
         }
         #endregion
         
-
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
