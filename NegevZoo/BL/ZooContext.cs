@@ -279,7 +279,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllAnimals().SingleOrDefault(a => a.Language == language && a.Name == name);
+            return zooDB.GetAllAnimals().SingleOrDefault(a => a.Language == language && a.Name.Contains(name));
         }
 
         /// <summary>
@@ -389,6 +389,11 @@ namespace BL
         /// <returns>The prices entitiess.</returns>
         public IEnumerable<Price> GetAllPrices(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             return zooDB.GetAllPrices().Where(p => p.Language == language).ToArray();
         }
         
@@ -398,9 +403,53 @@ namespace BL
         /// <param name="price">The Price to add or update.</param>
         public void UpdatePrice(Price price)
         {
-            var prices = zooDB.GetAllPrices();
-            if (!prices.Contains(price))
+            //Validate the price attribute
+            //0. Exists
+            if (price == default(Price))
             {
+                throw new ArgumentException("No price given.");
+            }
+
+            //1. check that the population is valid
+            if (String.IsNullOrWhiteSpace(price.Population))
+            {
+                throw new ArgumentException("Wrong input. The price population is empty or null");
+            }
+            
+            //2. chek that the price amount is valid
+            if (price.PricePop < 0)
+            {
+                throw new ArgumentException("Wrong input, The price amount is lower than 0");
+            }
+            
+            var prices = zooDB.GetAllPrices();
+
+            if (price.Id == default(int)) //need to add the price.
+            {
+                if (prices.Any(p => p.Population == price.Population))
+                {
+                    throw new ArgumentException("Wrong input. Price population already exists.");
+                }
+
+                prices.Add(price);
+            }
+            else //update existing price
+            {
+                var oldPrice = prices.SingleOrDefault(p => p.Id == price.Id);
+
+                //check that the price exists
+                if (oldPrice == null)
+                {
+                    throw new ArgumentException("Wrong input. The price id doesn't exist");
+                }
+
+                //check that if the population changed, the new population doesn't exists.
+                if (price.Population != oldPrice.Population && prices.Any(p => p.Population == price.Population))
+                {
+                    throw new ArgumentException("The new prcie population already exists");
+                }
+
+                prices.Remove(oldPrice);
                 prices.Add(price);
             }
         }
@@ -412,10 +461,13 @@ namespace BL
         public void DeletePrice(int id)
         {
             Price price = zooDB.GetAllPrices().SingleOrDefault(p => p.Id == id);
-            if (price != null)
+
+            if (price == null)
             {
-                zooDB.GetAllPrices().Remove(price);
+                throw new ArgumentException("Wrong input. Price doesn't exists.");
             }
+
+            zooDB.GetAllPrices().Remove(price);
         }
         #endregion
 
@@ -427,8 +479,12 @@ namespace BL
         /// <returns>All the OpeningHour elemtents.</returns>
         public IEnumerable<OpeningHour> GetAllOpeningHours (int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             return zooDB.GetAllOpeningHours().Where(oh => oh.Language == language).ToArray();
-         
         }
 
         /// <summary>
@@ -437,11 +493,46 @@ namespace BL
         /// <param name="OpeningHour">The OpeningHour element to add or update.</param>
         public void UpdateOpeningHour(OpeningHour openingHour)
         {
-            var openingHours = zooDB.GetAllOpeningHours();
-            if (!openingHours.Contains(openingHour))
+            //validate opening hour attributs
+            //0. Exists
+            if (openingHour == default(OpeningHour))
             {
-                openingHours.Add(openingHour);
+                throw new ArgumentException("No Opening hour given");
             }
+
+            //1. check the day
+            if (String.IsNullOrWhiteSpace(openingHour.Day))
+            {
+                throw new ArgumentException("Wrong input. The day is empty or null");
+            }
+
+            //2. check the opening time
+            if (!ValidHour(openingHour.StartHour, openingHour.StartMin))
+            {
+                throw new ArgumentException("Wrong input. Wrong opening time");
+            }
+
+            //3. check the opening time
+            if (ValidHour(openingHour.EndHour, openingHour.EndMin))
+            {
+                throw new ArgumentException("Wrong input. Wrong closing time");
+            }
+
+            var openingHours = zooDB.GetAllOpeningHours();
+
+            if (openingHour.Id == default(int)) //add a new opening hour
+            {
+
+            }
+            else //update exsist opening hour
+            {
+
+            }
+        }
+
+        private bool ValidHour(int hour, int min)
+        {
+            return hour > 0 && hour < 24 && Enum.IsDefined(typeof(AvailableMinutes), min);
         }
 
         /// <summary>
