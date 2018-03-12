@@ -23,6 +23,7 @@ namespace DAL
             GeneralInfo        = new TestDbSet<GeneralInfo>();
             RecurringEvents    = new TestDbSet<RecurringEvent>();
             SpecialEvents      = new TestDbSet<SpecialEvent>();
+            OpeningHours       = new TestDbSet<OpeningHour>();
 
             Animals.AddRange(InitializeAnimals());
             Enclosures.AddRange(InitializeEnclosures());
@@ -38,7 +39,9 @@ namespace DAL
             GeneralInfo.AddRange(InitializeGeneralInfo());
             RecurringEvents.AddRange(InitialRecurringEvents());
             SpecialEvents.AddRange(InitialSpecialEvents());
+            OpeningHours.AddRange(InitialOpeningHour());
         }
+
 
         protected override List<TEntity> GetFromCache<TEntity>()
         {
@@ -404,6 +407,144 @@ namespace DAL
                     EndDate                 = new DateTime(2018,3,8),
                     Language                = (int) Languages.en
                 }
+            };
+        }
+
+        private IEnumerable<OpeningHour> InitialOpeningHour()
+        {
+            return new List<OpeningHour>
+            {
+                new OpeningHour
+                {
+                    Id = 1,
+                    Day = "ראשון",
+                    StartHour = 11,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 12,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 2,
+                    Day = "Sunday",
+                    StartHour = 11,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 12,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
+
+                new OpeningHour
+                {
+                    Id = 3,
+                    Day = "שני",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 4,
+                    Day = "Monday",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
+
+                new OpeningHour
+                {
+                    Id = 5,
+                    Day = "שלישי",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 6,
+                    Day = "Tuesday",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
+
+                new OpeningHour
+                {
+                    Id = 7,
+                    Day = "רביעי",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 8,
+                    Day = "Wednesday",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Half,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
+
+                new OpeningHour
+                {
+                    Id = 9,
+                    Day = "חמישי",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Quarter,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 10,
+                    Day = "Thursday",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.Quarter,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
+
+                new OpeningHour
+                {
+                    Id = 11,
+                    Day = "שבת",
+                    StartHour = 10,
+                    StartMin = (int)AvailableMinutes.ThreeQuarters,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.he
+                },
+
+                new OpeningHour
+                {
+                    Id = 12,
+                    Day = "Saturday",
+                    StartHour = 9,
+                    StartMin = (int)AvailableMinutes.ThreeQuarters,
+                    EndHour = 18,
+                    EndMin = (int)AvailableMinutes.Zero,
+                    Language = (int)Languages.en
+                },
             };
         }
         #endregion

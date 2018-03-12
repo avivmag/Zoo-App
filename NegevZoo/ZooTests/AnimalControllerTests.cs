@@ -45,7 +45,7 @@ namespace ZooTests
             var animal = animalsController.GetAnimalById(1, (int)Languages.en);
             Assert.IsInstanceOfType(animal, typeof(Animal));
             Animal animalObject = (Animal)animal;
-
+            
             Assert.AreEqual(1, animalObject.Id);
             Assert.AreEqual("Olive Baboon", animalObject.Name);
         }
