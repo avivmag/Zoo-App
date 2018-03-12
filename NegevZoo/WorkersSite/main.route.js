@@ -1,6 +1,4 @@
-﻿var app = angular.module('visitors_app', ['ngMaterial', 'ui.router']);
-
-app.config(function ($stateProvider, $urlRouterProvider) {
+﻿app.config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('login', {
             url:            '/login',

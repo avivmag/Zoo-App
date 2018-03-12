@@ -141,6 +141,12 @@ namespace BL
         /// <param name="enclosures">The enclosures to update.</param>
         public void UpdateEnclosure(Enclosure enclosure)
         {
+            //0. Exists.
+            if (enclosure == default(Enclosure))
+            {
+                throw new ArgumentException("No enclosure given.");
+            }
+
             //validate enclosure attributes
             //1. lang
             if (!ValidLanguage(enclosure.Language))
@@ -687,9 +693,9 @@ namespace BL
             // zooDB.saveChanges();
         }
 
-        private bool ValidLanguage(int langauge)
+        private bool ValidLanguage(int language)
         {
-            return (langauge >= (int)Enum.Parse(typeof(Languages), "he") && langauge <= (int)Enum.Parse(typeof(Languages), "ar"));
+            return Enum.IsDefined(typeof(Languages), language);
         }
     }
 }
