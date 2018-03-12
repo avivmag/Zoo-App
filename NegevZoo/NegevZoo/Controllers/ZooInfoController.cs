@@ -102,9 +102,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -124,8 +125,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -145,8 +148,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -171,9 +176,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -193,8 +199,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -214,8 +222,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -239,9 +249,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -264,9 +275,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -286,8 +298,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -331,11 +345,11 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetAllWallFeeds(language);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -353,10 +367,11 @@ namespace NegevZoo.Controllers
                 {
                     db.UpdateWallFeed(feed);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -374,10 +389,11 @@ namespace NegevZoo.Controllers
                 {
                     db.DeleteWallFeed(feedId);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
