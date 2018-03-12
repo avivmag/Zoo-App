@@ -18,7 +18,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All Prices with that language.</returns>
         [HttpGet]
-        [Route("prices/{language}")]
+        [Route("prices/all/{language}")]
         public IEnumerable<Price> GetAllPrices(int language = 1)
         {
             try
@@ -60,16 +60,16 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the Price element.
         /// </summary>
-        /// <param name="id">The element's id to delete</param>
+        /// <param name="priceId">The element's priceId to delete</param>
         [HttpDelete]
-        [Route("prices/{id}")]
-        public void DeletePrice(int id)
+        [Route("prices/delete/{priceId}")]
+        public void DeletePrice(int priceId)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.DeletePrice(id);
+                    db.DeletePrice(priceId);
                 }
 
             }
@@ -86,7 +86,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All OpeninngHour elements with that language.</returns>
         [HttpGet]
-        [Route("OpeningHours/{language}")]
+        [Route("OpeningHours/all/{language}")]
         public IEnumerable<OpeningHour> GetAllOpeningHours(int language = 1)
         {
             try
@@ -127,16 +127,16 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the OpeningHour element.
         /// </summary>
-        /// <param name="id">The element's id to delete</param>
+        /// <param name="openHourId">The element's openHourId to delete</param>
         [HttpDelete]
-        [Route("OpeningHours/{id}")]
-        public void DeleteOpeningHour(int id)
+        [Route("OpeningHours/delete/{openHourId}")]
+        public void DeleteOpeningHour(int openHourId)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteOpeningHour(id);
+                    db.DeleteOpeningHour(openHourId);
                 }
 
             }
@@ -154,7 +154,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All ContactInfo elements with that language.</returns>
         [HttpGet]
-        [Route("ContactInfos/{language}")]
+        [Route("ContactInfos/all/{language}")]
         public IEnumerable<ContactInfo> GetAllContactInfos(int language = 1)
         {
             try
@@ -195,16 +195,16 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the ContactInfo element.
         /// </summary>
-        /// <param name="id">The element's id to delete</param>
+        /// <param name="contactId">The element's contactId to delete</param>
         [HttpDelete]
-        [Route("ContactInfos/{id}")]
-        public void DeleteContactInfo(int id)
+        [Route("ContactInfos/delete/{contactId}")]
+        public void DeleteContactInfo(int contactId)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteContactInfo(id);
+                    db.DeleteContactInfo(contactId);
                 }
 
             }
@@ -222,7 +222,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All SpecialEvent elements with that language.</returns>
         [HttpGet]
-        [Route("SpecialEvents/{language}")]
+        [Route("SpecialEvents/all/{language}")]
         public IEnumerable<SpecialEvent> GetAllSpecialEvents(int language = 1)
         {
             try
@@ -247,7 +247,7 @@ namespace NegevZoo.Controllers
         /// <param name="endDate">The end date to look for</param>
         /// <returns>All SpecialEvent elements with that language.</returns>
         [HttpGet]
-        [Route("SpecialEvents/{startDate}/{endDate}/{language}")]
+        [Route("SpecialEvents/date/{startDate}/{endDate}/{language}")]
         public IEnumerable<SpecialEvent> GetAllSpecialEventsByDates(DateTime startDate, DateTime endDate, int language = 1)
         {
             try
@@ -269,7 +269,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="specialEvent">The element to add or update</param>
         [HttpPost]
-        [Route("SpecialEvents")]
+        [Route("SpecialEvents/update")]
         public void UpdateSpecialEvent(SpecialEvent specialEvent)
         {
             try
@@ -288,16 +288,16 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the SpecialEvent element.
         /// </summary>
-        /// <param name="id">The element's id to delete</param>
+        /// <param name="specialEventId">The element's specialEventId to delete</param>
         [HttpDelete]
-        [Route("SpecialEvents/{id}")]
-        public void DeleteSpecialEvent(int id)
+        [Route("SpecialEvents/delete/{specialEventId}")]
+        public void DeleteSpecialEvent(int specialEventId)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteSpecialEvent(id);
+                    db.DeleteSpecialEvent(specialEventId);
                 }
 
             }
@@ -316,7 +316,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All WallFeed with that language.</returns>
         [HttpGet]
-        [Route("wallfeed/{language}")]
+        [Route("Wallfeed/all/{language}")]
         public IEnumerable<WallFeed> GetAllFeeds(int language = 1)
         {
             try
@@ -338,7 +338,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="feed">The WallFeed to add or update</param>
         [HttpPost]
-        [Route("wallfeed/update")]
+        [Route("Wallfeed/update")]
         public void UpdateWallFeed(WallFeed feed)
         {
             try
@@ -357,16 +357,16 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Removes a WallFeed.
         /// </summary>
-        /// <param name="id">The WallFeed's id to deletes</param>
+        /// <param name="feedId">The WallFeed's feedId to deletes</param>
         [HttpDelete]
-        [Route("wallfeed/{id}")]
-        public void DeleteWallFeed(int id)
+        [Route("Wallfeed/delete/{feedId}")]
+        public void DeleteWallFeed(int feedId)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteWallFeed(id);
+                    db.DeleteWallFeed(feedId);
                 }
 
             }
@@ -383,7 +383,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's about info.</returns>
         [HttpGet]
-        [Route("about/{language}")]
+        [Route("about/info/{language}")]
         public IEnumerable<AboutUsResult> GetZooAboutInfo(int language = 1)
         {
             try
@@ -411,8 +411,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="info">The info to add or update</param>
         [HttpPost]
-        [Route("about/{info}")]
-        [Route("about/{info}/{language}")]
+        [Route("about/update/{info}/{language}")]
         public void UpdateZooAboutInfo(string info, int language = 1)
         {
             try
@@ -433,7 +432,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's opening hour note.</returns>
         [HttpGet]
-        [Route("about/{language}")]
+        [Route("about/openHourNote/{language}")]
         public IEnumerable<AboutUsResult> GetOpeningHourNote(int language = 1)
         {
             try
@@ -461,8 +460,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="note">The note to add or update</param>
         [HttpPost]
-        [Route("about/{note}")]
-        [Route("about/{note}/{language}")]
+        [Route("about/updateOpeningHourNote/{note}/{language}")]
         public void UpdateOpeningHourNote(string note, int language = 1)
         {
             try
@@ -483,7 +481,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's Contact us note.</returns>
         [HttpGet]
-        [Route("about/{language}")]
+        [Route("about/contactInfoNote/{language}")]
         public IEnumerable<AboutUsResult> GetContactInfoNote(int language = 1)
         {
             try
@@ -511,8 +509,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="note">The note to add or update</param>
         [HttpPost]
-        [Route("about/{note}")]
-        [Route("about/{note}/{language}")]
+        [Route("about/updateContactInfoNote/{note}/{language}")]
         public void UpdateContactInfoNote(string note, int language = 1)
         {
             try
