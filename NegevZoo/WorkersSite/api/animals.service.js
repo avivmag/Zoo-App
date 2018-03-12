@@ -1,13 +1,13 @@
 ﻿app.factory('animalService', ['httpService', function (httpService) {
-    var servicebaseUrl = 'animals';
+    var serviceBaseUrl = 'animals';
 
     var animalService = {
-        getAllAnimals:          function (language)             { return httpService.httpGet({ url: [servicebaseUrl, 'all', language] }); },
-        getAnimalById:          function (animalId, language)   { return httpService.httpGet({ url: [servicebaseUrl, 'id', animalId, language] }); },
-        getAnimalsByEnclosure:  function (encId, language)      { return httpService.httpGet({ url: [servicebaseUrl, 'enclosure', encId, language] }); },
-        getAnimalByName:        function (name, language)       { return httpService.httpGet({ url: [servicebaseUrl, 'name', name, language] }); },
-        updateAnimal:           function (animal)               { return httpService.httpPost({ url: [servicebaseUrl, 'update'], body: animal }); },
-        deleteAnimal:           function (animalId)             { return httpService.httpDelete({ url: [servicebaseUrl, 'delete', animalId] }); }
+        getAllAnimals:          function (language)             { return httpService.httpGet({ url: [serviceBaseUrl, 'all', language] }); },
+        getAnimalById:          function (animalId, language)   { return httpService.httpGet({ url: [serviceBaseUrl, 'id', animalId, language] }); },
+        getAnimalsByEnclosure:  function (encId, language)      { return httpService.httpGet({ url: [serviceBaseUrl, 'enclosure', encId, language] }); },
+        getAnimalByName:        function (name, language)       { return httpService.httpGet({ url: [serviceBaseUrl, 'name', name, language] }); },
+        updateAnimal:           function (animal)               { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: animal }); },
+        deleteAnimal:           function (animalId)             { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', animalId] }); }
     };
 
     return animalService;
