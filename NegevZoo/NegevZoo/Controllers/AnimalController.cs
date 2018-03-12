@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Backend;
 using Backend.Models;
-using BL;
 
 namespace NegevZoo.Controllers
 {
@@ -33,9 +30,10 @@ namespace NegevZoo.Controllers
                     return db.GetAnimals(language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -51,14 +49,15 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = this.GetContext())
+                using (var db = GetContext())
                 {
                     return db.GetAnimalById(language, id);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -74,14 +73,15 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = this.GetContext())
+                using (var db = GetContext())
                 {
                     return db.GetAnimalByName(name, language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -98,14 +98,14 @@ namespace NegevZoo.Controllers
         {
             try
             {
-                using (var db = this.GetContext())
+                using (var db = GetContext())
                 {
                     return db.GetAnimalsByEnclosure(encId, language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
@@ -127,8 +127,10 @@ namespace NegevZoo.Controllers
                     db.UpdateAnimal(animal);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -147,10 +149,13 @@ namespace NegevZoo.Controllers
                     db.DeleteAnimal(id);
                 }
             }
-            catch
+            //TODO: add catch Invalid operation exception
+            catch 
             {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
         #endregion
     }
 }

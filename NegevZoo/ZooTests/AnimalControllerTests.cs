@@ -3,6 +3,7 @@ using Backend.Models;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Backend;
+using System.Web.Http;
 
 namespace ZooTests
 {
@@ -11,29 +12,35 @@ namespace ZooTests
     {
         private  AnimalController animalsController;
         private int nonExistantLang;
+
         [TestInitialize]
         public void SetUp()
         {
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             animalsController = new AnimalController();
-            nonExistantLang = 100;
+            nonExistantLang = 10000;
         }
 
+        #region GetAllAnimals
         [TestMethod]
-        public void getAllAnimalsLangHe()
+        public void GetAllAnimalsLangHe()
         {
             Assert.AreEqual(3, animalsController.GetAllAnimals((int)Languages.he).Count());
         }
 
         [TestMethod]
-        public void getAllAnimalsLanguageNotExist()
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAllAnimalsLanguageNotExist()
         {
-            Assert.AreEqual(0, animalsController.GetAllAnimals(nonExistantLang).Count());
+            animalsController.GetAllAnimals(nonExistantLang);
         }
 
+        #endregion
+
+        #region GetAnimalById
         [TestMethod]
-        public void getAnimalById()
+        public void GetAnimalById()
         {
             var animal = animalsController.GetAnimalById(1, (int)Languages.en);
             Assert.IsInstanceOfType(animal, typeof(Animal));
@@ -44,19 +51,19 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void getAnimalByIdWrongId()
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAnimalByIdWrongId()
         {
-            var animal = animalsController.GetAnimalById(-4, (int)Languages.he);
-
-            Assert.AreEqual(null, animal);
+            animalsController.GetAnimalById(-4, (int)Languages.he);
         }
 
         [TestMethod]
-        public void getAnimalByIdLanguageNotExist()
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAnimalByIdLanguageNotExist()
         {
-            var animal = animalsController.GetAnimalById(4, nonExistantLang);
-
-            Assert.AreEqual(null, animal);
+            animalsController.GetAnimalById(4, nonExistantLang);
         }
+
+        #endregion
     }
 }
