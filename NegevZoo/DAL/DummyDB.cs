@@ -171,57 +171,66 @@ namespace DAL
                     new WallFeed
                     {
                         Id          = 1,
-                        Stories        = "Purim Events",
-                        Language    = (int)Languages.en
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 1,
-                        Stories        = "אירועי פורים",
-                        Language    = (int)Languages.he
+                        Info        = "Purim Events",
+                        Language    = (int)Languages.en,
+                        Created     = new DateTime(18,3,11)
+                        
                     },
 
                     new WallFeed
                     {
                         Id          = 2,
-                        Stories        = "Passeover Events",
-                        Language    = (int)Languages.en
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 2,
-                        Stories        = "אירועי פסח",
-                        Language    = (int)Languages.he
+                        Info        = "אירועי פורים",
+                        Language    = (int)Languages.he,
+                        Created     = new DateTime(18,3,11)
                     },
 
                     new WallFeed
                     {
                         Id          = 3,
-                        Stories        = "Shavuut Events",
-                        Language    = (int)Languages.en
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 3,
-                        Stories        = "אירועי שבועות",
-                        Language    = (int)Languages.he
+                        Info        = "Passeover Events",
+                        Language    = (int)Languages.en,
+                        Created     = new DateTime(18,3,11)
                     },
 
                     new WallFeed
                     {
                         Id          = 4,
-                        Stories        = "Sukut Events",
-                        Language    = (int)Languages.en
+                        Info        = "אירועי פסח",
+                        Language    = (int)Languages.he,
+                        Created     = new DateTime(18,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 4,
-                        Stories        = "אירועי סוכות",
-                        Language    = (int)Languages.he
+                        Id          = 5,
+                        Info        = "Shavuut Events",
+                        Language    = (int)Languages.en,
+                        Created     = new DateTime(18,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 6,
+                        Info        = "אירועי שבועות",
+                        Language    = (int)Languages.he,
+                        Created     = new DateTime(18,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 7,
+                        Info        = "Sukut Events",
+                        Language    = (int)Languages.en,
+                        Created     = new DateTime(18,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        Id          = 8,
+                        Info        = "אירועי סוכות",
+                        Language    = (int)Languages.he,
+                        Created     = new DateTime(18,3,11)
                     }
                 };
         }
@@ -354,8 +363,10 @@ namespace DAL
                     EncId                   = 1,
                     Day                     = "Sunday",
                     Descroption             = "Feeding",
-                    StartHour               = 10.30,
-                    EndHour                 = 11.00,
+                    StartHour               = 10,
+                    StartMin                = (int) AvailableMinutes.Half,
+                    EndHour                 = 11,
+                    EndMin                  =(int) AvailableMinutes.Zero,
                     Language                = (int) Languages.en
                 },
                 new RecurringEvent
@@ -364,8 +375,10 @@ namespace DAL
                     EncId                   = 2,
                     Day                     = "ראשון",
                     Descroption             = "האכלה",
-                    StartHour               = 10.30,
-                    EndHour                 = 11.00,
+                    StartHour               = 10,
+                    StartMin                = (int) AvailableMinutes.Half,
+                    EndHour                 = 11,
+                    EndMin                  = (int) AvailableMinutes.Zero,
                     Language                = (int) Languages.he
                 }
             };
@@ -386,7 +399,7 @@ namespace DAL
                 new SpecialEvent
                 {
                     Id                      = 2,
-                    Description             = "Kaki",
+                    Description             = "Kaki1",
                     StartDate               = new DateTime(2018,3,5),
                     EndDate                 = new DateTime(2018,3,8),
                     Language                = (int) Languages.en

@@ -38,6 +38,7 @@ namespace ZooTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void GetAllWallFeedLanguageNotExist()
         {
             Assert.AreEqual(ZooInfoController.GetAllFeeds(nonExistantLangauge).Count(), 0);
