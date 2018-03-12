@@ -20,7 +20,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language.</param>
         /// <returns>Animals with that langauge.</returns>
         [HttpGet]
-        [Route("animals/{language}")]
+        [Route("animals/all/{language}")]
         public IEnumerable<Animal> GetAllAnimals(int language = 1)
         {
             try
@@ -44,8 +44,8 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language.</param>
         /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
-        [Route("animals/{language}/{id}")]
-        public Animal GetAnimalById(int language, int id)
+        [Route("animals/animalId/{animalId}/{language}")]
+        public Animal GetAnimalById(int animalId, int language)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language.</param>
         /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
-        [Route("animals/{name}/{language}")]
+        [Route("animals/name/{name}/{language}")]
         public Animal GetAnimalByName(string name, int language)
         {
             try
@@ -87,9 +87,9 @@ namespace NegevZoo.Controllers
 
 
         /// <summary>
-        /// Gets all the animals that corresponds to the eclosure id and the give langauge.
+        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
         /// </summary>
-        /// <param name="encId">The enclosure id.</param>
+        /// <param name="encId">The enclosure animalId.</param>
         /// <param name="language">The data language.</param>
         /// <returns>The animals that are in the enclosure.</returns>
         [HttpGet]
@@ -139,14 +139,14 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="id">The animals to delete.</param>
         [HttpPost]
-        [Route("animals/{id}")]
-        public void DeleteAnimal(int id)
+        [Route("animals/delete/{animalId}")]
+        public void DeleteAnimal(int animalId)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteAnimal(id);
+                    db.DeleteAnimal(animalId);
                 }
             }
             //TODO: add catch Invalid operation exception

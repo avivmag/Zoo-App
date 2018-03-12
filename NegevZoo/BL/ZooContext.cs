@@ -141,14 +141,14 @@ namespace BL
         /// <param name="enclosures">The enclosures to update.</param>
         public void UpdateEnclosure(Enclosure enclosure)
         {
+            //validate enclosure attributes
             //0. Exists.
             if (enclosure == default(Enclosure))
             {
                 throw new ArgumentException("No enclosure given.");
             }
 
-            //validate enclosure attributes
-            //1. lang
+            //1. language
             if (!ValidLanguage(enclosure.Language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
