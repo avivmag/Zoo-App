@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace ZooTests
 {
@@ -53,6 +54,7 @@ namespace ZooTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void GetAllPricesLanguageNotExist()
         {
             var prices = ZooInfoController.GetAllPrices(nonExistantLangauge);
