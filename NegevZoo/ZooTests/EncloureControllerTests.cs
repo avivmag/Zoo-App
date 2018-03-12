@@ -15,6 +15,7 @@ namespace ZooTests
         private EnclosureController enclosureController;
         private int nonExistantLang;
 
+        #region tests SetUp and TearDown
         [TestInitialize]
         public void SetUp()
         {
@@ -24,6 +25,14 @@ namespace ZooTests
             nonExistantLang = 100;
         }
 
+        [TestCleanup]
+        public void EnclosureCleanUp()
+        {
+            ZooContext.CleanDb();
+        }
+
+        #endregion
+
         #region GetAllEnclosures()
         [TestMethod]
         public void GetAllEnclosuresLangHe()
@@ -32,15 +41,16 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void getAllEnclosuresLangEng()
+        public void GetAllEnclosuresLangEng()
         {
             Assert.AreEqual(2, enclosureController.GetAllEnclosures((int)Languages.en).Count());
         }
 
         [TestMethod]
-        public void getAllEnclosuresLangNotExist()
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAllEnclosuresLangNotExist()
         {
-            Assert.AreEqual(null, enclosureController.GetAllEnclosures(nonExistantLang));
+            enclosureController.GetAllEnclosures(nonExistantLang);
         }
         #endregion
 
@@ -63,19 +73,17 @@ namespace ZooTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void GetEnclosuresByIdWrongId()
         {
-            var enc = enclosureController.GetEnclosureById(400);
-
-            Assert.IsNull(enc);
+            enclosureController.GetEnclosureById(400);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void GetEnclosuresByIdWrongLanguage()
         {
-            var enc = enclosureController.GetEnclosureById(1, nonExistantLang);
-
-            Assert.IsNull(enc);
+            enclosureController.GetEnclosureById(1, nonExistantLang);
         }
         #endregion
 
@@ -126,11 +134,10 @@ namespace ZooTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void GetEnclosuresByNameWrongLanguage()
         {
-            var enc = enclosureController.GetEnclosureByName("Houman Monkeys", nonExistantLang);
-
-            Assert.IsNull(enc);
+            enclosureController.GetEnclosureByName("Houman Monkeys", nonExistantLang);
         }
 
         [TestMethod]
@@ -434,11 +441,6 @@ namespace ZooTests
             Assert.AreEqual(1, encsHeb.Count());
         }
         #endregion
-
-        [TestCleanup]
-        public void EnclosureCleanUp()
-        {
-            ZooContext.CleanDb();
-        }
+        
     }
 }
