@@ -30,9 +30,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -53,8 +54,9 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -74,8 +76,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
