@@ -51,7 +51,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    return db.GetAnimalById(language, id);
+                    return db.GetAnimalById(language, animalId);
                 }
             }
             catch (ArgumentException argExp)
