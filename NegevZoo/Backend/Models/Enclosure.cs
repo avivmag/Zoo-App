@@ -12,5 +12,7 @@ namespace Backend.Models
         public string Name { get; set; }
         public string Story { get; set; }
         public int Language { get; set; }
+        public Double Longtitude { get; set; }
+        public Double Latitude{ get; set; }
     }
 }

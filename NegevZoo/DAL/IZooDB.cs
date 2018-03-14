@@ -14,27 +14,63 @@ namespace DAL
 
         protected DbSet<Animal> Animals { get; set; }
         protected DbSet<Enclosure> Enclosures { get; set; }
+        protected DbSet<RecurringEvent> RecurringEvents { get; set; }
         protected DbSet<WallFeed> WallFeeds { get; set; }
+        protected DbSet<Price> Prices { get; set; }
+        protected DbSet<GeneralInfo> GeneralInfo { get; set; }
+        protected DbSet<OpeningHour> OpeningHours { get; set; }
+        protected DbSet<ContactInfo> ContactInfos { get; set; }
+        protected DbSet<SpecialEvent> SpecialEvents { get; set; }
 
         #endregion 
 
         #region Getters
 
-        public DbSet<Animal> GetAnimals()
+        public DbSet<Animal> GetAllAnimals()
         {
             return Animals;
         }
 
-        public DbSet<Enclosure> GetEnclosures()
+        public DbSet<Enclosure> GetAllEnclosures()
         {
             return Enclosures;
         }
 
-        public IEnumerable<WallFeed> GetWallFeed()
+
+        public DbSet<RecurringEvent> GetAllRecuringEvents()
+        {
+            return RecurringEvents;
+        }
+
+        public DbSet<Price> GetAllPrices()
+        {
+            return Prices;
+        }
+
+        public DbSet<GeneralInfo> GetGeneralInfo()
+        {
+            return GeneralInfo;
+        }
+
+        public DbSet<OpeningHour> GetAllOpeningHours()
+        {
+            return OpeningHours;
+        }
+
+        public DbSet<ContactInfo> GetAllContactInfos()
+        {
+            return ContactInfos;
+        }
+
+        public DbSet<SpecialEvent> GetAllSpecialEvents()
+        {
+            return SpecialEvents;
+        }
+
+        public DbSet<WallFeed> GetAllWallFeeds()
         {
             return WallFeeds;
         }
-
         #endregion
 
         #region Cache

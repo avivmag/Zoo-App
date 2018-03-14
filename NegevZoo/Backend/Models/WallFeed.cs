@@ -9,8 +9,8 @@ namespace Backend.Models
     public class WallFeed
     {
         public int Id { get; set; }
-        //public DateTime Created { get; set; }
-        public string Stories { get; set; } //Change to Info
+        public DateTime Created { get; set; }
+        public string Info { get; set; }
         public int Language { get; set; }
     }
 }

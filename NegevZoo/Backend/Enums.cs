@@ -12,4 +12,12 @@ namespace Backend
         en = 2,
         ar = 3
     };
+
+    public enum AvailableMinutes
+    {
+        Zero            = 0,
+        Quarter         = 15,
+        Half            = 30,
+        ThreeQuarters   = 45
+    };
 }

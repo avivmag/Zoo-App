@@ -14,7 +14,7 @@
         <activity
             android:name=".pl.animals.AnimalActivity"
             android:label="@string/title_activity_animal" />
-        <activity android:name=".pl.MainActivity">
+        <activity
             android:name=".pl.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
