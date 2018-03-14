@@ -1,42 +1,52 @@
 package com.zoovisitors.backend;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Gili on 10/03/2018.
  */
 
 public class Schedule {
+    @SerializedName("Id")
     private int id;
-    private String name;
-    private String time;
+    @SerializedName("Description")
+    private String description;
+    @SerializedName("StartDate")
+    private String startTime;
+    @SerializedName("EndDate")
+    private String endTime;
+    @SerializedName("Stories")
     private String image;
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public String getTime() {
-        return time;
+    public String getStartTime() {
+        return startTime;
     }
 
     public String getImage() {
         return image;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getEndTime() { return endTime; }
+
+    public void setId(int id) { this.id = id; }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
 
     public void setImage(String image) {
         this.image = image;

@@ -2,6 +2,7 @@ package com.zoovisitors.pl.schedule;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,6 @@ import android.widget.TextView;
 
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gili on 10/03/2018.
@@ -32,23 +30,29 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
         public ImageView schedule_card_image;
         public TextView event;
+        public TextView date;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            event = (TextView) itemView.findViewById(R.id.schedule_card_text);
+            event = (TextView) itemView.findViewById(R.id.schedule_card_desc);
+            date = (TextView) itemView.findViewById(R.id.schedule_card_date);
         }
-
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.event.setText(schedulers[position].getName());
-        //viewHolder.enclosure_card_image.setImageResource(images[i]);
+        viewHolder.event.setText(schedulers[position].getDescription());
+        
+        String startDate = schedulers[position].getStartTime().substring(0, 10);
+        String endDate = schedulers[position].getEndTime().substring(0, 10);
+        String scheduleDate = startDate + " - " + endDate;
+
+        viewHolder.date.setText(scheduleDate);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return schedulers.length;
     }
 
     @Override

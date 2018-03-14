@@ -99,7 +99,7 @@ public class EnclosureActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycleView.setLayoutManager(layoutManager);
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames, animals);
+        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animals);
         recycleView.setAdapter(adapter);
         ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
         imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));

@@ -44,5 +44,7 @@
     <string name="opening_hours_headline">The times we are open:</string>
     <string name="prices_headline">How little we charge:</string>
 
+    <!-- Schedule -->
+    <string name="todays_event">Today\'s events</string>
     <string name="choose_route">Choose a route</string>
 </resources>

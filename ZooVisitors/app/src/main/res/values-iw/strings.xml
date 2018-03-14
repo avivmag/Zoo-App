@@ -43,4 +43,8 @@
     <string name="prices_headline">מחירון:</string>
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
     <string name="choose_route">בחר מסלול</string>
+
+
+    <!-- Schedule -->
+    <string name="todays_event">אירועי היום</string>
 </resources>

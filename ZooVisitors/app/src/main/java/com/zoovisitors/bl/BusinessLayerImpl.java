@@ -9,6 +9,7 @@ import com.zoovisitors.backend.AboutZoo;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.NewsFeed;
+import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.backend.Species;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
@@ -54,8 +55,24 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
+    public void getAllAnimals(final GetObjectInterface goi) {
+        ni.post("animals/all/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Animal[] animals = gson.fromJson(response, Animal[].class);
+                goi.onSuccess(animals);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("Animals", "Can't get animals from server");
+            }
+        });
+    }
+
+    @Override
     public void getEnclosures(final GetObjectInterface goi) {
-        ni.post("enclosures/" + GlobalVariables.language, new ResponseInterface() {
+        ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface() {
             @Override
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
@@ -77,7 +94,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public void getNewsFeed(final GetObjectInterface goi) {
 
-        ni.post("wallfeed/1", new ResponseInterface() {
+        ni.post("Wallfeed/all/" + GlobalVariables.language, new ResponseInterface() {
 
 
 
@@ -97,5 +114,21 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public void getSpecies() {
         Species species = gson.fromJson(json, Species.class);
+    }
+
+    @Override
+    public void getSchedule(final GetObjectInterface goi) {
+        ni.post("SpecialEvents/all/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Schedule[] schedules = gson.fromJson(response, Schedule[].class);
+                goi.onSuccess(schedules);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("Schedule", "Can't get schedule from server");
+            }
+        });
     }
 }

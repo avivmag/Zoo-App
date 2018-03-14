@@ -8,6 +8,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/todays_events_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/todays_event" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/schedule_recycle"
             android:layout_width="match_parent"
