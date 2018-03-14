@@ -112,11 +112,6 @@ namespace BL
                                                             (e.Latitude <= latitude + 5 && e.Latitude >= latitude - 5) );
         }
 
-        public IEnumerable<WallFeed> GetWallFeed(int language)
-        {
-            return zooDB.GetWallFeed().Where(e => e.Language == language).ToArray();
-        }
-
         /// <summary>
         /// Gets the enclosure's recurring events by it's id.
         /// </summary>
@@ -201,6 +196,22 @@ namespace BL
         }
 
         /// <summary>
+        /// Delete The recurringEvent.
+        /// </summary>
+        /// <param name="id">The RecurringEvent's id to delete.</param>
+        public void DeleteRecurringEvent(int id)
+        {
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.Id == id);
+
+            if (recEvent == null)
+            {
+                throw new ArgumentException("Wrong input. RecurringEvent's id doesn't exists.");
+            }
+
+            zooDB.GetAllRecuringEvents().Remove(recEvent);
+        }
+
+        /// <summary>
         /// Delete The enclosure.
         /// </summary>
         /// <param name="id">The enclosure's id to delete.</param>
@@ -215,13 +226,13 @@ namespace BL
                 throw new ArgumentException("Wrong input. enclosure ID doesn't exists.");
             }
 
-            //2. no animals
+            //2. exists animals
             if (zooDB.GetAllAnimals().Any(an => an.EncId == id))
             {
                 throw new InvalidOperationException("Threre are animals that related to this enclosure");
             }
 
-            //3. exsits recurring events
+            //3. exists recurring events
             if (zooDB.GetAllRecuringEvents().Any(re => re.EncId == id))
             {
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
@@ -230,6 +241,20 @@ namespace BL
             zooDB.GetAllEnclosures().Remove(enclosure);
         }
 
+        /// <summary>
+        /// Gets the recurring events.
+        /// </summary>
+        /// <param name="language">The RecurringEvent's data language.</param>
+        /// <returns>The RecurringEvents.</returns>
+        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
+        {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            return zooDB.GetAllRecuringEvents().Where(gr => gr.Language == language);
+        }
         #endregion
 
         #region Animals
@@ -276,7 +301,7 @@ namespace BL
         /// <param name="language">The data's language</param>
         /// <param name="name">The animal's name.</param>
         /// <returns>The animal.</returns>
-        public Animal GetAnimalByName(string name, int language)
+        public IEnumerable<Animal> GetAnimalByName(string name, int language)
         {
             //TODO: should a wrong name return empty list or exception?
             if (!ValidLanguage(language))
@@ -284,7 +309,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllAnimals().SingleOrDefault(a => a.Language == language && a.Name.Contains(name));
+            return zooDB.GetAllAnimals().Where(a => a.Language == language && a.Name.Contains(name));
         }
 
         /// <summary>
@@ -300,7 +325,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            //check if the enclosure exists
+            //check if the enclosure exists with the wanted langauge
             if (GetAllEnclosures(language).SingleOrDefault(en => en.Id == encId) == null)
             {
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
@@ -385,7 +410,6 @@ namespace BL
 
         #region Zoo Info
 
-
         #region Prices
         /// <summary>
         /// Gets all the Price elements.
@@ -416,15 +440,21 @@ namespace BL
             }
 
             //1. check that the population is valid
-            if (String.IsNullOrWhiteSpace(price.Population))
+            if (String.IsNullOrWhiteSpace(price.Population) || String.IsNullOrEmpty(price.Population))
             {
                 throw new ArgumentException("Wrong input. The price population is empty or null");
             }
             
-            //2. chek that the price amount is valid
+            //2. check that the price amount is valid
             if (price.PricePop < 0)
             {
                 throw new ArgumentException("Wrong input, The price amount is lower than 0");
+            }
+
+            //3. check the language
+            if (!ValidLanguage(price.Language))
+            {
+                throw new ArgumentException("Wrong Input. Wrong Language");
             }
             
             var prices = zooDB.GetAllPrices();
@@ -506,7 +536,7 @@ namespace BL
             }
 
             //1. check the day
-            if (String.IsNullOrWhiteSpace(openingHour.Day))
+            if (String.IsNullOrWhiteSpace(openingHour.Day) || String.IsNullOrEmpty(openingHour.Day))
             {
                 throw new ArgumentException("Wrong input. The day is empty or null");
             }
@@ -518,7 +548,7 @@ namespace BL
             }
 
             //3. check the closing time
-            if (ValidHour(openingHour.EndHour, openingHour.EndMin))
+            if (!ValidHour(openingHour.EndHour, openingHour.EndMin))
             {
                 throw new ArgumentException("Wrong input. Wrong closing time");
             }
@@ -614,15 +644,21 @@ namespace BL
             } 
 
             //1. check that the address is valid
-            if (String.IsNullOrWhiteSpace(contactInfo.Address))
+            if (String.IsNullOrWhiteSpace(contactInfo.Address) || String.IsNullOrEmpty(contactInfo.Address))
             {
                 throw new ArgumentException("Wrong input. ContactInfo's address is empty or null");
             }
 
             //2. check that the via is valid
-            if (String.IsNullOrWhiteSpace(contactInfo.Via))
+            if (String.IsNullOrWhiteSpace(contactInfo.Via) || String.IsNullOrEmpty(contactInfo.Via))
             {
                 throw new ArgumentException("Wrong input. ContactInfo's via is empty or null");
+            }
+
+            //3. check the language
+            if (!ValidLanguage(contactInfo.Language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
             }
 
             var contactInfos = zooDB.GetAllContactInfos();
@@ -827,7 +863,7 @@ namespace BL
             }
 
             //2. check the info
-            if (String.IsNullOrWhiteSpace(feed.Info))
+            if (String.IsNullOrWhiteSpace(feed.Info) || String.IsNullOrEmpty(feed.Info))
             {
                 throw new ArgumentException("Wrong input. The info is null or white space");
             }
@@ -878,10 +914,13 @@ namespace BL
         public void DeleteWallFeed(int id)
         {
             var wallFeed = zooDB.GetAllWallFeeds().SingleOrDefault(wf => wf.Id == id);
-            if (wallFeed != null)
+
+            if (wallFeed == null)
             {
-                zooDB.GetAllWallFeeds().Remove(wallFeed);
+                throw new ArgumentException("Wrong input. WallFeed's id doesn't exists");
             }
+
+            zooDB.GetAllWallFeeds().Remove(wallFeed);
         }
 
         #endregion
@@ -894,6 +933,11 @@ namespace BL
         /// <returns>The zoo's about info.</returns>
         public IEnumerable<String> GetZooAboutInfo(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             return zooDB.GetGeneralInfo()
                 .Where(ge => ge.Language == language)
                 .Select(ge => ge.aboutUs)
@@ -907,12 +951,22 @@ namespace BL
         /// <param name="info">The info to update.</param>
         public void UpdateZooAboutInfo(string info, int language)
         {
+            //validate the AboutUs attributs
+            //1. validate info
+            if (String.IsNullOrWhiteSpace(info) || String.IsNullOrEmpty(info))
+            {
+                throw new ArgumentException("Wrong input. The info is empty or null");
+            }
+
+            //2. validate language
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.Language == language);
 
-            if (generalInfo != null)
-            {
-                generalInfo.aboutUs = info;
-            }
+            generalInfo.aboutUs = info;
         }
 
         /// <summary>
@@ -922,6 +976,11 @@ namespace BL
         /// <returns>The zoo's openingHourNote.</returns>
         public IEnumerable<String> GetOpeningHourNote(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             return zooDB.GetGeneralInfo()
                 .Where(ge => ge.Language == language)
                 .Select(ge => ge.openingHoursNote)
@@ -935,12 +994,22 @@ namespace BL
         /// <param name="note">The note to update.</param>
         public void UpdateOpeningHourNote(string note, int language)
         {
+            //validate the OpeningHourNote attributs
+            //1. validate note
+            if (String.IsNullOrWhiteSpace(note))
+            {
+                throw new ArgumentException("Wrong input. The note is empty or null");
+            }
+
+            //2. validate language
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.Language == language);
 
-            if (generalInfo != null)
-            {
-                generalInfo.openingHoursNote = note;
-            }
+            generalInfo.openingHoursNote = note;
         }
 
         /// <summary>
@@ -950,6 +1019,11 @@ namespace BL
         /// <returns>The zoo's ContactInfoNote.</returns>
         public IEnumerable<String> GetContactInfoNote(int language)
         {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             return zooDB.GetGeneralInfo()
                 .Where(ge => ge.Language == language)
                 .Select(ge => ge.contactInfoNote)
@@ -963,30 +1037,28 @@ namespace BL
         /// <param name="note">The note to update.</param>
         public void UpdateContactInfoNote(string note, int language)
         {
+            //validate the ContactInfoNote attributs
+            //1. validate note
+            if (String.IsNullOrWhiteSpace(note))
+            {
+                throw new ArgumentException("Wrong input. The note is empty spaces or null");
+            }
+
+            //2. validate language
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language");
+            }
+
             var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.Language == language);
 
-            if (generalInfo != null)
-            {
-                generalInfo.contactInfoNote= note;
-            }
+            generalInfo.contactInfoNote= note;
         }
         #endregion
 
-        
-
-
-
         #endregion
 
-        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
-        {
-            return zooDB.GetAllRecuringEvents().Where(gr => gr.Language == language);
-        }
-
-        public void Dispose()
-        {
-            // zooDB.saveChanges();
-        }
+        #region Validate functions
 
         private bool ValidLanguage(int language)
         {
@@ -996,6 +1068,13 @@ namespace BL
         private bool ValidHour(int hour, int min)
         {
             return hour > 0 && hour < 24 && Enum.IsDefined(typeof(AvailableMinutes), min);
+        }
+
+        #endregion
+
+        public void Dispose()
+        {
+            // zooDB.saveChanges();
         }
     }
 }
