@@ -10,7 +10,6 @@ namespace NegevZoo.Controllers
 {
     public class ZooInfoController : ControllerBase
     {
-
         #region Price
 
         /// <summary>
@@ -556,8 +555,6 @@ namespace NegevZoo.Controllers
 
         #endregion
     }
-
-    
 
     
 }

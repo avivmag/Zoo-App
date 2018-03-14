@@ -25,16 +25,15 @@ import java.util.List;
 public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
 
     private String[] animalsImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private String[] animalsNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    //private String[] animalsNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
 
     private AppCompatActivity tempActivity;
     private int[] images;
     private Animal[] animals;
 
-    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames, Animal[] animals){
+    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] animalsImages, Animal[] animals){
         this.tempActivity = appCompatActivity;
-        this.animalsImages = enclosuresImages;
-        this.animalsNames = enclosuresNames;
+        this.animalsImages = animalsImages;
         this.animals = animals;
     }
 
@@ -69,7 +68,7 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                     Intent intent = new Intent(tempActivity, AnimalActivity.class);
                     Bundle clickedAnimal = new Bundle();
                     clickedAnimal.putInt("image", images[pos]); //Clicked image
-                    clickedAnimal.putString("name", animalsNames[pos]);
+                    clickedAnimal.putString("name", animals[pos].getName());
                     clickedAnimal.putSerializable("animal", animals[pos]);
 
                     intent.putExtras(clickedAnimal);
@@ -89,12 +88,12 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        viewHolder.animalName.setText(animalsNames[i]);
+        viewHolder.animalName.setText(animals[i].getName());
         viewHolder.animal_card_image.setImageResource(images[i]);
     }
 
     @Override
     public int getItemCount() {
-        return animalsNames.length;
+        return animals.length;
     }
 }
