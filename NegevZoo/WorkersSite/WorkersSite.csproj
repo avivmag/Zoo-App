@@ -66,6 +66,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api\animals.service.js" />
+    <Content Include="api\http.service.js" />
     <Content Include="app.config.local.js" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">

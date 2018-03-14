@@ -138,7 +138,7 @@ namespace NegevZoo.Controllers
         /// Removes an animal.
         /// </summary>
         /// <param name="id">The animals to delete.</param>
-        [HttpPost]
+        [HttpDelete]
         [Route("animals/delete/{animalId}")]
         public void DeleteAnimal(int animalId)
         {

@@ -5,5 +5,6 @@ package com.zoovisitors;
  */
 
 public class GlobalVariables {
-    public static String ServerAddress = null;
+    public static String ServerAddress = "negevzoo.sytes.net:50000/";
+    public static int language = 1; //Hebrew
 }

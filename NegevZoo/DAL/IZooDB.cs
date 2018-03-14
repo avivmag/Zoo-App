@@ -36,6 +36,7 @@ namespace DAL
             return Enclosures;
         }
 
+
         public DbSet<RecurringEvent> GetAllRecuringEvents()
         {
             return RecurringEvents;
@@ -77,6 +78,8 @@ namespace DAL
         protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
+
+     
 
         #endregion
     }

@@ -50,9 +50,9 @@ public class EnclosureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
         bl = new BusinessLayerImpl(this);
-        int pos = clickedEnclosure.getInt("pos");
+        int id = clickedEnclosure.getInt("id");
 
-        bl.getAnimals(pos, new GetObjectInterface() {
+        bl.getAnimals(id, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 animals = (Animal[]) response;
@@ -99,7 +99,7 @@ public class EnclosureActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycleView.setLayoutManager(layoutManager);
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animalsNames, animals);
+        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animals);
         recycleView.setAdapter(adapter);
         ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
         imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));

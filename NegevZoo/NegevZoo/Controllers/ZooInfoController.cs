@@ -10,8 +10,8 @@ namespace NegevZoo.Controllers
 {
     public class ZooInfoController : ControllerBase
     {
-
         #region Price
+
         /// <summary>
         /// Gets all the Price with data in that language.
         /// </summary>
@@ -157,6 +157,7 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region Contact Info
+        
         /// <summary>
         /// Gets all the ContactInfo elements with data in that language.
         /// </summary>
@@ -557,7 +558,6 @@ namespace NegevZoo.Controllers
         }
         #endregion
         
-
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
@@ -567,8 +567,6 @@ namespace NegevZoo.Controllers
 
         #endregion
     }
-
-    
 
     
 }
