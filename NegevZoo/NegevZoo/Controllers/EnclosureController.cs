@@ -184,7 +184,30 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            //TODO add catch to InvalidOperationException
+            catch (ArgumentException argExp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+            catch (InvalidOperationException invOpExp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        [HttpDelete]
+        [Route("enclosures/recurring/delete/{eventId}")]
+        public void DeleteRecurringEvent(int eventId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteRecurringEvent(eventId);
+                }
+
+            }
             catch (ArgumentException argExp)
             {
                 //TODO: add log

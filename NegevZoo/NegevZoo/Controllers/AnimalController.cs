@@ -69,7 +69,7 @@ namespace NegevZoo.Controllers
         /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
         [Route("animals/name/{name}/{language}")]
-        public Animal GetAnimalByName(string name, int language)
+        public IEnumerable<Animal> GetAnimalByName(string name, int language)
         {
             try
             {
