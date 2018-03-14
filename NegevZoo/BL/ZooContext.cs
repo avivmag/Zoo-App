@@ -112,11 +112,6 @@ namespace BL
                                                             (e.Latitude <= latitude + 5 && e.Latitude >= latitude - 5) );
         }
 
-        public IEnumerable<WallFeed> GetWallFeed(int language)
-        {
-            return zooDB.GetWallFeed().Where(e => e.Language == language).ToArray();
-        }
-
         /// <summary>
         /// Gets the enclosure's recurring events by it's id.
         /// </summary>
