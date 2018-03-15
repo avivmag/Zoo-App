@@ -10,7 +10,6 @@ namespace NegevZoo.Controllers
 {
     public class ZooInfoController : ControllerBase
     {
-
         #region Price
 
         /// <summary>
@@ -102,9 +101,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -124,8 +124,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -145,8 +147,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -171,9 +175,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -193,8 +198,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -214,8 +221,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -239,12 +248,14 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
+        //TODO: should this function return SpecialEvent only if all of it contained in the given dates or only one day is enough
         /// <summary>
         /// Gets SpecialEvent elements between the wanted dates with data in that language.
         /// </summary>
@@ -264,9 +275,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -286,8 +298,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -307,8 +321,10 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -331,11 +347,11 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetAllWallFeeds(language);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -353,10 +369,11 @@ namespace NegevZoo.Controllers
                 {
                     db.UpdateWallFeed(feed);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -374,10 +391,11 @@ namespace NegevZoo.Controllers
                 {
                     db.DeleteWallFeed(feedId);
                 }
-
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
@@ -405,9 +423,10 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -427,8 +446,10 @@ namespace NegevZoo.Controllers
                     db.UpdateZooAboutInfo(info, language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -454,9 +475,10 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -476,8 +498,10 @@ namespace NegevZoo.Controllers
                     db.UpdateOpeningHourNote(note, language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -503,9 +527,10 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
-                return null;
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -525,8 +550,10 @@ namespace NegevZoo.Controllers
                     db.UpdateContactInfoNote(note, language);
                 }
             }
-            catch
+            catch (ArgumentException argExp)
             {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
@@ -540,8 +567,6 @@ namespace NegevZoo.Controllers
 
         #endregion
     }
-
-    
 
     
 }
