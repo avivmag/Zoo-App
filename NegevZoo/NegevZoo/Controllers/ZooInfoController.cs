@@ -81,9 +81,11 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
         #endregion
 
         #region Opening hours
+ 
         /// <summary>
         /// Gets all the OpeningGours elements with data in that language.
         /// </summary>
@@ -231,6 +233,7 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region Special events
+        
         /// <summary>
         /// Gets all the SpecialEvent elements with data in that language.
         /// </summary>
@@ -398,9 +401,11 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
         #endregion
 
         #region General Info
+        
         /// <summary>
         /// Gets the zoo's about info.
         /// </summary>
@@ -556,6 +561,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
         #endregion
         
         #region ModelClasses

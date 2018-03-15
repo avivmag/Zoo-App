@@ -1,33 +1,48 @@
 ﻿<div ng-controller="zooFeedWallCtrl as vm">
-    <md-card>
-        <md-card-title>
+    <div layout="row" layout-align="center center">
+        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+    </div>
+
+    <md-card ng-if="!isLoading">
+        <md-card-title layout="row" layout-align="space-between">
             <md-card-title-text class="md-headline">עדכונים קודמים:</md-card-title-text>
+
+            <div layout ="column">
+                <md-select ng-model="language" ng-change="updateFeed(language)" placeholder="אנא בחר שפה">
+                    <md-option ng-value="1">עברית</md-option>
+                    <md-option ng-value="2">אנגלית</md-option>
+                    <md-option ng-value="3">ערבית</md-option>
+                </md-select>
+            </div>
         </md-card-title>
-        <md-card-content>
-            <div style="margin-right: 10%" ng-repeat="feed in feedWall" layout="row" layout-align="start center">
-                <md-button style="margin-bottom: 25px" ng-if="!$last" ng-click="confirmDeleteFeed($event, feed, feedWall)" >
+        <md-card-content ng-if="feedWall && feedWall.length > 0">
+            <div style="margin-right: 10%" ng-repeat="feed in feedWall | orderBy:'id'" layout="row" layout-align="start center">
+                <md-button style="margin-bottom: 25px" ng-if="!feed.isNew" ng-click="confirmDeleteFeed($event, feed, feedWall)" >
                     <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
                 </md-button>
-                <md-button style="margin-bottom: 25px" ng-if="$last" ng-click="addFeedToWall(feed, feedWall)">
-                    <md-icon md-svg-src="icons/ic_add_circle_outline_black_24px.svg"></md-icon>
+                <md-button style="margin-bottom: 25px" ng-disabled="feed.isNew" ng-if="feed.isNew">
+                    <md-icon md-svg-src="icons/ic_new_releases_black_24px.svg"></md-icon>
                 </md-button>
 
                 <md-card-content layout="row">
                     <md-input-container>
-                        <label ng-if="feed.isNew" style="color: red;">חדש!</label>
-                        <input style="min-width: 400px" ng-model="feed.title" required type="text">
+                        <label ng-show="feed.isNew">הכנס עדכון</label>
+                        <input style="min-width: 400px" ng-model="feed.info" required type="text">
                     </md-input-container>
 
-                    <md-datepicker style="min-width: 90px" ng-model="feed.date" md-placeholder="הכנס תאריך"></md-datepicker>
+                    <md-datepicker style="min-width: 90px" ng-model="feed.created"></md-datepicker>
                 </md-card-content>
-                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addNewFeed(feed)">שמור עדכון חדש</md-button>
-                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addNewFeed(feed)">עדכון תוכן</md-button>
+                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed)">שמור עדכון חדש</md-button>
+                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed)">עדכון תוכן</md-button>
                 
                 <div ng-if="feed.isNew" style="margin-right: 15px" layout="row">
                     <md-checkbox ng-model="isPushMessage">שלח כהודעת פוש</md-checkbox>
                     <md-checkbox ng-model="isFeedWall">הוסף לקיר העדכונים</md-checkbox>
                 </div>
             </div>
+        </md-card-content>
+        <md-card-content ng-if="!isLoading && (!feedWall || feedWall.length === 0)">
+            <h3>אין נתונים</h3>
         </md-card-content>
     </md-card>
 </div>
