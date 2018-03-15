@@ -66,6 +66,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api\map.service.js" />
+    <Content Include="api\users.service.js" />
     <Content Include="api\zooInfo.service.js" />
     <Content Include="api\animals.service.js" />
     <Content Include="api\http.service.js" />
@@ -81,19 +83,32 @@
   <ItemGroup>
     <Content Include="api\enclosures.service.js" />
     <Content Include="app.config.js" />
-    <Content Include="index.controller.js" />
+    <Content Include="index.component.js" />
     <Content Include="index.html" />
     <Content Include="index.local.html" />
-    <Content Include="login\login.controller.js" />
+    <Content Include="login\login.component.js" />
     <Content Include="login\login.css" />
     <Content Include="login\login.html" />
     <Content Include="main.route.js" />
     <Content Include="mainMenu\feedWall\feedWall.component.js" />
     <Content Include="mainMenu\feedWall\feedWall.html" />
-    <Content Include="mainMenu\generalInfo\mainMenu.controller.js" />
-    <Content Include="mainMenu\generalInfo\mainMenu.html" />
-    <Content Include="mainMenu\mainMenu.controller.js" />
+    <Content Include="mainMenu\generalInfo\contactInfo.component.js" />
+    <Content Include="mainMenu\generalInfo\contactInfo.html" />
+	<Content Include="mainMenu\generalInfo\generalInfo.component.js" />
+    <Content Include="mainMenu\generalInfo\generalInfo.html" />
+	<Content Include="mainMenu\generalInfo\openingHours.component.js" />
+    <Content Include="mainMenu\generalInfo\openingHours.html" />
+	<Content Include="mainMenu\generalInfo\prices.component.js" />
+    <Content Include="mainMenu\generalInfo\prices.html" />
+	<Content Include="mainMenu\map\map.component.js" />
+    <Content Include="mainMenu\map\map.html" />
+	<Content Include="mainMenu\specialEvents\specialEvents.component.js" />
+    <Content Include="mainMenu\specialEvents\specialEvents.html" />
+	<Content Include="mainMenu\userControl\userControl.component.js" />
+    <Content Include="mainMenu\userControl\userControl.html" />
+    <Content Include="mainMenu\mainMenu.component.js" />
     <Content Include="mainMenu\mainMenu.html" />
+	
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +117,6 @@
   <ItemGroup>
     <Folder Include="icons\" />
     <Folder Include="mainMenu\enclosures\" />
-    <Folder Include="mainMenu\events\" />
-    <Folder Include="mainMenu\map\" />
-    <Folder Include="mainMenu\userControl\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

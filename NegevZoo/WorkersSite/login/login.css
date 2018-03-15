@@ -30,3 +30,8 @@
 md-datepicker {
     margin-top: 17px !important;
 }
+
+body.md-toast-animating {
+    position: fixed;
+    overflow: auto !important;
+}

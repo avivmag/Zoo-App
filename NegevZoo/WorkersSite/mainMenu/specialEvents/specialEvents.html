@@ -1,26 +1,28 @@
 ﻿<div ng-controller="zooEventsCtrl as vm">
-    <md-card>
+    <div layout="row" layout-align="center center">
+        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+    </div>
+
+    <md-card ng-if="!isLoading">
         <md-card-title>
             <md-card-title-text class="md-headline">אירועים מיוחדים קיימים:</md-card-title-text>
         </md-card-title>
         <md-card-content>
-            <div style="margin-right: 10%" ng-repeat="event in specialEvents" layout="row" layout-align="start center">
-                <md-button style="margin-bottom: 25px" ng-if="!$last" ng-click="confirmDeleteSpecialEvent($event, event, events)" >
+            <div style="margin-right: 10%" ng-repeat="event in specialEvents | orderBy:'id'" layout="row" layout-align="start center">
+                <md-button style="margin-bottom: 25px" ng-if="!event.isNew" ng-click="confirmDeleteSpecialEvent($event, event, events)" >
                     <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
                 </md-button>
-                <md-button style="margin-bottom: 25px" ng-if="$last" ng-click="addNewSpecialEvent(specialEvents)">
-                    <md-icon md-svg-src="icons/ic_add_circle_outline_black_24px.svg"></md-icon>
+                <md-button style="margin-bottom: 25px" ng-disabled ng-if="event.isNew">
+                    <md-icon md-svg-src="icons/ic_new_releases_black_24px.svg"></md-icon>
                 </md-button>
 
                 <md-card-content layout="row">
                     <md-input-container>
-                        <label ng-if="event.isNew" style="color: red;">חדש!</label>
-                        <input style="min-width: 400px" ng-model="event.title" required type="text">
+                        <input style="min-width: 400px" ng-model="event.description" placeholder="הכנס תיאור" required type="text">
                     </md-input-container>
 
-                    <md-input-container>
-                        <input style="min-width: 80px" ng-model="event.date" required type="text">
-                    </md-input-container>
+                    <md-datepicker style="min-width: 90px" ng-model="event.startDate"></md-datepicker>
+                    <md-datepicker style="min-width: 90px" ng-model="event.endDate"></md-datepicker>
                 </md-card-content>
                 <md-button class="md-primary md-raised" ng-if="event.isNew" ng-click="addEvent(event)">שמור אירוע חדש</md-button>
                 <md-button class="md-primary md-raised" ng-if="!event.isNew" ng-click="addEvent(event)">עדכון אירוע</md-button>
@@ -29,6 +31,9 @@
                     <md-checkbox ng-model="isPushMessage">שלח כהודעת פוש</md-checkbox>
                 </div>
             </div>
+        </md-card-content>
+        <md-card-content ng-if="!isLoading && (!specialEvents || specialEvents.length === 0)">
+            <h3>אין נתונים</h3>
         </md-card-content>
     </md-card>
 </div>
