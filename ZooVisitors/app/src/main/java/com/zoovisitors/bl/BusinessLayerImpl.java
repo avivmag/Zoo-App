@@ -34,7 +34,6 @@ public class BusinessLayerImpl implements BusinessLayer {
 
         // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
         pos++;
-        Log.e("POS", "" + pos);
         ni.post("animals/" + pos, new ResponseInterface() {
             @Override
             public void onSuccess(String response) {
@@ -54,9 +53,21 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public void getEnclosures() {
+    public void getEnclosures(int pos, final GetObjectInterface goi) {
+        pos++;
+        ni.post("enclosures/" + pos, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Enclosure[] enclosures = gson.fromJson(response, Enclosure[].class);
+                goi.onSuccess(enclosures);
+            }
 
-        Enclosure[] enclosures = gson.fromJson(json, Enclosure[].class);
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(null);
+            }
+        });
+
     }
 
     @Override

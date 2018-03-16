@@ -1,7 +1,10 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -10,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,7 +170,15 @@ Object lock = new Object();
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
-                            Log.e("AVIV", resource + " Click");
+//                            AppCompatActivity tempActivity = new AppCompatActivity();
+//                            Intent intent = new Intent(new AppCompatActivity(), EnclosureActivity.class);
+//                            Bundle clickedEnclosure = new Bundle();
+//                            clickedEnclosure.putInt("image", images[pos]); //Clicked image
+//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
+//                            clickedEnclosure.putInt("pos", pos);
+//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+//                            tempActivity.startActivity(intent);
+
                             break;
                         case MotionEvent.ACTION_CANCEL:
                             Log.e("AVIV", resource + " Not a click");

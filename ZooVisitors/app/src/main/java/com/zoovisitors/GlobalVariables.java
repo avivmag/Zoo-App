@@ -5,5 +5,5 @@ package com.zoovisitors;
  */
 
 public class GlobalVariables {
-    public static String ServerAddress = null;
+    public static String ServerAddress = "84.108.171.53";
 }
