@@ -1,7 +1,10 @@
 package com.zoovisitors.pl;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +15,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.bl.BusinessLayer;
@@ -20,9 +25,7 @@ import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.map.MapActivity;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zoovisitors.pl.schedule.ScheduleActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ScrollView sv;
@@ -97,6 +100,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(otherInfoIntent);
             }
         });
+
+        //ScheduleActivity button
+        findViewById(R.id.scheduleButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherInfoIntent = new Intent(MainActivity.this, ScheduleActivity.class);
+                startActivity(otherInfoIntent);
+            }
+        });
+
+        //waze image
+        findViewById(R.id.wazeImg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isAppInstalled(appCompatActivity, "com.waze")){
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
+                }
+                else{
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?ll=31.258137,%2034.745620")));
+                }
+
+            }
+        });
     }
 
     @Override
@@ -160,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void  onSelectLangauge(MenuItem item){
+    public void onSelectLanguage(MenuItem item){
         //TODO: add a language change functionality
 
         MenuItem hebItem = langMenu.getItem(1);
@@ -170,29 +196,43 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.language_arb:
+                GlobalVariables.language = 3;
                 arbItem.setChecked(true);
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
                 return;
             case R.id.language_eng:
+                GlobalVariables.language = 2;
                 engItem.setChecked(true);
                 arbItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
                 return;
             case R.id.language_heb:
+                GlobalVariables.language = 1;
                 hebItem.setChecked(true);
                 engItem.setChecked(false);
                 arbItem.setChecked(false);
                 rusItem.setChecked(false);
                 return;
             case R.id.language_rus:
+                GlobalVariables.language = 4;
                 rusItem.setChecked(true);
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 arbItem.setChecked(false);
                 return;
+        }
+    }
+
+    private boolean isAppInstalled(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 }

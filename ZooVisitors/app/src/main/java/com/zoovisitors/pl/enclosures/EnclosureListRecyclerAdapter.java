@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Enclosure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +23,26 @@ import java.util.List;
 
 public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<EnclosureListRecyclerAdapter.ViewHolder> {
 
-    private String[] enclosuresImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    //TODO: When we can upload images delete the initialization
+    private String[] enclosuresImages = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
     private String[] enclosuresNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    private Enclosure[] enclosures;
 
     private AppCompatActivity tempActivity;
     private int[] images;
 
-    public EnclosureListRecyclerAdapter(AppCompatActivity appCompatActivity, String[] enclosuresImages, String[] enclosuresNames){
+    public EnclosureListRecyclerAdapter(AppCompatActivity appCompatActivity, Enclosure[] enclosures){
         this.tempActivity = appCompatActivity;
-        this.enclosuresImages = enclosuresImages;
-        this.enclosuresNames = enclosuresNames;
+        this.enclosures = enclosures;
+
+        enclosuresNames = new String[enclosures.length];
+        for (int i = 0; i<enclosures.length; i++)
+            enclosuresNames[i] = enclosures[i].getName();
+
+        //TODO: When we can upload images insert this lines
+//        enclosuresImages = new String[enclosures.length];
+//        for (int i = 0; i<enclosures.length; i++)
+//            enclosuresImages[i] = enclosures[i].getImage();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -45,6 +56,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
             for (String image : enclosuresImages) {
 //                AppCompatActivity tempActivity = new AppCompatActivity();
                 imagesList.add(tempActivity.getResources().getIdentifier(image, "mipmap", tempActivity.getPackageName()));
+
             }
 
             int[] ret = new int[imagesList.size()];
@@ -53,7 +65,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
             images = ret;
 
-            enclosure_card_image = (ImageView) itemView.findViewById(R.id.enclosure_card_image);
+            enclosure_card_image = (ImageView) itemView.findViewById(R.id.schedule_card_image);
             enclosureName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
 
 
@@ -66,7 +78,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
                     Bundle clickedEnclosure = new Bundle();
                     clickedEnclosure.putInt("image", images[pos]); //Clicked image
                     clickedEnclosure.putString("name", enclosuresNames[pos]);
-                    clickedEnclosure.putInt("pos", pos);
+                    clickedEnclosure.putInt("id", enclosures[pos].getId());
                     intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                     tempActivity.startActivity(intent);
                 }

@@ -14,12 +14,15 @@ public class Enclosure {
     private String name;
     private String closestEvent;
     private String youtubeVideoUrl;
-    @SerializedName("latitude")
-    private int latitude;
-    @SerializedName("longitude")
-    private int longitude;
-    @SerializedName("Story")
-    private String story;
+    private String image;
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
 
 
     //TODO:: Or I need the image of the enclosure and images of the animals

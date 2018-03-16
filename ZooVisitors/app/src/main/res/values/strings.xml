@@ -16,6 +16,7 @@
     <string name="schedule">Schedule</string>
     <string name="map">Map</string>
     <string name="other_info">Other Info</string>
+    <string name="nav">Navigate to Negev Zoo</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">AnimalActivity</string>
@@ -43,5 +44,7 @@
     <string name="opening_hours_headline">The times we are open:</string>
     <string name="prices_headline">How little we charge:</string>
 
+    <!-- Schedule -->
+    <string name="todays_event">Today\'s events</string>
     <string name="choose_route">Choose a route</string>
 </resources>

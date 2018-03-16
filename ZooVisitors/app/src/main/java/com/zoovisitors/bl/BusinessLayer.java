@@ -11,9 +11,11 @@ import com.zoovisitors.backend.Species;
 public interface BusinessLayer {
 
 
-    void getAnimals(int pos, final GetObjectInterface goi);
-    void getEnclosures(int pos, final GetObjectInterface goi);
-    void getAboutZoo();
-    void getNewsFeed(final GetObjectInterface goi);
-    void getSpecies();
+    public void getAnimals(int pos, final GetObjectInterface goi);
+    public void getAllAnimals(final GetObjectInterface goi);
+    public void getEnclosures(final GetObjectInterface goi);
+    public void getAboutZoo();
+    public void getNewsFeed(final GetObjectInterface goi);
+    public void getSpecies();
+    public void getSchedule(final GetObjectInterface goi);
 }

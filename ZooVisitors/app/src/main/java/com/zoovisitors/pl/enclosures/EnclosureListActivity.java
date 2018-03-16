@@ -4,76 +4,144 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.bl.BusinessLayerImpl;
+import com.zoovisitors.bl.GetObjectInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EnclosureListActivity extends AppCompatActivity {
-
-    private RecyclerView recycleView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private BusinessLayer bl;
+    private RecyclerView recycleViewEnc;
+    private RecyclerView.LayoutManager layoutManagerEnc;
+    private RecyclerView.Adapter adapterEnc;
+    private RecyclerView recycleViewAnim;
+    private RecyclerView.LayoutManager layoutManagerAnim;
+    private RecyclerView.Adapter adapterAnim;
     private SearchView searchEncAnimal;
     private String[] enclosuresImages = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private String[] enclosuresNames = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    private String[] enclosuresNames;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+    private Animal[] animals;
+    //TODO: Delete this line when we have get images
+    private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
     private AppCompatActivity tempActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure_list);
-
-        recycleView = (RecyclerView) findViewById(R.id.enclosure_recycle);
-        layoutManager = new LinearLayoutManager(this);
-        recycleView.setLayoutManager(layoutManager);
-        searchEncAnimal = (SearchView) findViewById(R.id.searchEncAnim);
-
-        adapter = new EnclosureListRecyclerAdapter(this, enclosuresImages, enclosuresNames);
-        recycleView.setAdapter(adapter);
-
-        searchEncAnimal.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        bl = new BusinessLayerImpl(this);
+        bl.getEnclosures(new GetObjectInterface() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                List<String> tempImagesList = new ArrayList<String>();
-                for (String s : enclosuresImages) {
-                    if (s.contains(query))
-                        tempImagesList.add(s);
-                }
-                String[] tempImagesArray = new String[tempImagesList.size()];
-                for(int i = 0; i<tempImagesArray.length; i++)
-                    tempImagesArray[i] = tempImagesList.get(i);
+            public void onSuccess(Object response) {
+                final Enclosure[] enclosures = (Enclosure[]) response;
+                enclosuresNames = new String[enclosures.length];
+                for (int i = 0; i<enclosures.length; i++)
+                    enclosuresNames[i] = enclosures[i].getName();
+
+                //Adapt the recycle to view the card
+                recycleViewEnc = (RecyclerView) findViewById(R.id.enclosure_recycle);
+                layoutManagerEnc = new LinearLayoutManager(tempActivity);
+                recycleViewEnc.setLayoutManager(layoutManagerEnc);
+                adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosures);
+                recycleViewEnc.setAdapter(adapterEnc);
 
 
+                bl.getAllAnimals(new GetObjectInterface() {
+                    @Override
+                    public void onSuccess(Object response) {
 
-                List<String> tempNamesList = new ArrayList<String>();
-                for (String s : enclosuresNames) {
-                    if (s.contains(query))
-                        tempNamesList.add(s);
-                }
-                String[] tempNamesArray = new String[tempImagesList.size()];
-                for(int i = 0; i<tempNamesArray.length; i++)
-                    tempNamesArray[i] = tempNamesList.get(i);
+                        animals= (Animal[]) response;
+
+//                        animalsNames = new String[animals.length];
+//                        for (int i = 0; i<animals.length; i++)
+//                            animalsNames[i] = animals[i].getName();
 
 
+                        //Adapt the recycle to view the card
+                        recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle_enc_list);
+                        layoutManagerAnim = new LinearLayoutManager(tempActivity);
+                        recycleViewAnim.setLayoutManager(layoutManagerAnim);
 
-                adapter = new EnclosureListRecyclerAdapter(tempActivity, tempImagesArray, tempNamesArray);
-                recycleView.setAdapter(adapter);
-                return true;
+                        //adapterAnim = new AnimalsRecyclerAdapter(tempActivity, animalsImages, animals);
+                        //recycleViewAnim.setAdapter(adapterAnim);
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+
+                    }
+                });
+
+                searchEncAnimal = (SearchView) findViewById(R.id.searchEncAnim);
+                searchEncAnimal.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if (query.equals("")) {
+                            adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosures);
+                            recycleViewEnc.setAdapter(adapterEnc);
+                        }
+
+                        List<Enclosure> matchedSearchEnclosures = new ArrayList<Enclosure>();
+
+                        for (Enclosure enc : enclosures){
+                            if (enc.getName().contains(query))
+                                matchedSearchEnclosures.add(enc);
+                        }
+
+                        Enclosure[] enclosuresToAdapt = new Enclosure[matchedSearchEnclosures.size()];
+                        for (int i = 0; i< matchedSearchEnclosures.size(); i++) {
+                            enclosuresToAdapt[i] = matchedSearchEnclosures.get(i);
+                        }
+
+                        adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosuresToAdapt);
+                        recycleViewEnc.setAdapter(adapterEnc);
+
+                        //Search for animals
+
+                        List<Animal> matchedSearchAnimals = new ArrayList<Animal>();
+
+                        for (Animal animal : animals){
+                            if (animal.getName().contains(query))
+                                matchedSearchAnimals.add(animal);
+                        }
+
+                        Animal[] animalsToAdapt = new Animal[matchedSearchAnimals.size()];
+                        for (int i = 0; i< matchedSearchAnimals.size(); i++) {
+                            animalsToAdapt[i] = matchedSearchAnimals.get(i);
+                        }
+
+                        adapterAnim = new AnimalsRecyclerAdapter(tempActivity, animalsImages, animalsToAdapt);
+                        recycleViewAnim.setAdapter(adapterAnim);
+
+
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onFailure(Object response) {
+                Log.e("ENCLOSURES", "Cant get enclosures");
             }
         });
-    }
 
-//    private void
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,9 +151,6 @@ public class EnclosureListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-//        int id = item.getItemId();
-//        if(id == R.id.action_settings)
-//            return true;
         return super.onOptionsItemSelected(item);
     }
 }
