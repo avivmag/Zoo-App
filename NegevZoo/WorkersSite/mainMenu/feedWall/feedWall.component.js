@@ -1,10 +1,11 @@
 ﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService',
     function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
-
         initializeComponent();
 
         function initializeComponent() {
-            $scope.language             = app.defaultLanguage;
+            $scope.languages            = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
+
+            $scope.language             = $scope.languages[0].language;
 
             $scope.updateFeed           = function (language) {
                 $scope.language     = language;
@@ -69,9 +70,9 @@
                         $scope.isLoading = false;
                     });
             }
-        }
 
-        $scope.updateFeed($scope.language);
+            $scope.updateFeed($scope.language);
+        }
 
         function addEmptyFeed(feedWall) {
             var createDate = new Date();

@@ -27,7 +27,7 @@
         getAllSpecialEvents:    function (language)                         { return httpService.httpGet({ url: [specialEventsBaseUrl, 'all', language] }); },
         getSpecialEventByDate:  function (startDate, endDate, language)     { return httpService.httpGet({ url: [specialEventsBaseUrl, 'date', startDate, endDate, language] }); },
         updateSpecialEvent:     function (specialEvent)                     { return httpService.httpPost({ url: [specialEventsBaseUrl, 'update'], body: specialEvent }); },
-        deleteSpecialEvent:     function (specialEventId)                   { return httpService.httpDelete({ url: [specialEventsBaseUrl, 'delete', specialEvent] }); }
+        deleteSpecialEvent:     function (specialEventId)                   { return httpService.httpDelete({ url: [specialEventsBaseUrl, 'delete', specialEventId] }); }
     };
     var feedWall        = {
         getAllFeeds:            function (language)                         { return httpService.httpGet({ url: [wallFeedBaseUrl, 'all', language] }); },

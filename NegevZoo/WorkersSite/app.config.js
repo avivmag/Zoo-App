@@ -9,3 +9,5 @@ app.config(function ($mdDateLocaleProvider) {
 app.defaultLanguage = 1;
 
 app.baseURL = 'http://negevzoo.sytes.net:50000/';
+
+app.baseURL = 'http://localhost:5987/';
