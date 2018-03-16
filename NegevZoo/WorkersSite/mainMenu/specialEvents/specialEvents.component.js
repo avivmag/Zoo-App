@@ -3,10 +3,12 @@
         initializeComponent();
 
         function initializeComponent() {
-            $scope.language                     = app.defaultLanguage;
+            $scope.languages                    = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
+
+            $scope.language                     = $scope.languages[0].language;
 
             $scope.updateSpecialEvents          = function (language) {
-                $scope.isLoading                = true;
+                //$scope.isLoading                = true;
 
                 zooInfoService.specialEvents.getAllSpecialEvents(language).then(
                     function (data) {
@@ -66,19 +68,40 @@
                     .cancel('ביטול');
 
                 $mdDialog.show(confirm).then(function () {
-                    // TODO:: Remove the feed from the wall.
-                    events.splice(events.indexOf(event), 1);
+                    deleteEvent(event, events);
                 });
             }
 
             $scope.updateSpecialEvents(app.defaultLanguage);
         }
 
+        function deleteEvent(event, events) {
+            zooInfoService.specialEvents.deleteSpecialEvent(event.id).then(
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('התוכן נמחק בהצלחה')
+                            .ok('סגור')
+                    );
+
+                    events.splice(events.indexOf(event), 1);
+                },
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('התרחשה שגיאה בעת מחיקת התוכן')
+                            .ok('סגור')
+                    );
+                });
+        }
+
         function addEmptySpecialEvent(specialEvents) {
             var startDate   = new Date();
             var endDate     = new Date();
 
-            specialEvents.push({ title: 'הקלד שם אירוע', isNew: true, startDate, endDate, id: 0, language: $scope.language });
+            specialEvents.push({ isNew: true, language: $scope.language, startDate, endDate, id: 0 });
         }
     }])
 .directive('zooEvents', function () {
