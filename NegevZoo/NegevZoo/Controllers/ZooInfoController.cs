@@ -367,6 +367,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    feed.Created = DateTime.Today;
                     db.UpdateWallFeed(feed);
                 }
             }
@@ -557,7 +558,32 @@ namespace NegevZoo.Controllers
             }
         }
         #endregion
-        
+
+        #region Languages
+        /// <summary>
+        /// Gets all the Languages.
+        /// </summary>
+        /// <returns>All The Languages.</returns>
+        [HttpGet]
+        [Route("languages/all")]
+        public IEnumerable<Language> GetAllLanguages()
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllLanguages();
+                }
+
+            }
+            catch (ArgumentException argExp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+        #endregion
+
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult

@@ -25,6 +25,8 @@ namespace DAL
             SpecialEvents      = new TestDbSet<SpecialEvent>();
             OpeningHours       = new TestDbSet<OpeningHour>();
             ContactInfos       = new TestDbSet<ContactInfo>();
+            WorkerUsers        = new TestDbSet<WorkerUser>();
+            AllLanguages          = new TestDbSet<Language>();
 
             Animals.AddRange(InitializeAnimals());
             Enclosures.AddRange(InitializeEnclosures());
@@ -35,6 +37,8 @@ namespace DAL
             SpecialEvents.AddRange(InitialSpecialEvents());
             OpeningHours.AddRange(InitialOpeningHour());
             ContactInfos.AddRange(InitialContactInfos());
+            WorkerUsers.AddRange(InitializeWorkerUsers());
+            AllLanguages.AddRange(InitializeLanguages());
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -866,6 +870,70 @@ namespace DAL
                 }
             };
         }
+
+        private IEnumerable<Language> InitializeLanguages()
+        {
+            return new List<Language>
+            {
+                new Language
+                {
+                    Id      = 1,
+                    Format  = "עברית"
+                },
+
+                new Language
+                {
+                    Id      = 2,
+                    Format  = "English"
+                },
+                new Language
+                {
+                    Id = 3,
+                    Format = "عربيه"
+                },
+                new Language
+                {
+                    Id = 4,
+                    Format = "русский"
+                }
+            };
+        }
+
+        private IEnumerable<WorkerUser> InitializeWorkerUsers()
+        {
+            return new List<WorkerUser>
+            {
+                new WorkerUser
+                {
+                    Id = 1,
+                    IsAdmin = true,
+                    Name = "אור",
+                    Password = "123"
+                },
+                new WorkerUser
+                {
+                    Id = 2,
+                    IsAdmin = false,
+                    Name = "גיל",
+                    Password = "123"
+                },
+                new WorkerUser
+                {
+                    Id = 3,
+                    IsAdmin = true,
+                    Name = "מנהל",
+                    Password = "123"
+                },
+                new WorkerUser
+                {
+                    Id = 4,
+                    IsAdmin = false,
+                    Name = "עובד",
+                    Password = "123"
+                }
+            };
+        }
+
         #endregion
     }
 }

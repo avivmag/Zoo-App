@@ -55,6 +55,7 @@
     <Compile Include="Models\Animal.cs" />
     <Compile Include="Models\ContactInfo.cs" />
     <Compile Include="Models\GeneralInfo.cs" />
+    <Compile Include="Models\Language.cs" />
     <Compile Include="Models\OpeningHour.cs" />
     <Compile Include="Models\Price.cs" />
     <Compile Include="Models\SpecialEvent.cs" />

@@ -34,6 +34,7 @@ namespace BL
             }
         }
 
+
         #region Enclosure
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace BL
 
             return zooDB.GetAllEnclosures().Where(e => e.Language == language).ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -1056,6 +1057,14 @@ namespace BL
         }
         #endregion
 
+        #region Languages
+        public IEnumerable<Language> GetAllLanguages()
+        {
+            return zooDB.getAllLanguages();
+        }
+
+        #endregion
+
         #endregion
 
         #region Validate functions
@@ -1068,6 +1077,113 @@ namespace BL
         private bool ValidHour(int hour, int min)
         {
             return hour > 0 && hour < 24 && Enum.IsDefined(typeof(AvailableMinutes), min);
+        }
+
+        #endregion
+
+        #region Users
+        /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns>The users.</returns>
+        public IEnumerable<WorkerUser> GetAllUsers()
+        {
+            return zooDB.GetAllUsers().ToArray();
+        }
+
+        /// <summary>
+        /// Gets the user by userName and password.
+        /// </summary>
+        /// <param name="userName">The workerUser name.</param>
+        /// <param name="password">The workerUser password.</param>
+        /// <returns>The user.</returns>
+        public WorkerUser GetUserByNameAndPass(string userName, string password)
+        {
+            var user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.Password == password && wu.Name == userName);
+
+            if (user == null)
+            {
+                throw new ArgumentException("Can't find a user with this name and password");
+            }
+
+            return user;
+        }
+
+        /// <summary>
+        /// Updates The WorkerUser.
+        /// </summary>
+        /// <param name="userWorker">The UserWorker to add or update.</param>
+        public void UpdateUser(WorkerUser userWorker)
+        {
+            //check the attributes
+            // 0.Exists
+            if (userWorker == default(WorkerUser))
+            {
+                throw new ArgumentException("No UserWorker given");
+            }
+
+            // 1. Name
+            if (String.IsNullOrEmpty(userWorker.Name) || String.IsNullOrWhiteSpace(userWorker.Name))
+            {
+                throw new ArgumentException("Wrong input. The user name is empty or white spaces");
+            }
+
+            // 2. password
+            if (String.IsNullOrEmpty(userWorker.Password) || String.IsNullOrWhiteSpace(userWorker.Password))
+            {
+                throw new ArgumentException("Wrong input. The password is empty or white spaces");
+            }
+
+            //TODO: add permissions?
+
+            var users = zooDB.GetAllUsers();
+
+            if (userWorker.Id == default(int)) //add a user
+            {
+                //check if the name already exists
+                if (users.Any(wu => wu.Name == userWorker.Name))
+                {
+                    throw new ArgumentException("Wrong input while adding a WorkerUser. Name already exists");
+                }
+
+                users.Add(userWorker);
+            }
+            else //update a user
+            {
+                var oldUser = users.SingleOrDefault(wu => wu.Id == userWorker.Id);
+
+                if (oldUser == null)
+                {
+                    throw new ArgumentException("Wrong input. WorkerUser doesn't exists");
+                }
+
+                //check if the name changed to a name that already exists
+                if (oldUser.Name != userWorker.Name && users.Any(wu => wu.Name == userWorker.Name))
+                {
+                    throw new ArgumentException("Wrong input while updating a WorkerUser. Name already exists");
+                }
+
+                users.Remove(oldUser);
+                users.Add(userWorker);
+            }
+
+        }
+
+        /// <summary>
+        /// Delete The WorkerUser.
+        /// </summary>
+        /// <param name="id">The WorkerUser's id to delete.</param>
+        public void DeleteUser(int workerUserId)
+        {
+            WorkerUser user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.Id == workerUserId);
+
+            //Check that the WorkerUser exists
+            if (user == null)
+            {
+                throw new ArgumentException("Wrong input. WorkerUser ID doesn't exists.");
+            }
+
+            zooDB.GetAllUsers().Remove(user);
         }
 
         #endregion
