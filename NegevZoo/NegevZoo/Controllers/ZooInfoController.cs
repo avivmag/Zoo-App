@@ -370,7 +370,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    feed.Created = DateTime.Today;
+                    feed.created = DateTime.Today;
                     db.UpdateWallFeed(feed);
                 }
             }

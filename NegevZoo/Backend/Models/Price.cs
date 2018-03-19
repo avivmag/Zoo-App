@@ -8,9 +8,9 @@ namespace Backend.Models
 {
     public class Price
     {
-        public int Id { get; set; }
-        public string Population { get; set; }
-        public double PricePop { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public string population { get; set; }
+        public double pricePop { get; set; }
+        public int language { get; set; }
     }
 }

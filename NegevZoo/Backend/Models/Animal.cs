@@ -7,10 +7,10 @@ namespace Backend.Models
 {
     public class Animal
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Story { get; set; }
-        public int EncId { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string story { get; set; }
+        public int encId { get; set; }
+        public int language { get; set; }
     }
 }
