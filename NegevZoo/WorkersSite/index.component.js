@@ -8,24 +8,24 @@
     {
 
         var vm = this;
-        var testEnclosure = {
+        //var testEnclosure = {
 
-            Id:             0,
-            Name:           'test55',
-            Story:          'this is my story',
-            Language:       2,
-            longtitude:     35.0,
-            latitude:       30.0
-        };
+        //    Id:             0,
+        //    Name:           'test55',
+        //    Story:          'this is my story',
+        //    Language:       2,
+        //    longtitude:     35.0,
+        //    latitude:       30.0
+        //};
 
-        var testAnimal = {
+        //var testAnimal = {
 
-            Id:         0,
-            Name:       'testAnimal55',
-            Story:      'this is my story',
-            EncId:      1,
-            Language:   2,
-        };
+        //    Id:         0,
+        //    Name:       'testAnimal55',
+        //    Story:      'this is my story',
+        //    EncId:      1,
+        //    Language:   2,
+        //};
 
         //var allEnclosuresQuery              = enclosureService.getAllEnclosures(1).then(function (data) { console.log('allEnclosures', data); }, function (error) { console.log('allFail', error); });
         //var byNameEnclosuresQuery           = enclosureService.getEnclosureByName('תצוגה', 1).then(function (data) { console.log('byName(b)', data); }, function (error) { console.log('byNameFail', error); });

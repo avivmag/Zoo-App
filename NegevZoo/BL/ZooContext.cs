@@ -714,6 +714,7 @@ namespace BL
         #endregion
 
         #region Special Events
+        
         /// <summary>
         /// Gets all the SpecialEvent elements.
         /// </summary>
@@ -767,7 +768,7 @@ namespace BL
             }
 
             //1. check that the dates are good
-            if (DateTime.Compare(specialEvent.EndDate,specialEvent.StartDate) <=0)
+            if (DateTime.Compare(specialEvent.EndDate,specialEvent.StartDate) < 0)
             {
                 throw new ArgumentException("Wrong input. The end date is earlier than the start date.");
             }
@@ -829,6 +830,7 @@ namespace BL
         #endregion
 
         #region Wall Feed
+        
         /// <summary>
         /// Gets all the feed walls messages.
         /// </summary>
@@ -854,14 +856,14 @@ namespace BL
             //0. Exists
             if (feed == default(WallFeed))
             {
-                throw new ArgumentException("No SpecialEvent was given");
+                throw new ArgumentException("No wall feed was given");
             }
 
-            //1. valid creation date
-            if (DateTime.Compare(DateTime.Today, feed.Created) < 0)
-            {
-                throw new ArgumentException("Wrong input. The creation date can't be later than today.");
-            }
+            ////1. valid creation date
+            //if (DateTime.Compare(DateTime.Today, feed.Created) < 0)
+            //{
+            //    throw new ArgumentException("Wrong input. The creation date can't be later than today.");
+            //}
 
             //2. check the info
             if (String.IsNullOrWhiteSpace(feed.Info) || String.IsNullOrEmpty(feed.Info))
