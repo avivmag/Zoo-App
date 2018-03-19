@@ -21,6 +21,8 @@ namespace DAL
         protected DbSet<OpeningHour> OpeningHours { get; set; }
         protected DbSet<ContactInfo> ContactInfos { get; set; }
         protected DbSet<SpecialEvent> SpecialEvents { get; set; }
+        protected DbSet<WorkerUser> WorkerUsers { get; set; }
+        protected DbSet<Language> AllLanguages { get; set; }
 
         #endregion 
 
@@ -71,6 +73,17 @@ namespace DAL
         {
             return WallFeeds;
         }
+
+        public DbSet<WorkerUser> GetAllUsers()
+        {
+            return WorkerUsers;
+        }
+
+        public DbSet<Language> getAllLanguages()
+        {
+            return AllLanguages;
+        }
+
         #endregion
 
         #region Cache
@@ -79,7 +92,9 @@ namespace DAL
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
 
-     
+
+
+
 
         #endregion
     }
