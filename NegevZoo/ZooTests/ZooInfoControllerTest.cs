@@ -1,5 +1,4 @@
-﻿using Backend;
-using Backend.Models;
+﻿using DAL;
 using BL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
@@ -238,7 +237,7 @@ namespace ZooTests
             var firstFeed = feeds.SingleOrDefault(f => f.id == 1);
             Assert.IsNotNull(firstFeed);
 
-            ZooInfoController.DeleteWallFeed(firstFeed.id);
+            ZooInfoController.DeleteWallFeed((int)firstFeed.id);
 
             feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(15, feeds.Count());

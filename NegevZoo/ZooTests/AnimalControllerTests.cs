@@ -1,8 +1,7 @@
 ﻿using NegevZoo.Controllers;
-using Backend.Models;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Backend;
+using DAL;
 using System.Web.Http;
 using BL;
 
@@ -56,8 +55,8 @@ namespace ZooTests
             Assert.IsInstanceOfType(animal, typeof(Animal));
             Animal animalObject = (Animal)animal;
             
-            Assert.AreEqual(1, animalObject.Id);
-            Assert.AreEqual("Olive Baboon", animalObject.Name);
+            Assert.AreEqual(1, animalObject.id);
+            Assert.AreEqual("Olive Baboon", animalObject.name);
         }
 
         [TestMethod]
@@ -83,8 +82,8 @@ namespace ZooTests
             var animals = animalsController.GetAnimalByName("Olive Baboon", (int)Languages.en);
             Assert.AreEqual(1, animals.Count());
 
-            var olive = animals.SingleOrDefault(a => a.Name == "Olive Baboon");
-            Assert.AreEqual(olive.Id, 1);
+            var olive = animals.SingleOrDefault(a => a.name == "Olive Baboon");
+            Assert.AreEqual(olive.id, 1);
         }
 
         [TestMethod]
@@ -93,13 +92,13 @@ namespace ZooTests
             var animals = animalsController.GetAnimalByName("on", (int)Languages.en);
             Assert.AreEqual(2, animals.Count());
 
-            var olive = animals.SingleOrDefault(a => a.Name == "Olive Baboon");
-            Assert.AreEqual(olive.Id, 1);
+            var olive = animals.SingleOrDefault(a => a.name == "Olive Baboon");
+            Assert.AreEqual(olive.id, 1);
 
-            var monkey = animals.SingleOrDefault(a => a.Name == "Monkey");
-            Assert.AreEqual(monkey.Id, 5);
+            var monkey = animals.SingleOrDefault(a => a.name == "Monkey");
+            Assert.AreEqual(monkey.id, 5);
 
-            var gorila = animals.SingleOrDefault(a => a.Name == "Gorilla");
+            var gorila = animals.SingleOrDefault(a => a.name == "Gorilla");
             Assert.IsNull(gorila);
         }
 
@@ -171,11 +170,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "הקקי שלי",
-                EncId = 2,
-                Language = (int)Languages.he,
-                Story = "הקקי שלי הוא גדול ומוצק"
+                id = default(int),
+                name = "הקקי שלי",
+                enclosureId = 2,
+                language = (int)Languages.he,
+                story = "הקקי שלי הוא גדול ומוצק"
             };
 
             animalsController.UpdateAnimal(an);
@@ -192,11 +191,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "הקקי שלי",
-                EncId = 2,
-                Language = (int)Languages.he,
-                Story = ""
+                id = default(int),
+                name = "הקקי שלי",
+                enclosureId = 2,
+                language = (int)Languages.he,
+                story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -204,8 +203,8 @@ namespace ZooTests
             animals = animalsController.GetAllAnimals();
             Assert.AreEqual(4, animals.Count());
 
-            var newAn = animals.SingleOrDefault(a => a.Name == an.Name);
-            Assert.AreEqual("", newAn.Story);
+            var newAn = animals.SingleOrDefault(a => a.name == an.name);
+            Assert.AreEqual("", newAn.story);
         }
 
         [TestMethod]
@@ -217,11 +216,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "הקקי שלי",
-                EncId = 2,
-                Language = nonExistantLang,
-                Story = ""
+                id = default(int),
+                name = "הקקי שלי",
+                enclosureId = 2,
+                language = nonExistantLang,
+                story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -236,11 +235,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "     ",
-                EncId = 2,
-                Language = (int)Languages.he,
-                Story = ""
+                id = default(int),
+                name = "     ",
+                enclosureId = 2,
+                language = (int)Languages.he,
+                story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -255,11 +254,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "הקקי שלי",
-                EncId = -2,
-                Language = (int)Languages.he,
-                Story = ""
+                id = default(int),
+                name = "הקקי שלי",
+                enclosureId = -2,
+                language = (int)Languages.he,
+                story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -274,11 +273,11 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = default(int),
-                Name = "Monkey",
-                EncId = 3,
-                Language = (int)Languages.en,
-                Story = "This is new monkey"
+                id = default(int),
+                name = "Monkey",
+                enclosureId = 3,
+                language = (int)Languages.en,
+                story = "This is new monkey"
             };
 
             animalsController.UpdateAnimal(an);
@@ -290,14 +289,14 @@ namespace ZooTests
             var animals = animalsController.GetAllAnimals((int)Languages.en);
             Assert.AreEqual(3, animals.Count());
 
-            var an = animals.SingleOrDefault(a => a.Name == "Gorilla");
+            var an = animals.SingleOrDefault(a => a.name == "Gorilla");
 
-            an.Name = "Mother fucking Gorilla";
+            an.name = "Mother fucking Gorilla";
 
             animalsController.UpdateAnimal(an);
 
             animals = animalsController.GetAllAnimals((int)Languages.en);
-            Assert.IsTrue(animals.Any(a => a.Name == "Mother fucking Gorilla"));
+            Assert.IsTrue(animals.Any(a => a.name == "Mother fucking Gorilla"));
             Assert.AreEqual(3, animals.Count());
         }
 
@@ -307,14 +306,14 @@ namespace ZooTests
             var animals = animalsController.GetAllAnimals((int)Languages.en);
             Assert.AreEqual(3, animals.Count());
 
-            var an = animals.SingleOrDefault(a => a.Name == "Gorilla");
+            var an = animals.SingleOrDefault(a => a.name == "Gorilla");
             
-            an.Story = "";
+            an.story = "";
 
             animalsController.UpdateAnimal(an);
 
             animals = animalsController.GetAllAnimals((int)Languages.en);
-            Assert.IsTrue(animals.Any(a => a.Story == ""));
+            Assert.IsTrue(animals.Any(a => a.story == ""));
             Assert.AreEqual(3, animals.Count());
         }
 
@@ -327,14 +326,14 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = 3,
-                Name = "Gorilla",
-                EncId = 1,
-                Story = "Shrek the mighty gorilla!",
-                Language = (int)Languages.en
+                id = 3,
+                name = "Gorilla",
+                enclosureId = 1,
+                story = "Shrek the mighty gorilla!",
+                language = (int)Languages.en
             };
 
-            an.Name = "Monkey";
+            an.name = "Monkey";
 
             animalsController.UpdateAnimal(an);
         }
@@ -348,14 +347,14 @@ namespace ZooTests
 
             var an = new Animal
             {
-                Id = 3,
-                Name = "Gorilla",
-                EncId = 1,
-                Story = "Shrek the mighty gorilla!",
-                Language = (int)Languages.en
+                id = 3,
+                name = "Gorilla",
+                enclosureId = 1,
+                story = "Shrek the mighty gorilla!",
+                language = (int)Languages.en
             };
 
-            an.Id = -3;
+            an.id = -3;
 
             animalsController.UpdateAnimal(an);
         }
@@ -368,10 +367,10 @@ namespace ZooTests
             var animals = animalsController.GetAllAnimals((int)Languages.en);
             Assert.AreEqual(3, animals.Count());
 
-            var monk = animals.SingleOrDefault(en => en.Name == "Monkey");
+            var monk = animals.SingleOrDefault(en => en.name == "Monkey");
             Assert.IsNotNull(monk);
 
-            animalsController.DeleteAnimal(monk.Id);
+            animalsController.DeleteAnimal((int)monk.id);
             animals = animalsController.GetAllAnimals((int)Languages.en);
 
             Assert.AreEqual(2, animals.Count());

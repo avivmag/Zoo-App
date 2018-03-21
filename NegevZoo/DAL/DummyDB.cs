@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Backend.Models;
-using Backend;
 using System.Data.Entity;
 
 namespace DAL
@@ -25,7 +23,7 @@ namespace DAL
             SpecialEvents      = new TestDbSet<SpecialEvent>();
             OpeningHours       = new TestDbSet<OpeningHour>();
             ContactInfos       = new TestDbSet<ContactInfo>();
-            WorkerUsers        = new TestDbSet<WorkerUser>();
+            Users        = new TestDbSet<User>();
             AllLanguages          = new TestDbSet<Language>();
 
             Animals.AddRange(InitializeAnimals());
@@ -37,7 +35,7 @@ namespace DAL
             SpecialEvents.AddRange(InitialSpecialEvents());
             OpeningHours.AddRange(InitialOpeningHour());
             ContactInfos.AddRange(InitialContactInfos());
-            WorkerUsers.AddRange(InitializeWorkerUsers());
+            Users.AddRange(InitializeUsers());
             AllLanguages.AddRange(InitializeLanguages());
         }
 
@@ -49,6 +47,22 @@ namespace DAL
         protected override void SetInCache<TEntity>(List<TEntity> entity)
         {
         }
+
+        #region DbSets
+
+        protected DbSet<Animal> Animals { get; set; }
+        protected DbSet<Enclosure> Enclosures { get; set; }
+        protected DbSet<RecurringEvent> RecurringEvents { get; set; }
+        protected DbSet<WallFeed> WallFeeds { get; set; }
+        protected DbSet<Price> Prices { get; set; }
+        protected DbSet<GeneralInfo> GeneralInfo { get; set; }
+        protected DbSet<OpeningHour> OpeningHours { get; set; }
+        protected DbSet<ContactInfo> ContactInfos { get; set; }
+        protected DbSet<SpecialEvent> SpecialEvents { get; set; }
+        protected DbSet<User> Users { get; set; }
+        protected DbSet<Language> AllLanguages { get; set; }
+
+        #endregion 
 
         #region Initializers
 
@@ -62,56 +76,56 @@ namespace DAL
                 {
                     new Animal
                     {
-                        Id          = 1,
-                        Name        = "Olive Baboon",
-                        EncId       = 1,
-                        Story       = "Gilor the olive baboon is very lovable.",
-                        Language    = (int)Languages.en
+                        id          = 1,
+                        name        = "Olive Baboon",
+                        enclosureId       = 1,
+                        story       = "Gilor the olive baboon is very lovable.",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 2,
-                        Name        = "בבון הזית",
-                        EncId       = 2,
-                        Story       = "גילאור בבון הזית מאוד חמוד",
-                        Language    = (int)Languages.he
+                        id          = 2,
+                        name        = "בבון הזית",
+                        enclosureId       = 2,
+                        story       = "גילאור בבון הזית מאוד חמוד",
+                        language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 3,
-                        Name        = "Gorilla",
-                        EncId       = 1,
-                        Story       = "Shrek the mighty gorilla!",
-                        Language    = (int)Languages.en
+                        id          = 3,
+                        name        = "Gorilla",
+                        enclosureId       = 1,
+                        story       = "Shrek the mighty gorilla!",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 4,
-                        Name        = "גורילה",
-                        EncId       = 2,
-                        Story       = "שרק הוא וואחד גורילה!",
-                        Language    = (int)Languages.he
+                        id          = 4,
+                        name        = "גורילה",
+                        enclosureId       = 2,
+                        story       = "שרק הוא וואחד גורילה!",
+                        language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 5,
-                        Name        = "Monkey",
-                        EncId       = 3,
-                        Story       = "Kofifo is Marco's monkey.",
-                        Language    = (int)Languages.en
+                        id          = 5,
+                        name        = "Monkey",
+                        enclosureId       = 3,
+                        story       = "Kofifo is Marco's monkey.",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 6,
-                        Name        = "קוף",
-                        EncId       = 4,
-                        Story       = "קופיקו הוא הקוף של מרקו.",
-                        Language    = (int)Languages.he
+                        id          = 6,
+                        name        = "קוף",
+                        enclosureId       = 4,
+                        story       = "קופיקו הוא הקוף של מרקו.",
+                        language    = (int)Languages.he
                     }
                 };
         }
@@ -567,7 +581,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 1,
-                    encId                   = 1,
+                    enclosureId                   = 1,
                     day                     = "Sunday",
                     description             = "Feeding",
                     startHour               = 10,
@@ -579,7 +593,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 2,
-                    encId                   = 2,
+                    enclosureId                   = 2,
                     day                     = "ראשון",
                     description             = "האכלה",
                     startHour               = 10,
@@ -591,7 +605,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 3,
-                    encId                   = 3,
+                    enclosureId                   = 3,
                     day                     = "Monday",
                     description             = "Playing",
                     startHour               = 10,
@@ -603,7 +617,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 4,
-                    encId                   = 4,
+                    enclosureId                   = 4,
                     day                     = "ראשון",
                     description             = "משחק",
                     startHour               = 13,
@@ -616,7 +630,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 5,
-                    encId                   = 3,
+                    enclosureId                   = 3,
                     day                     = "Saturday",
                     description             = "Feeding",
                     startHour               = 10,
@@ -628,7 +642,7 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 6,
-                    encId                   = 4,
+                    enclosureId                   = 4,
                     day                     = "שבת",
                     description             = "האכלה",
                     startHour               = 13,
@@ -877,60 +891,119 @@ namespace DAL
             {
                 new Language
                 {
-                    Id      = 1,
-                    Name  = "עברית"
+                    id      = 1,
+                    name  = "עברית"
                 },
                 new Language
                 {
-                    Id      = 2,
-                    Name  = "English"
+                    id      = 2,
+                    name  = "English"
                 },
                 new Language
                 {
-                    Id = 3,
-                    Name = "عربيه"
+                    id = 3,
+                    name = "عربيه"
                 },
                 new Language
                 {
-                    Id = 4,
-                    Name = "русский"
+                    id = 4,
+                    name = "русский"
                 }
             };
         }
 
-        private IEnumerable<WorkerUser> InitializeWorkerUsers()
+        private IEnumerable<User> InitializeUsers()
         {
-            return new List<WorkerUser>
+            return new List<User>
             {
-                new WorkerUser
+                new User
                 {
-                    Id = 1,
-                    IsAdmin = true,
-                    Name = "אור",
-                    Password = "123"
+                    id = 1,
+                    isAdmin = true,
+                    name = "אור",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 2,
-                    IsAdmin = false,
-                    Name = "גיל",
-                    Password = "123"
+                    id = 2,
+                    isAdmin = false,
+                    name = "גיל",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 3,
-                    IsAdmin = true,
-                    Name = "מנהל",
-                    Password = "123"
+                    id = 3,
+                    isAdmin = true,
+                    name = "מנהל",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 4,
-                    IsAdmin = false,
-                    Name = "עובד",
-                    Password = "123"
+                    id = 4,
+                    isAdmin = false,
+                    name = "עובד",
+                    password = "123"
                 }
             };
+        }
+
+        #endregion
+
+        #region Getters
+
+        public override DbSet<Animal> GetAllAnimals()
+        {
+            return Animals;
+        }
+
+        public override DbSet<Enclosure> GetAllEnclosures()
+        {
+            return Enclosures;
+        }
+
+        public override DbSet<RecurringEvent> GetAllRecuringEvents()
+        {
+            return RecurringEvents;
+        }
+
+        public override DbSet<Price> GetAllPrices()
+        {
+            return Prices;
+        }
+
+        public override DbSet<GeneralInfo> GetGeneralInfo()
+        {
+            return GeneralInfo;
+        }
+
+        public override DbSet<OpeningHour> GetAllOpeningHours()
+        {
+            return OpeningHours;
+        }
+
+        public override DbSet<ContactInfo> GetAllContactInfos()
+        {
+            return ContactInfos;
+        }
+
+        public override DbSet<SpecialEvent> GetAllSpecialEvents()
+        {
+            return SpecialEvents;
+        }
+
+        public override DbSet<WallFeed> GetAllWallFeeds()
+        {
+            return WallFeeds;
+        }
+
+        public override DbSet<User> GetAllUsers()
+        {
+            return Users;
+        }
+
+        public override DbSet<Language> getAllLanguages()
+        {
+            return AllLanguages;
         }
 
         #endregion

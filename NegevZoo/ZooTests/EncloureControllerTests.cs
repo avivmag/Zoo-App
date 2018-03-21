@@ -1,8 +1,7 @@
 ﻿using NegevZoo.Controllers;
-using Backend.Models;
+using DAL;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Backend;
 using System.Collections.Generic;
 using System.Web.Http;
 using BL;
@@ -168,7 +167,7 @@ namespace ZooTests
             Assert.AreEqual(2, enc.id);
             Assert.AreEqual("תצוגת הקופים", enc.name);
 
-            var recurringEvents = enclosureController.GetRecurringEvents(enc.id, (int)Languages.he);
+            var recurringEvents = enclosureController.GetRecurringEvents((int)enc.id, (int)Languages.he);
             Assert.IsNotNull(recurringEvents);
             Assert.AreEqual(1, recurringEvents.Count());
 
@@ -192,7 +191,7 @@ namespace ZooTests
             Assert.IsNotNull(enc);
             Assert.AreEqual(6, enc.id);
 
-            var recurringEvents = enclosureController.GetRecurringEvents(enc.id, (int)Languages.he);
+            var recurringEvents = enclosureController.GetRecurringEvents((int)enc.id, (int)Languages.he);
             Assert.IsNotNull(recurringEvents);
             Assert.AreEqual(0, recurringEvents.Count());
         }
@@ -228,16 +227,16 @@ namespace ZooTests
             var enc = enclosureController.GetAllEnclosures().SingleOrDefault(e => e.name == "קופי אדם");
             Assert.IsNotNull(enc);
 
-            var allRecEve = enclosureController.GetRecurringEvents(enc.id);
+            var allRecEve = enclosureController.GetRecurringEvents((int)enc.id);
             Assert.AreEqual(2, allRecEve.Count());
 
             var eve = allRecEve.SingleOrDefault(e => e.id == 4);
             Assert.AreEqual(eve.day, "ראשון");
             Assert.AreEqual(eve.description, "משחק");
 
-            enclosureController.DeleteRecurringEvent(eve.id);
+            enclosureController.DeleteRecurringEvent((int)eve.id);
 
-            allRecEve = enclosureController.GetRecurringEvents(enc.id);
+            allRecEve = enclosureController.GetRecurringEvents((int)enc.id);
             Assert.AreEqual(1, allRecEve.Count());
         }
 
@@ -365,8 +364,8 @@ namespace ZooTests
             {
                 id = monkeyEncEn.id,
                 language = monkeyEncEn.language,
-                latitude = monkeyEncEn.latitude,
-                longtitude = monkeyEncEn.longtitude,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
                 name = "Houman Monkeys"
             };
             
@@ -388,8 +387,8 @@ namespace ZooTests
             {
                 id = monkeyEncEn.id,
                 language = monkeyEncEn.language,
-                latitude = monkeyEncEn.latitude,
-                longtitude = monkeyEncEn.longtitude,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
                 name = ""
             };
 
@@ -411,8 +410,8 @@ namespace ZooTests
             {
                 id = 1000000,
                 language = monkeyEncEn.language,
-                latitude = monkeyEncEn.latitude,
-                longtitude = monkeyEncEn.longtitude,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
                 name = monkeyEncEn.name
             };
 
@@ -434,8 +433,8 @@ namespace ZooTests
             {
                 id = monkeyEncEn.id,
                 language = nonExistantLang,
-                latitude = monkeyEncEn.latitude,
-                longtitude = monkeyEncEn.longtitude,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
                 name = monkeyEncEn.name
             };
 
@@ -455,22 +454,22 @@ namespace ZooTests
 
             //delete animals
             AnimalController anCont = new AnimalController();
-            var animalsList = anCont.GetAnimalsByEnclosure(monkHeb.id, monkHeb.language);
+            var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
 
             foreach (Animal an in animalsList)
             {
-                anCont.DeleteAnimal(an.Id);
+                anCont.DeleteAnimal((int)an.id);
             }
 
             //delete reccuringEvents
-            var recEvents = enclosureController.GetRecurringEvents(monkHeb.id);
+            var recEvents = enclosureController.GetRecurringEvents((int)monkHeb.id);
 
             foreach (RecurringEvent eve in recEvents)
             {
-                enclosureController.DeleteRecurringEvent(eve.id);
+                enclosureController.DeleteRecurringEvent((int)eve.id);
             }
 
-            enclosureController.DeleteEnclosure(monkHeb.id);
+            enclosureController.DeleteEnclosure((int)monkHeb.id);
             encsHeb = enclosureController.GetAllEnclosures();
 
             Assert.AreEqual(2, encsHeb.Count());
@@ -487,7 +486,7 @@ namespace ZooTests
             var monkHeb = encsHeb.SingleOrDefault(en => en.name == "קופי אדם");
             Assert.IsNotNull(monkHeb);
 
-            enclosureController.DeleteEnclosure(monkHeb.id);
+            enclosureController.DeleteEnclosure((int)monkHeb.id);
         }
 
         [TestMethod]
@@ -503,14 +502,14 @@ namespace ZooTests
 
             //delete animals
             AnimalController anCont = new AnimalController();
-            var animalsList = anCont.GetAnimalsByEnclosure(monkHeb.id, monkHeb.language);
+            var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
 
             foreach (Animal an in animalsList)
             {
-                anCont.DeleteAnimal(an.Id);
+                anCont.DeleteAnimal((int)an.id);
             }
 
-            enclosureController.DeleteEnclosure(monkHeb.id);
+            enclosureController.DeleteEnclosure((int)monkHeb.id);
         }
 
         [TestMethod]
