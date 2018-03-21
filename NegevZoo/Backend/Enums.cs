@@ -20,4 +20,14 @@ namespace Backend
         Half            = 30,
         ThreeQuarters   = 45
     };
+
+    public enum Preservation
+    {
+        LeastConcern            = 1,
+        NearThreatened          = 2,
+        Vulnerable              = 3,
+        Endangered              = 4,
+        CriticallyEndangered    = 5,
+        ExtinctWildlife         = 6
+    }
 }

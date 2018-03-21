@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Backend.Models;
 using BL;
@@ -213,6 +214,40 @@ namespace NegevZoo.Controllers
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
+        }
+
+        [HttpPost]
+        [Route("")]
+        public Task<HttpResponseMessage> PostFile()
+        {
+            HttpRequestMessage request = this.Request;
+            if (!request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            string root = MapPath("/assets");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            var task = request.Content.ReadAsMultipartAsync(provider).
+                ContinueWith<HttpResponseMessage>(o =>
+                {
+
+                    string file1 = provider.BodyPartFileNames.First().Value;
+            // this is the file name on the server where the file was saved 
+
+            return new HttpResponseMessage()
+                    {
+                        Content = new StringContent("File uploaded.")
+                    };
+                }
+            );
+            return task;
+        }
+
+        private string MapPath(string v)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
