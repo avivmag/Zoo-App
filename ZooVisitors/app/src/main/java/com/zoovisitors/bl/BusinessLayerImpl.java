@@ -5,10 +5,13 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
-import com.zoovisitors.backend.AboutZoo;
+import com.zoovisitors.backend.AboutUs;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.ContactInfo;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.NewsFeed;
+import com.zoovisitors.backend.OpeningHours;
+import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.backend.Species;
 import com.zoovisitors.cl.network.NetworkImpl;
@@ -86,10 +89,6 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-    @Override
-    public void getAboutZoo() {;
-        AboutZoo aboutZoo = gson.fromJson(json, AboutZoo.class);
-    }
 
     @Override
     public void getNewsFeed(final GetObjectInterface goi) {
@@ -121,6 +120,7 @@ public class BusinessLayerImpl implements BusinessLayer {
         ni.post("SpecialEvents/all/" + GlobalVariables.language, new ResponseInterface() {
             @Override
             public void onSuccess(String response) {
+                Log.e("Sched1111111", response);
                 Schedule[] schedules = gson.fromJson(response, Schedule[].class);
                 goi.onSuccess(schedules);
             }
@@ -128,6 +128,70 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onFailure(String response) {
                 Log.e("Schedule", "Can't get schedule from server");
+            }
+        });
+    }
+
+    @Override
+    public void getPrices(final GetObjectInterface goi) {
+        ni.post("prices/all/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                Price[] prices = gson.fromJson(response, Price[].class);
+                goi.onSuccess(prices);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("Price", "Can't get prices from server");
+            }
+        });
+    }
+
+    @Override
+    public void getOpeningHours(final GetObjectInterface goi) {
+        ni.post("OpeningHours/all/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                OpeningHours[] openingHours = gson.fromJson(response, OpeningHours[].class);
+                goi.onSuccess(openingHours);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("OpeningHours", "Can't get opening hours from server");
+            }
+        });
+    }
+
+    @Override
+    public void getAboutUs(final GetObjectInterface goi) {
+        ni.post("about/info/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                AboutUs[] aboutUs = gson.fromJson(response, AboutUs[].class);
+                goi.onSuccess(aboutUs);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("AboutUs", "Can't get abous us from server");
+            }
+        });
+    }
+
+    @Override
+    public void getContactInfo(final GetObjectInterface goi) {
+        ni.post("ContactInfos/all/" + GlobalVariables.language, new ResponseInterface() {
+            @Override
+            public void onSuccess(String response) {
+                ContactInfo[] contactInfo = gson.fromJson(response, ContactInfo[].class);
+                goi.onSuccess(contactInfo);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("ContactInfo", "Can't get contact info from server");
             }
         });
     }

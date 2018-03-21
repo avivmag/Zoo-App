@@ -16,14 +16,13 @@
             android:id="@+id/animal_story_headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="About us:\n"
+            android:text="@string/about_us"
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/animal_story_full"
+            android:id="@+id/about_us_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/about_us_full"
             android:textSize="24sp" />
 
     </LinearLayout>

@@ -37,5 +37,4 @@ public class GeneralInfoActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setText(getResources().getText(R.string.opening_hours));
         tabLayout.getTabAt(3).setText(getResources().getText(R.string.contact_info));
     }
-
 }

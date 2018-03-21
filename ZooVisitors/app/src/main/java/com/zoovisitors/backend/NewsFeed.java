@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class NewsFeed {
-    @SerializedName("Stories")
+    @SerializedName("info")
     private String story;
 
     public String getStory() {

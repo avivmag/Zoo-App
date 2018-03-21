@@ -20,7 +20,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
     private Schedule[] schedulers;
 
-    public ScheduleRecyclerAdapter(AppCompatActivity appCompatActivity, Schedule[] schedulers) {
+    public ScheduleRecyclerAdapter(Schedule[] schedulers) {
 
         this.schedulers = schedulers;
 

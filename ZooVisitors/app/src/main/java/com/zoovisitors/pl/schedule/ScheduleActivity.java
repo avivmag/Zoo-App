@@ -4,29 +4,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 
+import javax.microedition.khronos.opengles.GL;
+
 public class ScheduleActivity extends AppCompatActivity {
 
     private RecyclerView recycleView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    private AppCompatActivity tempActivity = this;
     private Schedule[] schedulers;
-    private BusinessLayer bl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        bl = new BusinessLayerImpl(this);
 
 //        //Delete when I get object from server
 //        this.schedulers = new Schedule[10];
@@ -35,15 +36,15 @@ public class ScheduleActivity extends AppCompatActivity {
 //            this.schedulers[i].setName("" + i);
 //        }
 
-        bl.getSchedule(new GetObjectInterface() {
+        GlobalVariables.bl.getSchedule(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 schedulers = (Schedule[]) response;
                 recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
-                layoutManager = new LinearLayoutManager(tempActivity);
+                layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                 recycleView.setLayoutManager(layoutManager);
-
-                adapter = new ScheduleRecyclerAdapter(tempActivity, schedulers);
+                Log.e("SChed", schedulers[0].getDescription());
+                adapter = new ScheduleRecyclerAdapter(schedulers);
                 recycleView.setAdapter(adapter);
             }
 
