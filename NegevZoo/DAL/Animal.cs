@@ -22,7 +22,7 @@ namespace DAL
         public string series { get; set; }
         public string family { get; set; }
         public string distribution { get; set; }
-        public Nullable<int> reproduction { get; set; }
+        public string reproduction { get; set; }
         public string food { get; set; }
         public long preservation { get; set; }
         public string pictureUrl { get; set; }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="NegevZooModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="NegevZooModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="animals">
           <Key>
             <PropertyRef Name="id" />
@@ -17,7 +17,7 @@
           <Property Name="series" Type="tinytext" />
           <Property Name="family" Type="tinytext" />
           <Property Name="distribution" Type="mediumtext" />
-          <Property Name="reproduction" Type="int" />
+          <Property Name="reproduction" Type="mediumtext" />
           <Property Name="food" Type="tinytext" />
           <Property Name="preservation" Type="uint" Nullable="false" />
           <Property Name="pictureUrl" Type="mediumtext" />
@@ -187,8 +187,7 @@
           <EntitySet Name="wallfeeds" EntityType="Self.wallfeeds" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="youtubevideourl" EntityType="Self.youtubevideourl" Schema="negev_zoo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="NegevZooModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -204,7 +203,7 @@
           <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
-          <Property Name="reproduction" Type="Int32" />
+          <Property Name="reproduction" Type="String" />
           <Property Name="food" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="preservation" Type="Int64" Nullable="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
