@@ -1001,7 +1001,7 @@ namespace DAL
             return Users;
         }
 
-        public override DbSet<Language> getAllLanguages()
+        public override DbSet<Language> GetAllLanguages()
         {
             return AllLanguages;
         }
