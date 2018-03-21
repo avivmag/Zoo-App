@@ -84,7 +84,7 @@ namespace NegevZoo.Controllers
         /// <param name="WorkerUserId">The element's id to delete</param>
         [HttpDelete]
         [Route("users/delete/{workerUserId}")]
-        public void Delete(int workerUserId)
+        public void DeleteUser(int workerUserId)
         {
             try
             {

@@ -62,56 +62,56 @@ namespace DAL
                 {
                     new Animal
                     {
-                        id          = 1,
-                        name        = "Olive Baboon",
-                        encId       = 1,
-                        story       = "Gilor the olive baboon is very lovable.",
-                        language    = (int)Languages.en
+                        Id          = 1,
+                        Name        = "Olive Baboon",
+                        EncId       = 1,
+                        Story       = "Gilor the olive baboon is very lovable.",
+                        Language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        id          = 2,
-                        name        = "בבון הזית",
-                        encId       = 2,
-                        story       = "גילאור בבון הזית מאוד חמוד",
-                        language    = (int)Languages.he
+                        Id          = 2,
+                        Name        = "בבון הזית",
+                        EncId       = 2,
+                        Story       = "גילאור בבון הזית מאוד חמוד",
+                        Language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        id          = 3,
-                        name        = "Gorilla",
-                        encId       = 1,
-                        story       = "Shrek the mighty gorilla!",
-                        language    = (int)Languages.en
+                        Id          = 3,
+                        Name        = "Gorilla",
+                        EncId       = 1,
+                        Story       = "Shrek the mighty gorilla!",
+                        Language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        id          = 4,
-                        name        = "גורילה",
-                        encId       = 2,
-                        story       = "שרק הוא וואחד גורילה!",
-                        language    = (int)Languages.he
+                        Id          = 4,
+                        Name        = "גורילה",
+                        EncId       = 2,
+                        Story       = "שרק הוא וואחד גורילה!",
+                        Language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        id          = 5,
-                        name        = "Monkey",
-                        encId       = 3,
-                        story       = "Kofifo is Marco's monkey.",
-                        language    = (int)Languages.en
+                        Id          = 5,
+                        Name        = "Monkey",
+                        EncId       = 3,
+                        Story       = "Kofifo is Marco's monkey.",
+                        Language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        id          = 6,
-                        name        = "קוף",
-                        encId       = 4,
-                        story       = "קופיקו הוא הקוף של מרקו.",
-                        language    = (int)Languages.he
+                        Id          = 6,
+                        Name        = "קוף",
+                        EncId       = 4,
+                        Story       = "קופיקו הוא הקוף של מרקו.",
+                        Language    = (int)Languages.he
                     }
                 };
         }
@@ -877,24 +877,23 @@ namespace DAL
             {
                 new Language
                 {
-                    id      = 1,
-                    name  = "עברית"
-                },
-
-                new Language
-                {
-                    id      = 2,
-                    name  = "English"
+                    Id      = 1,
+                    Name  = "עברית"
                 },
                 new Language
                 {
-                    id = 3,
-                    name = "عربيه"
+                    Id      = 2,
+                    Name  = "English"
                 },
                 new Language
                 {
-                    id = 4,
-                    name = "русский"
+                    Id = 3,
+                    Name = "عربيه"
+                },
+                new Language
+                {
+                    Id = 4,
+                    Name = "русский"
                 }
             };
         }
@@ -905,31 +904,31 @@ namespace DAL
             {
                 new WorkerUser
                 {
-                    id = 1,
-                    isAdmin = true,
-                    name = "אור",
-                    password = "123"
+                    Id = 1,
+                    IsAdmin = true,
+                    Name = "אור",
+                    Password = "123"
                 },
                 new WorkerUser
                 {
-                    id = 2,
-                    isAdmin = false,
-                    name = "גיל",
-                    password = "123"
+                    Id = 2,
+                    IsAdmin = false,
+                    Name = "גיל",
+                    Password = "123"
                 },
                 new WorkerUser
                 {
-                    id = 3,
-                    isAdmin = true,
-                    name = "מנהל",
-                    password = "123"
+                    Id = 3,
+                    IsAdmin = true,
+                    Name = "מנהל",
+                    Password = "123"
                 },
                 new WorkerUser
                 {
-                    id = 4,
-                    isAdmin = false,
-                    name = "עובד",
-                    password = "123"
+                    Id = 4,
+                    IsAdmin = false,
+                    Name = "עובד",
+                    Password = "123"
                 }
             };
         }

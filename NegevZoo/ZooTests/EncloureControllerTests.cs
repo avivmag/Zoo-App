@@ -459,7 +459,7 @@ namespace ZooTests
 
             foreach (Animal an in animalsList)
             {
-                anCont.DeleteAnimal(an.id);
+                anCont.DeleteAnimal(an.Id);
             }
 
             //delete reccuringEvents
@@ -507,7 +507,7 @@ namespace ZooTests
 
             foreach (Animal an in animalsList)
             {
-                anCont.DeleteAnimal(an.id);
+                anCont.DeleteAnimal(an.Id);
             }
 
             enclosureController.DeleteEnclosure(monkHeb.id);

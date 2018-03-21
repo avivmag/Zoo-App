@@ -228,7 +228,7 @@ namespace BL
             }
 
             //2. exists animals
-            if (zooDB.GetAllAnimals().Any(an => an.encId == id))
+            if (zooDB.GetAllAnimals().Any(an => an.EncId == id))
             {
                 throw new InvalidOperationException("Threre are animals that related to this enclosure");
             }
@@ -271,7 +271,7 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            return zooDB.GetAllAnimals().Where(a => a.language == language).ToArray();
+            return zooDB.GetAllAnimals().Where(a => a.Language == language).ToArray();
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            Animal an = zooDB.GetAllAnimals().SingleOrDefault(a => a.language == language && a.id == id);
+            Animal an = zooDB.GetAllAnimals().SingleOrDefault(a => a.Language == language && a.Id == id);
 
             if (an == null)
             {
@@ -310,7 +310,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllAnimals().Where(a => a.language == language && a.name.Contains(name));
+            return zooDB.GetAllAnimals().Where(a => a.Language == language && a.Name.Contains(name));
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllAnimals().Where(a => a.language == language && a.encId == encId).ToList();
+            return zooDB.GetAllAnimals().Where(a => a.Language == language && a.EncId == encId).ToList();
         }
 
         /// <summary>
@@ -343,29 +343,29 @@ namespace BL
         {
             //validate animal attributes
             //1. language
-            if (!ValidLanguage(animal.language))
+            if (!ValidLanguage(animal.Language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
             //2. aniaml name
-            if (String.IsNullOrWhiteSpace(animal.name))
+            if (String.IsNullOrWhiteSpace(animal.Name))
             {
                 throw new ArgumentException("Wrong input. Animal name is empty or null");
             }
 
             //3. enclosure exists
-            if (GetEnclosureById(animal.encId, animal.language) == null)
+            if (GetEnclosureById(animal.EncId, animal.Language) == null)
             {
                 throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
             }
 
             var animals = zooDB.GetAllAnimals();
 
-            if (animal.id == default(int)) //add a new aniaml
+            if (animal.Id == default(int)) //add a new aniaml
             {
                 // check that the name doesn't exists
-                if (animals.Any(an => an.name == animal.name))
+                if (animals.Any(an => an.Name == animal.Name))
                 {
                     throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
                 }
@@ -374,7 +374,7 @@ namespace BL
             }
             else // update existing animal.
             {
-                Animal oldAnimal = animals.SingleOrDefault(an => an.id == animal.id);
+                Animal oldAnimal = animals.SingleOrDefault(an => an.Id == animal.Id);
 
                 //check that the animal exists
                 if (oldAnimal == null)
@@ -383,7 +383,7 @@ namespace BL
                 }
 
                 // check that id the name changed, it doesn't exists.
-                if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
+                if (oldAnimal.Name != animal.Name && animals.Any(an => an.Name == animal.Name))
                 {
                     throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
                 }
@@ -399,7 +399,7 @@ namespace BL
         /// <param name="id">The animal's id to delete.</param>
         public void DeleteAnimal(int id)
         {
-            Animal animal = zooDB.GetAllAnimals().SingleOrDefault(a => a.id == id);
+            Animal animal = zooDB.GetAllAnimals().SingleOrDefault(a => a.Id == id);
             if (animal == null)
             {
                 throw new ArgumentException("Wrong input. Animal doesn't exists");
@@ -1101,7 +1101,7 @@ namespace BL
         /// <returns>The user.</returns>
         public WorkerUser GetUserByNameAndPass(string userName, string password)
         {
-            var user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.password == password && wu.name == userName);
+            var user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.Password == password && wu.Name == userName);
 
             if (user == null)
             {
@@ -1125,13 +1125,13 @@ namespace BL
             }
 
             // 1. Name
-            if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
+            if (String.IsNullOrEmpty(userWorker.Name) || String.IsNullOrWhiteSpace(userWorker.Name))
             {
                 throw new ArgumentException("Wrong input. The user name is empty or white spaces");
             }
 
             // 2. password
-            if (String.IsNullOrEmpty(userWorker.password) || String.IsNullOrWhiteSpace(userWorker.password))
+            if (String.IsNullOrEmpty(userWorker.Password) || String.IsNullOrWhiteSpace(userWorker.Password))
             {
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
@@ -1140,10 +1140,10 @@ namespace BL
 
             var users = zooDB.GetAllUsers();
 
-            if (userWorker.id == default(int)) //add a user
+            if (userWorker.Id == default(int)) //add a user
             {
                 //check if the name already exists
-                if (users.Any(wu => wu.name == userWorker.name))
+                if (users.Any(wu => wu.Name == userWorker.Name))
                 {
                     throw new ArgumentException("Wrong input while adding a WorkerUser. Name already exists");
                 }
@@ -1152,7 +1152,7 @@ namespace BL
             }
             else //update a user
             {
-                var oldUser = users.SingleOrDefault(wu => wu.id == userWorker.id);
+                var oldUser = users.SingleOrDefault(wu => wu.Id == userWorker.Id);
 
                 if (oldUser == null)
                 {
@@ -1160,7 +1160,7 @@ namespace BL
                 }
 
                 //check if the name changed to a name that already exists
-                if (oldUser.name != userWorker.name && users.Any(wu => wu.name == userWorker.name))
+                if (oldUser.Name != userWorker.Name && users.Any(wu => wu.Name == userWorker.Name))
                 {
                     throw new ArgumentException("Wrong input while updating a WorkerUser. Name already exists");
                 }
@@ -1177,7 +1177,7 @@ namespace BL
         /// <param name="id">The WorkerUser's id to delete.</param>
         public void DeleteUser(int workerUserId)
         {
-            WorkerUser user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.id == workerUserId);
+            WorkerUser user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.Id == workerUserId);
 
             //Check that the WorkerUser exists
             if (user == null)
