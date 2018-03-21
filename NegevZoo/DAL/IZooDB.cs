@@ -35,7 +35,7 @@ namespace DAL
 
         public abstract DbSet<User> GetAllUsers();
 
-        public abstract DbSet<Language> getAllLanguages();
+        public abstract DbSet<Language> GetAllLanguages();
 
         #endregion
 

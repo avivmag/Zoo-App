@@ -1060,7 +1060,7 @@ namespace BL
         #region Languages
         public IEnumerable<Language> GetAllLanguages()
         {
-            return zooDB.getAllLanguages();
+            return zooDB.GetAllLanguages();
         }
 
         #endregion
@@ -1190,7 +1190,7 @@ namespace BL
 
         public void Dispose()
         {
-            // zooDB.saveChanges();
+            zooDB.SaveChanges();
         }
     }
 }
