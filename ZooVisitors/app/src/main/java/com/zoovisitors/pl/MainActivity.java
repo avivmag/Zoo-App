@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,19 +32,20 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView sv;
     private LinearLayout ll;
     private Menu langMenu;
-    private BusinessLayer bl;
     private NewsFeed[] feed;
-    private AppCompatActivity appCompatActivity = this;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bl = new BusinessLayerImpl(this);
+        GlobalVariables.appCompatActivity = this;
+        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //Scroller initalize
 
 
-        bl.getNewsFeed(new GetObjectInterface() {
+        GlobalVariables.bl.getNewsFeed(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 sv.setClickable(false);
                 ll = findViewById(R.id.feedWallLayout);
                 for (NewsFeed s: feed) {
-                    TextView tv = new TextView(appCompatActivity);
+                    TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
                     ll.addView(tv);
                 }
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.wazeImg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAppInstalled(appCompatActivity, "com.waze")){
+                if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
                 }
                 else{

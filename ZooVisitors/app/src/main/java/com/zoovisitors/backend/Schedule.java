@@ -7,16 +7,14 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Schedule {
-    @SerializedName("Id")
+    @SerializedName("id")
     private int id;
-    @SerializedName("Description")
+    @SerializedName("description")
     private String description;
-    @SerializedName("StartDate")
+    @SerializedName("startDate")
     private String startTime;
-    @SerializedName("EndDate")
+    @SerializedName("endDate")
     private String endTime;
-    @SerializedName("Stories")
-    private String image;
 
     public int getId() {
         return id;
@@ -28,10 +26,6 @@ public class Schedule {
 
     public String getStartTime() {
         return startTime;
-    }
-
-    public String getImage() {
-        return image;
     }
 
     public String getEndTime() { return endTime; }
@@ -48,7 +42,4 @@ public class Schedule {
 
     public void setEndTime(String endTime) { this.endTime = endTime; }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
 }
