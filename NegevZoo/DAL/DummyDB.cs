@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Backend.Models;
-using Backend;
 using System.Data.Entity;
 
 namespace DAL
@@ -25,7 +23,7 @@ namespace DAL
             SpecialEvents      = new TestDbSet<SpecialEvent>();
             OpeningHours       = new TestDbSet<OpeningHour>();
             ContactInfos       = new TestDbSet<ContactInfo>();
-            WorkerUsers        = new TestDbSet<WorkerUser>();
+            Users        = new TestDbSet<User>();
             AllLanguages          = new TestDbSet<Language>();
 
             Animals.AddRange(InitializeAnimals());
@@ -37,7 +35,7 @@ namespace DAL
             SpecialEvents.AddRange(InitialSpecialEvents());
             OpeningHours.AddRange(InitialOpeningHour());
             ContactInfos.AddRange(InitialContactInfos());
-            WorkerUsers.AddRange(InitializeWorkerUsers());
+            Users.AddRange(InitializeUsers());
             AllLanguages.AddRange(InitializeLanguages());
         }
 
@@ -49,6 +47,22 @@ namespace DAL
         protected override void SetInCache<TEntity>(List<TEntity> entity)
         {
         }
+
+        #region DbSets
+
+        protected DbSet<Animal> Animals { get; set; }
+        protected DbSet<Enclosure> Enclosures { get; set; }
+        protected DbSet<RecurringEvent> RecurringEvents { get; set; }
+        protected DbSet<WallFeed> WallFeeds { get; set; }
+        protected DbSet<Price> Prices { get; set; }
+        protected DbSet<GeneralInfo> GeneralInfo { get; set; }
+        protected DbSet<OpeningHour> OpeningHours { get; set; }
+        protected DbSet<ContactInfo> ContactInfos { get; set; }
+        protected DbSet<SpecialEvent> SpecialEvents { get; set; }
+        protected DbSet<User> Users { get; set; }
+        protected DbSet<Language> AllLanguages { get; set; }
+
+        #endregion 
 
         #region Initializers
 
@@ -62,56 +76,56 @@ namespace DAL
                 {
                     new Animal
                     {
-                        Id          = 1,
-                        Name        = "Olive Baboon",
-                        EncId       = 1,
-                        Story       = "Gilor the olive baboon is very lovable.",
-                        Language    = (int)Languages.en
+                        id          = 1,
+                        name        = "Olive Baboon",
+                        enclosureId       = 1,
+                        story       = "Gilor the olive baboon is very lovable.",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 2,
-                        Name        = "בבון הזית",
-                        EncId       = 2,
-                        Story       = "גילאור בבון הזית מאוד חמוד",
-                        Language    = (int)Languages.he
+                        id          = 2,
+                        name        = "בבון הזית",
+                        enclosureId       = 2,
+                        story       = "גילאור בבון הזית מאוד חמוד",
+                        language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 3,
-                        Name        = "Gorilla",
-                        EncId       = 1,
-                        Story       = "Shrek the mighty gorilla!",
-                        Language    = (int)Languages.en
+                        id          = 3,
+                        name        = "Gorilla",
+                        enclosureId       = 1,
+                        story       = "Shrek the mighty gorilla!",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 4,
-                        Name        = "גורילה",
-                        EncId       = 2,
-                        Story       = "שרק הוא וואחד גורילה!",
-                        Language    = (int)Languages.he
+                        id          = 4,
+                        name        = "גורילה",
+                        enclosureId       = 2,
+                        story       = "שרק הוא וואחד גורילה!",
+                        language    = (int)Languages.he
                     },
 
                     new Animal
                     {
-                        Id          = 5,
-                        Name        = "Monkey",
-                        EncId       = 3,
-                        Story       = "Kofifo is Marco's monkey.",
-                        Language    = (int)Languages.en
+                        id          = 5,
+                        name        = "Monkey",
+                        enclosureId       = 3,
+                        story       = "Kofifo is Marco's monkey.",
+                        language    = (int)Languages.en
                     },
 
                     new Animal
                     {
-                        Id          = 6,
-                        Name        = "קוף",
-                        EncId       = 4,
-                        Story       = "קופיקו הוא הקוף של מרקו.",
-                        Language    = (int)Languages.he
+                        id          = 6,
+                        name        = "קוף",
+                        enclosureId       = 4,
+                        story       = "קופיקו הוא הקוף של מרקו.",
+                        language    = (int)Languages.he
                     }
                 };
         }
@@ -126,50 +140,50 @@ namespace DAL
                 {
                     new Enclosure
                     {
-                        Id          = 1,
-                        Name        = "Monkeys",
-                        Story       = "Our monkeys have been great! They are awesome.",
-                        Language    = (int)Languages.en
+                        id          = 1,
+                        name        = "Monkeys",
+                        story       = "Our monkeys have been great! They are awesome.",
+                        language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
-                        Id          = 2,
-                        Name        = "תצוגת הקופים",
-                        Story       = "הקופים שלנו הם הכי הכי!",
-                        Language    = (int)Languages.he
+                        id          = 2,
+                        name        = "תצוגת הקופים",
+                        story       = "הקופים שלנו הם הכי הכי!",
+                        language    = (int)Languages.he
                     },
 
                     new Enclosure
                     {
-                        Id          = 3,
-                        Name        = "Houman Monkeys",
-                        Story       = "Computer Science students.",
-                        Language    = (int)Languages.en
+                        id          = 3,
+                        name        = "Houman Monkeys",
+                        story       = "Computer Science students.",
+                        language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
-                        Id          = 4,
-                        Name        = "קופי אדם",
-                        Story       = "הקופים שלנו הם הכי חכמים!",
-                        Language    = (int)Languages.he
+                        id          = 4,
+                        name        = "קופי אדם",
+                        story       = "הקופים שלנו הם הכי חכמים!",
+                        language    = (int)Languages.he
                     },
 
                     new Enclosure
                     {
-                        Id          = 5,
-                        Name        = "Zebra",
-                        Story       = "Our saved Zebra.",
-                        Language    = (int)Languages.en
+                        id          = 5,
+                        name        = "Zebra",
+                        story       = "Our saved Zebra.",
+                        language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
-                        Id          = 6,
-                        Name        = "זברה",
-                        Story       = "הזברות שלנו ניצלו משבי",
-                        Language    = (int)Languages.he
+                        id          = 6,
+                        name        = "זברה",
+                        story       = "הזברות שלנו ניצלו משבי",
+                        language    = (int)Languages.he
                     }
                 };
         }
@@ -184,260 +198,260 @@ namespace DAL
                 {
                     new WallFeed
                     {
-                        Id          = 1,
-                        Info        = "Purim Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 1,
+                        info        = "Purim Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                         
                     },
 
                     new WallFeed
                     {
-                        Id          = 2,
-                        Info        = "אירועי פורים",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 2,
+                        info        = "אירועי פורים",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 3,
-                        Info        = "Passeover Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 3,
+                        info        = "Passeover Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
 
-                        Id          = 4,
-                        Info        = "אירועי פסח",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 4,
+                        info        = "אירועי פסח",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 5,
-                        Info        = "Shavuut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 5,
+                        info        = "Shavuut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 6,
-                        Info        = "אירועי שבועות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 6,
+                        info        = "אירועי שבועות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 7,
-                        Info        = "Sukut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 7,
+                        info        = "Sukut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 8,
-                        Info        = "אירועי סוכות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 8,
+                        info        = "אירועי סוכות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
-                        Id          = 9,
-                        Info        = "Purim Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
-
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 10,
-                        Info        = "אירועי פורים",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 11,
-                        Info        = "Passeover Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 12,
-                        Info        = "אירועי פסח",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 13,
-                        Info        = "Shavuut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 14,
-                        Info        = "אירועי שבועות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 15,
-                        Info        = "Sukut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        Id          = 16,
-                        Info        = "אירועי סוכות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
-                    },
-                    new WallFeed
-                    {
-                        Id          = 17,
-                        Info        = "Purim Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 9,
+                        info        = "Purim Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
 
                     },
 
                     new WallFeed
                     {
-                        Id          = 18,
-                        Info        = "אירועי פורים",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 10,
+                        info        = "אירועי פורים",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 19,
-                        Info        = "Passeover Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 11,
+                        info        = "Passeover Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 20,
-                        Info        = "אירועי פסח",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 12,
+                        info        = "אירועי פסח",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 21,
-                        Info        = "Shavuut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 13,
+                        info        = "Shavuut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 22,
-                        Info        = "אירועי שבועות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 14,
+                        info        = "אירועי שבועות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 23,
-                        Info        = "Sukut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 15,
+                        info        = "Sukut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 24,
-                        Info        = "אירועי סוכות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 16,
+                        info        = "אירועי סוכות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
-                        Id          = 25,
-                        Info        = "Purim Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 17,
+                        info        = "Purim Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
 
                     },
 
                     new WallFeed
                     {
-                        Id          = 26,
-                        Info        = "אירועי פורים",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 18,
+                        info        = "אירועי פורים",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 27,
-                        Info        = "Passeover Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 19,
+                        info        = "Passeover Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 28,
-                        Info        = "אירועי פסח",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 20,
+                        info        = "אירועי פסח",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 29,
-                        Info        = "Shavuut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 21,
+                        info        = "Shavuut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 30,
-                        Info        = "אירועי שבועות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 22,
+                        info        = "אירועי שבועות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 31,
-                        Info        = "Sukut Events",
-                        Language    = (int)Languages.en,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 23,
+                        info        = "Sukut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
-                        Id          = 32,
-                        Info        = "אירועי סוכות",
-                        Language    = (int)Languages.he,
-                        Created     = new DateTime(2018,3,11)
+                        id          = 24,
+                        info        = "אירועי סוכות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
+                    },
+                    new WallFeed
+                    {
+                        id          = 25,
+                        info        = "Purim Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
+
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 26,
+                        info        = "אירועי פורים",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 27,
+                        info        = "Passeover Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 28,
+                        info        = "אירועי פסח",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 29,
+                        info        = "Shavuut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 30,
+                        info        = "אירועי שבועות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 31,
+                        info        = "Sukut Events",
+                        language    = (int)Languages.en,
+                        created     = new DateTime(2018,3,11)
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 32,
+                        info        = "אירועי סוכות",
+                        language    = (int)Languages.he,
+                        created     = new DateTime(2018,3,11)
                     }
                 };
         }
@@ -452,82 +466,82 @@ namespace DAL
                 {
                     new Price
                     {
-                        Id          = 1,
-                        Population  = "Adult",
-                        PricePop    = 40,
-                        Language    = (int)Languages.en
+                        id          = 1,
+                        population  = "Adult",
+                        pricePop    = 40,
+                        language    = (int)Languages.en
                     },
 
                     new Price
                     {
-                        Id          = 2,
-                        Population  = "מבוגר",
-                        PricePop    = 40,
-                        Language    = (int)Languages.he
+                        id          = 2,
+                        population  = "מבוגר",
+                        pricePop    = 40,
+                        language    = (int)Languages.he
                     },
 
                     new Price
                     {
-                        Id          = 3,
-                        Population  = "Children under 18",
-                        PricePop    = 25,
-                        Language    = (int)Languages.en
+                        id          = 3,
+                        population  = "Children under 18",
+                        pricePop    = 25,
+                        language    = (int)Languages.en
                     },
 
                     new Price
                     {
-                        Id          = 4,
-                        Population  = "ילד מתחת לגיל 18",
-                        PricePop    = 25,
-                        Language    = (int)Languages.he
+                        id          = 4,
+                        population  = "ילד מתחת לגיל 18",
+                        pricePop    = 25,
+                        language    = (int)Languages.he
                     },
 
                     new Price
                     {
-                        Id          = 5,
-                        Population  = "Soldier",
-                        PricePop    = 25,
-                        Language    = (int)Languages.en
+                        id          = 5,
+                        population  = "Soldier",
+                        pricePop    = 25,
+                        language    = (int)Languages.en
                     },
 
                     new Price
                     {
-                        Id          = 6,
-                        Population  = "חייל",
-                        PricePop    = 25,
-                        Language    = (int)Languages.he
+                        id          = 6,
+                        population  = "חייל",
+                        pricePop    = 25,
+                        language    = (int)Languages.he
                     },
 
                     new Price
                     {
-                        Id          = 7,
-                        Population  = "Pensioner",
-                        PricePop    = 10,
-                        Language    = (int)Languages.en
+                        id          = 7,
+                        population  = "Pensioner",
+                        pricePop    = 10,
+                        language    = (int)Languages.en
                     },
 
                     new Price
                     {
-                        Id          = 8,
-                        Population  = "פנסיונר",
-                        PricePop    = 25,
-                        Language    = (int)Languages.he
+                        id          = 8,
+                        population  = "פנסיונר",
+                        pricePop    = 25,
+                        language    = (int)Languages.he
                     },
 
                     new Price
                     {
-                        Id          = 9,
-                        Population  = "Student",
-                        PricePop    = 10,
-                        Language    = (int)Languages.en
+                        id          = 9,
+                        population  = "Student",
+                        pricePop    = 10,
+                        language    = (int)Languages.en
                     },
 
                     new Price
                     {
-                        Id          = 10,
-                        Population  = "סטודנט",
-                        PricePop    = 25,
-                        Language    = (int)Languages.he
+                        id          = 10,
+                        population  = "סטודנט",
+                        pricePop    = 25,
+                        language    = (int)Languages.he
                     }
             };
         }
@@ -542,20 +556,20 @@ namespace DAL
                 {
                     new GeneralInfo
                     {
-                        Name                = "NegevZoo",
+                        name                = "NegevZoo",
                         aboutUs             = "We are Negev Zoo!!! We love animals",
                         contactInfoNote     = "Contact between 08:00 - 22:00",
                         openingHoursNote    = "The cashier desk will bew closed two hours before the zoo is closing.",
-                        Language            = (int)Languages.en
+                        language            = (int)Languages.en
                     },
 
                     new GeneralInfo
                     {
-                        Name                = "נגב זו",
+                        name                = "נגב זו",
                         aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
                         contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
                         openingHoursNote    = "הקופות יסגרו שעתיים לפני סגירת הגן",
-                        Language            = (int)Languages.he
+                        language            = (int)Languages.he
                     }
             };
         }
@@ -566,76 +580,76 @@ namespace DAL
             {
                 new RecurringEvent
                 {
-                    Id                      = 1,
-                    EncId                   = 1,
-                    Day                     = "Sunday",
-                    Descroption             = "Feeding",
-                    StartHour               = 10,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 11,
-                    EndMin                  =(int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.en
+                    id                      = 1,
+                    enclosureId                   = 1,
+                    day                     = "Sunday",
+                    description             = "Feeding",
+                    startHour               = 10,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 11,
+                    endMin                  =(int) AvailableMinutes.Zero,
+                    language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
-                    Id                      = 2,
-                    EncId                   = 2,
-                    Day                     = "ראשון",
-                    Descroption             = "האכלה",
-                    StartHour               = 10,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 11,
-                    EndMin                  = (int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.he
+                    id                      = 2,
+                    enclosureId                   = 2,
+                    day                     = "ראשון",
+                    description             = "האכלה",
+                    startHour               = 10,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 11,
+                    endMin                  = (int) AvailableMinutes.Zero,
+                    language                = (int) Languages.he
                 },
                 new RecurringEvent
                 {
-                    Id                      = 3,
-                    EncId                   = 3,
-                    Day                     = "Monday",
-                    Descroption             = "Playing",
-                    StartHour               = 10,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 11,
-                    EndMin                  =(int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.en
+                    id                      = 3,
+                    enclosureId                   = 3,
+                    day                     = "Monday",
+                    description             = "Playing",
+                    startHour               = 10,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 11,
+                    endMin                  =(int) AvailableMinutes.Zero,
+                    language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
-                    Id                      = 4,
-                    EncId                   = 4,
-                    Day                     = "ראשון",
-                    Descroption             = "משחק",
-                    StartHour               = 13,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 14,
-                    EndMin                  = (int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.he
+                    id                      = 4,
+                    enclosureId                   = 4,
+                    day                     = "ראשון",
+                    description             = "משחק",
+                    startHour               = 13,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 14,
+                    endMin                  = (int) AvailableMinutes.Zero,
+                    language                = (int) Languages.he
                 },
 
                 new RecurringEvent
                 {
-                    Id                      = 5,
-                    EncId                   = 3,
-                    Day                     = "Saturday",
-                    Descroption             = "Feeding",
-                    StartHour               = 10,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 11,
-                    EndMin                  =(int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.en
+                    id                      = 5,
+                    enclosureId                   = 3,
+                    day                     = "Saturday",
+                    description             = "Feeding",
+                    startHour               = 10,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 11,
+                    endMin                  =(int) AvailableMinutes.Zero,
+                    language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
-                    Id                      = 6,
-                    EncId                   = 4,
-                    Day                     = "שבת",
-                    Descroption             = "האכלה",
-                    StartHour               = 13,
-                    StartMin                = (int) AvailableMinutes.Half,
-                    EndHour                 = 14,
-                    EndMin                  = (int) AvailableMinutes.Zero,
-                    Language                = (int) Languages.he
+                    id                      = 6,
+                    enclosureId                   = 4,
+                    day                     = "שבת",
+                    description             = "האכלה",
+                    startHour               = 13,
+                    startMin                = (int) AvailableMinutes.Half,
+                    endHour                 = 14,
+                    endMin                  = (int) AvailableMinutes.Zero,
+                    language                = (int) Languages.he
                 }
             };
         }
@@ -646,35 +660,35 @@ namespace DAL
             {
                 new SpecialEvent
                 {
-                    Id                      = 1,
-                    Description             = "1קקי",
-                    StartDate               = new DateTime(2018,3,5),
-                    EndDate                 = new DateTime(2018,3,8),
-                    Language                = (int) Languages.he
+                    id                      = 1,
+                    description             = "1קקי",
+                    startDate               = new DateTime(2018,3,5),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) Languages.he
                 },
                 new SpecialEvent
                 {
-                    Id                      = 2,
-                    Description             = "Kaki1",
-                    StartDate               = new DateTime(2018,3,5),
-                    EndDate                 = new DateTime(2018,3,8),
-                    Language                = (int) Languages.en
+                    id                      = 2,
+                    description             = "Kaki1",
+                    startDate               = new DateTime(2018,3,5),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) Languages.en
                 },
                 new SpecialEvent
                 {
-                    Id                      = 3,
-                    Description             = "אירועי פורים",
-                    StartDate               = new DateTime(2018,3,1),
-                    EndDate                 = new DateTime(2018,3,8),
-                    Language                = (int) Languages.he
+                    id                      = 3,
+                    description             = "אירועי פורים",
+                    startDate               = new DateTime(2018,3,1),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) Languages.he
                 },
                 new SpecialEvent
                 {
-                    Id                      = 4,
-                    Description             = "Purim Events",
-                    StartDate               = new DateTime(2018,3,1),
-                    EndDate                 = new DateTime(2018,3,8),
-                    Language                = (int) Languages.en
+                    id                      = 4,
+                    description             = "Purim Events",
+                    startDate               = new DateTime(2018,3,1),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) Languages.en
                 }
             };
         }
@@ -685,134 +699,134 @@ namespace DAL
             {
                 new OpeningHour
                 {
-                    Id = 1,
-                    Day = "ראשון",
-                    StartHour = 11,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 12,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 1,
+                    day = "ראשון",
+                    startHour = 11,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 12,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 2,
-                    Day = "Sunday",
-                    StartHour = 11,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 12,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 2,
+                    day = "Sunday",
+                    startHour = 11,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 12,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
-                    Id = 3,
-                    Day = "שני",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 3,
+                    day = "שני",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 4,
-                    Day = "Monday",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 4,
+                    day = "Monday",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
-                    Id = 5,
-                    Day = "שלישי",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 5,
+                    day = "שלישי",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 6,
-                    Day = "Tuesday",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 6,
+                    day = "Tuesday",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
-                    Id = 7,
-                    Day = "רביעי",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 7,
+                    day = "רביעי",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 8,
-                    Day = "Wednesday",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Half,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 8,
+                    day = "Wednesday",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Half,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
-                    Id = 9,
-                    Day = "חמישי",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Quarter,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 9,
+                    day = "חמישי",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Quarter,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 10,
-                    Day = "Thursday",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.Quarter,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 10,
+                    day = "Thursday",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.Quarter,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
-                    Id = 11,
-                    Day = "שבת",
-                    StartHour = 10,
-                    StartMin = (int)AvailableMinutes.ThreeQuarters,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.he
+                    id = 11,
+                    day = "שבת",
+                    startHour = 10,
+                    startMin = (int)AvailableMinutes.ThreeQuarters,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
-                    Id = 12,
-                    Day = "Saturday",
-                    StartHour = 9,
-                    StartMin = (int)AvailableMinutes.ThreeQuarters,
-                    EndHour = 18,
-                    EndMin = (int)AvailableMinutes.Zero,
-                    Language = (int)Languages.en
+                    id = 12,
+                    day = "Saturday",
+                    startHour = 9,
+                    startMin = (int)AvailableMinutes.ThreeQuarters,
+                    endHour = 18,
+                    endMin = (int)AvailableMinutes.Zero,
+                    language = (int)Languages.en
                 },
             };
         }
@@ -823,50 +837,50 @@ namespace DAL
             {
                 new ContactInfo
                 {
-                    Id          = 1,
-                    Via         = "טלפון",
-                    Address     = "08-641-4777",
-                    Language    =(int)Languages.he
+                    id          = 1,
+                    via         = "טלפון",
+                    address     = "08-641-4777",
+                    language    =(int)Languages.he
                 },
 
                 new ContactInfo
                 {
-                    Id          = 2,
-                    Via         = "Phone",
-                    Address     = "08-641-4777",
-                    Language    =(int)Languages.en
+                    id          = 2,
+                    via         = "Phone",
+                    address     = "08-641-4777",
+                    language    =(int)Languages.en
                 },
 
                 new ContactInfo
                 {
-                    Id          = 3,
-                    Via         = "דואר",
-                    Address     = "דרך אילן רמון 5, באר שבע",
-                    Language    =(int)Languages.he
+                    id          = 3,
+                    via         = "דואר",
+                    address     = "דרך אילן רמון 5, באר שבע",
+                    language    =(int)Languages.he
                 },
 
                 new ContactInfo
                 {
-                    Id          = 4,
-                    Via         = "Post Mail",
-                    Address     = "Via Ilan Ramon 5, Beer-Sheva",
-                    Language    =(int)Languages.en
+                    id          = 4,
+                    via         = "Post Mail",
+                    address     = "Via Ilan Ramon 5, Beer-Sheva",
+                    language    =(int)Languages.en
                 },
 
                 new ContactInfo
                 {
-                    Id          = 5,
-                    Via         = "דואר אלקטרוני",
-                    Address     = "gilorisr@post.bgu.ac.il",
-                    Language    =(int)Languages.he
+                    id          = 5,
+                    via         = "דואר אלקטרוני",
+                    address     = "gilorisr@post.bgu.ac.il",
+                    language    =(int)Languages.he
                 },
 
                 new ContactInfo
                 {
-                    Id          = 6,
-                    Via         = "E-Mail",
-                    Address     = "gilorisr@post.bgu.ac.il",
-                    Language    =(int)Languages.en
+                    id          = 6,
+                    via         = "E-Mail",
+                    address     = "gilorisr@post.bgu.ac.il",
+                    language    =(int)Languages.en
                 }
             };
         }
@@ -877,61 +891,119 @@ namespace DAL
             {
                 new Language
                 {
-                    Id      = 1,
-                    Name  = "עברית"
-                },
-
-                new Language
-                {
-                    Id      = 2,
-                    Name  = "English"
+                    id      = 1,
+                    name  = "עברית"
                 },
                 new Language
                 {
-                    Id = 3,
-                    Name = "عربيه"
+                    id      = 2,
+                    name  = "English"
                 },
                 new Language
                 {
-                    Id = 4,
-                    Name = "русский"
+                    id = 3,
+                    name = "عربيه"
+                },
+                new Language
+                {
+                    id = 4,
+                    name = "русский"
                 }
             };
         }
 
-        private IEnumerable<WorkerUser> InitializeWorkerUsers()
+        private IEnumerable<User> InitializeUsers()
         {
-            return new List<WorkerUser>
+            return new List<User>
             {
-                new WorkerUser
+                new User
                 {
-                    Id = 1,
-                    IsAdmin = true,
-                    Name = "אור",
-                    Password = "123"
+                    id = 1,
+                    isAdmin = true,
+                    name = "אור",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 2,
-                    IsAdmin = false,
-                    Name = "גיל",
-                    Password = "123"
+                    id = 2,
+                    isAdmin = false,
+                    name = "גיל",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 3,
-                    IsAdmin = true,
-                    Name = "מנהל",
-                    Password = "123"
+                    id = 3,
+                    isAdmin = true,
+                    name = "מנהל",
+                    password = "123"
                 },
-                new WorkerUser
+                new User
                 {
-                    Id = 4,
-                    IsAdmin = false,
-                    Name = "עובד",
-                    Password = "123"
+                    id = 4,
+                    isAdmin = false,
+                    name = "עובד",
+                    password = "123"
                 }
             };
+        }
+
+        #endregion
+
+        #region Getters
+
+        public override DbSet<Animal> GetAllAnimals()
+        {
+            return Animals;
+        }
+
+        public override DbSet<Enclosure> GetAllEnclosures()
+        {
+            return Enclosures;
+        }
+
+        public override DbSet<RecurringEvent> GetAllRecuringEvents()
+        {
+            return RecurringEvents;
+        }
+
+        public override DbSet<Price> GetAllPrices()
+        {
+            return Prices;
+        }
+
+        public override DbSet<GeneralInfo> GetGeneralInfo()
+        {
+            return GeneralInfo;
+        }
+
+        public override DbSet<OpeningHour> GetAllOpeningHours()
+        {
+            return OpeningHours;
+        }
+
+        public override DbSet<ContactInfo> GetAllContactInfos()
+        {
+            return ContactInfos;
+        }
+
+        public override DbSet<SpecialEvent> GetAllSpecialEvents()
+        {
+            return SpecialEvents;
+        }
+
+        public override DbSet<WallFeed> GetAllWallFeeds()
+        {
+            return WallFeeds;
+        }
+
+        public override DbSet<User> GetAllUsers()
+        {
+            return Users;
+        }
+
+        public override DbSet<Language> getAllLanguages()
+        {
+            return AllLanguages;
         }
 
         #endregion

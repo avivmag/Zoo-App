@@ -1,5 +1,4 @@
-﻿using Backend;
-using Backend.Models;
+﻿using DAL;
 using BL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
@@ -68,10 +67,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2018, 03, 14),
-                Info = "Another Kaki appears in the zoo",
-                Language =(int)Languages.en
+                id = default(int),
+                created = new DateTime(2018, 03, 14),
+                info = "Another Kaki appears in the zoo",
+                language =(int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -89,10 +88,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2018, 03, 05),
-                Info = "Purim Events",
-                Language = (int)Languages.en
+                id = default(int),
+                created = new DateTime(2018, 03, 05),
+                info = "Purim Events",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -107,10 +106,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2018, 03, 05),
-                Info = "Purim Events",
-                Language = nonExistantLangauge
+                id = default(int),
+                created = new DateTime(2018, 03, 05),
+                info = "Purim Events",
+                language = nonExistantLangauge
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -125,10 +124,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2019, 03, 05),
-                Info = "Purim Events",
-                Language = (int)Languages.en
+                id = default(int),
+                created = new DateTime(2019, 03, 05),
+                info = "Purim Events",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -143,10 +142,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2018, 03, 05),
-                Info = "   ",
-                Language = (int)Languages.en
+                id = default(int),
+                created = new DateTime(2018, 03, 05),
+                info = "   ",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -161,10 +160,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = default(int),
-                Created = new DateTime(2018, 03, 05),
-                Info = "",
-                Language = (int)Languages.en
+                id = default(int),
+                created = new DateTime(2018, 03, 05),
+                info = "",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -178,17 +177,17 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = 1,
-                Created = new DateTime(2018, 03, 05),
-                Info = "Purim is back again!",
-                Language = (int)Languages.en
+                id = 1,
+                created = new DateTime(2018, 03, 05),
+                info = "Purim is back again!",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
 
             feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(16, feeds.Count());
-            Assert.IsTrue(feeds.Any(f => f.Info == feed.Info));
+            Assert.IsTrue(feeds.Any(f => f.info == feed.info));
         }
 
         [TestMethod]
@@ -200,10 +199,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = 1,
-                Created = new DateTime(2018, 03, 05),
-                Info = "Sukut Events",
-                Language = (int)Languages.en
+                id = 1,
+                created = new DateTime(2018, 03, 05),
+                info = "Sukut Events",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -218,10 +217,10 @@ namespace ZooTests
 
             var feed = new WallFeed
             {
-                Id = -4,
-                Created = new DateTime(2018, 03, 05),
-                Info = "Purim is back again!",
-                Language = (int)Languages.en
+                id = -4,
+                created = new DateTime(2018, 03, 05),
+                info = "Purim is back again!",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateWallFeed(feed);
@@ -235,10 +234,10 @@ namespace ZooTests
             var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(16, feeds.Count());
 
-            var firstFeed = feeds.SingleOrDefault(f => f.Id == 1);
+            var firstFeed = feeds.SingleOrDefault(f => f.id == 1);
             Assert.IsNotNull(firstFeed);
 
-            ZooInfoController.DeleteWallFeed(firstFeed.Id);
+            ZooInfoController.DeleteWallFeed((int)firstFeed.id);
 
             feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(15, feeds.Count());
@@ -270,7 +269,7 @@ namespace ZooTests
             Assert.IsInstanceOfType(prices, typeof(Price[]));
 
             Assert.AreEqual(5, prices.Count());
-            Assert.IsTrue(prices.Any(p => p.Population == "מבוגר"));
+            Assert.IsTrue(prices.Any(p => p.population == "מבוגר"));
         }
 
         [TestMethod]
@@ -280,7 +279,7 @@ namespace ZooTests
             Assert.IsInstanceOfType(prices, typeof(Price[]));
 
             Assert.AreEqual(5, prices.Count());
-            Assert.IsTrue(prices.Any(p => p.Population == "Adult"));
+            Assert.IsTrue(prices.Any(p => p.population == "Adult"));
         }
 
         [TestMethod]
@@ -302,10 +301,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "Veteran",
-                PricePop = 15.5,
-                Language = (int)Languages.en
+                id = default(int),
+                population = "Veteran",
+                pricePop = 15.5,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -323,10 +322,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "Adult",
-                PricePop = 15.5,
-                Language = (int)Languages.en
+                id = default(int),
+                population = "Adult",
+                pricePop = 15.5,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -341,10 +340,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "Veteran",
-                PricePop = 15.5,
-                Language = nonExistantLangauge
+                id = default(int),
+                population = "Veteran",
+                pricePop = 15.5,
+                language = nonExistantLangauge
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -359,10 +358,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "   ",
-                PricePop = 15.5,
-                Language = (int)Languages.en
+                id = default(int),
+                population = "   ",
+                pricePop = 15.5,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -377,10 +376,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "",
-                PricePop = 15.5,
-                Language = (int)Languages.en
+                id = default(int),
+                population = "",
+                pricePop = 15.5,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -395,10 +394,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = default(int),
-                Population = "Veteran",
-                PricePop = -15.5,
-                Language = (int)Languages.en
+                id = default(int),
+                population = "Veteran",
+                pricePop = -15.5,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -412,20 +411,20 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = 9,
-                Population = "Student",
-                PricePop = 10,
-                Language = (int)Languages.en
+                id = 9,
+                population = "Student",
+                pricePop = 10,
+                language = (int)Languages.en
             };
-            var oldPrice = price.PricePop;
-            price.PricePop = 20;
+            var oldPrice = price.pricePop;
+            price.pricePop = 20;
 
             ZooInfoController.UpdatePrice(price);
 
             prices = ZooInfoController.GetAllPrices((int)Languages.en);
             Assert.AreEqual(5, prices.Count());
-            Assert.IsTrue(prices.Any(p => p.Population == price.Population && p.PricePop == price.PricePop));
-            Assert.IsFalse(prices.Any(p => p.Population == price.Population && p.PricePop == oldPrice));
+            Assert.IsTrue(prices.Any(p => p.population == price.population && p.pricePop == price.pricePop));
+            Assert.IsFalse(prices.Any(p => p.population == price.population && p.pricePop == oldPrice));
         }
 
         [TestMethod]
@@ -437,10 +436,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = 9,
-                Population = "Adult",
-                PricePop = 10,
-                Language = (int)Languages.en
+                id = 9,
+                population = "Adult",
+                pricePop = 10,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -455,10 +454,10 @@ namespace ZooTests
 
             var price = new Price
             {
-                Id = -2,
-                Population = "Student",
-                PricePop = 10,
-                Language = (int)Languages.en
+                id = -2,
+                population = "Student",
+                pricePop = 10,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdatePrice(price);
@@ -472,14 +471,14 @@ namespace ZooTests
             var prices = ZooInfoController.GetAllPrices((int)Languages.he);
             Assert.AreEqual(5, prices.Count());
 
-            var price = prices.SingleOrDefault(p => p.Population == "סטודנט");
+            var price = prices.SingleOrDefault(p => p.population == "סטודנט");
             Assert.IsNotNull(price);
 
-            ZooInfoController.DeletePrice(price.Id);
+            ZooInfoController.DeletePrice(price.id);
 
             prices = ZooInfoController.GetAllPrices((int)Languages.he);
             Assert.AreEqual(4, prices.Count());
-            Assert.IsFalse(prices.Any(p => p.Population == "סטודנט"));
+            Assert.IsFalse(prices.Any(p => p.population == "סטודנט"));
 
             prices = ZooInfoController.GetAllPrices((int)Languages.en);
             Assert.AreEqual(5, prices.Count());
@@ -505,7 +504,7 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
         }
 
         [TestMethod]
@@ -525,17 +524,17 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "Sunday"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "Sunday"));
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = default(int),
-                Day = "Friday",
-                StartHour = 9,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.en
+                id = default(int),
+                day = "Friday",
+                startHour = 9,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -552,17 +551,17 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = default(int),
-                Day = "Saturday",
-                StartHour = 9,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.en
+                id = default(int),
+                day = "Saturday",
+                startHour = 9,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -576,17 +575,17 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = default(int),
-                Day = "    ",
-                StartHour = 9,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.en
+                id = default(int),
+                day = "    ",
+                startHour = 9,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -600,17 +599,17 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = default(int),
-                Day = "",
-                StartHour = 9,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.en
+                id = default(int),
+                day = "",
+                startHour = 9,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -624,17 +623,17 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = default(int),
-                Day = "Kaki",
-                EndHour = 9,
-                EndMin = (int)AvailableMinutes.ThreeQuarters,
-                StartHour = 18,
-                StartMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.en
+                id = default(int),
+                day = "Kaki",
+                endHour = 9,
+                endMin = (int)AvailableMinutes.ThreeQuarters,
+                startHour = 18,
+                startMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -648,16 +647,16 @@ namespace ZooTests
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = 11,
-                Day = "שבת",
-                StartHour = 10,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.he
+                id = 11,
+                day = "שבת",
+                startHour = 10,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.he
             };
 
-            opHour.EndHour = 20;
+            opHour.endHour = 20;
 
             ZooInfoController.UpdateOpeningHour(opHour);
         }
@@ -671,13 +670,13 @@ namespace ZooTests
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = 11,
-                Day = "שלישי",
-                StartHour = 10,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.he
+                id = 11,
+                day = "שלישי",
+                startHour = 10,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -692,13 +691,13 @@ namespace ZooTests
 
             OpeningHour opHour = new OpeningHour
             {
-                Id = -11,
-                Day = "שבת",
-                StartHour = 10,
-                StartMin = (int)AvailableMinutes.ThreeQuarters,
-                EndHour = 18,
-                EndMin = (int)AvailableMinutes.Zero,
-                Language = (int)Languages.he
+                id = -11,
+                day = "שבת",
+                startHour = 10,
+                startMin = (int)AvailableMinutes.ThreeQuarters,
+                endHour = 18,
+                endMin = (int)AvailableMinutes.Zero,
+                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -713,9 +712,9 @@ namespace ZooTests
             var openingHours = ZooInfoController.GetAllOpeningHours((int)Languages.en);
             Assert.AreEqual(6, openingHours.Count());
 
-            OpeningHour opHour = openingHours.SingleOrDefault(oh => oh.Day == "Sunday");
+            OpeningHour opHour = openingHours.SingleOrDefault(oh => oh.day == "Sunday");
 
-            ZooInfoController.DeleteOpeningHour(opHour.Id);
+            ZooInfoController.DeleteOpeningHour(opHour.id);
 
             openingHours = ZooInfoController.GetAllOpeningHours();
             Assert.AreEqual(6, openingHours.Count());
@@ -739,7 +738,7 @@ namespace ZooTests
         {
             var contactInfos = ZooInfoController.GetAllContactInfos();
             Assert.AreEqual(3, contactInfos.Count());
-            Assert.IsTrue(contactInfos.Any(ci => ci.Via == "דואר"));
+            Assert.IsTrue(contactInfos.Any(ci => ci.via == "דואר"));
         }
 
         [TestMethod]
@@ -760,10 +759,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "E-mail",
-                Address = "avivmag@post.bgu.ac.il",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "E-mail",
+                address = "avivmag@post.bgu.ac.il",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -784,10 +783,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "E-Mail",
-                Address = "gilorisr@post.bgu.ac.il",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "E-Mail",
+                address = "gilorisr@post.bgu.ac.il",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -802,10 +801,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "     ",
-                Address = "avivmag@post.bgu.ac.il",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "     ",
+                address = "avivmag@post.bgu.ac.il",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -820,10 +819,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "",
-                Address = "avivmag@post.bgu.ac.il",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "",
+                address = "avivmag@post.bgu.ac.il",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -838,10 +837,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "E-mail",
-                Address = "         ",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "E-mail",
+                address = "         ",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -856,10 +855,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "E-mail",
-                Address = "",
-                Language = (int)Languages.en
+                id = default(int),
+                via = "E-mail",
+                address = "",
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -874,10 +873,10 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = default(int),
-                Via = "E-mail",
-                Address = "This is address",
-                Language = nonExistantLangauge
+                id = default(int),
+                via = "E-mail",
+                address = "This is address",
+                language = nonExistantLangauge
             };
 
             ZooInfoController.UpdateContactInfo(contact);
@@ -891,21 +890,21 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = 3,
-                Via = "דואר",
-                Address = "דרך אילן רמון 5, באר שבע",
-                Language = (int)Languages.he
+                id = 3,
+                via = "דואר",
+                address = "דרך אילן רמון 5, באר שבע",
+                language = (int)Languages.he
             };
 
-            var oldAddress = contact.Address;
-            contact.Address = "יש לנו כתובת חדשה!";
+            var oldAddress = contact.address;
+            contact.address = "יש לנו כתובת חדשה!";
 
             ZooInfoController.UpdateContactInfo(contact);
 
             contactInfos = ZooInfoController.GetAllContactInfos();
             Assert.AreEqual(3, contactInfos.Count());
-            Assert.IsTrue(contactInfos.Any(ci => ci.Address == contact.Address));
-            Assert.IsFalse(contactInfos.Any(ci => ci.Address == oldAddress));
+            Assert.IsTrue(contactInfos.Any(ci => ci.address == contact.address));
+            Assert.IsFalse(contactInfos.Any(ci => ci.address == oldAddress));
         }
 
         [TestMethod]
@@ -917,14 +916,14 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = 3,
-                Via = "דואר",
-                Address = "דרך אילן רמון 5, באר שבע",
-                Language = (int)Languages.he
+                id = 3,
+                via = "דואר",
+                address = "דרך אילן רמון 5, באר שבע",
+                language = (int)Languages.he
             };
 
-            contact.Via = "טלפון";
-            contact.Address = "08-641-4777";
+            contact.via = "טלפון";
+            contact.address = "08-641-4777";
 
             ZooInfoController.UpdateContactInfo(contact);
         }
@@ -938,13 +937,13 @@ namespace ZooTests
 
             ContactInfo contact = new ContactInfo
             {
-                Id = 3,
-                Via = "דואר",
-                Address = "דרך אילן רמון 5, באר שבע",
-                Language = (int)Languages.he
+                id = 3,
+                via = "דואר",
+                address = "דרך אילן רמון 5, באר שבע",
+                language = (int)Languages.he
             };
 
-            contact.Id = -3;
+            contact.id = -3;
 
             ZooInfoController.UpdateContactInfo(contact);
         }
@@ -957,9 +956,9 @@ namespace ZooTests
             var contactInfos = ZooInfoController.GetAllContactInfos((int)Languages.en);
             Assert.AreEqual(3, contactInfos.Count());
 
-            ContactInfo contact = contactInfos.SingleOrDefault(ci => ci.Via == "Post Mail");
+            ContactInfo contact = contactInfos.SingleOrDefault(ci => ci.via == "Post Mail");
 
-            ZooInfoController.DeleteContactInfo(contact.Id);
+            ZooInfoController.DeleteContactInfo(contact.id);
 
             Assert.AreEqual(3, contactInfos.Count());
         }
@@ -982,7 +981,7 @@ namespace ZooTests
         {
             var specialEvents = ZooInfoController.GetAllSpecialEvents();
             Assert.AreEqual(2, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.Description == "1קקי"));
+            Assert.IsTrue(specialEvents.Any(se => se.description == "1קקי"));
         }
 
         [TestMethod]
@@ -1000,12 +999,12 @@ namespace ZooTests
             var specialEvents = ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018,03,01),new DateTime(2018,03,31),(int)Languages.en);
 
             Assert.AreEqual(2, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.Description == "Kaki1"));
+            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
 
             specialEvents = ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018, 03, 02), new DateTime(2018, 03, 31), (int)Languages.en);
             Assert.AreEqual(1, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.Description == "Kaki1"));
-            Assert.IsFalse(specialEvents.Any(se => se.Description == "Purim Events"));
+            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
+            Assert.IsFalse(specialEvents.Any(se => se.description == "Purim Events"));
         }
 
         [TestMethod]
@@ -1032,11 +1031,11 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = default(int),
-                Description = "The big holiday",
-                StartDate = new DateTime(2018, 7, 1),
-                EndDate = new DateTime(2018,9,1),
-                Language = (int)Languages.en
+                id = default(int),
+                description = "The big holiday",
+                startDate = new DateTime(2018, 7, 1),
+                endDate = new DateTime(2018,9,1),
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateSpecialEvent(eve);
@@ -1057,11 +1056,11 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = default(int),
-                Description = "Kaki1",
-                StartDate = new DateTime(2018, 7, 1),
-                EndDate = new DateTime(2018, 9, 1),
-                Language = (int)Languages.en
+                id = default(int),
+                description = "Kaki1",
+                startDate = new DateTime(2018, 7, 1),
+                endDate = new DateTime(2018, 9, 1),
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateSpecialEvent(eve);
@@ -1076,11 +1075,11 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = default(int),
-                Description = "The big holiday",
-                EndDate = new DateTime(2018, 7, 1),
-                StartDate = new DateTime(2018, 9, 1),
-                Language = (int)Languages.en
+                id = default(int),
+                description = "The big holiday",
+                endDate = new DateTime(2018, 7, 1),
+                startDate = new DateTime(2018, 9, 1),
+                language = (int)Languages.en
             };
 
             ZooInfoController.UpdateSpecialEvent(eve);
@@ -1095,11 +1094,11 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = default(int),
-                Description = "The big holiday",
-                StartDate = new DateTime(2018, 7, 1),
-                EndDate = new DateTime(2018, 9, 1),
-                Language = nonExistantLangauge
+                id = default(int),
+                description = "The big holiday",
+                startDate = new DateTime(2018, 7, 1),
+                endDate = new DateTime(2018, 9, 1),
+                language = nonExistantLangauge
             };
 
             ZooInfoController.UpdateSpecialEvent(eve);
@@ -1113,22 +1112,22 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = 2,
-                Description = "Kaki1",
-                StartDate = new DateTime(2018, 3, 5),
-                EndDate = new DateTime(2018, 3, 8),
-                Language = (int)Languages.en
+                id = 2,
+                description = "Kaki1",
+                startDate = new DateTime(2018, 3, 5),
+                endDate = new DateTime(2018, 3, 8),
+                language = (int)Languages.en
             };
 
-            var oldDescription = eve.Description;
-            eve.Description = "New Event";
+            var oldDescription = eve.description;
+            eve.description = "New Event";
 
             ZooInfoController.UpdateSpecialEvent(eve);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents((int)Languages.en);
             Assert.AreEqual(2, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.Description == eve.Description));
-            Assert.IsFalse(specialEvents.Any(se => se.Description == oldDescription));
+            Assert.IsTrue(specialEvents.Any(se => se.description == eve.description));
+            Assert.IsFalse(specialEvents.Any(se => se.description == oldDescription));
         }
 
         [TestMethod]
@@ -1140,14 +1139,14 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = 2,
-                Description = "Kaki1",
-                StartDate = new DateTime(2018, 3, 5),
-                EndDate = new DateTime(2018, 3, 8),
-                Language = (int)Languages.en
+                id = 2,
+                description = "Kaki1",
+                startDate = new DateTime(2018, 3, 5),
+                endDate = new DateTime(2018, 3, 8),
+                language = (int)Languages.en
             };
 
-            eve.Description = "Purim Events";
+            eve.description = "Purim Events";
 
             ZooInfoController.UpdateSpecialEvent(eve);
         }
@@ -1161,14 +1160,14 @@ namespace ZooTests
 
             SpecialEvent eve = new SpecialEvent
             {
-                Id = 2,
-                Description = "Kaki1",
-                StartDate = new DateTime(2018, 3, 5),
-                EndDate = new DateTime(2018, 3, 8),
-                Language = (int)Languages.en
+                id = 2,
+                description = "Kaki1",
+                startDate = new DateTime(2018, 3, 5),
+                endDate = new DateTime(2018, 3, 8),
+                language = (int)Languages.en
             };
 
-            eve.Id = -3;
+            eve.id = -3;
 
             ZooInfoController.UpdateSpecialEvent(eve);
         }
@@ -1181,9 +1180,9 @@ namespace ZooTests
             var specialEvents = ZooInfoController.GetAllSpecialEvents();
             Assert.AreEqual(2, specialEvents.Count());
 
-            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.Description == "אירועי פורים");
+            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.description == "אירועי פורים");
 
-            ZooInfoController.DeleteSpecialEvent(eve.Id);
+            ZooInfoController.DeleteSpecialEvent(eve.id);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents();
             Assert.AreEqual(1, specialEvents.Count());

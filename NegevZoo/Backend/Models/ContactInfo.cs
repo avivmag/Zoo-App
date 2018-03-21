@@ -8,9 +8,9 @@ namespace Backend.Models
 {
     public class ContactInfo
     {
-        public int Id { get; set; }
-        public string Via { get; set; }
-        public string Address { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public string via { get; set; }
+        public string address { get; set; }
+        public int language { get; set; }
     }
 }

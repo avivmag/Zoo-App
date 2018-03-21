@@ -8,12 +8,12 @@ namespace Backend.Models
 {
     public class OpeningHour
     {
-        public int Id { get; set; }
-        public string Day { get; set; }
-        public int StartHour { get; set; }
-        public int StartMin { get; set; }
-        public int EndHour { get; set; }
-        public int EndMin { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public string day { get; set; }
+        public int startHour { get; set; }
+        public int startMin { get; set; }
+        public int endHour { get; set; }
+        public int endMin { get; set; }
+        public int language { get; set; }
     }
 }

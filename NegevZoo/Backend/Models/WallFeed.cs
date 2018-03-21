@@ -8,9 +8,9 @@ namespace Backend.Models
 {
     public class WallFeed
     {
-        public int Id { get; set; }
-        public DateTime Created { get; set; }
-        public string Info { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public DateTime created { get; set; }
+        public string info { get; set; }
+        public int language { get; set; }
     }
 }

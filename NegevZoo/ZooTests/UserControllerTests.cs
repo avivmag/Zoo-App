@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Http;
-using Backend.Models;
+using DAL;
 using BL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
@@ -45,12 +45,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "gili",
-                Password = "123"
+                id = default(int),
+                isAdmin = false,
+                name = "gili",
+                password = "123"
             };
 
             usersController.UpdateUser(user);
@@ -66,12 +66,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "     ",
-                Password = "123123"
+                id = default(int),
+                isAdmin = false,
+                name = "     ",
+                password = "123123"
             };
 
             usersController.UpdateUser(user);
@@ -84,12 +84,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "",
-                Password = "123123"
+                id = default(int),
+                isAdmin = false,
+                name = "",
+                password = "123123"
             };
 
             usersController.UpdateUser(user);
@@ -102,12 +102,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "גילי",
-                Password = "       "
+                id = default(int),
+                isAdmin = false,
+                name = "גילי",
+                password = "       "
             };
 
             usersController.UpdateUser(user);
@@ -120,12 +120,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "גילי",
-                Password = ""
+                id = default(int),
+                isAdmin = false,
+                name = "גילי",
+                password = ""
             };
 
             usersController.UpdateUser(user);
@@ -138,12 +138,12 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = default(int),
-                IsAdmin = false,
-                Name = "מנהל",
-                Password = "123"
+                id = default(int),
+                isAdmin = false,
+                name = "מנהל",
+                password = "123"
             };
 
             usersController.UpdateUser(user);
@@ -155,21 +155,21 @@ namespace ZooTests
             var users= usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = 2,
-                IsAdmin = false,
-                Name = "גיל",
-                Password = "123"
+                id = 2,
+                isAdmin = false,
+                name = "גיל",
+                password = "123"
             };
 
-            user.Name  = "גיל המלך";
+            user.name  = "גיל המלך";
 
             usersController.UpdateUser(user);
 
             users = usersController.GetAllUsers();
-            Assert.IsTrue(users.Any(a => a.Name == "גיל המלך"));
-            Assert.IsFalse(users.Any(a => a.Name == "גיל"));
+            Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
+            Assert.IsFalse(users.Any(a => a.name == "גיל"));
             Assert.AreEqual(4, users.Count());
         }
 
@@ -180,15 +180,15 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = 2,
-                IsAdmin = false,
-                Name = "גיל",
-                Password = "123"
+                id = 2,
+                isAdmin = false,
+                name = "גיל",
+                password = "123"
             };
 
-            user.Name = "אור";
+            user.name = "אור";
 
             usersController.UpdateUser(user);
         }
@@ -200,15 +200,15 @@ namespace ZooTests
             var users= usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new WorkerUser
+            var user = new User
             {
-                Id = 2,
-                IsAdmin = false,
-                Name = "גיל",
-                Password = "123"
+                id = 2,
+                isAdmin = false,
+                name = "גיל",
+                password = "123"
             };
 
-            user.Id = -3;
+            user.id = -3;
 
             usersController.UpdateUser(user);
         }
@@ -221,10 +221,10 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = users.SingleOrDefault(en => en.Name == "עובד");
+            var user = users.SingleOrDefault(en => en.name == "עובד");
             Assert.IsNotNull(user);
 
-            usersController.DeleteUser(user.Id);
+            usersController.DeleteUser((int)user.id);
             users = usersController.GetAllUsers();
 
             Assert.AreEqual(3, users.Count());

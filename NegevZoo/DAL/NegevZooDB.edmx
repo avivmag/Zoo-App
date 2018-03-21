@@ -1,0 +1,585 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="NegevZooModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="animals">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="tinytext" Nullable="false" />
+          <Property Name="story" Type="mediumtext" />
+          <Property Name="enclosureId" Type="uint" Nullable="false" />
+          <Property Name="category" Type="tinytext" />
+          <Property Name="series" Type="tinytext" />
+          <Property Name="family" Type="tinytext" />
+          <Property Name="distribution" Type="mediumtext" />
+          <Property Name="reproduction" Type="mediumtext" />
+          <Property Name="food" Type="tinytext" />
+          <Property Name="preservation" Type="uint" Nullable="false" />
+          <Property Name="pictureUrl" Type="mediumtext" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="contactinfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="via" Type="tinytext" Nullable="false" />
+          <Property Name="address" Type="tinytext" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="enclosurepictures">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="enclosureId" Type="int" Nullable="false" />
+          <Property Name="pictureUrl" Type="mediumtext" Nullable="false" />
+        </EntityType>
+        <EntityType Name="enclosures">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="name" Type="tinytext" Nullable="false" />
+          <Property Name="story" Type="mediumtext" />
+          <Property Name="markerLongitude" Type="double" Nullable="false" />
+          <Property Name="markerLatitude" Type="double" Nullable="false" />
+          <Property Name="markerIconUrl" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="pictureUrl" Type="mediumtext" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="generalinfo">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="aboutUs" Type="mediumtext" />
+          <Property Name="openingHoursNote" Type="mediumtext" />
+          <Property Name="contactInfoNote" Type="mediumtext" />
+          <Property Name="mapBackgroundUrl" Type="tinytext" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="languages">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="miscmarkers">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="longitude" Type="float" Nullable="false" />
+          <Property Name="latitude" Type="float" Nullable="false" />
+          <Property Name="iconUrl" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="id" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="openinghours">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="day" Type="tinytext" Nullable="false" />
+          <Property Name="startHour" Type="uint" Nullable="false" />
+          <Property Name="endHour" Type="uint" Nullable="false" />
+          <Property Name="endMin" Type="uint" Nullable="false" />
+          <Property Name="startMin" Type="uint" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="prices">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="population" Type="tinytext" Nullable="false" />
+          <Property Name="pricePop" Type="double" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="recommendedroutes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="URL" Type="tinytext" />
+        </EntityType>
+        <EntityType Name="recurringevents">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="description" Type="tinytext" />
+          <Property Name="day" Type="tinytext" Nullable="false" />
+          <Property Name="startHour" Type="uint" Nullable="false" />
+          <Property Name="startMin" Type="int" Nullable="false" />
+          <Property Name="endHour" Type="uint" Nullable="false" />
+          <Property Name="endMin" Type="int" Nullable="false" />
+          <Property Name="enclosureId" Type="int" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="routes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="fromLangitude" Type="double" Nullable="false" />
+          <Property Name="fromLatitude" Type="double" Nullable="false" />
+          <Property Name="toLangitude" Type="double" Nullable="false" />
+          <Property Name="toLongitude" Type="double" Nullable="false" />
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="specialevents">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="description" Type="tinytext" Nullable="false" />
+          <Property Name="startDate" Type="date" Nullable="false" />
+          <Property Name="endDate" Type="date" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+          <Property Name="imageUrl" Type="tinytext" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="isAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="wallfeeds">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="created" Type="date" Nullable="false" />
+          <Property Name="info" Type="text" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="youtubevideourl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="enclosureId" Type="uint" Nullable="false" />
+          <Property Name="videoUrl" Type="mediumtext" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="NegevZooModelStoreContainer">
+          <EntitySet Name="animals" EntityType="Self.animals" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="contactinfo" EntityType="Self.contactinfo" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="enclosurepictures" EntityType="Self.enclosurepictures" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="enclosures" EntityType="Self.enclosures" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="generalinfo" EntityType="Self.generalinfo" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="languages" EntityType="Self.languages" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="miscmarkers" EntityType="Self.miscmarkers" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="openinghours" EntityType="Self.openinghours" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="prices" EntityType="Self.prices" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="recommendedroutes" EntityType="Self.recommendedroutes" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="recurringevents" EntityType="Self.recurringevents" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="routes" EntityType="Self.routes" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="specialevents" EntityType="Self.specialevents" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="wallfeeds" EntityType="Self.wallfeeds" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="youtubevideourl" EntityType="Self.youtubevideourl" Schema="negev_zoo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NegevZooModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Animal">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="enclosureId" Type="Int64" Nullable="false" />
+          <Property Name="category" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="reproduction" Type="String" />
+          <Property Name="food" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="preservation" Type="Int64" Nullable="false" />
+          <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContactInfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="via" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EnclosurePicture">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="enclosureId" Type="Int32" Nullable="false" />
+          <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Enclosure">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="markerLongitude" Type="Double" Nullable="false" />
+          <Property Name="markerLatitude" Type="Double" Nullable="false" />
+          <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GeneralInfo">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="aboutUs" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="openingHoursNote" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="contactInfoNote" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="mapBackgroundUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Language">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MiscMarker">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="longitude" Type="Single" Nullable="false" />
+          <Property Name="latitude" Type="Single" Nullable="false" />
+          <Property Name="iconUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="id" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OpeningHour">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="day" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startHour" Type="Int64" Nullable="false" />
+          <Property Name="endHour" Type="Int64" Nullable="false" />
+          <Property Name="endMin" Type="Int64" Nullable="false" />
+          <Property Name="startMin" Type="Int64" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="population" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pricePop" Type="Double" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RecommendedRoute">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="RecurringEvent">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="day" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startHour" Type="Int64" Nullable="false" />
+          <Property Name="startMin" Type="Int32" Nullable="false" />
+          <Property Name="endHour" Type="Int64" Nullable="false" />
+          <Property Name="endMin" Type="Int32" Nullable="false" />
+          <Property Name="enclosureId" Type="Int32" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="fromLangitude" Type="Double" Nullable="false" />
+          <Property Name="fromLatitude" Type="Double" Nullable="false" />
+          <Property Name="toLangitude" Type="Double" Nullable="false" />
+          <Property Name="toLongitude" Type="Double" Nullable="false" />
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="SpecialEvent">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startDate" Type="DateTime" Nullable="false" />
+          <Property Name="endDate" Type="DateTime" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="imageUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallFeed">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="created" Type="DateTime" Nullable="false" />
+          <Property Name="info" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="YoutubeVideoUrl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="enclosureId" Type="Int64" Nullable="false" />
+          <Property Name="videoUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="NegevZooDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Animals" EntityType="NegevZooModel.Animal" />
+          <EntitySet Name="ContactInfos" EntityType="NegevZooModel.ContactInfo" />
+          <EntitySet Name="EnclosurePictures" EntityType="NegevZooModel.EnclosurePicture" />
+          <EntitySet Name="Enclosures" EntityType="NegevZooModel.Enclosure" />
+          <EntitySet Name="GeneralInfos" EntityType="NegevZooModel.GeneralInfo" />
+          <EntitySet Name="Languages" EntityType="NegevZooModel.Language" />
+          <EntitySet Name="MiscMarkers" EntityType="NegevZooModel.MiscMarker" />
+          <EntitySet Name="OpeningHours" EntityType="NegevZooModel.OpeningHour" />
+          <EntitySet Name="Prices" EntityType="NegevZooModel.Price" />
+          <EntitySet Name="RecommendedRoutes" EntityType="NegevZooModel.RecommendedRoute" />
+          <EntitySet Name="RecurringEvents" EntityType="NegevZooModel.RecurringEvent" />
+          <EntitySet Name="Routes" EntityType="NegevZooModel.Route" />
+          <EntitySet Name="SpecialEvents" EntityType="NegevZooModel.SpecialEvent" />
+          <EntitySet Name="Users" EntityType="NegevZooModel.User" />
+          <EntitySet Name="WallFeeds" EntityType="NegevZooModel.WallFeed" />
+          <EntitySet Name="YoutubeVideoUrls" EntityType="NegevZooModel.YoutubeVideoUrl" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NegevZooModelStoreContainer" CdmEntityContainer="NegevZooDBEntities">
+          <EntitySetMapping Name="Animals">
+            <EntityTypeMapping TypeName="NegevZooModel.Animal">
+              <MappingFragment StoreEntitySet="animals">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="series" ColumnName="series" />
+                <ScalarProperty Name="family" ColumnName="family" />
+                <ScalarProperty Name="distribution" ColumnName="distribution" />
+                <ScalarProperty Name="reproduction" ColumnName="reproduction" />
+                <ScalarProperty Name="food" ColumnName="food" />
+                <ScalarProperty Name="preservation" ColumnName="preservation" />
+                <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContactInfos">
+            <EntityTypeMapping TypeName="NegevZooModel.ContactInfo">
+              <MappingFragment StoreEntitySet="contactinfo">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="via" ColumnName="via" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EnclosurePictures">
+            <EntityTypeMapping TypeName="NegevZooModel.EnclosurePicture">
+              <MappingFragment StoreEntitySet="enclosurepictures">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
+                <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Enclosures">
+            <EntityTypeMapping TypeName="NegevZooModel.Enclosure">
+              <MappingFragment StoreEntitySet="enclosures">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="markerLongitude" ColumnName="markerLongitude" />
+                <ScalarProperty Name="markerLatitude" ColumnName="markerLatitude" />
+                <ScalarProperty Name="markerIconUrl" ColumnName="markerIconUrl" />
+                <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GeneralInfos">
+            <EntityTypeMapping TypeName="NegevZooModel.GeneralInfo">
+              <MappingFragment StoreEntitySet="generalinfo">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="aboutUs" ColumnName="aboutUs" />
+                <ScalarProperty Name="openingHoursNote" ColumnName="openingHoursNote" />
+                <ScalarProperty Name="contactInfoNote" ColumnName="contactInfoNote" />
+                <ScalarProperty Name="mapBackgroundUrl" ColumnName="mapBackgroundUrl" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Languages">
+            <EntityTypeMapping TypeName="NegevZooModel.Language">
+              <MappingFragment StoreEntitySet="languages">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MiscMarkers">
+            <EntityTypeMapping TypeName="NegevZooModel.MiscMarker">
+              <MappingFragment StoreEntitySet="miscmarkers">
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="iconUrl" ColumnName="iconUrl" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OpeningHours">
+            <EntityTypeMapping TypeName="NegevZooModel.OpeningHour">
+              <MappingFragment StoreEntitySet="openinghours">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="day" ColumnName="day" />
+                <ScalarProperty Name="startHour" ColumnName="startHour" />
+                <ScalarProperty Name="endHour" ColumnName="endHour" />
+                <ScalarProperty Name="endMin" ColumnName="endMin" />
+                <ScalarProperty Name="startMin" ColumnName="startMin" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prices">
+            <EntityTypeMapping TypeName="NegevZooModel.Price">
+              <MappingFragment StoreEntitySet="prices">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="population" ColumnName="population" />
+                <ScalarProperty Name="pricePop" ColumnName="pricePop" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecommendedRoutes">
+            <EntityTypeMapping TypeName="NegevZooModel.RecommendedRoute">
+              <MappingFragment StoreEntitySet="recommendedroutes">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecurringEvents">
+            <EntityTypeMapping TypeName="NegevZooModel.RecurringEvent">
+              <MappingFragment StoreEntitySet="recurringevents">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="day" ColumnName="day" />
+                <ScalarProperty Name="startHour" ColumnName="startHour" />
+                <ScalarProperty Name="startMin" ColumnName="startMin" />
+                <ScalarProperty Name="endHour" ColumnName="endHour" />
+                <ScalarProperty Name="endMin" ColumnName="endMin" />
+                <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Routes">
+            <EntityTypeMapping TypeName="NegevZooModel.Route">
+              <MappingFragment StoreEntitySet="routes">
+                <ScalarProperty Name="fromLangitude" ColumnName="fromLangitude" />
+                <ScalarProperty Name="fromLatitude" ColumnName="fromLatitude" />
+                <ScalarProperty Name="toLangitude" ColumnName="toLangitude" />
+                <ScalarProperty Name="toLongitude" ColumnName="toLongitude" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpecialEvents">
+            <EntityTypeMapping TypeName="NegevZooModel.SpecialEvent">
+              <MappingFragment StoreEntitySet="specialevents">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="startDate" ColumnName="startDate" />
+                <ScalarProperty Name="endDate" ColumnName="endDate" />
+                <ScalarProperty Name="language" ColumnName="language" />
+                <ScalarProperty Name="imageUrl" ColumnName="imageUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="NegevZooModel.User">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="isAdmin" ColumnName="isAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallFeeds">
+            <EntityTypeMapping TypeName="NegevZooModel.WallFeed">
+              <MappingFragment StoreEntitySet="wallfeeds">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="info" ColumnName="info" />
+                <ScalarProperty Name="language" ColumnName="language" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="YoutubeVideoUrls">
+            <EntityTypeMapping TypeName="NegevZooModel.YoutubeVideoUrl">
+              <MappingFragment StoreEntitySet="youtubevideourl">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
+                <ScalarProperty Name="videoUrl" ColumnName="videoUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

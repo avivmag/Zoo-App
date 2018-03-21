@@ -4,85 +4,38 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Backend.Models;
 
 namespace DAL
 {
     public abstract class IZooDB : DbContext
     {
-        #region DbSets
+        public IZooDB(string name) : base(name) { }
 
-        protected DbSet<Animal> Animals { get; set; }
-        protected DbSet<Enclosure> Enclosures { get; set; }
-        protected DbSet<RecurringEvent> RecurringEvents { get; set; }
-        protected DbSet<WallFeed> WallFeeds { get; set; }
-        protected DbSet<Price> Prices { get; set; }
-        protected DbSet<GeneralInfo> GeneralInfo { get; set; }
-        protected DbSet<OpeningHour> OpeningHours { get; set; }
-        protected DbSet<ContactInfo> ContactInfos { get; set; }
-        protected DbSet<SpecialEvent> SpecialEvents { get; set; }
-        protected DbSet<WorkerUser> WorkerUsers { get; set; }
-        protected DbSet<Language> AllLanguages { get; set; }
-
-        #endregion 
+        public IZooDB() { }
 
         #region Getters
 
-        public DbSet<Animal> GetAllAnimals()
-        {
-            return Animals;
-        }
+        public abstract DbSet<Animal> GetAllAnimals();
 
-        public DbSet<Enclosure> GetAllEnclosures()
-        {
-            return Enclosures;
-        }
+        public abstract DbSet<Enclosure> GetAllEnclosures();
 
+        public abstract DbSet<RecurringEvent> GetAllRecuringEvents();
 
-        public DbSet<RecurringEvent> GetAllRecuringEvents()
-        {
-            return RecurringEvents;
-        }
+        public abstract DbSet<Price> GetAllPrices();
 
-        public DbSet<Price> GetAllPrices()
-        {
-            return Prices;
-        }
+        public abstract DbSet<GeneralInfo> GetGeneralInfo();
 
-        public DbSet<GeneralInfo> GetGeneralInfo()
-        {
-            return GeneralInfo;
-        }
+        public abstract DbSet<OpeningHour> GetAllOpeningHours();
 
-        public DbSet<OpeningHour> GetAllOpeningHours()
-        {
-            return OpeningHours;
-        }
+        public abstract DbSet<ContactInfo> GetAllContactInfos();
 
-        public DbSet<ContactInfo> GetAllContactInfos()
-        {
-            return ContactInfos;
-        }
+        public abstract DbSet<SpecialEvent> GetAllSpecialEvents();
 
-        public DbSet<SpecialEvent> GetAllSpecialEvents()
-        {
-            return SpecialEvents;
-        }
+        public abstract DbSet<WallFeed> GetAllWallFeeds();
 
-        public DbSet<WallFeed> GetAllWallFeeds()
-        {
-            return WallFeeds;
-        }
+        public abstract DbSet<User> GetAllUsers();
 
-        public DbSet<WorkerUser> GetAllUsers()
-        {
-            return WorkerUsers;
-        }
-
-        public DbSet<Language> getAllLanguages()
-        {
-            return AllLanguages;
-        }
+        public abstract DbSet<Language> getAllLanguages();
 
         #endregion
 
