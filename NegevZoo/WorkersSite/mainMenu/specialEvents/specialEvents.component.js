@@ -3,14 +3,14 @@
         initializeComponent();
 
         function initializeComponent() {
-            $scope.languages                    = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
-
-            $scope.language                     = $scope.languages[0].language;
+            $scope.languages            = app.languages;
+            $scope.language             = $scope.languages[0];
 
             $scope.updateSpecialEvents          = function (language) {
-                //$scope.isLoading                = true;
+                $scope.language                 = language;
+                $scope.isLoading                = true;
 
-                zooInfoService.specialEvents.getAllSpecialEvents(language).then(
+                zooInfoService.specialEvents.getAllSpecialEvents(language.id).then(
                     function (data) {
                         $scope.specialEvents    = data.data;
                         $scope.isLoading        = false;
@@ -72,7 +72,7 @@
                 });
             }
 
-            $scope.updateSpecialEvents(app.defaultLanguage);
+            $scope.updateSpecialEvents($scope.language);
         }
 
         function deleteEvent(event, events) {
@@ -101,7 +101,7 @@
             var startDate   = new Date();
             var endDate     = new Date();
 
-            specialEvents.push({ isNew: true, language: $scope.language, startDate, endDate, id: 0 });
+            specialEvents.push({ isNew: true, language: $scope.language.id, startDate, endDate, id: 0 });
         }
     }])
 .directive('zooEvents', function () {

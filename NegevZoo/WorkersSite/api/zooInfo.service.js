@@ -5,12 +5,15 @@
     var specialEventsBaseUrl    = 'specialEvents';
     var wallFeedBaseUrl         = 'wallFeed';
     var generalInfoBaseUrl      = 'about';
+    var languagesBaseUrl        = 'languages';
 
     var prices          = {
         getAllPrices:           function (language)                         { return httpService.httpGet({ url: [pricesBaseUrl, 'all', language] }); },
         updatePrice:            function (price)                            { return httpService.httpPost({ url: [pricesBaseUrl, 'update'], body: price }); },
         deletePrice:            function (priceId)                          { return httpService.httpDelete({ url: [pricesBaseUrl, 'delete', priceId] }); }
     };
+
+    var getAllLanguages =       function ()                                 { return httpService.httpGet({ url: [languagesBaseUrl, 'all']}); };
 
     var openingHours    = {
         getAllOpeningHours:     function (language)                         { return httpService.httpGet({ url: [openingHoursBaseUrl, 'all', language] }); },
@@ -49,7 +52,8 @@
         contactInfo,
         specialEvents,
         feedWall,
-        generalInfo
+        generalInfo,
+        getAllLanguages
     }
     
     return zooInfoService;

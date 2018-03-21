@@ -8,8 +8,8 @@
             <md-card-title-text class="md-headline">עדכונים קודמים:</md-card-title-text>
 
             <div layout="column">
-                <md-select ng-model="language" ng-change="updateFeed(language)" placeholder="אנא בחר שפה">
-                    <md-option ng-repeat="language in languages" ng-value="language.language">{{ language.format }}</md-option>
+                <md-select ng-change="updateFeed(language)" ng-model="language" placeholder="אנא בחר שפה">
+                    <md-option ng-repeat="lang in languages" ng-value="lang">{{ lang.name }}</md-option>
                 </md-select>
             </div>
         </md-card-title>
