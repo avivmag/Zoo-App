@@ -11,7 +11,6 @@ namespace BL
     {
         private static IZooDB zooDB;
 
-        // TODO:: Mark isTesting to false when the database it ready.
         public ZooContext(bool isTesting = true)
         {
             if (isTesting)
@@ -20,7 +19,7 @@ namespace BL
             }
             else
             {
-                zooDB = zooDB ?? new NegevZooDBEntities();
+                zooDB = new NegevZooDBEntities();
             }
         }
 
@@ -1191,6 +1190,7 @@ namespace BL
         public void Dispose()
         {
             zooDB.SaveChanges();
+            zooDB.Dispose();
         }
     }
 }
