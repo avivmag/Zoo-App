@@ -878,23 +878,23 @@ namespace DAL
                 new Language
                 {
                     Id      = 1,
-                    Format  = "עברית"
+                    Name  = "עברית"
                 },
 
                 new Language
                 {
                     Id      = 2,
-                    Format  = "English"
+                    Name  = "English"
                 },
                 new Language
                 {
                     Id = 3,
-                    Format = "عربيه"
+                    Name = "عربيه"
                 },
                 new Language
                 {
                     Id = 4,
-                    Format = "русский"
+                    Name = "русский"
                 }
             };
         }
