@@ -1190,7 +1190,6 @@ namespace BL
         public void Dispose()
         {
             zooDB.SaveChanges();
-            zooDB.Dispose();
         }
     }
 }

@@ -14,17 +14,17 @@ namespace DAL
     {
         public DummyDB()
         {
-            Animals            = new TestDbSet<Animal>();
-            Enclosures         = new TestDbSet<Enclosure>();
-            WallFeeds          = new TestDbSet<WallFeed>();
-            Prices             = new TestDbSet<Price>();
-            GeneralInfo        = new TestDbSet<GeneralInfo>();
-            RecurringEvents    = new TestDbSet<RecurringEvent>();
-            SpecialEvents      = new TestDbSet<SpecialEvent>();
-            OpeningHours       = new TestDbSet<OpeningHour>();
-            ContactInfos       = new TestDbSet<ContactInfo>();
-            Users        = new TestDbSet<User>();
-            AllLanguages          = new TestDbSet<Language>();
+            Animals             = new TestDbSet<Animal>();
+            Enclosures          = new TestDbSet<Enclosure>();
+            WallFeeds           = new TestDbSet<WallFeed>();
+            Prices              = new TestDbSet<Price>();
+            GeneralInfo         = new TestDbSet<GeneralInfo>();
+            RecurringEvents     = new TestDbSet<RecurringEvent>();
+            SpecialEvents       = new TestDbSet<SpecialEvent>();
+            OpeningHours        = new TestDbSet<OpeningHour>();
+            ContactInfos        = new TestDbSet<ContactInfo>();
+            Users               = new TestDbSet<User>();
+            AllLanguages        = new TestDbSet<Language>();
 
             Animals.AddRange(InitializeAnimals());
             Enclosures.AddRange(InitializeEnclosures());
