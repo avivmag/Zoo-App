@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "777829984351",
+    "firebase_url": "https://negevzoo-3bd47.firebaseio.com",
+    "project_id": "negevzoo-3bd47",
+    "storage_bucket": "negevzoo-3bd47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777829984351:android:996e3b073e4dadd3",
+        "android_client_info": {
+          "package_name": "com.zoovisitors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777829984351-vn8tbk1h986o54u9li8ea285lg6rpbvg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnk5N-Y8CDm6qeKhM4myhKTQUcxcxXWf8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -36,11 +36,12 @@ public class contactInfoFragment extends Fragment {
         GlobalVariables.bl.getContactInfo(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                ContactInfo[] prices = (ContactInfo[]) response;
-                TableLayout pricesTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
+                ContactInfo[] contactInfos = (ContactInfo[]) response;
+                TableLayout contactInfoTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
 
                 int textSize = 16;
-                for (ContactInfo ci : prices) {
+                //Build the table for the infos
+                for (ContactInfo ci : contactInfos) {
                     TableRow tbr = new TableRow(getContext());
                     TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0,0,0,40);
@@ -57,13 +58,14 @@ public class contactInfoFragment extends Fragment {
                     addressColumn.setTextSize(textSize);
                     tbr.addView(viaColumn);
                     tbr.addView(addressColumn);
-                    pricesTable.addView(tbr);
+                    contactInfoTable.addView(tbr);
                 }
             }
 
             @Override
             public void onFailure(Object response) {
-
+                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
+                errorText.setText((String) response);
             }
         });
 

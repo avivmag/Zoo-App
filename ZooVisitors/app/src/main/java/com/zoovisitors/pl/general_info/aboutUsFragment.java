@@ -29,17 +29,18 @@ public class aboutUsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.about_us_res, container, false);
+        final View rootView = inflater.inflate(R.layout.info_table_layout, container, false);
         GlobalVariables.bl.getAboutUs(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                TextView aboutUs = (TextView) rootView.findViewById(R.id.about_us_text);
+                TextView aboutUs = (TextView) rootView.findViewById(R.id.error_info_text);
                 aboutUs.setText(((AboutUs[]) response)[0].getAboutUs());
             }
 
             @Override
             public void onFailure(Object response) {
-
+                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
+                errorText.setText((String) response);
             }
         });
 
