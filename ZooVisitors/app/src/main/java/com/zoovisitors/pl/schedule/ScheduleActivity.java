@@ -4,18 +4,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.BusinessLayer;
-import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.MyFirebaseMessagingService;
+import com.zoovisitors.pl.map.MapActivity;
 
-import javax.microedition.khronos.opengles.GL;
+import java.util.Map;
+
 
 public class ScheduleActivity extends AppCompatActivity {
 
@@ -29,12 +30,8 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
 
-//        //Delete when I get object from server
-//        this.schedulers = new Schedule[10];
-//        for (int i = 0; i<10; i++){
-//            this.schedulers[i] = new Schedule();
-//            this.schedulers[i].setName("" + i);
-//        }
+        //Send notification
+        MyFirebaseMessagingService.sendSelfNotification(MapActivity.class, "האכלת אריות","13:00 - 13:30");
 
         GlobalVariables.bl.getSchedule(new GetObjectInterface() {
             @Override
@@ -43,14 +40,17 @@ public class ScheduleActivity extends AppCompatActivity {
                 recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
                 layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                 recycleView.setLayoutManager(layoutManager);
-                Log.e("SChed", schedulers[0].getDescription());
                 adapter = new ScheduleRecyclerAdapter(schedulers);
                 recycleView.setAdapter(adapter);
             }
 
             @Override
             public void onFailure(Object response) {
-
+                TextView error  = (TextView) findViewById(R.id.error_sched_text);
+                recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
+                recycleView.setVisibility(View.INVISIBLE);
+                error.setVisibility(View.VISIBLE);
+                error.setText((String) response);
             }
         });
     }

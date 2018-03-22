@@ -642,28 +642,28 @@ namespace BL
             }
 
             //1. check the day
-            if (String.IsNullOrWhiteSpace(openingHour.day) || String.IsNullOrEmpty(openingHour.day))
-            {
-                throw new ArgumentException("Wrong input. The day is empty or null");
-            }
+            //if (String.IsNullOrWhiteSpace(openingHour.day) || String.IsNullOrEmpty(openingHour.day))
+            //{
+            //    throw new ArgumentException("Wrong input. The day is empty or null");
+            //}
 
-            //2. check the opening time
-            if (!ValidHour((int)openingHour.startHour, (int)openingHour.startMin))
-            {
-                throw new ArgumentException("Wrong input. Wrong opening time");
-            }
+            ////2. check the opening time
+            //if (!ValidHour((int)openingHour.startHour, (int)openingHour.startMin))
+            //{
+            //    throw new ArgumentException("Wrong input. Wrong opening time");
+            //}
 
-            //3. check the closing time
-            if (!ValidHour((int)openingHour.endHour, (int)openingHour.endMin))
-            {
-                throw new ArgumentException("Wrong input. Wrong closing time");
-            }
+            ////3. check the closing time
+            //if (!ValidHour((int)openingHour.endHour, (int)openingHour.endMin))
+            //{
+            //    throw new ArgumentException("Wrong input. Wrong closing time");
+            //}
 
-            //4. check that the end is after the open
-            if (openingHour.startHour > openingHour.endHour || (openingHour.startHour == openingHour.endHour && openingHour.startMin > openingHour.endMin))
-            {
-                throw new ArgumentException("Wrong input. The start time is later than the end time.");
-            }
+            ////4. check that the end is after the open
+            //if (openingHour.startHour > openingHour.endHour || (openingHour.startHour == openingHour.endHour && openingHour.startMin > openingHour.endMin))
+            //{
+            //    throw new ArgumentException("Wrong input. The start time is later than the end time.");
+            //}
 
             //5. check the language
             if (!ValidLanguage((int)openingHour.language))

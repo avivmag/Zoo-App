@@ -60,7 +60,7 @@ public class EnclosureListActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Object response) {
 
-                        animals= (Animal[]) response;
+                        animals = (Animal[]) response;
 
 //                        animalsNames = new String[animals.length];
 //                        for (int i = 0; i<animals.length; i++)

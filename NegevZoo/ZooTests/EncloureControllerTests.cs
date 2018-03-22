@@ -1,4 +1,4 @@
-﻿//using NegevZoo.Controllers;
+//﻿using NegevZoo.Controllers;
 //using DAL;
 //using System.Linq;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -176,8 +176,8 @@
 //            Assert.AreEqual(2, recEvent.id);
 //            Assert.AreEqual(enc.id, recEvent.id);
 //            //Assert.AreEqual(enc.language, recEvent.language);
-//            Assert.AreEqual(10, recEvent.startHour);
-//            Assert.AreEqual(30, recEvent.startMin);
+//            //Assert.AreEqual(10, recEvent.startHour);
+//            //Assert.AreEqual(30, recEvent.startMin);
 //        }
 
 //        [TestMethod]
@@ -368,155 +368,6 @@
 //                markerLongitude = monkeyEncEn.markerLongitude,
 //                name = "Houman Monkeys"
 //            };
-            
-//            enclosureController.UpdateEnclosure(human);
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void UpdateEnclosureEmptyName()
-//        {
-//            var encs = enclosureController.GetAllEnclosures((int)Languages.en);
-//            Assert.IsNotNull(encs);
-//            Assert.AreEqual(3, encs.Count());
-
-//            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "Monkeys");
-//            Assert.IsNotNull(monkeyEncEn);
-
-//            Enclosure human = new Enclosure
-//            {
-//                id = monkeyEncEn.id,
-//                //language = monkeyEncEn.language,
-//                markerLatitude = monkeyEncEn.markerLatitude,
-//                markerLongitude = monkeyEncEn.markerLongitude,
-//                name = ""
-//            };
-
-//            enclosureController.UpdateEnclosure(human);
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void UpdateEnclosureDoesntExists()
-//        {
-//            var encs = enclosureController.GetAllEnclosures((int)Languages.en);
-//            Assert.IsNotNull(encs);
-//            Assert.AreEqual(3, encs.Count());
-
-//            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "Monkeys");
-//            Assert.IsNotNull(monkeyEncEn);
-
-//            Enclosure human = new Enclosure
-//            {
-//                id = 1000000,
-//                //language = monkeyencen.language,
-//                markerLatitude = monkeyEncEn.markerLatitude,
-//                markerLongitude = monkeyEncEn.markerLongitude,
-//                name = monkeyEncEn.name
-//            };
-
-//            enclosureController.UpdateEnclosure(human);
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void UpdateEnclosureWrongLang()
-//        {
-//            var encs = enclosureController.GetAllEnclosures((int)Languages.en);
-//            Assert.IsNotNull(encs);
-//            Assert.AreEqual(3, encs.Count());
-
-//            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "Monkeys");
-//            Assert.IsNotNull(monkeyEncEn);
-
-//            Enclosure human = new Enclosure
-//            {
-//                id = monkeyEncEn.id,
-//                //language = nonExistantLang,
-//                markerLatitude = monkeyEncEn.markerLatitude,
-//                markerLongitude = monkeyEncEn.markerLongitude,
-//                name = monkeyEncEn.name
-//            };
-
-//            enclosureController.UpdateEnclosure(human);
-//        }
-//        #endregion
-
-//        #region DeleteEnclosure
-//        [TestMethod]
-//        public void DeleteEnclosureValidInput()
-//        {
-//            var encsHeb = enclosureController.GetAllEnclosures();
-//            Assert.AreEqual(3, encsHeb.Count());
-
-//            var monkHeb = encsHeb.SingleOrDefault(en => en.name == "קופי אדם");
-//            Assert.IsNotNull(monkHeb);
-
-//            //delete animals
-//            AnimalController anCont = new AnimalController();
-//            //var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
-
-//            //foreach (Animal an in animalsList)
-//            //{
-//            //    anCont.DeleteAnimal((int)an.id);
-//            //}
-
-//            //delete reccuringEvents
-//            var recEvents = enclosureController.GetRecurringEvents((int)monkHeb.id);
-
-//            foreach (RecurringEvent eve in recEvents)
-//            {
-//                enclosureController.DeleteRecurringEvent((int)eve.id);
-//            }
-
-//            enclosureController.DeleteEnclosure((int)monkHeb.id);
-//            encsHeb = enclosureController.GetAllEnclosures();
-
-//            Assert.AreEqual(2, encsHeb.Count());
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void DeleteEnclosureAnimalsExists()
-//        {
-//            var encsHeb = enclosureController.GetAllEnclosures();
-//            Assert.IsNotNull(encsHeb);
-//            Assert.AreEqual(3, encsHeb.Count());
-
-//            var monkHeb = encsHeb.SingleOrDefault(en => en.name == "קופי אדם");
-//            Assert.IsNotNull(monkHeb);
-
-//            enclosureController.DeleteEnclosure((int)monkHeb.id);
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void DeleteEnclosureRecurringEventsExists()
-//        {
-//            var encsHeb = enclosureController.GetAllEnclosures();
-//            Assert.IsNotNull(encsHeb);
-//            Assert.AreEqual(3, encsHeb.Count());
-
-//            var monkHeb = encsHeb.SingleOrDefault(en => en.name == "קופי אדם");
-//            Assert.IsNotNull(monkHeb);
-
-//            //delete animals
-//            AnimalController anCont = new AnimalController();
-//            //var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
-
-//            //foreach (Animal an in animalsList)
-//            //{
-//            //    anCont.DeleteAnimal((int)an.id);
-//            //}
-
-//            enclosureController.DeleteEnclosure((int)monkHeb.id);
-//        }
-
-//        [TestMethod]
-//        [ExpectedException(typeof(HttpResponseException))]
-//        public void DeleteEnclosureEnclosureDoesntExists()
-//        {
-//            enclosureController.DeleteEnclosure(1000);
 //        }
 //        #endregion
 //    }

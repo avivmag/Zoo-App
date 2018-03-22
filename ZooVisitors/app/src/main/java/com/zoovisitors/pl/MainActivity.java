@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
-import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
@@ -41,10 +40,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GlobalVariables.appCompatActivity = this;
+        //Initialize business layer (change for testing)
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
+        //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
+        //Token for notification
+        Log.e("TOKEN", "token "+ FirebaseInstanceId.getInstance().getToken());
         //Scroller initalize
-
-
         GlobalVariables.bl.getNewsFeed(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
