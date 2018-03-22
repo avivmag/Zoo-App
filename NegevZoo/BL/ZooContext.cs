@@ -884,7 +884,9 @@ namespace BL
                         startTime = openingHour.startTime,
                         endTime = openingHour.endTime,
                         language = i+1
-                    }; 
+                    };
+
+                    openingHours.Add(oh);
                 }
             }
             else //update exsist opening hour
