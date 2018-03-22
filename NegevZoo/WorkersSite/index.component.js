@@ -1,13 +1,34 @@
 ﻿app.controller('indexController', 
-	['$scope', 
+    ['$scope',
+     '$mdDialog',
      '$state', 
      'enclosureService',
      'animalService',
+     'zooInfoService',
 
-    function indexController($scope, $state, enclosureService, animalService) 
+    function indexController($scope, $mdDialog, $state, enclosureService, animalService, zooInfoService) 
     {
+        $scope.isLoading                = true;
 
-        var vm = this;
+        var languagesQuery = zooInfoService.getAllLanguages().then(
+            function (data) {
+                app.languages           = data.data;
+                app.defaultLanguage     = app.languages.find(lang => lang.name === 'עברית');
+    
+                $scope.isLoading        = false;
+                $state.go('login');
+            },
+            function () {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                        .clickOutsideToClose(true)
+                        .textContent('אירעה שגיאה במהלך טעינת הנתונים')
+                        .ok('סגור')
+                );
+    
+                $scope.isLoading        = false;
+            });
+
         //var testEnclosure = {
 
         //    Id:             0,
@@ -43,6 +64,4 @@
         //var updateEmptyAnimalQuery          = animalService.updateAnimal().then(function (data) { console.log('updateEmptyAnimal', data); }, function (fail) { console.log('updateEmptyAnimalFail', fail); });
         //var updateAnimalQuery               = animalService.updateAnimal(testAnimal).then(function (data) { console.log('updateAnimal', data); }, function (fail) { console.log('updateAnimalFail', fail); });
         //var deleteAnimalQuery               = animalService.deleteAnimal(2).then(function (data) { console.log('deleteAnimal', data); }, function (fail) { console.log('deleteAnimalFail', fail); });
-
-        $state.go('login');
     }]);
