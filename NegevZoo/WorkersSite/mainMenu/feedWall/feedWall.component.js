@@ -1,20 +1,19 @@
 ﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService',
-    function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
-        initializeComponent();
-
-        function initializeComponent() {
-            $scope.languages            = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
-
-            $scope.language             = $scope.languages[0].language;
-
+function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
+    initializeComponent();
+    
+    function initializeComponent() {
+            $scope.languages            = app.languages;
+            $scope.language             = $scope.languages[0];
+        
             $scope.updateFeed           = function (language) {
-                $scope.language     = language;
-                $scope.isLoading    = true;
+                $scope.language         = language;
+                $scope.isLoading        = true;
 
-                zooInfoService.feedWall.getAllFeeds(language).then(
+                zooInfoService.feedWall.getAllFeeds(language.id).then(
                     function (data) {
-                        $scope.feedWall = data.data;
-                        $scope.isLoading = false;
+                        $scope.feedWall     = data.data;
+                        $scope.isLoading    = false;
 
                         addEmptyFeed($scope.feedWall);
                     },
@@ -26,7 +25,7 @@
                                 .ok('סגור')
                         );
 
-                        $scope.isLoading = false;
+                        $scope.isLoading    = false;
                     });
             }
 
@@ -77,7 +76,7 @@
         function addEmptyFeed(feedWall) {
             var createDate = new Date();
 
-            feedWall.push({ isNew: true, language: $scope.language, created: createDate, id: 0 });
+            feedWall.push({ isNew: true, language: $scope.language.id, created: createDate, id: 0 });
         }
 
         function deleteFeed(feed, feedWall) {

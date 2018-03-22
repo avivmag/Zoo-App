@@ -11,8 +11,8 @@ namespace DAL.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public string Story { get; set; }
-        public double MarkerLongtitude { get; set; }
-        public double MarkerLatitude { get; set; }
+        public double? MarkerLongtitude { get; set; }
+        public double? MarkerLatitude { get; set; }
         public string MarkerIconUrl { get; set; }
         public string PictureUrl { get; set; }
         public long Language { get; set; }

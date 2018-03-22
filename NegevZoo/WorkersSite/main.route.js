@@ -5,7 +5,7 @@
             templateUrl:    'login/login.html',
             controller:     'loginCtrl'
         })
-        .state('home', {
+        .state('mainMenu', {
             url:            '/mainMenu',
             templateUrl:    'mainMenu/mainMenu.html',
             controller:     'mainMenuCtrl'

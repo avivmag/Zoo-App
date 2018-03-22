@@ -16,6 +16,6 @@
 
         console.log('loggin in with credentials:', username, password);
 
-        $state.go('home');
+        $state.go('mainMenu');
     }
 }]);

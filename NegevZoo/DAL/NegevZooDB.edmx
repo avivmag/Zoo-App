@@ -35,7 +35,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="via" Type="tinytext" Nullable="false" />
           <Property Name="address" Type="tinytext" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
@@ -52,11 +52,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false"/>
           <Property Name="name" Type="tinytext" Nullable="false" />
-          <Property Name="markerLongitude" Type="double" Nullable="false" />
-          <Property Name="markerLatitude" Type="double" Nullable="false" />
-          <Property Name="markerIconUrl" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="markerLongitude" Type="double" />
+          <Property Name="markerLatitude" Type="double" />
+          <Property Name="markerIconUrl" Type="varchar" MaxLength="255" />
           <Property Name="pictureUrl" Type="mediumtext" />
         </EntityType>
         <EntityType Name="enclosuresdetails">
@@ -101,7 +101,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="day" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="day" Type="int" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
           <Property Name="startTime" Type="time" Precision="0" Nullable="false" />
           <Property Name="endTime" Type="time" Precision="0" Nullable="false" />
@@ -219,7 +219,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="via" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
@@ -236,11 +236,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int64" Nullable="false" />
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="markerLongitude" Type="Double" Nullable="false" />
-          <Property Name="markerLatitude" Type="Double" Nullable="false" />
-          <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="markerLongitude" Type="Double" />
+          <Property Name="markerLatitude" Type="Double" />
+          <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="GeneralInfo">
