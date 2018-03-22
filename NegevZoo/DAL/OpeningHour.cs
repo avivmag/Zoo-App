@@ -15,11 +15,9 @@ namespace DAL
     public partial class OpeningHour
     {
         public int id { get; set; }
-        public string day { get; set; }
-        public long startHour { get; set; }
-        public long endHour { get; set; }
-        public long endMin { get; set; }
-        public long startMin { get; set; }
+        public int day { get; set; }
         public long language { get; set; }
+        public System.TimeSpan startTime { get; set; }
+        public System.TimeSpan endTime { get; set; }
     }
 }

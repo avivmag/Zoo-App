@@ -582,48 +582,40 @@ namespace DAL
                 {
                     id                      = 1,
                     enclosureId                   = 1,
-                    day                     = "Sunday",
+                    //day                     = "Sunday",
                     description             = "Feeding",
-                    startHour               = 10,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 11,
-                    endMin                  =(int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
                     language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
                     id                      = 2,
                     enclosureId                   = 2,
-                    day                     = "ראשון",
+                    //day                     = "ראשון",
                     description             = "האכלה",
-                    startHour               = 10,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 11,
-                    endMin                  = (int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
                     language                = (int) Languages.he
                 },
                 new RecurringEvent
                 {
                     id                      = 3,
                     enclosureId                   = 3,
-                    day                     = "Monday",
+                    //day                     = "Monday",
                     description             = "Playing",
-                    startHour               = 10,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 11,
-                    endMin                  =(int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
                     language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
                     id                      = 4,
                     enclosureId                   = 4,
-                    day                     = "ראשון",
+                    //day                     = "ראשון",
                     description             = "משחק",
-                    startHour               = 13,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 14,
-                    endMin                  = (int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
                     language                = (int) Languages.he
                 },
 
@@ -631,24 +623,20 @@ namespace DAL
                 {
                     id                      = 5,
                     enclosureId                   = 3,
-                    day                     = "Saturday",
+                    //day                     = "Saturday",
                     description             = "Feeding",
-                    startHour               = 10,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 11,
-                    endMin                  =(int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
                     language                = (int) Languages.en
                 },
                 new RecurringEvent
                 {
                     id                      = 6,
                     enclosureId                   = 4,
-                    day                     = "שבת",
+                    //day                     = "שבת",
                     description             = "האכלה",
-                    startHour               = 13,
-                    startMin                = (int) AvailableMinutes.Half,
-                    endHour                 = 14,
-                    endMin                  = (int) AvailableMinutes.Zero,
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
                     language                = (int) Languages.he
                 }
             };
@@ -699,133 +687,109 @@ namespace DAL
             {
                 new OpeningHour
                 {
-                    id = 1,
-                    day = "ראשון",
-                    startHour = 11,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 12,
-                    endMin = (int)AvailableMinutes.Zero,
-                    language = (int)Languages.he
+                    id          = 1,
+                    //day         = "ראשון",
+                    startTime   = new TimeSpan(11, 30, 00),
+                    endTime     = new TimeSpan(12, 0, 0),
+                    language    = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 2,
-                    day = "Sunday",
-                    startHour = 11,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 12,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day   = "Sunday",
+                    startTime   = new TimeSpan(11, 30, 00),
+                    endTime     = new TimeSpan(12, 0, 0),
                     language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 3,
-                    day = "שני",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "שני",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 4,
-                    day = "Monday",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "Monday",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 5,
-                    day = "שלישי",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "שלישי",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 6,
-                    day = "Tuesday",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "Tuesday",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 7,
-                    day = "רביעי",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "רביעי",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 8,
-                    day = "Wednesday",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Half,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "Wednesday",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 9,
-                    day = "חמישי",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Quarter,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "חמישי",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 10,
-                    day = "Thursday",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.Quarter,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "Thursday",
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 11,
-                    day = "שבת",
-                    startHour = 10,
-                    startMin = (int)AvailableMinutes.ThreeQuarters,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "שבת",
+                    startTime = new TimeSpan(10, 45, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.he
                 },
 
                 new OpeningHour
                 {
                     id = 12,
-                    day = "Saturday",
-                    startHour = 9,
-                    startMin = (int)AvailableMinutes.ThreeQuarters,
-                    endHour = 18,
-                    endMin = (int)AvailableMinutes.Zero,
+                    //day = "Saturday",
+                    startTime = new TimeSpan(9, 45, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
                 },
             };

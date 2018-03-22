@@ -36,11 +36,10 @@ public class openingHoursFragment extends Fragment {
                 OpeningHours[] openingHours = (OpeningHours[]) response;
                 TableLayout openingHoursTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
                 int textSize = 14;
+
+                //Build the table for the opening hours
                 for (OpeningHours oh : openingHours){
                     TableRow tbr = new TableRow(getContext());
-
-//                    ViewGroup.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT);
-//                    tbr.setLayoutParams(lp);
                     TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.MATCH_PARENT);
                     lp.setMargins(0,0,0,40);
                     tbr.setLayoutParams(lp);
@@ -74,7 +73,8 @@ public class openingHoursFragment extends Fragment {
 
             @Override
             public void onFailure(Object response) {
-
+                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
+                errorText.setText((String) response);
             }
         });
 

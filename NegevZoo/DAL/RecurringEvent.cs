@@ -16,12 +16,10 @@ namespace DAL
     {
         public long id { get; set; }
         public string description { get; set; }
-        public string day { get; set; }
-        public long startHour { get; set; }
-        public int startMin { get; set; }
-        public long endHour { get; set; }
-        public int endMin { get; set; }
+        public long day { get; set; }
         public int enclosureId { get; set; }
         public long language { get; set; }
+        public System.TimeSpan startTime { get; set; }
+        public System.TimeSpan endTime { get; set; }
     }
 }

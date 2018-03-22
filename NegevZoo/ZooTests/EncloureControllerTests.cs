@@ -176,8 +176,8 @@ namespace ZooTests
             Assert.AreEqual(2, recEvent.id);
             Assert.AreEqual(enc.id, recEvent.id);
             //Assert.AreEqual(enc.language, recEvent.language);
-            Assert.AreEqual(10, recEvent.startHour);
-            Assert.AreEqual(30, recEvent.startMin);
+            //Assert.AreEqual(10, recEvent.startHour);
+            //Assert.AreEqual(30, recEvent.startMin);
         }
 
         [TestMethod]

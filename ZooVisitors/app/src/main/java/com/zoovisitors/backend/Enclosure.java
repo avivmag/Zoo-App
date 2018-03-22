@@ -7,10 +7,10 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Enclosure {
-    @SerializedName("Id")
+    @SerializedName("id")
     private int id;
     private int[] animalsInEnc;
-    @SerializedName("Name")
+    @SerializedName("name")
     private String name;
     private String closestEvent;
     private String youtubeVideoUrl;

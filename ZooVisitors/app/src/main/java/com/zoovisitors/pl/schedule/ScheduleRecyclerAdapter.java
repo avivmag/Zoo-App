@@ -47,6 +47,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
         String endDate = schedulers[position].getEndTime().substring(0, 10);
         String scheduleDate = startDate + " - " + endDate;
 
+        viewHolder.date.setTextSize(12);
         viewHolder.date.setText(scheduleDate);
     }
 

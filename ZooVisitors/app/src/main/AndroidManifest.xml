@@ -31,6 +31,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pl.enclosures.EnclosureListActivity" />
         <activity android:name=".pl.schedule.ScheduleActivity"></activity>
+
+        <service android:name="com.zoovisitors.bl.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
