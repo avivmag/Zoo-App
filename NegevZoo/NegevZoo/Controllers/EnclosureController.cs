@@ -16,6 +16,7 @@ namespace NegevZoo.Controllers
     /// </summary>
     public class EnclosureController : ControllerBase
     {
+
         #region Getters
 
         #region visitor app
@@ -75,7 +76,7 @@ namespace NegevZoo.Controllers
         /// <returns>All the details to this enclosure id.</returns>
         [HttpGet]
         [Route("enclosures/details/all/{encId}")]
-        IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
+        public IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
         {
             try
             {
@@ -100,7 +101,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this encId and language.</returns>
         [HttpGet]
         [Route("enclosures/id/{encId}/{language}")]
-        public Enclosure GetEnclosureById(int encId, int language = 1)
+        public EnclosureResult GetEnclosureById(int encId, int language = 1)
         {
             try
             {
@@ -125,7 +126,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this name and language.</returns>
         [HttpGet]
         [Route("enclosures/name/{name}/{language}")]
-        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language = 1)
+        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
         {
             try
             {
@@ -133,7 +134,6 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetEnclosureByName(name, language);
                 }
-
             }
             catch (ArgumentException argExp)
             {
@@ -209,6 +209,30 @@ namespace NegevZoo.Controllers
                 using (var db = this.GetContext())
                 {
                     db.UpdateEnclosure(enclosure);
+                }
+
+            }
+            catch (ArgumentException argExp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure details.
+        /// </summary>
+        /// <param name="enclosureDetail">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/detail/update")]
+        public void UpdateEnclosure(EnclosureDetail enclosureDetail)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureDetails(enclosureDetail);
                 }
 
             }
