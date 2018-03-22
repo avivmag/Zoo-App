@@ -891,27 +891,44 @@ namespace BL
             }
             else //update exsist opening hour
             {
-                OpeningHour oldHour = openingHours.SingleOrDefault(oh => oh.id == openingHour.id);
-                
-                //check that the id exists
-                if (oldHour == null)
+                var oldEntity = openingHours.SingleOrDefault(oh => oh.id == openingHour.id);
+
+                if (oldEntity == null)
                 {
                     throw new ArgumentException("Wrong input. The opening hour id doesn't exists.");
                 }
 
-                //check that if the day changed than the new day doesnt exists.
-                if (oldHour.day != openingHour.day && openingHours.Any(oh => oh.day == openingHour.day))
-                {
-                    throw new ArgumentException("Wrong input while updating Opening hour. The Opening hour day already exists");
-                }
+                var oldHours = openingHours.Where(oh => (oh.day-oldEntity.day) % 10 == 0).ToList();
 
-                int day = openingHour.day;
+                oldHours.OrderBy(o => o.language);
 
                 for (int i = 0; i <= 3; i++)
                 {
-                    openingHour.day = i * 10 + day;
+
+                    if (i >= oldHours.Count())
+                    {
+                        break;
+                    }
+
+                    OpeningHour oldHour = oldHours.ElementAt(i);
+
+                    //check that if the day changed than the new day doesnt exists.
+                    if (oldHour.language == GetHebewLanguage() && oldHour.day != openingHour.day && openingHours.Any(o => o.day == openingHour.day))
+                    {
+                        throw new ArgumentException("Wrong input while updating Opening hour. The Opening hour day already exists");
+                    }
+
                     openingHours.Remove(oldHour);
-                    openingHours.Add(openingHour);
+
+                    OpeningHour oh = new OpeningHour
+                    {
+                        day = i * 10 + openingHour.day,
+                        startTime = openingHour.startTime,
+                        endTime = openingHour.endTime,
+                        language = oldHour.language
+                    };
+
+                    openingHours.Add(oh);
                 }
             }
         }

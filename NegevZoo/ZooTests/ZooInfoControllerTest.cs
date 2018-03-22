@@ -627,10 +627,10 @@ namespace ZooTests
 
             OpeningHour opHour = new OpeningHour
             {
-                id = 11,
-                day = 3,
-                startTime = new TimeSpan(10, 45, 0),
-                endTime = new TimeSpan(18, 0, 0),
+                id = 1,
+                day = 2,
+                startTime = new TimeSpan(11, 30, 00),
+                endTime = new TimeSpan(12, 0, 0),
                 language = (int)Languages.he
             };
 

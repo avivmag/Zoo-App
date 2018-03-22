@@ -25,7 +25,7 @@ namespace NegevZoo.Controllers
                     return db.GetAllUsers();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -49,7 +49,7 @@ namespace NegevZoo.Controllers
                     return db.GetUserByNameAndPass(userName, password);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -71,7 +71,7 @@ namespace NegevZoo.Controllers
                     db.UpdateUser(userWorker);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
