@@ -36,6 +36,7 @@ public class pricesFragment extends Fragment {
                 Price[] prices = (Price[]) response;
                 TableLayout pricesTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
                 int textSize = 24;
+                //Build the table for the prices
                 for (Price p : prices) {
                     TableRow tbr = new TableRow(getContext());
                     ViewGroup.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -58,7 +59,8 @@ public class pricesFragment extends Fragment {
 
             @Override
             public void onFailure(Object response) {
-
+                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
+                errorText.setText((String) response);
             }
         });
         return rootView;
