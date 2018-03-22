@@ -11,17 +11,25 @@
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="tinytext" Nullable="false" />
-          <Property Name="story" Type="mediumtext" />
           <Property Name="enclosureId" Type="uint" Nullable="false" />
+          <Property Name="preservation" Type="uint" Nullable="false" />
+          <Property Name="pictureUrl" Type="mediumtext" />
+        </EntityType>
+        <EntityType Name="animalsdetails">
+          <Key>
+            <PropertyRef Name="animalId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="animalId" Type="uint" Nullable="false" />
+          <Property Name="language" Type="uint" Nullable="false" />
+          <Property Name="name" Type="tinytext" />
+          <Property Name="story" Type="mediumtext" />
           <Property Name="category" Type="tinytext" />
           <Property Name="series" Type="tinytext" />
           <Property Name="family" Type="tinytext" />
           <Property Name="distribution" Type="mediumtext" />
           <Property Name="reproduction" Type="mediumtext" />
-          <Property Name="food" Type="tinytext" />
-          <Property Name="preservation" Type="uint" Nullable="false" />
-          <Property Name="pictureUrl" Type="mediumtext" />
-          <Property Name="language" Type="uint" Nullable="false" />
+          <Property Name="food" Type="mediumtext" />
         </EntityType>
         <EntityType Name="contactinfo">
           <Key>
@@ -46,12 +54,20 @@
           </Key>
           <Property Name="id" Type="uint" Nullable="false" />
           <Property Name="name" Type="tinytext" Nullable="false" />
-          <Property Name="story" Type="mediumtext" />
           <Property Name="markerLongitude" Type="double" Nullable="false" />
           <Property Name="markerLatitude" Type="double" Nullable="false" />
           <Property Name="markerIconUrl" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="pictureUrl" Type="mediumtext" />
+        </EntityType>
+        <EntityType Name="enclosuresdetails">
+          <Key>
+            <PropertyRef Name="encId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="encId" Type="uint" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
+          <Property Name="name" Type="tinytext" Nullable="false" />
+          <Property Name="story" Type="mediumtext" Nullable="false" />
         </EntityType>
         <EntityType Name="generalinfo">
           <Key>
@@ -171,9 +187,11 @@
         </EntityType>
         <EntityContainer Name="NegevZooModelStoreContainer">
           <EntitySet Name="animals" EntityType="Self.animals" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="animalsdetails" EntityType="Self.animalsdetails" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="contactinfo" EntityType="Self.contactinfo" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosurepictures" EntityType="Self.enclosurepictures" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosures" EntityType="Self.enclosures" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="enclosuresdetails" EntityType="Self.enclosuresdetails" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="generalinfo" EntityType="Self.generalinfo" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="languages" EntityType="Self.languages" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="miscmarkers" EntityType="Self.miscmarkers" Schema="negev_zoo" store:Type="Tables" />
@@ -197,17 +215,9 @@
           </Key>
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="enclosureId" Type="Int64" Nullable="false" />
-          <Property Name="category" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
-          <Property Name="reproduction" Type="String" />
-          <Property Name="food" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="preservation" Type="Int64" Nullable="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
-          <Property Name="language" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="ContactInfo">
           <Key>
@@ -232,12 +242,10 @@
           </Key>
           <Property Name="id" Type="Int64" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="markerLongitude" Type="Double" Nullable="false" />
           <Property Name="markerLatitude" Type="Double" Nullable="false" />
           <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
-          <Property Name="language" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="GeneralInfo">
           <Key>
@@ -372,7 +380,35 @@
           <EntitySet Name="Users" EntityType="NegevZooModel.User" />
           <EntitySet Name="WallFeeds" EntityType="NegevZooModel.WallFeed" />
           <EntitySet Name="YoutubeVideoUrls" EntityType="NegevZooModel.YoutubeVideoUrl" />
+          <EntitySet Name="AnimalDetails" EntityType="NegevZooModel.AnimalDetail" />
+          <EntitySet Name="EnclosureDetails" EntityType="NegevZooModel.EnclosureDetail" />
         </EntityContainer>
+        <EntityType Name="AnimalDetail">
+          <Key>
+            <PropertyRef Name="animalId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="animalId" Type="Int64" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="category" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="reproduction" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="food" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="EnclosureDetail">
+          <Key>
+            <PropertyRef Name="encId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="encId" Type="Int64" Nullable="false" />
+          <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="story" Type="String" Nullable="false" MaxLength="16777215" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -384,17 +420,9 @@
               <MappingFragment StoreEntitySet="animals">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="story" ColumnName="story" />
                 <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
-                <ScalarProperty Name="category" ColumnName="category" />
-                <ScalarProperty Name="series" ColumnName="series" />
-                <ScalarProperty Name="family" ColumnName="family" />
-                <ScalarProperty Name="distribution" ColumnName="distribution" />
-                <ScalarProperty Name="reproduction" ColumnName="reproduction" />
-                <ScalarProperty Name="food" ColumnName="food" />
                 <ScalarProperty Name="preservation" ColumnName="preservation" />
                 <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
-                <ScalarProperty Name="language" ColumnName="language" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -422,12 +450,10 @@
               <MappingFragment StoreEntitySet="enclosures">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="story" ColumnName="story" />
                 <ScalarProperty Name="markerLongitude" ColumnName="markerLongitude" />
                 <ScalarProperty Name="markerLatitude" ColumnName="markerLatitude" />
                 <ScalarProperty Name="markerIconUrl" ColumnName="markerIconUrl" />
                 <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
-                <ScalarProperty Name="language" ColumnName="language" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -556,6 +582,32 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
                 <ScalarProperty Name="videoUrl" ColumnName="videoUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AnimalDetails">
+            <EntityTypeMapping TypeName="NegevZooModel.AnimalDetail">
+              <MappingFragment StoreEntitySet="animalsdetails">
+                <ScalarProperty Name="food" ColumnName="food" />
+                <ScalarProperty Name="reproduction" ColumnName="reproduction" />
+                <ScalarProperty Name="distribution" ColumnName="distribution" />
+                <ScalarProperty Name="family" ColumnName="family" />
+                <ScalarProperty Name="series" ColumnName="series" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="language" ColumnName="language" />
+                <ScalarProperty Name="animalId" ColumnName="animalId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EnclosureDetails">
+            <EntityTypeMapping TypeName="NegevZooModel.EnclosureDetail">
+              <MappingFragment StoreEntitySet="enclosuresdetails">
+                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="language" ColumnName="language" />
+                <ScalarProperty Name="encId" ColumnName="encId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

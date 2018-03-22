@@ -12,12 +12,11 @@ namespace DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Animal
+    public partial class EnclosureDetail
     {
-        public long id { get; set; }
+        public long encId { get; set; }
+        public long language { get; set; }
         public string name { get; set; }
-        public long enclosureId { get; set; }
-        public long preservation { get; set; }
-        public string pictureUrl { get; set; }
+        public string story { get; set; }
     }
 }

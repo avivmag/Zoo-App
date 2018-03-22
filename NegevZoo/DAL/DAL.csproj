@@ -60,12 +60,18 @@
     <Compile Include="Animal.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="AnimalDetail.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="ContactInfo.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DummyDB.cs" />
     <Compile Include="Enclosure.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EnclosureDetail.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="EnclosurePicture.cs">

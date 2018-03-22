@@ -25,7 +25,7 @@ namespace ZooTests
         [TestCleanup]
         public void EnclosureCleanUp()
         {
-            ZooContext.CleanDb();
+            //ZooContext.CleanDb();
         }
 
         #endregion

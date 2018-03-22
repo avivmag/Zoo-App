@@ -9,7 +9,7 @@ namespace BL
 {
     public class ZooContext : IDisposable 
     {
-        private static IZooDB zooDB;
+        private IZooDB zooDB;
 
         public ZooContext(bool isTesting = true)
         {
@@ -23,11 +23,11 @@ namespace BL
             }
         }
 
-        public static void CleanDb(bool isTesting = true)
+        public void CleanDb(bool isTesting = true)
         {
             if (isTesting)
             {
-                zooDB = null;
+                this.zooDB = null;
             }
         }
 
