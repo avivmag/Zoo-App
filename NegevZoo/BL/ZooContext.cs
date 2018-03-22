@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using DAL;
+using DAL.Models;
 
 namespace BL
 {
@@ -32,23 +33,69 @@ namespace BL
         }
 
 
+
         #region Enclosure
 
         /// <summary>
-        /// Gets the enclosures.
+        /// Gets the enclosures results.
         /// </summary>
         /// <param name="language">The enclosure's data language.</param>
         /// <returns>The enclosures.</returns>
-        public IEnumerable<Enclosure> GetAllEnclosures(int language)
+        public IEnumerable<EnclosureResult> GetAllEnclosureResults(int language)
         {
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllEnclosures().Where(e => e.id == language/*e.language == language*/).ToArray();
+            var enclosures = zooDB.GetAllEnclosures();
+            var enclosureDetails = zooDB.GetAllEnclosureDetails().Where(e => e.language == language);
+
+            var enclosureResults = from e in enclosures
+                                   join ed in enclosureDetails on e.id equals ed.encId
+                                   select new EnclosureResult
+                                   {
+                                       Id                   = e.id,
+                                       Language             = ed.language,
+                                       MarkerIconUrl        = e.markerIconUrl,
+                                       MarkerLatitude       = e.markerLatitude,
+                                       MarkerLongtitude     = e.markerLongitude,
+                                       PictureUrl           = e.pictureUrl,
+                                       Name                 = ed.name,
+                                       Story                = ed.story
+                                   };
+
+            return enclosureResults.ToArray();
         }
-        
+
+
+
+
+
+        /// <summary>
+        /// Gets the enclosures types results.
+        /// </summary>
+        /// <returns>The enclosures types .</returns>
+        public IEnumerable<Enclosure> GetAllEnclosures()
+        {
+            return zooDB.GetAllEnclosures();
+        }
+
+        /// <summary>
+        /// Gets the enclosure details by the enclosure type id.
+        /// </summary>
+        /// <param name="encId">The enclosure's type id.</param>
+        /// <returns>The enclosure details in all the languages.</returns>
+        public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
+        {
+            if (!GetAllEnclosures().Any(e => e.id == encId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            }
+
+            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
+        }
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -257,19 +304,80 @@ namespace BL
 
         #region Animals
 
+
         /// <summary>
-        /// Gets all the animals.
+        /// Gets all the animals results.
         /// </summary>
         /// <param name="language">The animal's data language.</param>
-        /// <returns>The animals.</returns>
-        public IEnumerable<Animal> GetAnimals(int language)
+        /// <returns>The animals results.</returns>
+        public IEnumerable<AnimalResult> GetAnimalsResults(int language)
         {
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            return zooDB.GetAllAnimals().Where(a => /*a.language == language*/a.id == language).ToArray();
+            var animals = zooDB.GetAllAnimals();
+            var animalsDetails = zooDB.GetAllAnimalsDetails();
+
+            var animalResults = from a in animals
+                                join ad in animalsDetails on a.id equals ad.animalId
+                                select new AnimalResult
+                                {
+                                    Id              = a.id,
+                                    Name            = ad.name,
+                                    Story           = ad.story,
+                                    EncId           = a.enclosureId,
+                                    Category        = ad.category,
+                                    Series          = ad.series,
+                                    Family          = ad.family,
+                                    Ditribution     = ad.distribution,
+                                    Reproduction    = ad.reproduction,
+                                    Food            = ad.food,
+                                    Preservation    = a.preservation,
+                                    PictureUrl      = a.pictureUrl,
+                                    Language        = ad.language
+                                };
+
+            return animalResults.ToArray();
         }
+
+        /// <summary>
+        /// Gets all the animals types.
+        /// </summary>
+        /// <returns>The animals types.</returns>
+        public IEnumerable<Animal> GetAllAnimals()
+        {
+            return zooDB.GetAllAnimals();
+        }
+        
+        /// <summary>
+        /// Gets the animal details by the animal type id.
+        /// </summary>
+        /// <param name="animalId">The animal's type id.</param>
+        /// <returns>The animal details in all the languages.</returns>
+        public IEnumerable<AnimalDetail> GetAllAnimalsDetailById(int animalId)
+        {
+            if (!GetAllAnimals().Any(an => an.id == animalId))
+            {
+                throw new ArgumentException("Wrong input. The animal id doesn't exists");
+            }
+
+            return zooDB.GetAllAnimalsDetails().Where(an => an.animalId == animalId);
+        }
+
+        /// <summary>
+        /// Gets all the animals.
+        /// </summary>
+        /// <param name="language">The animal's data language.</param>
+        /// <returns>The animals.</returns>
+        //public IEnumerable<Animal> GetAnimals(int language)
+        //{
+        //    if (!ValidLanguage(language))
+        //    {
+        //        throw new ArgumentException("Wrong input. Wrong language.");
+        //    }
+        //    return zooDB.GetAllAnimals().Where(a => /*a.language == language*/a.id == language).ToArray();
+        //}
 
         /// <summary>
         /// Gets animal by Id and language.
@@ -324,7 +432,7 @@ namespace BL
             }
 
             //check if the enclosure exists with the wanted langauge
-            if (GetAllEnclosures((int)language).SingleOrDefault(en => en.id == encId) == null)
+            if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
             {
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }

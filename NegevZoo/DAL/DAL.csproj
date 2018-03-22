@@ -88,6 +88,8 @@
     <Compile Include="MiscMarker.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AnimalResult.cs" />
+    <Compile Include="Models\EnclosureResult.cs" />
     <Compile Include="NegevZooDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

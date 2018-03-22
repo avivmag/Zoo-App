@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -17,7 +18,11 @@ namespace DAL
 
         public abstract DbSet<Animal> GetAllAnimals();
 
+        public abstract DbSet<AnimalDetail> GetAllAnimalsDetails();
+
         public abstract DbSet<Enclosure> GetAllEnclosures();
+
+        public abstract DbSet<EnclosureDetail> GetAllEnclosureDetails();
 
         public abstract DbSet<RecurringEvent> GetAllRecuringEvents();
 
@@ -44,6 +49,7 @@ namespace DAL
         protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
+        
 
 
 

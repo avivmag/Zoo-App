@@ -13,6 +13,7 @@ namespace DAL
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using DAL.Models;
 
     public partial class NegevZooDBEntities : IZooDB
     {
@@ -91,6 +92,16 @@ namespace DAL
         public override DbSet<Language> GetAllLanguages()
         {
             return Languages;
+        }
+
+        public override DbSet<EnclosureDetail> GetAllEnclosureDetails()
+        {
+            return enclosuresdetails;
+        }
+
+        public override DbSet<AnimalDetail> GetAllAnimalsDetails()
+        {
+            return animalsdetails;
         }
 
         public virtual DbSet<Animal> Animals { get; set; }
