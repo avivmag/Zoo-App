@@ -62,7 +62,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -86,7 +86,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -111,7 +111,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -135,7 +135,7 @@ namespace NegevZoo.Controllers
                     return db.GetEnclosureByName(name, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -161,7 +161,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -185,7 +185,7 @@ namespace NegevZoo.Controllers
                     return db.GetRecurringEvents(encId, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -212,7 +212,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -236,7 +236,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -260,12 +260,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
-            {
-                //TODO: add log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-            catch (InvalidOperationException invOpExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -284,7 +279,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -292,5 +287,38 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        [Route("enclosures/upload")]
+        public Task<HttpResponseMessage> PostFile()
+        {
+            HttpRequestMessage request = this.Request;
+            if (!request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            Guid id = Guid.NewGuid();
+            string root = System.Web.HttpContext.Current.Server.MapPath("/assets/");
+
+            string url = root + id;
+
+            var provider = new MultipartFormDataStreamProvider(url);
+
+            var task = request.Content.ReadAsMultipartAsync(provider).
+                ContinueWith<HttpResponseMessage>(o =>
+                {
+
+                    string file1 = provider.FileData.First().LocalFileName;
+                    // this is the file name on the server where the file was saved 
+
+                    return new HttpResponseMessage()
+                    {
+                        Content = new StringContent("File uploaded.")
+                    };
+                }
+            );
+            return task;
+        }
     }
 }

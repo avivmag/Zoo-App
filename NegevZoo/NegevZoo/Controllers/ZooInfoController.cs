@@ -30,7 +30,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -54,7 +54,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
@@ -76,7 +76,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -104,7 +104,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -127,7 +127,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -150,7 +150,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -173,7 +173,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -201,7 +201,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -224,7 +224,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -247,7 +247,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -275,7 +275,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -302,7 +302,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -325,7 +325,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -348,7 +348,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -375,7 +375,7 @@ namespace NegevZoo.Controllers
                     return db.GetAllWallFeeds(language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -398,7 +398,7 @@ namespace NegevZoo.Controllers
                     db.UpdateWallFeed(feed);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -420,7 +420,7 @@ namespace NegevZoo.Controllers
                     db.DeleteWallFeed(feedId);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -453,7 +453,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -476,7 +476,7 @@ namespace NegevZoo.Controllers
                     db.UpdateZooAboutInfo(info, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -505,7 +505,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -528,7 +528,7 @@ namespace NegevZoo.Controllers
                     db.UpdateOpeningHourNote(note, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -557,7 +557,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -580,7 +580,7 @@ namespace NegevZoo.Controllers
                     db.UpdateContactInfoNote(note, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -606,14 +606,14 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
-
+        
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
