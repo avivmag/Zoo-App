@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="Models\AnimalResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
+    <Compile Include="Models\OpeningHourResult.cs" />
     <Compile Include="NegevZooDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
