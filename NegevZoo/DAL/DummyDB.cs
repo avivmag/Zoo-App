@@ -61,6 +61,8 @@ namespace DAL
         protected DbSet<SpecialEvent> SpecialEvents { get; set; }
         protected DbSet<User> Users { get; set; }
         protected DbSet<Language> AllLanguages { get; set; }
+        protected DbSet<EnclosureDetail> AllEnclosursDetails { get; set; }
+        protected DbSet<AnimalDetail> AllAnimalsDetails { get; set; }
 
         #endregion 
 
@@ -968,6 +970,16 @@ namespace DAL
         public override DbSet<Language> GetAllLanguages()
         {
             return AllLanguages;
+        }
+
+        public override DbSet<EnclosureDetail> GetAllEnclosureDetails()
+        {
+            return AllEnclosursDetails;
+        }
+
+        public override DbSet<AnimalDetail> GetAllAnimalsDetails()
+        {
+            return AllAnimalsDetails;
         }
 
         #endregion

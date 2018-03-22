@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using DAL;
+using DAL.Models;
 
 namespace NegevZoo.Controllers
 {
@@ -21,13 +22,57 @@ namespace NegevZoo.Controllers
         /// <returns>Animals with that langauge.</returns>
         [HttpGet]
         [Route("animals/all/{language}")]
-        public IEnumerable<Animal> GetAllAnimals(int language = 1)
+        public IEnumerable<AnimalResult> GetAllAnimalsResults(int language = 1)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetAnimals(language);
+                    return db.GetAnimalsResults(language);
+                }
+            }
+            catch (ArgumentException argExp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all animals types.
+        /// </summary>
+        /// <returns>Animals types.</returns>
+        [HttpGet]
+        [Route("animals/types/all")]
+        public IEnumerable<Animal> GetAllAnimals()
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllAnimals();
+                }
+            }
+            catch (ArgumentException argExp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all animals details by the given id.
+        /// </summary>
+        /// <returns>Animals detail in all the langauges exists.</returns>
+        [HttpGet]
+        [Route("animals/details/all/{animalId}")]
+        public IEnumerable<AnimalDetail> GetAllAnimalsDetailsById(int animalId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllAnimalsDetailById(animalId);
                 }
             }
             catch (ArgumentException argExp)

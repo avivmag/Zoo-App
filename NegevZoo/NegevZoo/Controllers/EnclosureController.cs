@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using DAL;
+using DAL.Models;
 using BL;
 
 namespace NegevZoo.Controllers
@@ -17,20 +18,70 @@ namespace NegevZoo.Controllers
     {
         #region Getters
 
+        #region visitor app
+
         /// <summary>
-        /// Gets all the enclosures with data in that language.
+        /// Gets all the enclosures resultes with data in that language.
         /// </summary>
         /// <param name="language">The data language</param>
         /// <returns>All enclosures with that language.</returns>
         [HttpGet]
         [Route("enclosures/all/{language}")]
-        public IEnumerable<Enclosure> GetAllEnclosures(int language = 1)
+        public IEnumerable<EnclosureResult>  GetAllEnclosureResults(int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllEnclosureResults(language);
+                }
+            }
+            catch
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets all the enclosures types.
+        /// </summary>
+        /// <returns>All enclosures types.</returns>
+        [HttpGet]
+        [Route("enclosures/types/all")]
+        public IEnumerable<Enclosure> GetAllEnclosures()
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetAllEnclosures(language);
+                    return db.GetAllEnclosures();
+                }
+
+            }
+            catch (ArgumentException argExp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all the enclosures types with data in that language.
+        /// </summary>
+        /// <param name="encId">The enclosure id</param>
+        /// <returns>All the details to this enclosure id.</returns>
+        [HttpGet]
+        [Route("enclosures/details/all/{encId}")]
+        IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureDetailsById(encId);
                 }
 
             }
