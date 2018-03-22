@@ -35,3 +35,17 @@ body.md-toast-animating {
     position: fixed;
     overflow: auto !important;
 }
+
+.picture {
+    height: 320px; 
+    width: 320px;
+    margin: 15px;
+    border: black;
+    border-radius: 50%;
+}
+
+.picture-head {
+    margin: 15px;
+    font-size: 18px;
+    text-align: center;
+}

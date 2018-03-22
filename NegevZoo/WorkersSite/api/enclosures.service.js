@@ -1,7 +1,7 @@
 ﻿app.factory('enclosureService', ['httpService', function (httpService) {
     var serviceBaseUrl = 'enclosures';
 
-    var enclosuresDetails   = {
+    var enclosureDetails   = {
         getAllEnclosures:       function (language)                         { return httpService.httpGet({ url: [serviceBaseUrl, 'all', language] }); },
         getEnclosureById:       function (encId, language)                  { return httpService.httpGet({ url: [serviceBaseUrl, 'id', encId, language] }); },
         getEnclosureByName:     function (name, language)                   { return httpService.httpGet({ url: [serviceBaseUrl, 'name', name, language] }); },
@@ -12,7 +12,7 @@
     };
 
     var enclosures          = {
-        
+        getAllEnclosures:       function ()                                 { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) }
     };
     var enclosureService = {
         enclosures,

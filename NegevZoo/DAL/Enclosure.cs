@@ -16,8 +16,8 @@ namespace DAL
     {
         public long id { get; set; }
         public string name { get; set; }
-        public double markerLongitude { get; set; }
-        public double markerLatitude { get; set; }
+        public Nullable<double> markerLongitude { get; set; }
+        public Nullable<double> markerLatitude { get; set; }
         public string markerIconUrl { get; set; }
         public string pictureUrl { get; set; }
     }
