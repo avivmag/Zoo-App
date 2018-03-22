@@ -31,7 +31,7 @@ public class ScheduleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_schedule);
 
         //Send notification
-        MyFirebaseMessagingService.sendSelfNotification(MapActivity.class, "האכלת אריות","13:00 - 13:30");
+        //MyFirebaseMessagingService.sendSelfNotification(MapActivity.class, "האכלת אריות","13:00 - 13:30");
 
         GlobalVariables.bl.getSchedule(new GetObjectInterface() {
             @Override
