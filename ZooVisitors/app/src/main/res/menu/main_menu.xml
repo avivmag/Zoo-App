@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/settings_menu_item">
@@ -12,29 +13,32 @@
         android:title="@string/language" >
         <!-- "language" submenu -->
         <menu>
-            <item android:id="@+id/language_eng"
-                android:title="@string/language_eng"
+            <item
+                android:id="@+id/language_eng"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLanguage">
-            </item>
+                android:onClick="onSelectLanguage"
+                android:title="@string/language_eng"></item>
                 <!--/>-->
-            <item android:id="@+id/language_heb"
-                android:title="@string/language_heb"
+            <item
+                android:id="@+id/language_heb"
                 android:checkable="true"
-                android:checked="true"
-                android:onClick="onSelectLanguage"></item>
+                android:checked="false"
+                android:onClick="onSelectLanguage"
+                android:title="@string/language_heb"></item>
                 <!--/>-->
-            <item android:id="@+id/language_arb"
-                android:title="@string/language_arb"
+            <item
+                android:id="@+id/language_arb"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLanguage"></item>
-            <item android:id="@+id/language_rus"
-                android:title="@string/language_rus"
+                android:onClick="onSelectLanguage"
+                android:title="@string/language_arb"></item>
+            <item
+                android:id="@+id/language_rus"
                 android:checkable="true"
                 android:checked="false"
-                android:onClick="onSelectLanguage"/>
+                android:onClick="onSelectLanguage"
+                android:title="@string/language_rus" />
         </menu>
     </item>
 </menu>
