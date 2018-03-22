@@ -26,7 +26,7 @@ namespace ZooTests
         [TestCleanup]
         public void EnclosureCleanUp()
         {
-            ZooContext.CleanDb();
+            //ZooContext.CleanDb();
         }
 
         #endregion
@@ -173,8 +173,8 @@ namespace ZooTests
                 id = default(int),
                 name = "הקקי שלי",
                 enclosureId = 2,
-                language = (int)Languages.he,
-                story = "הקקי שלי הוא גדול ומוצק"
+                //language = (int)Languages.he,
+                //story = "הקקי שלי הוא גדול ומוצק"
             };
 
             animalsController.UpdateAnimal(an);
@@ -194,8 +194,8 @@ namespace ZooTests
                 id = default(int),
                 name = "הקקי שלי",
                 enclosureId = 2,
-                language = (int)Languages.he,
-                story = ""
+                //language = (int)Languages.he,
+                //story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -204,7 +204,7 @@ namespace ZooTests
             Assert.AreEqual(4, animals.Count());
 
             var newAn = animals.SingleOrDefault(a => a.name == an.name);
-            Assert.AreEqual("", newAn.story);
+            //Assert.AreEqual("", newAn.story);
         }
 
         [TestMethod]
@@ -219,8 +219,8 @@ namespace ZooTests
                 id = default(int),
                 name = "הקקי שלי",
                 enclosureId = 2,
-                language = nonExistantLang,
-                story = ""
+                //language = nonExistantLang,
+                //story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -238,8 +238,8 @@ namespace ZooTests
                 id = default(int),
                 name = "     ",
                 enclosureId = 2,
-                language = (int)Languages.he,
-                story = ""
+                //language = (int)Languages.he,
+                //story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -257,8 +257,8 @@ namespace ZooTests
                 id = default(int),
                 name = "הקקי שלי",
                 enclosureId = -2,
-                language = (int)Languages.he,
-                story = ""
+                //language = (int)Languages.he,
+                //story = ""
             };
 
             animalsController.UpdateAnimal(an);
@@ -276,8 +276,8 @@ namespace ZooTests
                 id = default(int),
                 name = "Monkey",
                 enclosureId = 3,
-                language = (int)Languages.en,
-                story = "This is new monkey"
+                //language = (int)Languages.en,
+                //story = "This is new monkey"
             };
 
             animalsController.UpdateAnimal(an);
@@ -308,12 +308,12 @@ namespace ZooTests
 
             var an = animals.SingleOrDefault(a => a.name == "Gorilla");
             
-            an.story = "";
+            //an.story = "";
 
             animalsController.UpdateAnimal(an);
 
             animals = animalsController.GetAllAnimals((int)Languages.en);
-            Assert.IsTrue(animals.Any(a => a.story == ""));
+            //Assert.IsTrue(animals.Any(a => a.story == ""));
             Assert.AreEqual(3, animals.Count());
         }
 
@@ -329,8 +329,8 @@ namespace ZooTests
                 id = 3,
                 name = "Gorilla",
                 enclosureId = 1,
-                story = "Shrek the mighty gorilla!",
-                language = (int)Languages.en
+                //story = "Shrek the mighty gorilla!",
+                //language = (int)Languages.en
             };
 
             an.name = "Monkey";
@@ -350,8 +350,8 @@ namespace ZooTests
                 id = 3,
                 name = "Gorilla",
                 enclosureId = 1,
-                story = "Shrek the mighty gorilla!",
-                language = (int)Languages.en
+                //story = "Shrek the mighty gorilla!",
+                //language = (int)Languages.en
             };
 
             an.id = -3;

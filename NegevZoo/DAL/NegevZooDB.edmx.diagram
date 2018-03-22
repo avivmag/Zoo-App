@@ -21,6 +21,8 @@
         <EntityTypeShape EntityType="NegevZooModel.User" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.WallFeed" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.YoutubeVideoUrl" Width="1.5" PointX="11" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.AnimalDetail" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.75" PointY="10.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
