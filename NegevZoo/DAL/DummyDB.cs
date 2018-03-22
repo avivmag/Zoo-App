@@ -79,8 +79,8 @@ namespace DAL
                         id          = 1,
                         name        = "Olive Baboon",
                         enclosureId       = 1,
-                        story       = "Gilor the olive baboon is very lovable.",
-                        language    = (int)Languages.en
+                        //story       = "Gilor the olive baboon is very lovable.",
+                        //language    = (int)Languages.en
                     },
 
                     new Animal
@@ -88,8 +88,8 @@ namespace DAL
                         id          = 2,
                         name        = "בבון הזית",
                         enclosureId       = 2,
-                        story       = "גילאור בבון הזית מאוד חמוד",
-                        language    = (int)Languages.he
+                        //story       = "גילאור בבון הזית מאוד חמוד",
+                        //language    = (int)Languages.he
                     },
 
                     new Animal
@@ -97,8 +97,8 @@ namespace DAL
                         id          = 3,
                         name        = "Gorilla",
                         enclosureId       = 1,
-                        story       = "Shrek the mighty gorilla!",
-                        language    = (int)Languages.en
+                        //story       = "Shrek the mighty gorilla!",
+                        //language    = (int)Languages.en
                     },
 
                     new Animal
@@ -106,8 +106,8 @@ namespace DAL
                         id          = 4,
                         name        = "גורילה",
                         enclosureId       = 2,
-                        story       = "שרק הוא וואחד גורילה!",
-                        language    = (int)Languages.he
+                        //story       = "שרק הוא וואחד גורילה!",
+                        //language    = (int)Languages.he
                     },
 
                     new Animal
@@ -115,8 +115,8 @@ namespace DAL
                         id          = 5,
                         name        = "Monkey",
                         enclosureId       = 3,
-                        story       = "Kofifo is Marco's monkey.",
-                        language    = (int)Languages.en
+                        //story       = "Kofifo is Marco's monkey.",
+                        //language    = (int)Languages.en
                     },
 
                     new Animal
@@ -124,8 +124,8 @@ namespace DAL
                         id          = 6,
                         name        = "קוף",
                         enclosureId       = 4,
-                        story       = "קופיקו הוא הקוף של מרקו.",
-                        language    = (int)Languages.he
+                        //story       = "קופיקו הוא הקוף של מרקו.",
+                        //language    = (int)Languages.he
                     }
                 };
         }
@@ -142,48 +142,48 @@ namespace DAL
                     {
                         id          = 1,
                         name        = "Monkeys",
-                        story       = "Our monkeys have been great! They are awesome.",
-                        language    = (int)Languages.en
+                        //story       = "Our monkeys have been great! They are awesome.",
+                        //language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
                         id          = 2,
                         name        = "תצוגת הקופים",
-                        story       = "הקופים שלנו הם הכי הכי!",
-                        language    = (int)Languages.he
+                        //story       = "הקופים שלנו הם הכי הכי!",
+                        //language    = (int)Languages.he
                     },
 
                     new Enclosure
                     {
                         id          = 3,
                         name        = "Houman Monkeys",
-                        story       = "Computer Science students.",
-                        language    = (int)Languages.en
+                        //story       = "Computer Science students.",
+                        //language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
                         id          = 4,
                         name        = "קופי אדם",
-                        story       = "הקופים שלנו הם הכי חכמים!",
-                        language    = (int)Languages.he
+                        //story       = "הקופים שלנו הם הכי חכמים!",
+                        //language    = (int)Languages.he
                     },
 
                     new Enclosure
                     {
                         id          = 5,
                         name        = "Zebra",
-                        story       = "Our saved Zebra.",
-                        language    = (int)Languages.en
+                        //story       = "Our saved Zebra.",
+                        //language    = (int)Languages.en
                     },
 
                     new Enclosure
                     {
                         id          = 6,
                         name        = "זברה",
-                        story       = "הזברות שלנו ניצלו משבי",
-                        language    = (int)Languages.he
+                        //story       = "הזברות שלנו ניצלו משבי",
+                        //language    = (int)Languages.he
                     }
                 };
         }

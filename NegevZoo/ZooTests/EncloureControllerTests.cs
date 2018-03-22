@@ -175,7 +175,7 @@ namespace ZooTests
             Assert.IsNotNull(recEvent);
             Assert.AreEqual(2, recEvent.id);
             Assert.AreEqual(enc.id, recEvent.id);
-            Assert.AreEqual(enc.language, recEvent.language);
+            //Assert.AreEqual(enc.language, recEvent.language);
             Assert.AreEqual(10, recEvent.startHour);
             Assert.AreEqual(30, recEvent.startMin);
         }
@@ -259,8 +259,8 @@ namespace ZooTests
             {
                 id = default(int),
                 name = "Lions enclosure",
-                story = "Finalt they are here",
-                language = (int)Languages.en
+                //story = "Finalt they are here",
+                //language = (int)Languages.en
             };
 
             enclosureController.UpdateEnclosure(enc);
@@ -281,8 +281,8 @@ namespace ZooTests
             {
                 id = default(int),
                 name = "Monkeys",
-                story = "Finalt they are here",
-                language = (int)Languages.en
+                //story = "Finalt they are here",
+                //language = (int)Languages.en
             };
 
             enclosureController.UpdateEnclosure(enc);
@@ -300,8 +300,8 @@ namespace ZooTests
             {
                 id = default(int),
                 name = "",
-                story = "Finalt they are here",
-                language = (int)Languages.en
+                //story = "Finalt they are here",
+                //language = (int)Languages.en
             };
 
             enclosureController.UpdateEnclosure(enc);
@@ -319,8 +319,8 @@ namespace ZooTests
             {
                 id = default(int),
                 name = "Lions enclosure",
-                story = "Finalt they are here",
-                language = nonExistantLang
+                //story = "Finalt they are here",
+                //language = nonExistantLang
             };
 
             enclosureController.UpdateEnclosure(enc);
@@ -363,7 +363,7 @@ namespace ZooTests
             Enclosure human = new Enclosure
             {
                 id = monkeyEncEn.id,
-                language = monkeyEncEn.language,
+                //language = monkeyEncEn.language,
                 markerLatitude = monkeyEncEn.markerLatitude,
                 markerLongitude = monkeyEncEn.markerLongitude,
                 name = "Houman Monkeys"
@@ -386,7 +386,7 @@ namespace ZooTests
             Enclosure human = new Enclosure
             {
                 id = monkeyEncEn.id,
-                language = monkeyEncEn.language,
+                //language = monkeyEncEn.language,
                 markerLatitude = monkeyEncEn.markerLatitude,
                 markerLongitude = monkeyEncEn.markerLongitude,
                 name = ""
@@ -409,7 +409,7 @@ namespace ZooTests
             Enclosure human = new Enclosure
             {
                 id = 1000000,
-                language = monkeyEncEn.language,
+                //language = monkeyencen.language,
                 markerLatitude = monkeyEncEn.markerLatitude,
                 markerLongitude = monkeyEncEn.markerLongitude,
                 name = monkeyEncEn.name
@@ -432,7 +432,7 @@ namespace ZooTests
             Enclosure human = new Enclosure
             {
                 id = monkeyEncEn.id,
-                language = nonExistantLang,
+                //language = nonExistantLang,
                 markerLatitude = monkeyEncEn.markerLatitude,
                 markerLongitude = monkeyEncEn.markerLongitude,
                 name = monkeyEncEn.name
@@ -454,12 +454,12 @@ namespace ZooTests
 
             //delete animals
             AnimalController anCont = new AnimalController();
-            var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
+            //var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
 
-            foreach (Animal an in animalsList)
-            {
-                anCont.DeleteAnimal((int)an.id);
-            }
+            //foreach (Animal an in animalsList)
+            //{
+            //    anCont.DeleteAnimal((int)an.id);
+            //}
 
             //delete reccuringEvents
             var recEvents = enclosureController.GetRecurringEvents((int)monkHeb.id);
@@ -502,12 +502,12 @@ namespace ZooTests
 
             //delete animals
             AnimalController anCont = new AnimalController();
-            var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
+            //var animalsList = anCont.GetAnimalsByEnclosure((int)monkHeb.id, (int)monkHeb.language);
 
-            foreach (Animal an in animalsList)
-            {
-                anCont.DeleteAnimal((int)an.id);
-            }
+            //foreach (Animal an in animalsList)
+            //{
+            //    anCont.DeleteAnimal((int)an.id);
+            //}
 
             enclosureController.DeleteEnclosure((int)monkHeb.id);
         }
