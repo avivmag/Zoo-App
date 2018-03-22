@@ -101,12 +101,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="day" Type="tinytext" Nullable="false" />
-          <Property Name="startHour" Type="uint" Nullable="false" />
-          <Property Name="endHour" Type="uint" Nullable="false" />
-          <Property Name="endMin" Type="uint" Nullable="false" />
-          <Property Name="startMin" Type="uint" Nullable="false" />
+          <Property Name="day" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="language" Type="uint" Nullable="false" />
+          <Property Name="startTime" Type="time" Precision="0" Nullable="false" />
+          <Property Name="endTime" Type="time" Precision="0" Nullable="false" />
         </EntityType>
         <EntityType Name="prices">
           <Key>
@@ -130,12 +128,10 @@
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="description" Type="tinytext" />
-          <Property Name="day" Type="tinytext" Nullable="false" />
-          <Property Name="startHour" Type="uint" Nullable="false" />
-          <Property Name="startMin" Type="int" Nullable="false" />
-          <Property Name="endHour" Type="uint" Nullable="false" />
-          <Property Name="endMin" Type="int" Nullable="false" />
+          <Property Name="day" Type="uint" Nullable="false" />
           <Property Name="enclosureId" Type="int" Nullable="false" />
+          <Property Name="startTime" Type="time" Precision="0" Nullable="false" />
+          <Property Name="endTime" Type="time" Precision="0" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
         </EntityType>
         <EntityType Name="routes">
@@ -279,12 +275,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="day" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="startHour" Type="Int64" Nullable="false" />
-          <Property Name="endHour" Type="Int64" Nullable="false" />
-          <Property Name="endMin" Type="Int64" Nullable="false" />
-          <Property Name="startMin" Type="Int64" Nullable="false" />
+          <Property Name="day" Type="Int32" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="startTime" Type="Time" Nullable="false" />
+          <Property Name="endTime" Type="Time" Nullable="false" />
         </EntityType>
         <EntityType Name="Price">
           <Key>
@@ -308,13 +302,11 @@
           </Key>
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="day" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="startHour" Type="Int64" Nullable="false" />
-          <Property Name="startMin" Type="Int32" Nullable="false" />
-          <Property Name="endHour" Type="Int64" Nullable="false" />
-          <Property Name="endMin" Type="Int32" Nullable="false" />
+          <Property Name="day" Type="Int64" Nullable="false" />
           <Property Name="enclosureId" Type="Int32" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="startTime" Type="Time" Nullable="false" />
+          <Property Name="endTime" Type="Time" Nullable="false" />
         </EntityType>
         <EntityType Name="Route">
           <Key>
@@ -491,11 +483,9 @@
             <EntityTypeMapping TypeName="NegevZooModel.OpeningHour">
               <MappingFragment StoreEntitySet="openinghours">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="day" ColumnName="day" />
-                <ScalarProperty Name="startHour" ColumnName="startHour" />
-                <ScalarProperty Name="endHour" ColumnName="endHour" />
-                <ScalarProperty Name="endMin" ColumnName="endMin" />
-                <ScalarProperty Name="startMin" ColumnName="startMin" />
                 <ScalarProperty Name="language" ColumnName="language" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -521,13 +511,11 @@
           <EntitySetMapping Name="RecurringEvents">
             <EntityTypeMapping TypeName="NegevZooModel.RecurringEvent">
               <MappingFragment StoreEntitySet="recurringevents">
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="day" ColumnName="day" />
-                <ScalarProperty Name="startHour" ColumnName="startHour" />
-                <ScalarProperty Name="startMin" ColumnName="startMin" />
-                <ScalarProperty Name="endHour" ColumnName="endHour" />
-                <ScalarProperty Name="endMin" ColumnName="endMin" />
                 <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
                 <ScalarProperty Name="language" ColumnName="language" />
               </MappingFragment>

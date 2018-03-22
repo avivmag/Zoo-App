@@ -504,7 +504,7 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1));
         }
 
         [TestMethod]
@@ -524,16 +524,14 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "Sunday"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
-                day = "Friday",
-                startHour = 9,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "Friday",
+                startTime = new TimeSpan(9, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.en
             };
 
@@ -551,16 +549,14 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1 ));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
-                day = "Saturday",
-                startHour = 9,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "Saturday",
+                startTime = new TimeSpan(9, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.en
             };
 
@@ -575,16 +571,14 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
-                day = "    ",
-                startHour = 9,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "    ",
+                startTime = new TimeSpan(9, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.en
             };
 
@@ -599,16 +593,14 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
-                day = "",
-                startHour = 9,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "",
+                startTime = new TimeSpan(9, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.en
             };
 
@@ -623,16 +615,14 @@ namespace ZooTests
             Assert.IsInstanceOfType(openingHours, typeof(OpeningHour[]));
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.day == "ראשון"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == -1));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
-                day = "Kaki",
-                endHour = 9,
-                endMin = (int)AvailableMinutes.ThreeQuarters,
-                startHour = 18,
-                startMin = (int)AvailableMinutes.Zero,
+                //day = "Kaki",
+                startTime = new TimeSpan(9, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.en
             };
 
@@ -648,15 +638,13 @@ namespace ZooTests
             OpeningHour opHour = new OpeningHour
             {
                 id = 11,
-                day = "שבת",
-                startHour = 10,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "שבת",
+                startTime = new TimeSpan(10, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.he
             };
 
-            opHour.endHour = 20;
+            //opHour.endHour = 20;
 
             ZooInfoController.UpdateOpeningHour(opHour);
         }
@@ -671,11 +659,9 @@ namespace ZooTests
             OpeningHour opHour = new OpeningHour
             {
                 id = 11,
-                day = "שלישי",
-                startHour = 10,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "שלישי",
+                startTime = new TimeSpan(10, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.he
             };
 
@@ -692,11 +678,9 @@ namespace ZooTests
             OpeningHour opHour = new OpeningHour
             {
                 id = -11,
-                day = "שבת",
-                startHour = 10,
-                startMin = (int)AvailableMinutes.ThreeQuarters,
-                endHour = 18,
-                endMin = (int)AvailableMinutes.Zero,
+                //day = "שבת",
+                startTime = new TimeSpan(10, 45, 0),
+                endTime = new TimeSpan(18, 0, 0),
                 language = (int)Languages.he
             };
 
@@ -712,7 +696,7 @@ namespace ZooTests
             var openingHours = ZooInfoController.GetAllOpeningHours((int)Languages.en);
             Assert.AreEqual(6, openingHours.Count());
 
-            OpeningHour opHour = openingHours.SingleOrDefault(oh => oh.day == "Sunday");
+            OpeningHour opHour = openingHours.SingleOrDefault(oh => oh.day == -1);
 
             ZooInfoController.DeleteOpeningHour(opHour.id);
 

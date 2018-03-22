@@ -109,7 +109,7 @@ namespace DAL
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WallFeed> WallFeeds { get; set; }
         public virtual DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
-        public virtual DbSet<AnimalDetail> animalsdetails { get; set; }
-        public virtual DbSet<EnclosureDetail> enclosuresdetails { get; set; }
+        public virtual DbSet<AnimalDetail> AnimalsDetails { get; set; }
+        public virtual DbSet<EnclosureDetail> EnclosureDetails { get; set; }
     }
 }
