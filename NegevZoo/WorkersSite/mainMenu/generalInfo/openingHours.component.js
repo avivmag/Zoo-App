@@ -3,14 +3,14 @@
         initializeComponent();
 
         function initializeComponent() {
-            $scope.languages            = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
-
-            $scope.language             = $scope.languages[0].language;
+            $scope.languages            = app.languages;
+            $scope.language             = $scope.languages[0];
 
             $scope.updateOpeningHours       = function (language) {
+                $scope.language             = language;
                 $scope.isLoading            = true;
 
-                openingHoursQuery = zooInfoService.openingHours.getAllOpeningHours(language).then(
+                openingHoursQuery = zooInfoService.openingHours.getAllOpeningHours(language.id).then(
                     function (data) {
                         $scope.openingHours         = data.data;
                         $scope.isLoading            = false;
@@ -34,7 +34,7 @@
                 var successContent      = price.isNew ? 'שעת הפתיחה נוספה בהצלחה!' : 'שעת הפתיחה עודכנה בהצלחה!';
                 var failContent         = price.isNew ? 'התרחשה שגיאה בעת שמירת שעת הפתיחה' : 'התרחשה שגיאה בעת עדכון שעת הפתיחה';
 
-                zooInfoService.prices.updatePrice(openingHour).then(
+                zooInfoService.openingHours.updateOpeningHour(openingHour).then(
                     function () {
                         $mdDialog.show(
                             $mdDialog.alert()
@@ -72,8 +72,7 @@
                 });
             }
 
-            console.log('hi');
-            $scope.updateOpeningHours(app.defaultLanguage);
+            $scope.updateOpeningHours($scope.language);
         }
 
         function addEmptyOpeningHour(openingHours) {
