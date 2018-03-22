@@ -46,7 +46,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllEnclosures().Where(e => e.language == language).ToArray();
+            return zooDB.GetAllEnclosures().Where(e => e.id == language/*e.language == language*/).ToArray();
         }
         
         /// <summary>
@@ -62,7 +62,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            Enclosure enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.language == language && e.id == id);
+            Enclosure enc = zooDB.GetAllEnclosures().SingleOrDefault(e => /*e.language == language && */e.id == id);
 
             if (enc == null)
             {
@@ -93,7 +93,7 @@ namespace BL
             //    throw new HttpRequestException("Status code " + HttpStatusCode.NotFound + ", could not found the wanted enclosure.");
             //}
 
-            return zooDB.GetAllEnclosures().Where(e => e.language == language && e.name.Contains(name));
+            return zooDB.GetAllEnclosures().Where(e => /*e.language == language && */e.name.Contains(name));
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace BL
         /// <returns>The enclosure.</returns>
         public Enclosure GetEnclosureByPosition(double longtitud, double latitude, int language)
         {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => e.language == language &&
+            return zooDB.GetAllEnclosures().SingleOrDefault(e => /*e.language == language &&*/
                                                             (e.markerLongitude <= longtitud + 5 && e.markerLongitude >= longtitud - 5) &&
                                                             (e.markerLatitude <= latitude + 5 && e.markerLatitude >= latitude - 5) );
         }
@@ -147,10 +147,10 @@ namespace BL
             }
 
             //1. language
-            if (!ValidLanguage((int)enclosure.language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
+            //if (!ValidLanguage((int)enclosure.language))
+            //{
+            //    throw new ArgumentException("Wrong input. Wrong language.");
+            //}
 
             //2. enclosure name
             if (String.IsNullOrWhiteSpace(enclosure.name))
@@ -268,7 +268,7 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            return zooDB.GetAllAnimals().Where(a => a.language == language).ToArray();
+            return zooDB.GetAllAnimals().Where(a => /*a.language == language*/a.id == language).ToArray();
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            Animal an = zooDB.GetAllAnimals().SingleOrDefault(a => a.language == language && a.id == id);
+            Animal an = zooDB.GetAllAnimals().SingleOrDefault(a => /*a.language == language && */a.id == id);
 
             if (an == null)
             {
@@ -307,7 +307,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllAnimals().Where(a => a.language == language && a.name.Contains(name));
+            return zooDB.GetAllAnimals().Where(a => /*a.language == language && */a.name.Contains(name));
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllAnimals().Where(a => a.language == language && a.enclosureId == encId).ToList();
+            return zooDB.GetAllAnimals().Where(a => /*a.language == language && */a.enclosureId == encId).ToList();
         }
 
         /// <summary>
@@ -340,10 +340,10 @@ namespace BL
         {
             //validate animal attributes
             //1. language
-            if (!ValidLanguage((int)animal.language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
+            //if (!ValidLanguage((int)animal.language))
+            //{
+            //    throw new ArgumentException("Wrong input. Wrong language.");
+            //}
 
             //2. aniaml name
             if (String.IsNullOrWhiteSpace(animal.name))
@@ -352,10 +352,10 @@ namespace BL
             }
 
             //3. enclosure exists
-            if (GetEnclosureById((int)animal.enclosureId, (int)animal.language) == null)
-            {
-                throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
-            }
+            //if (GetEnclosureById((int)animal.enclosureId, (int)animal.language) == null)
+            //{
+            //    throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
+            //}
 
             var animals = zooDB.GetAllAnimals();
 
