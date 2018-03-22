@@ -1,0 +1,51 @@
+<resources>
+
+    <!--//Main Menu/-->
+    <string name="app_name">Negev Zoo</string>
+    //preferences
+    <string name="animal_name">Olive Baboon</string>
+    <string name="notifications">notifications</string>
+    <string name="language">language</string>
+    <string name="language_eng">English</string>
+    <string name="language_heb">עברית</string>
+    <string name="language_arb">عربى</string>
+    <string name="language_rus">русский</string>
+
+    <!-- main menu buttons -->
+    <string name="watch_all_feed">watch all</string>
+    <string name="our_enclosures">Our Enclosures</string>
+    <string name="schedule">Schedule</string>
+    <string name="map">Map</string>
+    <string name="other_info">Other Info</string>
+    <string name="nav">Navigate to Negev Zoo</string>
+
+    <!-- Animal Activity -->
+    <string name="title_activity_animal">AnimalActivity</string>
+    <string name="about_animal">About our animals</string>
+    <string name="about_species">About the species</string>
+    <string name="story">Gilor, our 22-year-old olive baboon was born in the deep forests of Brazil.\n Yossi used to run from poachers and because of that he is not very friendly.\n But you can bribe him with some bananas!</string>
+    <string name="category">Category: Killer Apes</string>
+    <string name="series">Series: M6</string>
+    <string name="family">Family: Apes</string>
+    <string name="distribution">Distribution: South America</string>
+    <string name="reproduction">Reproduction: 50,000</string>
+    <string name="food">Food: BANANAS! YUMMM</string>
+    <string name="searchPlaceHolder">Type enclosure or animal</string>
+    <string name="shareOnFacebook">Share on facebook</string>
+    <string name="showOnMap">Show on map</string>
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
+
+    <!-- General Info -->
+    <string name="contact_info">Contact Info</string>
+    <string name="prices">Prices</string>
+    <string name="opening_hours">Opening Hours</string>
+    <string name="about_us">About Us</string>
+    <string name="about_us_full">We, at Be\'er Sheva Zoo, are not here for money.\nWe are here to give.\nTo give you.\nTo give the animals.\nTo give to the environment.\nHere, in Negev Zoo, we take care of animals that cannot go back to the wild.</string>
+    <string name="contact_us_headline">Ways To Contact Us:</string>
+    <string name="opening_hours_headline">The times we are open:</string>
+    <string name="prices_headline">How little we charge:</string>
+
+    <!-- Schedule -->
+    <string name="todays_event">Today\'s events</string>
+    <string name="choose_route">Choose a route</string>
+</resources>
