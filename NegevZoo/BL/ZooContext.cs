@@ -870,12 +870,21 @@ namespace BL
                     throw new ArgumentException("Wrong input while adding Opening hour. The day of the opening hour is already exsists");
                 }
 
+                //add the hebrew OpeningHour
+                openingHours.Add(openingHour);
+
+                // add the other 3
                 int day = openingHour.day;
 
-                for (int i = 0; i <= 3; i++)
+                for (int i = 1; i <= 3; i++)
                 {
-                    openingHour.day = i * 10 + day;   
-                    openingHours.Add(openingHour);
+                    var oh = new OpeningHour
+                    {
+                        day = i * 10 + day,
+                        startTime = openingHour.startTime,
+                        endTime = openingHour.endTime,
+                        language = i+1
+                    }; 
                 }
             }
             else //update exsist opening hour
