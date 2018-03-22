@@ -15,7 +15,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <returns>All the Users.</returns>
         [HttpGet]
-        [Route("users/all/{language}")]
+        [Route("users/all")]
         public IEnumerable<User> GetAllUsers()
         {
             try

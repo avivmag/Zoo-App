@@ -1,10 +1,14 @@
-﻿app.controller('zooOpeningHoursCtrl', ['$scope', '$mdDialog', 'zooInfoService',
-    function zooOpeningHoursController($scope, $mdDialog, zooInfoService) {
+﻿app.controller('zooOpeningHoursCtrl', ['$scope', '$mdDialog', 'zooInfoService', 'utilitiesService',
+    function zooOpeningHoursController($scope, $mdDialog, zooInfoService, utilitiesService) {
         initializeComponent();
 
         function initializeComponent() {
             $scope.languages            = app.languages;
             $scope.language             = $scope.languages[0];
+
+            $scope.hours                = utilitiesService.timeSpan.getHours();
+            $scope.minutes              = utilitiesService.timeSpan.getMinutes();
+            $scope.days                 = utilitiesService.getDays();
 
             $scope.updateOpeningHours       = function (language) {
                 $scope.language             = language;
@@ -14,6 +18,11 @@
                     function (data) {
                         $scope.openingHours         = data.data;
                         $scope.isLoading            = false;
+
+                        for (let oh of $scope.openingHours) {
+                            oh.startTime    = utilitiesService.timeSpan.parseTimeSpan(oh.startTime);
+                            oh.endTime      = utilitiesService.timeSpan.parseTimeSpan(oh.endTime);
+                        }
 
                         addEmptyOpeningHour($scope.openingHours);
                     },
@@ -31,8 +40,11 @@
 
             $scope.addOpeningHour       = function (openingHour) {
                 $scope.isLoading        = true;
-                var successContent      = price.isNew ? 'שעת הפתיחה נוספה בהצלחה!' : 'שעת הפתיחה עודכנה בהצלחה!';
-                var failContent         = price.isNew ? 'התרחשה שגיאה בעת שמירת שעת הפתיחה' : 'התרחשה שגיאה בעת עדכון שעת הפתיחה';
+                var successContent      = openingHour.isNew ? 'שעת הפתיחה נוספה בהצלחה!' : 'שעת הפתיחה עודכנה בהצלחה!';
+                var failContent         = openingHour.isNew ? 'התרחשה שגיאה בעת שמירת שעת הפתיחה' : 'התרחשה שגיאה בעת עדכון שעת הפתיחה';
+
+                openingHour.startTime   = utilitiesService.timeSpan.stringifyTimeSpan(openingHour.startTime);
+                openingHour.endTime     = utilitiesService.timeSpan.stringifyTimeSpan(openingHour.endTime);
 
                 zooInfoService.openingHours.updateOpeningHour(openingHour).then(
                     function () {
@@ -45,7 +57,7 @@
 
                         $scope.isLoading = false;
 
-                        $scope.updateOpeningHour($scope.language);
+                        $scope.updateOpeningHours($scope.language);
                     },
                     function () {
                         $mdDialog.show(
@@ -54,6 +66,9 @@
                                 .textContent(failContent)
                                 .ok('סגור')
                         );
+
+                        openingHour.startTime    = utilitiesService.timeSpan.parseTimeSpan(openingHour.startTime);
+                        openingHour.endTime      = utilitiesService.timeSpan.parseTimeSpan(openingHour.endTime);
 
                         $scope.isLoading = false;
                     });
@@ -76,7 +91,7 @@
         }
 
         function addEmptyOpeningHour(openingHours) {
-            openingHours.push({ pricePop: 0, isNew: true, language: $scope.language, id: 0 });
+            openingHours.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
         function deleteOpeningHour(openingHour, openingHours) {

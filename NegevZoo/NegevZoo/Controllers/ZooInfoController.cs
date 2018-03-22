@@ -113,7 +113,7 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the OpeningHour element.
         /// </summary>
         /// <param name="openingHour">The element to add or update</param>
-        [HttpGet]
+        [HttpPost]
         [Route("OpeningHours/update")]
         public void UpdateOpeningHour(OpeningHour openingHour)
         {
@@ -187,7 +187,7 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the ContactInfo element.
         /// </summary>
         /// <param name="contactInfo">The element to add or update</param>
-        [HttpGet]
+        [HttpPost]
         [Route("ContactInfos/update")]
         public void UpdateContactInfo(ContactInfo contactInfo)
         {
@@ -598,6 +598,4 @@ namespace NegevZoo.Controllers
 
         #endregion
     }
-
-    
 }

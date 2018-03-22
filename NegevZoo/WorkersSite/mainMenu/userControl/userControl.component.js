@@ -1,73 +1,119 @@
-﻿app.controller('userControlCtrl', ['$scope', '$mdDialog',
-    function userControlController($scope, $mdDialog) {
-        $scope.users = [
-            { username: 'moshe123' },
-            { username: 'papo456' },
-        ];
+﻿app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService',
+    function userControlController($scope, $mdDialog, usersService) {
+        initializeComponent();
 
-        addEmptyUser($scope.users);
+        function initializeComponent() {
+            $scope.updateUsers          = function () {
+                $scope.isLoading            = true;
 
-        $scope.confirmDeleteUser = function (ev, user, users) {
-            var confirm = $mdDialog.confirm()
-                .title('האם אתה בטוח שברצונך למחוק את משתמש זה?')
-                .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
-                .targetEvent(ev)
-                .ok('אישור')
-                .cancel('ביטול');
+                usersQuery = usersService.getAllUsers().then(
+                    function (data) {
+                        $scope.users        = data.data;
+                        $scope.isLoading    = false;
 
-            $mdDialog.show(confirm).then(function () {
-                // TODO:: Remove the user.
-                users.splice(users.indexOf(user), 1);
-            });
-        }
+                        addEmptyUser($scope.users);
+                    },
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
+                                .ok('סגור')
+                        );
 
-        $scope.confirmResetPassword = function (ev, user) {
-            if (user.isNew) {
-                resetPassword(ev, user);
+                        $scope.isLoading = false;
+                    });
+            };
 
-                return;
+            $scope.addUser              = function (user) {
+                $scope.isLoading        = true;
+
+                var successContent      = user.isNew ? 'המשתמש נוסף בהצלחה!' : 'המשתמש עודכן בהצלחה!';
+                var failContent         = user.isNew ? 'התרחשה שגיאה בעת שמירת המשתמש' : 'התרחשה שגיאה בעת עדכון המשתמש';
+
+                usersService.updateUser(user).then(
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent(successContent)
+                                .ok('סגור')
+                        );
+
+                        $scope.isLoading = false;
+
+                        $scope.updateUsers();
+                    },
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent(failContent)
+                                .ok('סגור')
+                        );
+
+                        $scope.isLoading = false;
+                    });
+            };
+
+            $scope.confirmDeleteUser = function (ev, user, users) {
+                var confirm = $mdDialog.confirm()
+                    .title('האם אתה בטוח שברצונך למחוק את משתמש זה?')
+                    .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
+                    .targetEvent(ev)
+                    .ok('אישור')
+                    .cancel('ביטול');
+    
+                $mdDialog.show(confirm).then(function () {
+                   deleteUser(user, users);
+                });
             }
-            var confirm = $mdDialog.confirm()
-                .title('האם אתה בטוח שברצונך לאפס למשתמש זה את סיסמתו??')
-                .textContent('לאחר האיפוס, המשתמש לא יוכל להכנס עם סיסמתו הישנה.')
-                .targetEvent(ev)
-                .ok('אישור')
-                .cancel('ביטול');
 
-            $mdDialog.show(confirm).then(function () {
-               resetPassword(ev, user);
-            });
+            $scope.confirmResetPassword = function (ev, user) {
+                if (user.isNew) {
+                    resetPassword(ev, user);
+    
+                    return;
+                }
+                var confirm = $mdDialog.confirm()
+                    .title('האם אתה בטוח שברצונך לאפס למשתמש זה את סיסמתו??')
+                    .textContent('לאחר האיפוס, המשתמש לא יוכל להכנס עם סיסמתו הישנה.')
+                    .targetEvent(ev)
+                    .ok('אישור')
+                    .cancel('ביטול');
+    
+                $mdDialog.show(confirm).then(function () {
+                   resetPassword(ev, user);
+                });
+            }
+
+            $scope.updateUsers();
         }
 
-        $scope.addUser = function (user) {
-            // TODO:: actually add the user.
-        }
+        function deleteUser(user, users) {
+            usersService.deleteUser(user.id).then(
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('המשתמש נמחק בהצלחה')
+                            .ok('סגור')
+                    );
 
-        $scope.addNewUser = function (users) {
-            addEmptyUser(users);
+                    users.splice(users.indexOf(user), 1);
+                },
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('התרחשה שגיאה בעת מחיקת המשתמש')
+                            .ok('סגור')
+                    );
+                });
         }
 
         function addEmptyUser(users) {
-            users.push({ username: 'הקלד שם משתמש', isNew: true });
-        }
-
-        function resetPassword(ev, user) {
-            var prompt = $mdDialog.prompt()
-                .title('הכנס סיסמא חדשה')
-                .placeholder('הכנס סיסמא')
-                .ariaLabel('Enter label')
-                .targetEvent(ev)
-                .required(true)
-                .ok('שמור')
-                .cancel('ביטול');
-        
-            $mdDialog.show(prompt).then(function(newPass) {
-                console.log('pass changed', newPass)
-            });
-        }
-
-        $scope.addUser = function (users) {
-            addEmptyUser(users);
+            users.push({ id: 0, isNew: true });
         }
     }])
 .directive('zooUserControl', function () {

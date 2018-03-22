@@ -35,7 +35,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="via" Type="tinytext" Nullable="false" />
           <Property Name="address" Type="tinytext" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
@@ -101,7 +101,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="day" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="day" Type="int" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
           <Property Name="startTime" Type="time" Precision="0" Nullable="false" />
           <Property Name="endTime" Type="time" Precision="0" Nullable="false" />
@@ -219,7 +219,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="via" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />

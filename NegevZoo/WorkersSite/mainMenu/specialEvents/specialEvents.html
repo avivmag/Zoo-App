@@ -24,7 +24,8 @@
 
                 <md-card-content layout="row">
                     <md-input-container>
-                        <input style="min-width: 400px" ng-model="event.description" placeholder="הכנס תיאור" required type="text">
+                        <label ng-show="event.isNew">הכנס תיאור</label>
+                        <input style="min-width: 400px" ng-model="event.description" required type="text">
                     </md-input-container>
 
                     <md-datepicker style="min-width: 90px" ng-model="event.startDate"></md-datepicker>

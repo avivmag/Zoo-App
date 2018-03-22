@@ -24,11 +24,13 @@
 
                 <md-card-content layout="row">
                     <md-input-container>
-                        <input style="min-width: 400px" ng-model="price.population" placeholder="הכנס קבוצת מחיר" required type="text">
+                        <label ng-show="price.isNew">הכנס אוכלוסייה</label>
+                        <input style="min-width: 400px" ng-model="price.population" required type="text">
                     </md-input-container>
 
                     <md-input-container>
-                        <input style="min-width: 80px" ng-model="price.pricePop" required type="number">
+                        <label ng-show="price.isNew">הכנס מחיר</label>
+                        <input style="min-width: 80px" ng-model="price.pricePop" min="0" required type="number">
                     </md-input-container>
                 </md-card-content>
                 <md-button class="md-primary md-raised" ng-if="price.isNew" ng-click="addPrice(price)">שמור מחיר חדש</md-button>

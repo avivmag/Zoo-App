@@ -45,7 +45,7 @@
 
                         $scope.isLoading = false;
 
-                        $scope.updateFeed($scope.language);
+                        $scope.updatePrices($scope.language);
                     },
                     function () {
                         $mdDialog.show(
@@ -76,7 +76,7 @@
         }
 
         function addEmptyPrice(prices) {
-            prices.push({ pricePop: 0, isNew: true, language: $scope.language.id, id: 0 });
+            prices.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
         function deletePrice(price, prices) {
