@@ -28,7 +28,6 @@
                         <input style="min-width: 400px" ng-model="feed.info" required type="text">
                     </md-input-container>
 
-                    <md-datepicker style="min-width: 90px" ng-model="feed.created"></md-datepicker>
                 </md-card-content>
                 <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed)">שמור עדכון חדש</md-button>
                 <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed)">עדכון תוכן</md-button>
