@@ -528,7 +528,7 @@ namespace BL
 
             return animalResult;
         }
-
+        
         /// <summary>
         /// Gets animals by enclosure Id and language.
         /// </summary>
@@ -1515,6 +1515,29 @@ namespace BL
             zooDB.GetAllUsers().Remove(user);
         }
 
+        #endregion
+
+        #region
+        public void UpdateDeviceOnline(string deviceId)
+        {
+            //if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
+            //{
+            //    throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
+            //}
+
+            //if (zooDB.getAllOnlineDevices().Any(od => od.deviceId == deviceId))
+            //{
+            //    //reset the time to delete
+            //}
+
+            //if (zooDB.getAllOffLineDevices().Any(od => od.deviceId == deviceId))
+            //{
+            //    //remove from offline
+            //}
+                
+            //add to online
+            //start a new timer
+        }
         #endregion
 
         #region private functions
