@@ -1,7 +1,12 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -10,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +164,7 @@ public class MapView extends RelativeLayout {
     private List<ImageIcon> icons;
     private ImageIcon visitorIcon;
     private ImageIcon zooMapIcon;
-    public void addImageIcon(final String resource, String url, int left, int top)
+    public void addImageIcon(Drawable resource, int id, int left, int top)
     {
         icons.add(new ImageIcon(resource, url, left, top));
     }
@@ -174,12 +181,10 @@ public class MapView extends RelativeLayout {
     }
     public void ShowVisitorIcon()
     {
-        Log.e("AVIV", "Show");
         visitorIcon.view.setVisibility(VISIBLE);
     }
     public void HideVisitorIcon()
     {
-        Log.e("AVIV", "Hide");
         visitorIcon.view.setVisibility(INVISIBLE);
     }
     public void addZooMapIcon(int left, int top)
@@ -199,30 +204,34 @@ public class MapView extends RelativeLayout {
         private int top;
         private int width;
         private int height;
-        ImageIcon(final String resource, String url, int left, int top) {
+        ImageIcon(Drawable resource, String url, int left, int top) {
             this.url = url;
 
-            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
+//            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             this.left = left;
             this.top = top;
             view = new ImageView(getContext());
-            view.setImageResource(resourceId);
+//            view.setImageResource(resourceId);
+            view.setImageDrawable(resource);
             view.setBackgroundColor(Color.TRANSPARENT);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                view.setElevation(100);
+//            }
 
-            view.setOnTouchListener(new View.OnTouchListener() {
+            view.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
-//                            AppCompatActivity tempActivity = new AppCompatActivity();
-//                            Intent intent = new Intent(new AppCompatActivity(), EnclosureActivity.class);
-//                            Bundle clickedEnclosure = new Bundle();
-//                            clickedEnclosure.putInt("image", images[pos]); //Clicked image
-//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
-//                            clickedEnclosure.putInt("pos", pos);
-//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-//                            tempActivity.startActivity(intent);
+                            int pos = getAdapterPosition();
+                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
+                            Bundle clickedEnclosure = new Bundle();
+                            clickedEnclosure.putInt("image", images[pos]); //Clicked image
+                            clickedEnclosure.putString("name", enclosuresNames[pos]);
+                            clickedEnclosure.putInt("id", enclosures[pos].getId());
+                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+                            tempActivity.startActivity(intent);
 
                             break;
                         case MotionEvent.ACTION_CANCEL:
@@ -234,7 +243,7 @@ public class MapView extends RelativeLayout {
                 }
             });
 
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
             view.setLayoutParams(layoutParams);

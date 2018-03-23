@@ -14,18 +14,18 @@ public class Enclosure {
     private String name;
     private String closestEvent;
     private String youtubeVideoUrl;
-    private String image;
+    private String imageURL;
+    @SerializedName("name")
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageURL() {
+        return imageURL;
     }
 
-
-    //TODO:: Or I need the image of the enclosure and images of the animals
+    //TODO:: Or I need the imageURL of the enclosure and images of the animals
 
     public int getId() {
         return id;

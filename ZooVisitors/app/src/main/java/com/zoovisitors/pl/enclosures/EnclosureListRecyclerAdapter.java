@@ -42,7 +42,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
         //TODO: When we can upload images insert this lines
 //        enclosuresImages = new String[enclosures.length];
 //        for (int i = 0; i<enclosures.length; i++)
-//            enclosuresImages[i] = enclosures[i].getImage();
+//            enclosuresImages[i] = enclosures[i].getImageURL();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
