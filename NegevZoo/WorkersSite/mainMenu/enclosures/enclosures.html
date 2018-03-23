@@ -29,7 +29,7 @@
         </ng-content>
     </md-card>
 
-    <md-card ng-show="page === 'create' || page === 'edit'">
+    <md-card ng-show="(!isLoading && (page === 'create' || page === 'edit'))">
          <md-card-title layout="row" layout-align="space-between">
             <div layout="column">
                 <md-button class="md-raised md-primary" style="width: 150px" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
@@ -64,9 +64,30 @@
                     </div>
                     <div layout="row">
                         <md-button class="md-raised md-primary" ng-click="openMap($event, selectedEnclosure)">מקם את המתחם על המפה</md-button>
-                        <md-button class="md-raised md-primary" ng-click="addEnclosure(selectedEnclosure)">שמור</md-button>
+                        <md-button class="md-raised md-primary" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
                     </div>
                 </md-card-content>
+        </md-card-content>
+
+        <md-card-content ng-if="page==='edit'">
+            <md-tabs md-selected="selectedTab" md-stretch-tabs="always" md-dynamic-height>
+                <md-tab ng-repeat="language in languages" label="{{ language.name }}">
+                    <md-card-content style="margin-right: 4%"  layout="column">
+                        <md-input-container layout="row">
+                            <label>הכנס שם תצוגה למתחם</label>
+                            <input style="width: 200px" ng-model="enclosureDetails[selectedTab].name" required type="text">
+                        </md-input-container>
+                        
+                        <md-input-container>
+                            <label>הכנס סיפור למתחם</label>
+                            <textarea rows="6" ng-model="enclosureDetails[selectedTab].story" required type="text"></textarea>
+                        </md-input-container>
+                        <md-input-container>
+                            <md-button class="md-raised md-primary" ng-click="addEnclosureDetail(enclosureDetails[selectedTab])">הוסף תוכן למתחם בשפה שנבחרה</md-button>
+                        </md-input-container>
+                    </md-card-content>
+                </md-tab>
+            </md-tabs>
         </md-card-content>
     </md-card>
 </div>
