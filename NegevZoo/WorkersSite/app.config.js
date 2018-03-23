@@ -36,3 +36,5 @@ app.directive('fileModel', ['$parse', function ($parse) {
  }]);
 
 app.baseURL = 'http://negevzoo.sytes.net:50000/';
+
+app.baseURL = 'http://localhost:5987/';
