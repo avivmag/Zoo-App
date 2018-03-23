@@ -74,9 +74,7 @@ function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
         }
 
         function addEmptyFeed(feedWall) {
-            var createDate = new Date();
-
-            feedWall.push({ isNew: true, language: $scope.language.id, created: createDate, id: 0 });
+            feedWall.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
         function deleteFeed(feed, feedWall) {
