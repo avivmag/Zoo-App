@@ -2,11 +2,13 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Gili on 12/01/2018.
  */
 
-public class Enclosure {
+public class Enclosure implements java.io.Serializable{
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -20,6 +22,8 @@ public class Enclosure {
     private int markerLatitude;
     @SerializedName("markerLongtitude")
     private int markerLongtitude;
+    @SerializedName("pictureUrl")
+    private String pictureUrl;
 
     public int getMarkerLatitude() {
         return markerLatitude;
@@ -73,5 +77,9 @@ public class Enclosure {
 
     public String getStory() {
         return story;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 }

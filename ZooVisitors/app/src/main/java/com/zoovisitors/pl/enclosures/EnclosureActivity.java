@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.GetObjectInterface;
@@ -48,12 +50,14 @@ public class EnclosureActivity extends AppCompatActivity {
     private Animal[] animals;
     private Bundle clickedEnclosure;
     private TextView enclosureStoryText;
+    private Enclosure enclosure;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
+        enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         bl = new BusinessLayerImpl(this);
-        int id = clickedEnclosure.getInt("id");
+        int id = enclosure.getId();
 
         bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -87,26 +91,42 @@ public class EnclosureActivity extends AppCompatActivity {
         enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
 
 
-        int enclosureImageNumber = -1;
-        String enclosureName = "";
-        String enclosureStory = "";
+//        int enclosureImageNumber = -1;
+//        String enclosureName = "";
+//        String enclosureStory = "";
         if(clickedEnclosure != null) {
-            enclosureImageNumber = clickedEnclosure.getInt("image");
-            enclosureName = clickedEnclosure.getString("name");
-            enclosureStory = clickedEnclosure.getString("story");
-        }
-        enclosureImageView.setImageResource(enclosureImageNumber);
-        enclosureNameTextView.setText(enclosureName);
-        enclosureStoryText.setText(enclosureStory);
 
-        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosureName + "_closesEvent"));
+//            enclosureImageNumber = clickedEnclosure.getInt("image");
+//            enclosureName = clickedEnclosure.getString("name");
+//            enclosureStory = clickedEnclosure.getString("story");
+        }
+
+        GlobalVariables.bl.getImage(enclosure.getPictureUrl(), new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosureImageView.setImageBitmap((Bitmap) response);
+
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("PIC", "NOT PIC");
+            }
+        });
+
+        enclosureImageView.setImageResource(R.mipmap.african_enclosure);
+
+        enclosureNameTextView.setText(enclosure.getName());
+        enclosureStoryText.setText(enclosure.getStory());
+
+        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
 
         //Cards and Recycle
         recycleView = (RecyclerView) findViewById(R.id.animal_recycle);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
         recycleView.setLayoutManager(layoutManager);
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animals);
+        adapter = new AnimalsRecyclerAdapter(GlobalVariables.appCompatActivity, animalsImages, animals);
         recycleView.setAdapter(adapter);
         ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
         imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
@@ -119,14 +139,7 @@ public class EnclosureActivity extends AppCompatActivity {
                 });
 
 
-        ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
-//        Bitmap image =
-//        SharePhoto photo = new SharePhoto.Builder()
-//                .setBitmap(image)
-//                .build();
-//        SharePhotoContent content = new SharePhotoContent.Builder()
-//                .addPhoto(photo)
-//                .build();
+        //ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
 
     }
 
