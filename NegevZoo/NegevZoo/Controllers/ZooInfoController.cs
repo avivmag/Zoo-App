@@ -617,7 +617,7 @@ namespace NegevZoo.Controllers
         }
         #endregion
 
-        #region
+        #region Notifications
 
         /// <summary>
         /// update on an online user.
@@ -699,7 +699,7 @@ namespace NegevZoo.Controllers
                 string str = ex.Message;
             }
         }
-        #endregion
+        #endregion 
 
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get

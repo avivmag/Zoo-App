@@ -199,6 +199,38 @@ namespace BL
         }
 
         /// <summary>
+        /// Gets the enclosure's pictures by it's id.
+        /// </summary>
+        /// <param name="encId">The enclosure's id.</param>
+        /// <returns>The enclosure's pictures events.</returns>
+        public IEnumerable<EnclosurePicture> GetEnclosurePicturesById(int encId)
+        {
+            //check that the enclosure exists
+            if (GetAllEnclosures().Any(e => e.id == encId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure doesn't exists");
+            }
+
+            return zooDB.GetAllEnclosurePictures().Where(e => e.id == encId);
+        }
+
+        /// <summary>
+        /// Gets the enclosure's videos by it's id.
+        /// </summary>
+        /// <param name="encId">The enclosure's id.</param>
+        /// <returns>The enclosure's videos events.</returns>
+        public IEnumerable<YoutubeVideoUrl> GetEnclosureVideosById(int encId)
+        {
+            //check that the enclosure exists
+            if (GetAllEnclosures().Any(e => e.id == encId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure doesn't exists");
+            }
+
+            return zooDB.GetAllEnclosureVideos().Where(e => e.id == encId);
+        }
+
+        /// <summary>
         /// Updates The enclosure.
         /// </summary>
         /// <param name="enclosures">The enclosures to update.</param>
@@ -246,20 +278,21 @@ namespace BL
                     throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
                 }
 
+                enclosure.id = oldEnc.id;
                 enclosures.Remove(oldEnc);
                 enclosures.Add(enclosure);
             }
         }
 
         /// <summary>
-        /// Updates The enclosure details.
+        /// Updates or adds The enclosure details.
         /// </summary>
-        /// <param name="enclosures">The enclosures to update.</param>
+        /// <param name="enclosureDetail">The enclosureDetails to update.</param>
         public void UpdateEnclosureDetails(EnclosureDetail enclosureDetail)
         {
             //validate enclosure details attributes
             //0. Exists.
-            if (enclosureDetail == default(EnclosureDetail))
+            if (enclosureDetail == default(EnclosureDetail) || enclosureDetail.encId == default(int))
             {
                 throw new ArgumentException("No enclosure given.");
             }
@@ -280,34 +313,152 @@ namespace BL
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
-            if (enclosureDetail.encId == default(int)) //add a new enclosure
-            {
-                if (enclosuresDetails.Any(en => en.name == enclosureDetail.name))
-                {
-                    throw new ArgumentException("Wrong input in adding enclosure. Name already exists");
-                }
+            //update existing enclosure
+            EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
 
+            //check that the enclosure exists
+            if (oldEnc == null)
+            {
                 enclosuresDetails.Add(enclosureDetail);
+
             }
-            else //update existing enclosure
+            else
             {
-                EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId);
-
-                //check that the enclosure exists
-                if (oldEnc == null)
-                {
-                    throw new ArgumentException("Wrong input. Enclosure doesn't exits");
-                }
-
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosureDetail.name && enclosuresDetails.Any(en => en.name == enclosureDetail.name))//The name changed
                 {
                     throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
                 }
-
+                
                 enclosuresDetails.Remove(oldEnc);
                 enclosuresDetails.Add(enclosureDetail);
             }
+        }
+
+        /// <summary>
+        /// Updates or adds The enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePicture">The enclosures to update.</param>
+        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
+        {
+            //validate attributes
+            //0. Exists
+            if (enclosurePicture == default(EnclosurePicture))
+            {
+                throw new ArgumentException("No EnclosurePicture given");
+            }
+
+            //1. check that the enclosure exists
+            if (!GetAllEnclosures().Any(e => e.id == enclosurePicture.enclosureId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure doesn't exists");
+            }
+
+            if (IsEmptyString(enclosurePicture.pictureUrl) || IsNullOrWhiteSpace(enclosurePicture.pictureUrl))
+            {
+                throw new ArgumentException("Wrong input. The url is empty or white spaces");
+            }
+
+            var allEnclosurePictures = zooDB.GetAllEnclosurePictures();
+
+            if (enclosurePicture.id == default(int)) // add a new enclosure picture
+            {
+                allEnclosurePictures.Add(enclosurePicture);
+            }
+            else //update an existsing picture
+            {
+                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.enclosureId == enclosurePicture.enclosureId);
+
+                if (oldPic == null)
+                {
+                    throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
+                }
+
+                enclosurePicture.id = oldPic.id;
+                allEnclosurePictures.Remove(oldPic);
+                allEnclosurePictures.Add(enclosurePicture);
+            }
+        }
+
+
+        /// <summary>
+        /// Updates or adds The enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideo">The enclosures to update.</param>
+        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        {
+            //validate attributes
+            //0.Exists
+            if (enclosureVideo == default(YoutubeVideoUrl))
+            {
+                throw new ArgumentException("No video given");
+            }
+
+            
+            //1. check that the enclosure exists
+            if (!GetAllEnclosures().Any(e => e.id == enclosureVideo.enclosureId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure doesn't exists");
+            }
+
+            //2. check the url
+            if (IsEmptyString(enclosureVideo.videoUrl) || IsNullOrWhiteSpace(enclosureVideo.videoUrl))
+            {
+                throw new ArgumentException("Wrong input. The url is empty or white spaces");
+            }
+
+            var allEnclosureVideos = zooDB.GetAllEnclosureVideos();
+
+            if (enclosureVideo.id == default(int)) //add video
+            {
+                allEnclosureVideos.Add(enclosureVideo);
+            }
+            else //update video
+            {
+                var oldVideo = allEnclosureVideos.SingleOrDefault(v => v.id == enclosureVideo.id);
+
+                if (oldVideo == null)
+                {
+                    throw new ArgumentException("Wrong input. Video doesn't exists");
+                }
+
+                enclosureVideo.id = oldVideo.id;
+                allEnclosureVideos.Remove(oldVideo);
+                allEnclosureVideos.Add(enclosureVideo);
+            }
+        }
+
+        /// <summary>
+        /// Delete The enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
+        public void DeleteEnclosureVideo(int enclosureVideoId)
+        {
+            //check that the enclosure exists
+            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
+
+            if (enclosureVideo != null)
+            {
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+
+            zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
+        }
+
+        /// <summary>
+        /// Delete The enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
+        public void DeleteEnclosurePicture(int enclosurePictureId)
+        {
+            //check that the enclosure exists
+            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.enclosureId == enclosurePictureId);
+
+            if (enclosurePicure != null){
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+            
+            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
         }
 
         /// <summary>
@@ -1517,7 +1668,7 @@ namespace BL
 
         #endregion
 
-        #region
+        #region Notification support
         public void UpdateDeviceOnline(string deviceId)
         {
             //if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))

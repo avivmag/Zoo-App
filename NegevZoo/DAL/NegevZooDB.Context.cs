@@ -104,6 +104,16 @@ namespace DAL
             return AnimalsDetails;
         }
 
+        public override DbSet<EnclosurePicture> GetAllEnclosurePictures()
+        {
+            return EnclosurePictures;
+        }
+
+        public override DbSet<YoutubeVideoUrl> GetAllEnclosureVideos()
+        {
+            return YoutubeVideoUrls;
+        }
+
         public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<ContactInfo> ContactInfos { get; set; }
         public virtual DbSet<EnclosurePicture> EnclosurePictures { get; set; }
