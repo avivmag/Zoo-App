@@ -63,8 +63,8 @@ public class MapActivity extends AppCompatActivity {
                         public void onSuccess(Object response) {
                             mapView.addImageIcon((Drawable) response,
                                     enclosures[finalI].getId(),
-                                    enclosures[finalI].get,
-                                    200 + (int)(Math.random()*100));
+                                    enclosures[finalI].getMarkerLongtitude(),
+                                    enclosures[finalI].getMarkerLatitude());
                         }
 
                         @Override

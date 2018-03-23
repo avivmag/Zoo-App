@@ -15,7 +15,18 @@ public class Enclosure {
     private String closestEvent;
     private String youtubeVideoUrl;
     private String imageURL;
-    @SerializedName("name")
+    @SerializedName("markerLatitude")
+    private int markerLatitude;
+    @SerializedName("markerLongtitude")
+    private int markerLongtitude;
+
+    public int getMarkerLatitude() {
+        return markerLatitude;
+    }
+
+    public int getMarkerLongtitude() {
+        return markerLongtitude;
+    }
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
