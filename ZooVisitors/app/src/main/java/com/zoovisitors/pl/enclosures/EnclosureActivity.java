@@ -1,6 +1,7 @@
 package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.zoovisitors.backend.Animal;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.GetObjectInterface;
+import com.facebook.*;
 
 
 /**
@@ -45,6 +47,7 @@ public class EnclosureActivity extends AppCompatActivity {
     private Gson gson;
     private Animal[] animals;
     private Bundle clickedEnclosure;
+    private TextView enclosureStoryText;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,16 +84,20 @@ public class EnclosureActivity extends AppCompatActivity {
 
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
+        enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
 
 
         int enclosureImageNumber = -1;
         String enclosureName = "";
+        String enclosureStory = "";
         if(clickedEnclosure != null) {
             enclosureImageNumber = clickedEnclosure.getInt("image");
             enclosureName = clickedEnclosure.getString("name");
+            enclosureStory = clickedEnclosure.getString("story");
         }
         enclosureImageView.setImageResource(enclosureImageNumber);
         enclosureNameTextView.setText(enclosureName);
+        enclosureStoryText.setText(enclosureStory);
 
         ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosureName + "_closesEvent"));
 
@@ -110,6 +117,17 @@ public class EnclosureActivity extends AppCompatActivity {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA")));
                     }
                 });
+
+
+        ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+//        Bitmap image =
+//        SharePhoto photo = new SharePhoto.Builder()
+//                .setBitmap(image)
+//                .build();
+//        SharePhotoContent content = new SharePhotoContent.Builder()
+//                .addPhoto(photo)
+//                .build();
+
     }
 
     @Override

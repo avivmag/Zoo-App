@@ -3,27 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
-    <LinearLayout
-        android:id="@+id/linear_about_animal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="0dp">
 
-        <TextView
-            android:id="@+id/animal_story_headline"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linear_about_animal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Yossi's Story:\n"
-            android:textSize="24sp" />
+            android:orientation="vertical"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="0dp">
 
-        <TextView
-            android:id="@+id/animal_story"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/story"
-            android:textSize="24sp" />
+            <TextView
+                android:id="@+id/story_animal_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

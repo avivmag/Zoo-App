@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".pl.animals.AnimalActivity"
-            android:label="@string/title_activity_animal" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".pl.MainActivity"
             android:theme="@style/AppTheme">
@@ -23,7 +23,10 @@
 
             </intent-filter>
         </activity>
-        <activity android:name=".pl.enclosures.EnclosureActivity" />
+        <activity android:name=".pl.enclosures.EnclosureActivity"/>
+
+       <!-- <meta-data android:name="com.facebook.share" -->
+
         <activity android:name=".pl.map.MapActivity" />
         <activity
             android:name=".pl.general_info.GeneralInfoActivity"
@@ -46,6 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
+
+
 
 </manifest>

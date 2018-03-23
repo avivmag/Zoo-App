@@ -9,9 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class Enclosure {
     @SerializedName("id")
     private int id;
-    private int[] animalsInEnc;
     @SerializedName("name")
     private String name;
+    @SerializedName("story")
+    private String story;
     private String closestEvent;
     private String youtubeVideoUrl;
     private String image;
@@ -33,14 +34,6 @@ public class Enclosure {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int[] getAnimalsInEnc() {
-        return animalsInEnc;
-    }
-
-    public void setAnimalsInEnc(int[] animalsInEnc) {
-        this.animalsInEnc = animalsInEnc;
     }
 
     public String getName() {
@@ -65,5 +58,9 @@ public class Enclosure {
 
     public void setYoutubeVideoUrl(String youtubeVideoUrl) {
         this.youtubeVideoUrl = youtubeVideoUrl;
+    }
+
+    public String getStory() {
+        return story;
     }
 }
