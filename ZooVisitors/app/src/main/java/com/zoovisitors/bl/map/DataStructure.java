@@ -90,11 +90,11 @@ public class DataStructure {
     {
         Point ans;
         // new update is needed
-        if(System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
+//        if(System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
             ans = getOnMapPositionFirstTime(point);
-        } else {
-            ans = getOnMapPositionContinues(point);
-        }
+//        } else {
+//            ans = getOnMapPositionContinues(point);
+//        }
         if(ans == null)
             return null;
         lastUpdate = System.currentTimeMillis();

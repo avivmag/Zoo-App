@@ -114,35 +114,45 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     public void getImage(String url, GetObjectInterface goi) {
         // if resource exists
-        if(is.isExists(url)) {
-            Drawable d = is.loadImageFromInternalStorage(url);
-            if(d == null)
-                goi.onFailure("file not found.");
-            else
-                goi.onSuccess(d);
-        } else {
+//        if(is.isExists(url)) {
+//            Drawable d = is.loadImageFromInternalStorage(url);
+//            if(d == null)
+//                goi.onFailure("file not found.");
+//            else
+//                goi.onSuccess(d);
+//        } else {
+            ni.postImage(url, new ResponseInterface<Bitmap>() {
+                @Override
+                public void onSuccess(Bitmap response) {
+                    goi.onSuccess(response);
+                }
 
-        }
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure(response);
+                }
+            });
+//        }
         // Retrieves an image specified by the URL, displays it in the UI.
-        ImageRequest request = new ImageRequest(
-                url,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        is.saveImageToInternalStorage(url, response);
-                        getImage(url, goi);
-                    }
-                },
-                0,
-                0,
-                ImageView.ScaleType.CENTER_CROP,
-                Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        goi.onFailure("Cannot reach url");
-                    }
-                });
+//        ImageRequest request = new ImageRequest(
+//                url,
+//                new Response.Listener<Bitmap>() {
+//                    @Override
+//                    public void onResponse(Bitmap response) {
+//                        is.saveImageToInternalStorage(url, response);
+//                        getImage(url, goi);
+//                    }
+//                },
+//                0,
+//                0,
+//                ImageView.ScaleType.CENTER_CROP,
+//                Bitmap.Config.RGB_565,
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        goi.onFailure("Cannot reach url");
+//                    }
+//                });
     }
 
     @Override

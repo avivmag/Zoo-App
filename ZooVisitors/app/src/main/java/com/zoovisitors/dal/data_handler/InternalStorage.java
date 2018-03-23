@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class InternalStorage {
             // Closes the stream
             stream.close();
         } catch (IOException e) {
-
+            Log.e("AVIV", "InternalStorage2 " + e);
         }
 //        // Parse the gallery image url to uri
 //        Uri savedImageURI = Uri.parse(file.getAbsolutePath());
@@ -76,6 +77,7 @@ public class InternalStorage {
             return d;
         }
         catch(IOException ex) {
+            Log.e("AVIV", "InternalStorage " + ex);
         }
         return null;
     }
