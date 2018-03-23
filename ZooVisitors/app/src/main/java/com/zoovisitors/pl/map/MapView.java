@@ -1,7 +1,12 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -10,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,13 +164,13 @@ public class MapView extends RelativeLayout {
     private List<ImageIcon> icons;
     private ImageIcon visitorIcon;
     private ImageIcon zooMapIcon;
-    public void addImageIcon(final String resource, String url, int left, int top)
+    public void addImageIcon(Drawable resource, int id, int left, int top)
     {
-        icons.add(new ImageIcon(resource, url, left, top));
+        icons.add(new ImageIcon(resource, id, left, top));
     }
     public void AddVisitorIcon()
     {
-        visitorIcon = new ImageIcon(VISITOR_ICON, null, 0, 0);
+        visitorIcon = new ImageIcon(VISITOR_ICON, -1, 0, 0);
         HideVisitorIcon();
     }
     public void UpdateVisitorLocation(int left, int top)
@@ -174,33 +181,32 @@ public class MapView extends RelativeLayout {
     }
     public void ShowVisitorIcon()
     {
-        Log.e("AVIV", "Show");
         visitorIcon.view.setVisibility(VISIBLE);
     }
     public void HideVisitorIcon()
     {
-        Log.e("AVIV", "Hide");
         visitorIcon.view.setVisibility(INVISIBLE);
     }
     public void addZooMapIcon(int left, int top)
     {
-        zooMapIcon = new ImageIcon(ZOO_MAP, null, left, top);
+        zooMapIcon = new ImageIcon(ZOO_MAP, -1, left, top);
     }
 
     public void addImageIcon(final String resource, int left, int top)
     {
-        icons.add(new ImageIcon(resource, null, left, top));
+        icons.add(new ImageIcon(resource, -1, left, top));
     }
 
     private class ImageIcon {
         private ImageView view;
-        private String url;
+        private int id;
         private int left;
         private int top;
         private int width;
         private int height;
-        ImageIcon(final String resource, String url, int left, int top) {
-            this.url = url;
+
+        ImageIcon(String resource, int id, int left, int top) {
+            this.id = id;
 
             int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             this.left = left;
@@ -208,19 +214,22 @@ public class MapView extends RelativeLayout {
             view = new ImageView(getContext());
             view.setImageResource(resourceId);
             view.setBackgroundColor(Color.TRANSPARENT);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                view.setElevation(100);
+//            }
 
-            view.setOnTouchListener(new View.OnTouchListener() {
+            view.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
-//                            AppCompatActivity tempActivity = new AppCompatActivity();
-//                            Intent intent = new Intent(new AppCompatActivity(), EnclosureActivity.class);
+//                            int pos = getAdapterPosition();
+//                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
 //                            Bundle clickedEnclosure = new Bundle();
-//                            clickedEnclosure.putInt("image", images[pos]); //Clicked image
+//                            clickedEnclosure.putInt("image", ); //Clicked image
 //                            clickedEnclosure.putString("name", enclosuresNames[pos]);
-//                            clickedEnclosure.putInt("pos", pos);
+//                            clickedEnclosure.putInt("id", id);
 //                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
 //                            tempActivity.startActivity(intent);
 
@@ -234,7 +243,62 @@ public class MapView extends RelativeLayout {
                 }
             });
 
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+            view.setLayoutParams(layoutParams);
+
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    width =  view.getMeasuredWidth();
+                    height = view.getMeasuredHeight();
+                    if(!resource.equals(ZOO_MAP))
+                        updateIconPositionWithSize(ImageIcon.this);
+                }
+            });
+            addView(view);
+        }
+        ImageIcon(Drawable resource, int id, int left, int top) {
+            this.id = id;
+
+//            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
+            this.left = left;
+            this.top = top;
+            view = new ImageView(getContext());
+//            view.setImageResource(resourceId);
+            view.setImageDrawable(resource);
+            view.setBackgroundColor(Color.TRANSPARENT);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                view.setElevation(100);
+//            }
+
+            view.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction())
+                    {
+                        case MotionEvent.ACTION_UP:
+//                            int pos = getAdapterPosition();
+//                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
+//                            Bundle clickedEnclosure = new Bundle();
+//                            clickedEnclosure.putInt("image", ); //Clicked image
+//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
+//                            clickedEnclosure.putInt("id", id);
+//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+//                            tempActivity.startActivity(intent);
+
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            Log.e("AVIV", resource + " Not a click");
+                            break;
+                    }
+
+                    return true;
+                }
+            });
+
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
             view.setLayoutParams(layoutParams);

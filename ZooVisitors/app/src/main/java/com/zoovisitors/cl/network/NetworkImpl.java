@@ -1,11 +1,14 @@
 package com.zoovisitors.cl.network;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.zoovisitors.GlobalVariables;
@@ -15,26 +18,25 @@ import com.zoovisitors.GlobalVariables;
  */
 
 public class NetworkImpl implements NetworkInterface {
-    private Context context;
+    private RequestQueue queue;
     public NetworkImpl(Context context)
     {
-        this.context = context;
+        queue = Volley.newRequestQueue(context);
     }
 
-    public void post(String innerURL, final ResponseInterface responseInterface)
+    public void post(String innerURL, final ResponseInterface<String> responseInterface)
     {
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(context);
         String url ="http://" + GlobalVariables.ServerAddress + "/" + innerURL;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    responseInterface.onSuccess(response);
-                }
-            }, new Response.ErrorListener() {
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        responseInterface.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 responseInterface.onFailure(error.toString());
@@ -42,5 +44,33 @@ public class NetworkImpl implements NetworkInterface {
         });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public void postImage(String innerURL, final ResponseInterface<Bitmap> responseInterface)
+    {
+        // Instantiate the RequestQueue.
+        String url ="http://" + GlobalVariables.ServerAddress + "/" + innerURL;
+
+        // Retrieves an image specified by the URL, displays it in the UI.
+        ImageRequest request = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        responseInterface.onSuccess(response);
+                    }
+                },
+                0,
+                0,
+                ImageView.ScaleType.CENTER_CROP,
+                Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        responseInterface.onFailure(error.toString());
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+        queue.add(request);
     }
 }
