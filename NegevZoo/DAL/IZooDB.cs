@@ -42,6 +42,11 @@ namespace DAL
 
         public abstract DbSet<Language> GetAllLanguages();
 
+        public abstract DbSet<EnclosurePicture> GetAllEnclosurePictures();
+
+        public abstract DbSet<YoutubeVideoUrl> GetAllEnclosureVideos();
+
+        //public abstract DbSet<> getAllOnlineDevices();
         #endregion
 
         #region Cache
@@ -49,7 +54,8 @@ namespace DAL
         protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
-        
+
+
 
 
 

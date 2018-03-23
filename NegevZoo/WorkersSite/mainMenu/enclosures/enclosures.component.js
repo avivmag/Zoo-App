@@ -7,7 +7,9 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
     function initializeComponent() {
         $scope.updateEnclosures     = function () {
             $scope.isLoading        = true;
-            
+            $scope.enclosureDetails = { };
+
+            $scope.languages        = app.languages;
             enclosureService.enclosures.getAllEnclosures().then(
                 function (data) {
                     $scope.enclosures   = data.data;
@@ -28,6 +30,29 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
             $scope.switchPage           = function(page, selectedEnclosure) {
                 $scope.page                 = page;
                 $scope.selectedEnclosure    = selectedEnclosure || { };
+
+                if (page === 'edit') {
+                    enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
+                        function (data) {
+                            $scope.enclosureDetails = data.data;
+
+                            for (let i = 1; i <= 4; i++) {
+                                if (!$scope.enclosureDetails.some(ed => ed.language === i)) {
+                                    $scope.enclosureDetails.push({ encId: selectedEnclosure.id, language: i });
+                                }
+                            }
+
+                            $scope.enclosureDetails.sort(function(a, b) { return a.language-b.language; });
+                        },
+                        function () {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
+                                .ok('סגור')
+                            );
+                        });
+                }
             };
             
             $scope.openMap              = function(ev, selectedEnclosure) {
@@ -39,14 +64,12 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                     clickOutsideToClose:    true,
                 })
                 .then(function(clickPosition) {
-                    selectedEnclosure.markerLongitude   = clickPosition.height;
-                    selectedEnclosure.markerLatitude    = clickPosition.width;
-
-                    console.log(selectedEnclosure);
+                    selectedEnclosure.markerLongitude   = clickPosition.width;
+                    selectedEnclosure.markerLatitude    = clickPosition.height;
                 });
             };
 
-            $scope.addEnclosure = function(enclosure) {
+            $scope.addEnclosure         = function(enclosure) {
                 $scope.isLoading            = true;
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
@@ -74,23 +97,65 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                         });
             };
             
+            $scope.addEnclosureDetail   = function(enclosureDetail) {
+                $scope.isLoading            = true;
+                    var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
+                    var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
+    
+                    enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
+                        function () {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(true)
+                                    .textContent(successContent)
+                                    .ok('סגור')
+                            );
+    
+                            $scope.isLoading = false;
+                        },
+                        function () {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                    .clickOutsideToClose(true)
+                                    .textContent(failContent)
+                                    .ok('סגור')
+                            );
+    
+                            $scope.isLoading = false;
+                        });
+            }
+
             $scope.updateEnclosures();
         };
 
         $scope.uploadFile = function() {
             var file = $scope.myFile;
                
+            $scope.isLoading = true;
+
             var uploadUrl = "enclosures/upload";
+
             fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
                 $scope.selectedEnclosure.markerIconUrl = success.data[0];
+
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .textContent('ההעלאה הושלמה בהצלחה!')
+                    .ok('סגור')
+                );
+
+                $scope.isLoading    = false;
             },
             function () {
                 $mdDialog.show(
                     $mdDialog.alert()
                     .clickOutsideToClose(true)
-                    .textContent('אירעה שגיאה במהלך העלאת האייקון')
+                    .textContent('אירעה שגיאה במהלך ההעלאה')
                     .ok('סגור')
                 );
+
+                $scope.isLoading    = false;
             });
         }
 
@@ -106,6 +171,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                 }
             }
             
+            // TODO:: get map from database.
             $scope.img.src = "http://localhost:5987/assets/zoo_map.png";
 
             $scope.test = function(event) {

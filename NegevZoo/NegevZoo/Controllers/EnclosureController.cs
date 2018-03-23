@@ -195,6 +195,52 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the enclosure's pictures by it's id.
+        /// </summary>
+        /// <param name="encId">The eclosure's encId</param>
+        /// <returns>The enclosure pictures according to its id.</returns>
+        [HttpGet]
+        [Route("enclosures/pictures/{encId}")]
+        public IEnumerable<EnclosurePicture> GetEnclosurePicturesById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosurePicturesById(encId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enclosure's videos urls by it's encId.
+        /// </summary>
+        /// <param name="encId">The eclosure's encId</param>
+        /// <returns>The enclosures video urls according to it's id.</returns>
+        [HttpGet]
+        [Route("enclosures/videos/{encId}")]
+        public IEnumerable<YoutubeVideoUrl> GetEnclosureVideosById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureVideosById(encId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
         #endregion
 
         #region Setters
@@ -229,7 +275,7 @@ namespace NegevZoo.Controllers
         /// <param name="enclosureDetail">The enclosures to update.</param>
         [HttpPost]
         [Route("enclosures/detail/update")]
-        public void UpdateEnclosure(EnclosureDetail enclosureDetail)
+        public void UpdateEnclosureDetail(EnclosureDetail enclosureDetail)
         {
             try
             {
@@ -286,6 +332,102 @@ namespace NegevZoo.Controllers
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePicture">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/picture/update")]
+        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosurePicture(enclosurePicture);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideo">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/video/update")]
+        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureVideo(enclosureVideo);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// delete an enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
+        [HttpDelete]
+        [Route("enclosures/picture/delete")]
+        public void DeleteEnclosurePicture(int enclosurePictureId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteEnclosurePicture(enclosurePictureId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// delete an enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
+        [HttpDelete]
+        [Route("enclosures/video/delete")]
+        public void DeleteEnclosureVideo(int enclosureVideoId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteEnclosureVideo(enclosureVideoId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
             }
         }
 
