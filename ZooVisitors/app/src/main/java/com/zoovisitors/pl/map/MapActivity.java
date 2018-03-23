@@ -1,5 +1,7 @@
 package com.zoovisitors.pl.map;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,13 +57,20 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Object response) {
                 enclosures = (Enclosure[]) response;
+
+
+//                for(int i = 0; i<5;i++)
+//                {
+//                    mapView.addImageIcon("animal_" + i, "",150 + 150*i, 200 + (int)(Math.random()*100));
+//                }
+
                 // get image urls
                 for (int i = 0; i < enclosures.length; i++) {
                     final int finalI = i;
-                    bl.getImage(enclosures[i].getImageURL(), new GetObjectInterface() {
+                    bl.getImage(enclosures[i].getMarkerIconUrl(), new GetObjectInterface() {
                         @Override
                         public void onSuccess(Object response) {
-                            mapView.addImageIcon((Drawable) response,
+                            mapView.addImageIcon(new BitmapDrawable(getResources(), (Bitmap) response),
                                     enclosures[finalI].getId(),
                                     enclosures[finalI].getMarkerLongtitude(),
                                     enclosures[finalI].getMarkerLatitude());
@@ -69,7 +78,7 @@ public class MapActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Object response) {
-
+                            Log.e("AVIV", response.toString());
                         }
                     });
                 }
