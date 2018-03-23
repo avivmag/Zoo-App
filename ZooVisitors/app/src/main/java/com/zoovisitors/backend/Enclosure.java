@@ -14,18 +14,29 @@ public class Enclosure {
     private String name;
     private String closestEvent;
     private String youtubeVideoUrl;
-    private String image;
+    private String imageURL;
+    @SerializedName("markerLatitude")
+    private int markerLatitude;
+    @SerializedName("markerLongtitude")
+    private int markerLongtitude;
 
-    public void setImage(String image) {
-        this.image = image;
+    public int getMarkerLatitude() {
+        return markerLatitude;
     }
 
-    public String getImage() {
-        return image;
+    public int getMarkerLongtitude() {
+        return markerLongtitude;
     }
 
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
-    //TODO:: Or I need the image of the enclosure and images of the animals
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    //TODO:: Or I need the imageURL of the enclosure and images of the animals
 
     public int getId() {
         return id;

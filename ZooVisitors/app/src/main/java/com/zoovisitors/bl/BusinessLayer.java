@@ -7,14 +7,15 @@ package com.zoovisitors.bl;
 public interface BusinessLayer {
 
 
-    public void getAnimals(int pos, final GetObjectInterface goi);
-    public void getAllAnimals(final GetObjectInterface goi);
-    public void getEnclosures(final GetObjectInterface goi);
-    public void getNewsFeed(final GetObjectInterface goi);
-    public void getSpecies();
-    public void getSchedule(final GetObjectInterface goi);
-    public void getPrices(final GetObjectInterface goi);
-    public void getOpeningHours(final GetObjectInterface goi);
-    public void getAboutUs(final GetObjectInterface goi);
-    public void getContactInfo(final GetObjectInterface goi);
+    void getAnimals(int pos, final GetObjectInterface goi);
+    void getAllAnimals(final GetObjectInterface goi);
+    void getEnclosures(final GetObjectInterface goi);
+    void getImage(String url, GetObjectInterface goi);
+    void getNewsFeed(final GetObjectInterface goi);
+    void getSpecies();
+    void getSchedule(final GetObjectInterface goi);
+    void getPrices(final GetObjectInterface goi);
+    void getOpeningHours(final GetObjectInterface goi);
+    void getAboutUs(final GetObjectInterface goi);
+    void getContactInfo(final GetObjectInterface goi);
 }
