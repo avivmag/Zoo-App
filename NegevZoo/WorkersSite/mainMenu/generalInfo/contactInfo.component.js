@@ -1,36 +1,106 @@
-﻿app.controller('zooEventsCtrl', ['$scope', '$mdDialog',
-    function zooSpecialEventsController($scope, $mdDialog) {
-        $scope.specialEvents = [
-            { title: 'בשבוע הקרוב 50% הנחה על כל השתיה בפארק', date: '28.11.18' },
-            { title: 'קייטנת נגב זו יוצאת לדרך!', date: '28.11.18' },
-        ];
+﻿app.controller('zooContactInfoCtrl', ['$scope', '$mdDialog', 'zooInfoService',
+    function zooSpecialEventsController($scope, $mdDialog, zooInfoService) {
+        initializeComponent();
+    
+    function initializeComponent() {
+            $scope.languages            = app.languages;
+            $scope.language             = $scope.languages[0];
+        
+            $scope.updateContactInfos   = function (language) {
+                $scope.language         = language;
+                $scope.isLoading        = true;
 
-        addEmptySpecialEvent($scope.specialEvents);
+                zooInfoService.contactInfo.getAllContactInfos(language.id).then(
+                    function (data) {
+                        $scope.contactInfos = data.data;
+                        $scope.isLoading    = false;
 
-        $scope.confirmDeleteSpecialEvent = function (ev, event, events) {
-            var confirm = $mdDialog.confirm()
-                .title('האם אתה בטוח שברצונך למחוק את אירוע זה?')
-                .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
-                .targetEvent(ev)
-                .ok('אישור')
-                .cancel('ביטול');
+                        addEmptyContactInfo($scope.contactInfos);
+                    },
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
+                                .ok('סגור')
+                        );
 
-            $mdDialog.show(confirm).then(function () {
-                // TODO:: Remove the feed from the wall.
-                events.splice(events.indexOf(event), 1);
-            });
+                        $scope.isLoading    = false;
+                    });
+            }
+
+            $scope.confirmDeleteContactInfo = function (ev, contactInfo, contactInfos) {
+                var confirm = $mdDialog.confirm()
+                    .title('האם אתה בטוח שברצונך למחוק את תוכן זה?')
+                    .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
+                    .targetEvent(ev)
+                    .ok('אישור')
+                    .cancel('ביטול');
+
+                $mdDialog.show(confirm).then(function () { deleteContactInfo(contactInfo, contactInfos); });
+            }
+
+            $scope.addContactInfo       = function (contactInfo) {
+                $scope.isLoading        = true;
+                var successContent      = contactInfo.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
+                var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
+
+                zooInfoService.contactInfo.updateContactInfo(contactInfo).then(
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent(successContent)
+                                .ok('סגור')
+                        );
+
+                        $scope.isLoading = false;
+
+                        $scope.updateContactInfos($scope.language);
+                    },
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                                .clickOutsideToClose(true)
+                                .textContent(failContent)
+                                .ok('סגור')
+                        );
+
+                        $scope.isLoading = false;
+                    });
+            }
+
+            $scope.updateContactInfos($scope.language);
         }
 
-        $scope.addNewSpecialEvent = function (specialEvents) {
-            addEmptySpecialEvent(specialEvents);
+        function addEmptyContactInfo(contactInfos) {
+            contactInfos.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
-        function addEmptySpecialEvent(specialEvents) {
-            specialEvents.push({ title: 'הקלד שם אירוע', isNew: true });
+        function deleteContactInfo(contactInfo, contactInfos) {
+            zooInfoService.contactInfo.deleteContactInfo(contactInfo.id).then(
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('התוכן נמחק בהצלחה')
+                            .ok('סגור')
+                    );
+
+                    contactInfos.splice(contactInfos.indexOf(contactInfo), 1);
+                },
+                function () {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('התרחשה שגיאה בעת מחיקת התוכן')
+                            .ok('סגור')
+                    );
+                });
         }
     }])
-.directive('zooEvents', function () {
+.directive('zooContactInfo', function () {
     return {
-        templateUrl: 'mainMenu/specialEvents/specialEvents.html'
+        templateUrl: 'mainMenu/generalInfo/contactInfo.html'
     };
 });

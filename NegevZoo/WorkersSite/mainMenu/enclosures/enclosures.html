@@ -1,0 +1,53 @@
+﻿<div ng-controller="zooEnclosureCtrl as vm">
+    <div layout="row" layout-align="center center">
+        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+    </div>
+
+    <md-card ng-if="!isLoading" ng-show="page === 'list'">
+        <md-card-title layout="row" layout-align="space-between">
+            <div layout="column">
+                <md-button class="md-raised md-primary" ng-click="switchPage('create')">הוסף מתחם</md-button>
+                <md-card-title-text class="md-headline">מתחמים קיימים:</md-card-title-text>
+            </div>
+
+            <div layout="column">
+                <md-input-container>
+                    <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
+                    <label>חפש מתחם</label>
+                    <input style="width: 200px" ng-model="enclosure_searchTerm" type="text">
+                </md-input-container>
+            </div>
+        </md-card-title>
+        
+        <ng-content layout="row" layout-align="space-between">
+            <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+                <div ng-repeat="enclosure in enclosures | filter:searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                    <span class="picture-head">{{ enclosure.name }}</span>
+                    <img class="picture" ng-src="{{ enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
+                </div>
+            </div>
+        </ng-content>
+    </md-card>
+
+    <md-card ng-show="page === 'create' || page === 'edit'">
+         <md-card-title layout="row" layout-align="space-between">
+            <div layout="column">
+                <md-button class="md-raised md-primary" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
+                <md-card-title-text ng-if="page === 'edit'" class="md-headline">חיות במתחם ה{{ selectedEnclosure.name }}:</md-card-title-text>
+                <md-card-title-text ng-if="page === 'create'" class="md-headline">הוסף מתחם חדש:</md-card-title-text>
+            </div>
+
+            <div layout="column">
+                <md-input-container>
+                    <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
+                    <label>חפש חיה</label>
+                    <input style="width: 200px" ng-model="animal_searchTerm" type="text">
+                </md-input-container>
+            </div>
+        </md-card-title>
+
+        <md-card-content>
+
+        </md-card-content>
+    </md-card>
+</div>

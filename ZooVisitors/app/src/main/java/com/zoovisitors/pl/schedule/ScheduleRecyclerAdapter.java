@@ -20,7 +20,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
     private Schedule[] schedulers;
 
-    public ScheduleRecyclerAdapter(AppCompatActivity appCompatActivity, Schedule[] schedulers) {
+    public ScheduleRecyclerAdapter(Schedule[] schedulers) {
 
         this.schedulers = schedulers;
 
@@ -47,6 +47,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
         String endDate = schedulers[position].getEndTime().substring(0, 10);
         String scheduleDate = startDate + " - " + endDate;
 
+        viewHolder.date.setTextSize(12);
         viewHolder.date.setText(scheduleDate);
     }
 

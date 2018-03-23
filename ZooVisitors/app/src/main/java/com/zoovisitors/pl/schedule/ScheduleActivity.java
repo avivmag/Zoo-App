@@ -6,50 +6,51 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.TextView;
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.BusinessLayer;
-import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.MyFirebaseMessagingService;
+import com.zoovisitors.pl.map.MapActivity;
+
+import java.util.Map;
+
 
 public class ScheduleActivity extends AppCompatActivity {
 
     private RecyclerView recycleView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    private AppCompatActivity tempActivity = this;
     private Schedule[] schedulers;
-    private BusinessLayer bl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        bl = new BusinessLayerImpl(this);
 
-//        //Delete when I get object from server
-//        this.schedulers = new Schedule[10];
-//        for (int i = 0; i<10; i++){
-//            this.schedulers[i] = new Schedule();
-//            this.schedulers[i].setName("" + i);
-//        }
+        //Send notification
+        //MyFirebaseMessagingService.sendSelfNotification(MapActivity.class, "האכלת אריות","13:00 - 13:30");
 
-        bl.getSchedule(new GetObjectInterface() {
+        GlobalVariables.bl.getSchedule(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 schedulers = (Schedule[]) response;
                 recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
-                layoutManager = new LinearLayoutManager(tempActivity);
+                layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                 recycleView.setLayoutManager(layoutManager);
-
-                adapter = new ScheduleRecyclerAdapter(tempActivity, schedulers);
+                adapter = new ScheduleRecyclerAdapter(schedulers);
                 recycleView.setAdapter(adapter);
             }
 
             @Override
             public void onFailure(Object response) {
-
+                TextView error  = (TextView) findViewById(R.id.error_sched_text);
+                recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
+                recycleView.setVisibility(View.INVISIBLE);
+                error.setVisibility(View.VISIBLE);
+                error.setText((String) response);
             }
         });
     }

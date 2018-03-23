@@ -1,3 +1,4 @@
+//noinspection GradleCompatible
 apply plugin: 'com.android.application'
 
 android {
@@ -17,6 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -35,4 +40,6 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     compile 'com.android.volley:volley:1.1.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.google.firebase:firebase-messaging:12.0.0'
 }
+apply plugin: 'com.google.gms.google-services'

@@ -8,10 +8,10 @@ namespace Backend.Models
 {
     public class SpecialEvent
     {
-        public int Id { get; set; }
-        public string Description { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int Language { get; set; }
+        public int id { get; set; }
+        public string description { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
+        public int language { get; set; }
     }
 }

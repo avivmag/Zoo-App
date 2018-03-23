@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zoovisitors">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -16,11 +19,11 @@
             android:label="@string/title_activity_animal" />
         <activity
             android:name=".pl.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
         <activity android:name=".pl.enclosures.EnclosureActivity" />
@@ -30,7 +33,22 @@
             android:label="@string/title_activity_general_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pl.enclosures.EnclosureListActivity" />
-        <activity android:name=".pl.schedule.ScheduleActivity"></activity>
+        <activity android:name=".pl.schedule.ScheduleActivity" />
+
+        <service android:name=".bl.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".pl.LoadingScreen"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

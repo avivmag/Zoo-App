@@ -4,7 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Backend.Models;
+using DAL;
+using DAL.Models;
 
 namespace NegevZoo.Controllers
 {
@@ -29,7 +30,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -53,7 +54,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
@@ -75,17 +76,17 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         #endregion
 
         #region Opening hours
- 
+
         /// <summary>
         /// Gets all the OpeningGours elements with data in that language.
         /// </summary>
@@ -93,7 +94,7 @@ namespace NegevZoo.Controllers
         /// <returns>All OpeninngHour elements with that language.</returns>
         [HttpGet]
         [Route("OpeningHours/all/{language}")]
-        public IEnumerable<OpeningHour> GetAllOpeningHours(int language = 1)
+        public IEnumerable<OpeningHourResult> GetAllOpeningHours(int language = 1)
         {
             try
             {
@@ -103,7 +104,30 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO: add  log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all the OpeningHours elements in hebrew and days as int.
+        /// </summary>
+        /// <returns>All OpeninngHour elements in hebrew.</returns>
+        [HttpGet]
+        [Route("OpeningHours/type/all/{language}")]
+        public IEnumerable<OpeningHour> GetAllOpeningHoursType()
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllOpeningHoursType();
+                }
+
+            }
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -114,7 +138,7 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the OpeningHour element.
         /// </summary>
         /// <param name="openingHour">The element to add or update</param>
-        [HttpGet]
+        [HttpPost]
         [Route("OpeningHours/update")]
         public void UpdateOpeningHour(OpeningHour openingHour)
         {
@@ -126,7 +150,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -149,7 +173,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add  log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -177,7 +201,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -188,7 +212,7 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the ContactInfo element.
         /// </summary>
         /// <param name="contactInfo">The element to add or update</param>
-        [HttpGet]
+        [HttpPost]
         [Route("ContactInfos/update")]
         public void UpdateContactInfo(ContactInfo contactInfo)
         {
@@ -200,7 +224,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -223,7 +247,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -251,7 +275,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -278,7 +302,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -301,7 +325,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -324,7 +348,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -351,7 +375,7 @@ namespace NegevZoo.Controllers
                     return db.GetAllWallFeeds(language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -370,10 +394,11 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    feed.created = DateTime.Today;
                     db.UpdateWallFeed(feed);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -395,7 +420,7 @@ namespace NegevZoo.Controllers
                     db.DeleteWallFeed(feedId);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -428,7 +453,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -451,7 +476,7 @@ namespace NegevZoo.Controllers
                     db.UpdateZooAboutInfo(info, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -480,7 +505,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -503,7 +528,7 @@ namespace NegevZoo.Controllers
                     db.UpdateOpeningHourNote(note, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -532,7 +557,7 @@ namespace NegevZoo.Controllers
                         .ToArray();
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -555,13 +580,38 @@ namespace NegevZoo.Controllers
                     db.UpdateContactInfoNote(note, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         
+        #endregion
+
+        #region Languages
+        /// <summary>
+        /// Gets all the Languages.
+        /// </summary>
+        /// <returns>All The Languages.</returns>
+        [HttpGet]
+        [Route("languages/all")]
+        public IEnumerable<Language> GetAllLanguages()
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllLanguages();
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
         #endregion
         
         #region ModelClasses
@@ -573,6 +623,4 @@ namespace NegevZoo.Controllers
 
         #endregion
     }
-
-    
 }

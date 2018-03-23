@@ -9,7 +9,7 @@
 
             <div layout="column">
                 <md-select ng-model="language" ng-change="updateSpecialEvents(language)" placeholder="אנא בחר שפה">
-                    <md-option ng-repeat="language in languages" ng-value="language.language">{{ language.format }}</md-option>
+                    <md-option ng-repeat="language in languages" ng-value="language">{{ language.name }}</md-option>
                 </md-select>
             </div>
         </md-card-title>
@@ -24,7 +24,8 @@
 
                 <md-card-content layout="row">
                     <md-input-container>
-                        <input style="min-width: 400px" ng-model="event.description" placeholder="הכנס תיאור" required type="text">
+                        <label ng-show="event.isNew">הכנס תיאור</label>
+                        <input style="min-width: 400px" ng-model="event.description" required type="text">
                     </md-input-container>
 
                     <md-datepicker style="min-width: 90px" ng-model="event.startDate"></md-datepicker>

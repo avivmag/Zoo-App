@@ -1,3 +1,3 @@
-﻿app.controller('mainMenuCtrl', ['$scope', '$state',
-    function mainMenuController() {
+﻿app.controller('mainMenuCtrl', ['$mdDialog', '$scope', 'zooInfoService',
+    function mainMenuController($mdDialog, $scope, zooInfoService) {
 }]);

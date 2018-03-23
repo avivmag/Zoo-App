@@ -3,14 +3,14 @@
         initializeComponent();
 
         function initializeComponent() {
-            $scope.languages            = [{ language: 1, format: 'עברית' }, { language: 2, format: 'אנגלית' }, { language: 3, format: 'ערבית' }]
-
-            $scope.language             = $scope.languages[0].language;
+            $scope.languages            = app.languages;
+            $scope.language             = $scope.languages[0];
 
             $scope.updatePrices         = function (language) {
+                $scope.language             = language;
                 $scope.isLoading            = true;
 
-                pricesQuery = zooInfoService.prices.getAllPrices(language).then(
+                pricesQuery = zooInfoService.prices.getAllPrices(language.id).then(
                     function (data) {
                         $scope.prices       = data.data;
                         $scope.isLoading    = false;
@@ -45,7 +45,7 @@
 
                         $scope.isLoading = false;
 
-                        $scope.updateFeed($scope.language);
+                        $scope.updatePrices($scope.language);
                     },
                     function () {
                         $mdDialog.show(
@@ -72,11 +72,11 @@
                 });
             }
 
-            $scope.updatePrices(app.defaultLanguage);
+            $scope.updatePrices($scope.language);
         }
 
         function addEmptyPrice(prices) {
-            prices.push({ pricePop: 0, isNew: true, language: $scope.language, id: 0 });
+            prices.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
         function deletePrice(price, prices) {

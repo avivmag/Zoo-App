@@ -4,9 +4,12 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
-import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
@@ -27,23 +30,40 @@ import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     private ScrollView sv;
     private LinearLayout ll;
     private Menu langMenu;
-    private BusinessLayer bl;
     private NewsFeed[] feed;
-    private AppCompatActivity appCompatActivity = this;
+    private Map<String, String> LanguageMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bl = new BusinessLayerImpl(this);
-        //Scroller initalize
+        GlobalVariables.appCompatActivity = this;
+        //changeToHebrew();
 
+        //Initialize business layer (change for testing)
+        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
+        //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
+        //Token for notification
+        Log.e("TOKEN", "token "+ FirebaseInstanceId.getInstance().getToken());
 
-        bl.getNewsFeed(new GetObjectInterface() {
+        LanguageMap = new HashMap<String, String>();
+        //put language in the app according to values/strings/(**)
+        LanguageMap.put("Hebrew", "iw");
+        LanguageMap.put("English", "en");
+        LanguageMap.put("Arabic", "ar");
+        LanguageMap.put("Russian", "rus");
+
+        //Scroller initialize
+        GlobalVariables.bl.getNewsFeed(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
 
@@ -54,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 sv.setClickable(false);
                 ll = findViewById(R.id.feedWallLayout);
                 for (NewsFeed s: feed) {
-                    TextView tv = new TextView(appCompatActivity);
+                    TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
                     ll.addView(tv);
                 }
@@ -114,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.wazeImg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAppInstalled(appCompatActivity, "com.waze")){
+                if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
                 }
                 else{
@@ -132,6 +152,24 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem subm = menu.findItem(R.id.language);
         langMenu = subm.getSubMenu();
+        MenuItem hebItem = langMenu.getItem(1);
+        MenuItem engItem = langMenu.getItem(0);
+        MenuItem arbItem = langMenu.getItem(2);
+        MenuItem rusItem = langMenu.getItem(3);
+        switch (GlobalVariables.language){
+            case 1:
+                hebItem.setChecked(true);
+                break;
+            case 2:
+                engItem.setChecked(true);
+                break;
+            case 3:
+                arbItem.setChecked(true);
+                break;
+            case 4:
+                rusItem.setChecked(true);
+                break;
+        }
         return true;
     }
 
@@ -178,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(!item.isChecked());
                 //TODO: send to the server to cancel/add notifications
                 return true;
-            case R.id.language_arb:
-                return true;
+//            case R.id.language_arb:
+//                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -187,8 +225,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSelectLanguage(MenuItem item){
-        //TODO: add a language change functionality
-
         MenuItem hebItem = langMenu.getItem(1);
         MenuItem engItem = langMenu.getItem(0);
         MenuItem arbItem = langMenu.getItem(2);
@@ -201,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
+                setLocale(LanguageMap.get("Arabic"));
                 return;
             case R.id.language_eng:
                 GlobalVariables.language = 2;
@@ -208,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 arbItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
+                setLocale(LanguageMap.get("English"));
                 return;
             case R.id.language_heb:
                 GlobalVariables.language = 1;
@@ -215,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 engItem.setChecked(false);
                 arbItem.setChecked(false);
                 rusItem.setChecked(false);
+                setLocale(LanguageMap.get("Hebrew"));
                 return;
             case R.id.language_rus:
                 GlobalVariables.language = 4;
@@ -222,9 +261,13 @@ public class MainActivity extends AppCompatActivity {
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 arbItem.setChecked(false);
+                setLocale(LanguageMap.get("Russian"));
                 return;
         }
+
+
     }
+
 
     private boolean isAppInstalled(Context context, String packageName) {
         try {
@@ -234,5 +277,21 @@ public class MainActivity extends AppCompatActivity {
         catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * Sets the app to get strings from the @lang language
+     * @param lang
+     */
+    private void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        Intent refresh = new Intent(this, MainActivity.class);
+        startActivity(refresh);
+        finish();
     }
 }
