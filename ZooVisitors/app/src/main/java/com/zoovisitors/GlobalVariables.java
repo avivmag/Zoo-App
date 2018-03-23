@@ -13,4 +13,5 @@ public class GlobalVariables {
     public static int language = 1; //Hebrew
     public static AppCompatActivity appCompatActivity;
     public static BusinessLayer bl;
+    public static int firstEnter = 0;
 }

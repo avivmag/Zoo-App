@@ -1,0 +1,47 @@
+<resources>
+
+    <!--//Main Menu/-->
+    <string name="app_name"></string>
+    //preferences
+    <string name="animal_name"></string>
+    <string name="notifications"></string>
+    <string name="language"></string>
+    <string name="language_eng">English</string>
+    <string name="language_heb">עברית</string>
+    <string name="language_arb">عربى</string>
+    <string name="language_rus">русский</string>
+    //main menu buttons
+    <string name="watch_all_feed"></string>
+    <string name="our_enclosures"></string>
+    <string name="schedule"></string>
+    <string name="map"></string>
+    <string name="other_info"></string>
+    <string name="nav"></string>
+
+    <!-- Animal Activity -->
+    <string name="title_activity_animal"></string>
+    <string name="about_animal"></string>
+    <string name="about_species"></string>
+    <string name="category"></string>
+    <string name="series"></string>
+    <string name="family"></string>
+    <string name="distribution"></string>
+    <string name="reproduction"></string>
+    <string name="food"></string>
+    <string name="searchPlaceHolder"></string>
+    <string name="shareOnFacebook"></string>
+    <string name="showOnMap"></string>
+
+    <!-- General Info -->
+    <string name="contact_info"></string>
+    <string name="prices"></string>
+    <string name="opening_hours"></string>
+    <string name="about_us"></string>
+    <string name="contact_us_headline"></string>
+    <string name="opening_hours_headline"></string>
+    <string name="prices_headline"></string>
+
+    <!-- Schedule -->
+    <string name="todays_event"></string>
+    <string name="choose_route"></string>
+</resources>

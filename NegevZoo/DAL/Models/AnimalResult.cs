@@ -15,7 +15,7 @@ namespace DAL.Models
         public string Category { get; set; }
         public string Series { get; set; }
         public string Family { get; set; }
-        public string Ditribution { get; set; }
+        public string Distribution { get; set; }
         public string Reproduction { get; set; }
         public string Food { get; set; }
         public long Preservation { get; set; }

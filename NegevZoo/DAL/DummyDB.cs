@@ -12,7 +12,16 @@ namespace DAL
     /// </summary>
     public class DummyDB : IZooDB
     {
-        public DummyDB()
+        private static IZooDB zdb;
+
+        public static IZooDB GetInstance()
+        {
+            zdb = zdb ?? new DummyDB();
+
+            return zdb;
+        }
+
+        private DummyDB()
         {
             Animals             = new TestDbSet<Animal>();
             Enclosures          = new TestDbSet<Enclosure>();
@@ -25,7 +34,10 @@ namespace DAL
             ContactInfos        = new TestDbSet<ContactInfo>();
             Users               = new TestDbSet<User>();
             AllLanguages        = new TestDbSet<Language>();
+            AllEnclosursDetails = new TestDbSet<EnclosureDetail>();
+            AllAnimalsDetails   = new TestDbSet<AnimalDetail>();
 
+            AllLanguages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
             Enclosures.AddRange(InitializeEnclosures());
             WallFeeds.AddRange(InitializeWallFeeds());
@@ -36,7 +48,21 @@ namespace DAL
             OpeningHours.AddRange(InitialOpeningHour());
             ContactInfos.AddRange(InitialContactInfos());
             Users.AddRange(InitializeUsers());
-            AllLanguages.AddRange(InitializeLanguages());
+            AllEnclosursDetails.AddRange(InitializeEnclosureDetails());
+            AllAnimalsDetails.AddRange(InitializeAnimalsDetails());
+        }
+
+        private IZooDB CreateInstance()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void CleanDb(bool isTesting = true)
+        {
+            if (isTesting)
+            {
+                zdb = null;
+            }
         }
 
         protected override List<TEntity> GetFromCache<TEntity>()
@@ -67,6 +93,92 @@ namespace DAL
         #endregion 
 
         #region Initializers
+        /// <summary>
+        /// Initializes the enclosures mock.
+        /// </summary>
+        /// <returns>Mock enclosures list.</returns>
+        private IEnumerable<Enclosure> InitializeEnclosures()
+        {
+            return new List<Enclosure>
+                {
+                    new Enclosure
+                    {
+                        id          = 1,
+                        name        = "תצוגת הקופים",
+                    },
+
+                    new Enclosure
+                    {
+                        id          = 2,
+                        name        = "קופי אדם",
+                    },
+
+                    new Enclosure
+                    {
+                        id          = 3,
+                        name        = "זברה",
+                    }
+            };
+        }
+
+        private IEnumerable<EnclosureDetail> InitializeEnclosureDetails()
+        {
+            return new List<EnclosureDetail>
+            {
+                //Monkeys
+                new EnclosureDetail
+                {
+                    encId = 1,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name = "תצוגת הקופים",
+                    story = "הקופים שלנו הם הכי הכי!"
+
+                },
+                new EnclosureDetail
+                {
+                    encId = 1,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 2).id, //english
+                    name = "Monkeys",
+                    story = "Our monkeys have been great! They are awesome."
+                },
+
+                //houman monkys
+                new EnclosureDetail
+                {
+                    encId = 2,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name = "קופי אדם",
+                    story = "הקופים שלנו הם הכי חכמים!"
+
+                },
+                new EnclosureDetail
+                {
+                    encId = 2,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 2).id, //english
+                    name = "Houman Monkeys",
+                    story = "Computer Science students."
+
+                },
+
+                //zebra
+                new EnclosureDetail
+                {
+                    encId = 3,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name = "זברה",
+                    story = "הזברות שלנו ניצלו משבי"
+
+                },
+                new EnclosureDetail
+                {
+                    encId = 3,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 2).id, //english
+                    name = "Zebra",
+                    story = "Our saved Zebra."
+
+                }
+            };
+        }
 
         /// <summary>
         /// Initializes the animals mock.
@@ -79,115 +191,118 @@ namespace DAL
                     new Animal
                     {
                         id          = 1,
-                        name        = "Olive Baboon",
-                        enclosureId       = 1,
-                        //story       = "Gilor the olive baboon is very lovable.",
-                        //language    = (int)Languages.en
+                        name        = "בבון הזית",
+                        enclosureId = 1
                     },
 
                     new Animal
                     {
                         id          = 2,
-                        name        = "בבון הזית",
-                        enclosureId       = 2,
-                        //story       = "גילאור בבון הזית מאוד חמוד",
-                        //language    = (int)Languages.he
+                        name        = "גורילה",
+                        enclosureId = 1,
                     },
 
                     new Animal
                     {
                         id          = 3,
-                        name        = "Gorilla",
-                        enclosureId       = 1,
-                        //story       = "Shrek the mighty gorilla!",
-                        //language    = (int)Languages.en
-                    },
-
-                    new Animal
-                    {
-                        id          = 4,
-                        name        = "גורילה",
-                        enclosureId       = 2,
-                        //story       = "שרק הוא וואחד גורילה!",
-                        //language    = (int)Languages.he
-                    },
-
-                    new Animal
-                    {
-                        id          = 5,
-                        name        = "Monkey",
-                        enclosureId       = 3,
-                        //story       = "Kofifo is Marco's monkey.",
-                        //language    = (int)Languages.en
-                    },
-
-                    new Animal
-                    {
-                        id          = 6,
                         name        = "קוף",
-                        enclosureId       = 4,
-                        //story       = "קופיקו הוא הקוף של מרקו.",
-                        //language    = (int)Languages.he
+                        enclosureId = 2
                     }
                 };
         }
 
         /// <summary>
-        /// Initializes the enclosures mock.
+        /// Initializes the animals details mock.
         /// </summary>
-        /// <returns>Mock enclosures list.</returns>
-        private IEnumerable<Enclosure> InitializeEnclosures()
+        /// <returns>Mock animal detailslist.</returns>
+        private IEnumerable<AnimalDetail> InitializeAnimalsDetails()
         {
-            return new List<Enclosure>
+            return new List<AnimalDetail>
+            {
+                //baboon
+                new AnimalDetail
                 {
-                    new Enclosure
-                    {
-                        id          = 1,
-                        name        = "Monkeys",
-                        //story       = "Our monkeys have been great! They are awesome.",
-                        //language    = (int)Languages.en
-                    },
+                    animalId        = 1,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name            = "בבון הזית",
+                    category        = "קופים",
+                    series          = "קוף",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "גילאור בבון הזית מאוד חמוד"
+                },
+                new AnimalDetail
+                {
+                    animalId        = 1,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    name            = "Olive Baboon",
+                    category        = "Monkies",
+                    series          = "Monk",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "Gilor the olive baboon is very lovable."
+                },
 
-                    new Enclosure
-                    {
-                        id          = 2,
-                        name        = "תצוגת הקופים",
-                        //story       = "הקופים שלנו הם הכי הכי!",
-                        //language    = (int)Languages.he
-                    },
+                //Gorila
+                new AnimalDetail
+                {
+                    animalId        = 2,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name            = "גורילה",
+                    category        = "קופים",
+                    series          = "קוף",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "שרק הוא וואחד גורילה!"
+                },
+                new AnimalDetail
+                {
+                    animalId        = 2,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    name            = "Gorila",
+                    category        = "Monkies",
+                    series          = "Monk",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "Shrek the mighty gorilla!"
+                },
 
-                    new Enclosure
-                    {
-                        id          = 3,
-                        name        = "Houman Monkeys",
-                        //story       = "Computer Science students.",
-                        //language    = (int)Languages.en
-                    },
-
-                    new Enclosure
-                    {
-                        id          = 4,
-                        name        = "קופי אדם",
-                        //story       = "הקופים שלנו הם הכי חכמים!",
-                        //language    = (int)Languages.he
-                    },
-
-                    new Enclosure
-                    {
-                        id          = 5,
-                        name        = "Zebra",
-                        //story       = "Our saved Zebra.",
-                        //language    = (int)Languages.en
-                    },
-
-                    new Enclosure
-                    {
-                        id          = 6,
-                        name        = "זברה",
-                        //story       = "הזברות שלנו ניצלו משבי",
-                        //language    = (int)Languages.he
-                    }
-                };
+                //Monkey
+                new AnimalDetail
+                {
+                    animalId        = 3,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name            = "קוף",
+                    category        = "קופים",
+                    series          = "קוף",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "קופיקו הוא הקוף של מרקו."
+                },
+                new AnimalDetail
+                {
+                    animalId        = 3,
+                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    name            = "Monkey",
+                    category        = "Monkies",
+                    series          = "Monk",
+                    distribution    = "",
+                    family          = "",
+                    food            = "",
+                    reproduction    = "",
+                    story           = "Kofifo is Marco's monkey."
+                },
+            };
         }
 
         /// <summary>
@@ -583,63 +698,64 @@ namespace DAL
                 new RecurringEvent
                 {
                     id                      = 1,
-                    enclosureId                   = 1,
-                    //day                     = "Sunday",
-                    description             = "Feeding",
+                    enclosureId             = 1,
+                    day                     = 1,
+                    description             = "האכלה",
                     startTime               = new TimeSpan(10, 30, 0),
                     endTime                 = new TimeSpan(11, 0, 0),
-                    language                = (int) Languages.en
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
                 new RecurringEvent
                 {
                     id                      = 2,
-                    enclosureId                   = 2,
-                    //day                     = "ראשון",
-                    description             = "האכלה",
+                    enclosureId             = 1,
+                    day                     = 11,
+                    description             = "Feeding",
                     startTime               = new TimeSpan(10, 30, 0),
                     endTime                 = new TimeSpan(11, 0, 0),
-                    language                = (int) Languages.he
-                },
-                new RecurringEvent
-                {
-                    id                      = 3,
-                    enclosureId                   = 3,
-                    //day                     = "Monday",
-                    description             = "Playing",
-                    startTime               = new TimeSpan(10, 30, 0),
-                    endTime                 = new TimeSpan(11, 0, 0),
-                    language                = (int) Languages.en
-                },
-                new RecurringEvent
-                {
-                    id                      = 4,
-                    enclosureId                   = 4,
-                    //day                     = "ראשון",
-                    description             = "משחק",
-                    startTime               = new TimeSpan(13, 30, 0),
-                    endTime                 = new TimeSpan(14, 0, 0),
-                    language                = (int) Languages.he
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
                 },
 
                 new RecurringEvent
                 {
+                    id                      = 3,
+                    enclosureId             = 2,
+                    day                     = 1,
+                    description             = "משחק",
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+                new RecurringEvent
+                {
+                    id                      = 4,
+                    enclosureId             = 2,
+                    day                     = 1,
+                    description             = "Playing",
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
+                },
+                
+                new RecurringEvent
+                {
                     id                      = 5,
-                    enclosureId                   = 3,
-                    //day                     = "Saturday",
-                    description             = "Feeding",
+                    enclosureId             = 2,
+                    day                     = 7,
+                    description             = "האכלה",
                     startTime               = new TimeSpan(10, 30, 0),
                     endTime                 = new TimeSpan(11, 0, 0),
-                    language                = (int) Languages.en
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
                 new RecurringEvent
                 {
                     id                      = 6,
-                    enclosureId                   = 4,
-                    //day                     = "שבת",
-                    description             = "האכלה",
-                    startTime               = new TimeSpan(13, 30, 0),
-                    endTime                 = new TimeSpan(14, 0, 0),
-                    language                = (int) Languages.he
+                    enclosureId             = 2,
+                    day                     = 17,
+                    description             = "Feeding",
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
                 }
             };
         }
@@ -690,34 +806,34 @@ namespace DAL
                 new OpeningHour
                 {
                     id          = 1,
-                    //day         = "ראשון",
+                    day         = 1,
                     startTime   = new TimeSpan(11, 30, 00),
                     endTime     = new TimeSpan(12, 0, 0),
-                    language    = (int)Languages.he
+                    language    = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
-                    id = 2,
-                    //day   = "Sunday",
+                    id          = 2,
+                    day         = 11,
                     startTime   = new TimeSpan(11, 30, 00),
                     endTime     = new TimeSpan(12, 0, 0),
-                    language = (int)Languages.en
+                    language    = (int)Languages.en
                 },
 
                 new OpeningHour
                 {
                     id = 3,
-                    //day = "שני",
+                    day = 2,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.he
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
                     id = 4,
-                    //day = "Monday",
+                    day = 12,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
@@ -726,16 +842,16 @@ namespace DAL
                 new OpeningHour
                 {
                     id = 5,
-                    //day = "שלישי",
+                    day = 3,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.he
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
                     id = 6,
-                    //day = "Tuesday",
+                    day = 13,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
@@ -744,16 +860,16 @@ namespace DAL
                 new OpeningHour
                 {
                     id = 7,
-                    //day = "רביעי",
+                    day = 4,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.he
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
                     id = 8,
-                    //day = "Wednesday",
+                    day = 14,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
@@ -762,16 +878,16 @@ namespace DAL
                 new OpeningHour
                 {
                     id = 9,
-                    //day = "חמישי",
+                    day = 5,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.he
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
                     id = 10,
-                    //day = "Thursday",
+                    day = 15,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en
@@ -780,16 +896,16 @@ namespace DAL
                 new OpeningHour
                 {
                     id = 11,
-                    //day = "שבת",
+                    day = 7,
                     startTime = new TimeSpan(10, 45, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.he
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
                 },
 
                 new OpeningHour
                 {
                     id = 12,
-                    //day = "Saturday",
+                    day = 17,
                     startTime = new TimeSpan(9, 45, 0),
                     endTime     = new TimeSpan(18, 0, 0),
                     language = (int)Languages.en

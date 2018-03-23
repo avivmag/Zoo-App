@@ -16,6 +16,7 @@ namespace NegevZoo.Controllers
     /// </summary>
     public class EnclosureController : ControllerBase
     {
+
         #region Getters
 
         #region visitor app
@@ -61,7 +62,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -75,7 +76,7 @@ namespace NegevZoo.Controllers
         /// <returns>All the details to this enclosure id.</returns>
         [HttpGet]
         [Route("enclosures/details/all/{encId}")]
-        IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
+        public IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -100,7 +101,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this encId and language.</returns>
         [HttpGet]
         [Route("enclosures/id/{encId}/{language}")]
-        public Enclosure GetEnclosureById(int encId, int language = 1)
+        public EnclosureResult GetEnclosureById(int encId, int language = 1)
         {
             try
             {
@@ -110,7 +111,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -125,7 +126,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this name and language.</returns>
         [HttpGet]
         [Route("enclosures/name/{name}/{language}")]
-        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language = 1)
+        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
         {
             try
             {
@@ -133,9 +134,8 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetEnclosureByName(name, language);
                 }
-
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -161,7 +161,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -185,7 +185,7 @@ namespace NegevZoo.Controllers
                     return db.GetRecurringEvents(encId, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -212,7 +212,31 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure details.
+        /// </summary>
+        /// <param name="enclosureDetail">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/detail/update")]
+        public void UpdateEnclosure(EnclosureDetail enclosureDetail)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureDetails(enclosureDetail);
+                }
+
+            }
+            catch (Exception Exp)
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -236,12 +260,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
-            {
-                //TODO: add log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-            catch (InvalidOperationException invOpExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -260,7 +279,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -268,5 +287,38 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        [Route("enclosures/upload")]
+        public Task<HttpResponseMessage> PostFile()
+        {
+            HttpRequestMessage request = this.Request;
+            if (!request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            Guid id = Guid.NewGuid();
+            string root = System.Web.HttpContext.Current.Server.MapPath("/assets/");
+
+            string url = root + id;
+
+            var provider = new MultipartFormDataStreamProvider(url);
+
+            var task = request.Content.ReadAsMultipartAsync(provider).
+                ContinueWith<HttpResponseMessage>(o =>
+                {
+
+                    string file1 = provider.FileData.First().LocalFileName;
+                    // this is the file name on the server where the file was saved 
+
+                    return new HttpResponseMessage()
+                    {
+                        Content = new StringContent("File uploaded.")
+                    };
+                }
+            );
+            return task;
+        }
     }
 }
