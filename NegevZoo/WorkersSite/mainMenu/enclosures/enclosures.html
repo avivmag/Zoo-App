@@ -23,7 +23,7 @@
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
                 <div ng-repeat="enclosure in enclosures | filter:searchTerm" ng-show="$index % 4 === colIndex" layout="column">
                     <span class="picture-head">{{ enclosure.name }}</span>
-                    <img class="picture" ng-src="{{ enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
+                    <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
                 </div>
             </div>
         </ng-content>
@@ -34,7 +34,7 @@
             <div layout="column">
                 <md-button class="md-raised md-primary" style="width: 150px" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
                 <div layout="row" ng-if="page === 'edit'">
-                    <img class="picture_small" ng-src="{{ selectedEnclosure.pictureUrl }}" alt="{{ selectedEnclosure.name }}" />
+                    <img class="picture_small" ng-src="{{ baseURL + selectedEnclosure.pictureUrl }}" alt="{{ selectedEnclosure.name }}" />
                     <md-card-title-text style="margin-top: 20px" class="md-headline">מתחם ה{{ selectedEnclosure.name }}:</md-card-title-text>
                 </div>
                 <md-card-title-text ng-if="page === 'create'" class="md-headline">הוספת מתחם חדש:</md-card-title-text>

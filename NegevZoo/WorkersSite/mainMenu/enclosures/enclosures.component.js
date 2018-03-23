@@ -1,7 +1,7 @@
-﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'enclosureService',
-function enclosureController($scope, $mdDialog, enclosureService) {
+﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'enclosureService', 'fileUpload',
+function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
     $scope.page             = 'list';
-    
+    $scope.baseURL          = app.baseURL;
     initializeComponent();
     
     function initializeComponent() {
@@ -12,10 +12,6 @@ function enclosureController($scope, $mdDialog, enclosureService) {
                 function (data) {
                     $scope.enclosures   = data.data;
                     $scope.isLoading    = false;
-                    
-                    for (let e of $scope.enclosures) {
-                        e.pictureUrl = app.baseURL + e.pictureUrl;
-                    }
                 },
                 function () {
                     $mdDialog.show(
@@ -82,11 +78,20 @@ function enclosureController($scope, $mdDialog, enclosureService) {
         };
 
         $scope.uploadFile = function() {
-            console.log($scope.myFile);
-        }
-
-        $scope.test = function () {
-            console.log('test');
+            var file = $scope.myFile;
+               
+            var uploadUrl = "enclosures/upload";
+            fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
+                $scope.selectedEnclosure.markerIconUrl = success.data[0];
+            },
+            function () {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .textContent('אירעה שגיאה במהלך העלאת האייקון')
+                    .ok('סגור')
+                );
+            });
         }
 
         function MapDialogController($scope, $mdDialog) {
