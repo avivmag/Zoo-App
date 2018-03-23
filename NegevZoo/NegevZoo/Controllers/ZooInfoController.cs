@@ -649,7 +649,7 @@ namespace NegevZoo.Controllers
         /// update on an online user.
         /// </summary>
         /// <param name="deviceId">The device id to add</param>
-        [HttpPost]
+        [HttpGet]
         [Route("notifications/updateDevice/{message}")]
         public void Notification(string message)
         {
