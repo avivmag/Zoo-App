@@ -29,12 +29,12 @@ public class NetworkImpl implements NetworkInterface {
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        responseInterface.onSuccess(response);
-                    }
-                }, new Response.ErrorListener() {
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    responseInterface.onSuccess(response);
+                }
+            }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 responseInterface.onFailure(error.toString());

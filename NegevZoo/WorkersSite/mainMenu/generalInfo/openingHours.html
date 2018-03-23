@@ -1,34 +1,74 @@
-﻿<div ng-controller="zooEventsCtrl as vm">
-    <md-card>
-        <md-card-title>
-            <md-card-title-text class="md-headline">אירועים מיוחדים קודמים:</md-card-title-text>
+﻿<div ng-controller="zooOpeningHoursCtrl as vm">
+    <div layout="row" layout-align="center center">
+        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+    </div>
+
+    <md-card ng-if="!isLoading">
+        <md-card-title layout="row" layout-align="space-between">
+            <md-card-title-text class="md-headline">שעות פתיחה:</md-card-title-text>
         </md-card-title>
-        <md-card-content>
-            <div style="margin-right: 10%" ng-repeat="event in specialEvents" layout="row" layout-align="start center">
-                <md-button style="margin-bottom: 25px" ng-if="!$last" ng-click="confirmDeleteSpecialEvent($event, event, events)" >
+
+        <md-card-content ng-if="openingHours && openingHours.length > 0">
+            <div style="margin-right: 10%" ng-repeat="openingHour in openingHours | orderBy:'day'" layout="row" layout-align="start center">
+                <md-button style="margin-bottom: 25px" ng-if="!openingHour.isNew" ng-click="confirmDeleteOpeningHour($event, openingHour, openingHours)" >
                     <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
                 </md-button>
-                <md-button style="margin-bottom: 25px" ng-if="$last" ng-click="addNewSpecialEvent(specialEvents)">
-                    <md-icon md-svg-src="icons/ic_add_circle_outline_black_24px.svg"></md-icon>
+                <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="openingHour.isNew">
+                    <md-icon md-svg-src="icons/ic_new_releases_black_24px.svg"></md-icon>
                 </md-button>
-
-                <md-card-content layout="row">
-                    <md-input-container>
-                        <label ng-if="event.isNew" style="color: red;">חדש!</label>
-                        <input style="min-width: 400px" ng-model="event.title" required type="text">
-                    </md-input-container>
-
-                    <md-input-container>
-                        <input style="min-width: 80px" ng-model="event.date" required type="text">
-                    </md-input-container>
-                </md-card-content>
-                <md-button class="md-primary md-raised" ng-if="event.isNew" ng-click="addEvent(event)">שמור אירוע חדש</md-button>
-                <md-button class="md-primary md-raised" ng-if="!event.isNew" ng-click="addEvent(event)">עדכון אירוע</md-button>
                 
-                <div ng-if="event.isNew" style="margin-right: 15px" layout="row">
-                    <md-checkbox ng-model="isPushMessage">שלח כהודעת פוש</md-checkbox>
-                </div>
+                
+                <md-card-content layout="column">
+                    <md-input-container>
+                        <label ng-show="openingHour.isNew">הכנס יום</label>
+                        <md-select ng-model="openingHour.day">
+                            <md-option ng-repeat="day in days" ng-value="day.id">{{ day.format }}</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <div layout="row">
+                        <span style="margin-top: 25px; margin-left: 5px">הכנס שעת פתיחה:</span>
+                        
+                        <md-input-container>
+                            <label ng-show="openingHour.isNew">דקה</label>
+                            <md-select ng-model="openingHour.startTime.minute">
+                                <md-option ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
+                            </md-select>
+                        </md-input-container>
+    
+                        <md-input-container>
+                            <label ng-show="openingHour.isNew">שעה</label>
+                            <md-select ng-model="openingHour.startTime.hour">
+                                <md-option ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <span style="margin-top: 25px; margin-left: 5px">הכנס שעת סגירה:</span>
+                        
+                        <md-input-container>
+                            <label ng-show="openingHour.isNew">דקה</label>
+                            <md-select ng-model="openingHour.endTime.minute">
+                                <md-option ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
+                            </md-select>
+                        </md-input-container>
+    
+                        <md-input-container>
+                            <label ng-show="openingHour.isNew">שעה</label>
+                            <md-select ng-model="openingHour.endTime.hour">
+                                <md-option ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </md-card-content>
+                
+                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour)">שמור שעת פתיחה חדשה</md-button>
+                <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour)">עדכון שעת פתיחה</md-button>
             </div>
+        </md-card-content>
+        <md-card-content ng-if="!isLoading && (!openingHours || openingHours.length === 0)">
+            <h3>אין נתונים</h3>
         </md-card-content>
     </md-card>
 </div>

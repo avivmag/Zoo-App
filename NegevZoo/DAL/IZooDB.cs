@@ -1,76 +1,52 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Backend.Models;
 
 namespace DAL
 {
     public abstract class IZooDB : DbContext
     {
-        #region DbSets
+        public IZooDB(string name) : base(name) { }
 
-        protected DbSet<Animal> Animals { get; set; }
-        protected DbSet<Enclosure> Enclosures { get; set; }
-        protected DbSet<RecurringEvent> RecurringEvents { get; set; }
-        protected DbSet<WallFeed> WallFeeds { get; set; }
-        protected DbSet<Price> Prices { get; set; }
-        protected DbSet<GeneralInfo> GeneralInfo { get; set; }
-        protected DbSet<OpeningHour> OpeningHours { get; set; }
-        protected DbSet<ContactInfo> ContactInfos { get; set; }
-        protected DbSet<SpecialEvent> SpecialEvents { get; set; }
-
-        #endregion 
+        public IZooDB() { }
 
         #region Getters
 
-        public DbSet<Animal> GetAllAnimals()
-        {
-            return Animals;
-        }
+        public abstract DbSet<Animal> GetAllAnimals();
 
-        public DbSet<Enclosure> GetAllEnclosures()
-        {
-            return Enclosures;
-        }
+        public abstract DbSet<AnimalDetail> GetAllAnimalsDetails();
 
+        public abstract DbSet<Enclosure> GetAllEnclosures();
 
-        public DbSet<RecurringEvent> GetAllRecuringEvents()
-        {
-            return RecurringEvents;
-        }
+        public abstract DbSet<EnclosureDetail> GetAllEnclosureDetails();
 
-        public DbSet<Price> GetAllPrices()
-        {
-            return Prices;
-        }
+        public abstract DbSet<RecurringEvent> GetAllRecuringEvents();
 
-        public DbSet<GeneralInfo> GetGeneralInfo()
-        {
-            return GeneralInfo;
-        }
+        public abstract DbSet<Price> GetAllPrices();
 
-        public DbSet<OpeningHour> GetAllOpeningHours()
-        {
-            return OpeningHours;
-        }
+        public abstract DbSet<GeneralInfo> GetGeneralInfo();
 
-        public DbSet<ContactInfo> GetAllContactInfos()
-        {
-            return ContactInfos;
-        }
+        public abstract DbSet<OpeningHour> GetAllOpeningHours();
 
-        public DbSet<SpecialEvent> GetAllSpecialEvents()
-        {
-            return SpecialEvents;
-        }
+        public abstract DbSet<ContactInfo> GetAllContactInfos();
 
-        public DbSet<WallFeed> GetAllWallFeeds()
-        {
-            return WallFeeds;
-        }
+        public abstract DbSet<SpecialEvent> GetAllSpecialEvents();
+
+        public abstract DbSet<WallFeed> GetAllWallFeeds();
+
+        public abstract DbSet<User> GetAllUsers();
+
+        public abstract DbSet<Language> GetAllLanguages();
+
+        public abstract DbSet<EnclosurePicture> GetAllEnclosurePictures();
+
+        public abstract DbSet<YoutubeVideoUrl> GetAllEnclosureVideos();
+
+        //public abstract DbSet<> getAllOnlineDevices();
         #endregion
 
         #region Cache
@@ -79,7 +55,11 @@ namespace DAL
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
 
-     
+
+
+
+
+
 
         #endregion
     }

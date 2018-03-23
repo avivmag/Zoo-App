@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using Backend.Models;
+using DAL;
+using DAL.Models;
 using BL;
+using System.Web;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace NegevZoo.Controllers
 {
@@ -14,26 +19,77 @@ namespace NegevZoo.Controllers
     /// </summary>
     public class EnclosureController : ControllerBase
     {
+
         #region Getters
 
+        #region visitor app
+
         /// <summary>
-        /// Gets all the enclosures with data in that language.
+        /// Gets all the enclosures resultes with data in that language.
         /// </summary>
         /// <param name="language">The data language</param>
         /// <returns>All enclosures with that language.</returns>
         [HttpGet]
         [Route("enclosures/all/{language}")]
-        public IEnumerable<Enclosure> GetAllEnclosures(int language = 1)
+        public IEnumerable<EnclosureResult>  GetAllEnclosureResults(int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllEnclosureResults(language);
+                }
+            }
+            catch
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets all the enclosures types.
+        /// </summary>
+        /// <returns>All enclosures types.</returns>
+        [HttpGet]
+        [Route("enclosures/types/all")]
+        public IEnumerable<Enclosure> GetAllEnclosures()
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetAllEnclosures(language);
+                    return db.GetAllEnclosures();
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all the enclosures types with data in that language.
+        /// </summary>
+        /// <param name="encId">The enclosure id</param>
+        /// <returns>All the details to this enclosure id.</returns>
+        [HttpGet]
+        [Route("enclosures/details/all/{encId}")]
+        public IEnumerable<EnclosureDetail>  GetEnclosureDetailsById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureDetailsById(encId);
+                }
+
+            }
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -48,7 +104,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this encId and language.</returns>
         [HttpGet]
         [Route("enclosures/id/{encId}/{language}")]
-        public Enclosure GetEnclosureById(int encId, int language = 1)
+        public EnclosureResult GetEnclosureById(int encId, int language = 1)
         {
             try
             {
@@ -58,7 +114,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -73,7 +129,7 @@ namespace NegevZoo.Controllers
         /// <returns>The enclosures with this name and language.</returns>
         [HttpGet]
         [Route("enclosures/name/{name}/{language}")]
-        public IEnumerable<Enclosure> GetEnclosureByName(string name, int language = 1)
+        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
         {
             try
             {
@@ -81,9 +137,8 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetEnclosureByName(name, language);
                 }
-
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -109,7 +164,7 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -133,7 +188,53 @@ namespace NegevZoo.Controllers
                     return db.GetRecurringEvents(encId, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enclosure's pictures by it's id.
+        /// </summary>
+        /// <param name="encId">The eclosure's encId</param>
+        /// <returns>The enclosure pictures according to its id.</returns>
+        [HttpGet]
+        [Route("enclosures/pictures/{encId}")]
+        public IEnumerable<EnclosurePicture> GetEnclosurePicturesById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosurePicturesById(encId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enclosure's videos urls by it's encId.
+        /// </summary>
+        /// <param name="encId">The eclosure's encId</param>
+        /// <returns>The enclosures video urls according to it's id.</returns>
+        [HttpGet]
+        [Route("enclosures/videos/{encId}")]
+        public IEnumerable<YoutubeVideoUrl> GetEnclosureVideosById(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureVideosById(encId);
+                }
+            }
+            catch (Exception Exp)
             {
                 //TODO: add to log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -160,7 +261,31 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure details.
+        /// </summary>
+        /// <param name="enclosureDetail">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/detail/update")]
+        public void UpdateEnclosureDetail(EnclosureDetail enclosureDetail)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureDetails(enclosureDetail);
+                }
+
+            }
+            catch (Exception Exp)
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -184,13 +309,165 @@ namespace NegevZoo.Controllers
                 }
 
             }
-            //TODO add catch to InvalidOperationException
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
+        [HttpDelete]
+        [Route("enclosures/recurring/delete/{eventId}")]
+        public void DeleteRecurringEvent(int eventId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteRecurringEvent(eventId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePicture">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/picture/update")]
+        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosurePicture(enclosurePicture);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideo">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/video/update")]
+        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureVideo(enclosureVideo);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// delete an enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
+        [HttpDelete]
+        [Route("enclosures/picture/delete")]
+        public void DeleteEnclosurePicture(int enclosurePictureId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteEnclosurePicture(enclosurePictureId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// delete an enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
+        [HttpDelete]
+        [Route("enclosures/video/delete")]
+        public void DeleteEnclosureVideo(int enclosureVideoId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteEnclosureVideo(enclosureVideoId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
         #endregion
+
+        [HttpPost]
+        [Route("enclosures/upload")]
+        public IHttpActionResult PostFile()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count < 1)
+            {
+                return BadRequest();
+            }
+
+            var fileNames = new List<String>();
+
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile      = httpRequest.Files[file];
+
+                var fileExtension   = postedFile.FileName.Split('.').Last();
+                var fileName        = Guid.NewGuid() + "." + fileExtension;
+
+                var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
+
+                postedFile.SaveAs(filePath);
+
+                fileNames.Add(fileName);
+                // NOTE: To store in memory use postedFile.InputStream
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue("assets/" + fn));
+            }
+
+            return Ok(responseObject);
+        }
     }
 }

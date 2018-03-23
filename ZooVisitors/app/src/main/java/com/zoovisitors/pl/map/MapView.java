@@ -20,6 +20,8 @@ import java.util.List;
 
 public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
+    public static final String ZOO_MAP = "zoo_map";
+    public static final String VISITOR_ICON = "visitor_icon";
     private float mPosX;
     private float mPosY;
 
@@ -61,7 +63,7 @@ public class MapView extends RelativeLayout {
 
         return false;
     }
-Object lock = new Object();
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Let the ScaleGestureDetector inspect all events.
@@ -80,21 +82,13 @@ Object lock = new Object();
                 mPosY = (mPosY - mLastTouchY)  * mScaleFactor / mLastScaleFactor + y;
                 mLastScaleFactor = mScaleFactor;
 
+                updateIconPositionWithoutSize(zooMapIcon);
                 for (ImageIcon icon :
                         icons) {
-                    if(icon.width != 0 && icon.height != 0) {
-                        RelativeLayout.LayoutParams params =
-                                new RelativeLayout.LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height * mScaleFactor));
-
-                        params.setMargins(
-                                (int) (icon.left * mScaleFactor + mPosX),
-                                (int) (icon.top * mScaleFactor + mPosY),
-                                Integer.MAX_VALUE,
-                                Integer.MAX_VALUE);
-                        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-                        icon.view.setLayoutParams(params);
-                    }
+                    updateIconPositionWithSize(icon);
                 }
+                if(visitorIcon.view.getVisibility() == VISIBLE)
+                    updateIconPositionWithSize(visitorIcon);
                 mLastTouchX = x;
                 mLastTouchY = y;
 
@@ -123,6 +117,35 @@ Object lock = new Object();
         return true;
     }
 
+    private void updateIconPositionWithSize(ImageIcon icon) {
+        if(icon.width != 0 && icon.height != 0) {
+            LayoutParams params =
+                    new LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height * mScaleFactor));
+
+            params.setMargins(
+                    (int) ((icon.left - icon.width/2) * mScaleFactor + mPosX),
+                    (int) ((icon.top - icon.height/2) * mScaleFactor + mPosY),
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+            icon.view.setLayoutParams(params);
+        }
+    }
+    private void updateIconPositionWithoutSize(ImageIcon icon) {
+        if(icon.width != 0 && icon.height != 0) {
+            LayoutParams params =
+                    new LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height * mScaleFactor));
+
+            params.setMargins(
+                    (int) (icon.left * mScaleFactor + mPosX),
+                    (int) (icon.top * mScaleFactor + mPosY),
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+            icon.view.setLayoutParams(params);
+        }
+    }
+
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -131,11 +154,39 @@ Object lock = new Object();
         }
     }
 
-    List<ImageIcon> icons;
+    private List<ImageIcon> icons;
+    private ImageIcon visitorIcon;
+    private ImageIcon zooMapIcon;
     public void addImageIcon(final String resource, String url, int left, int top)
     {
         icons.add(new ImageIcon(resource, url, left, top));
     }
+    public void AddVisitorIcon()
+    {
+        visitorIcon = new ImageIcon(VISITOR_ICON, null, 0, 0);
+        HideVisitorIcon();
+    }
+    public void UpdateVisitorLocation(int left, int top)
+    {
+        visitorIcon.left = left;
+        visitorIcon.top = top;
+        updateIconPositionWithSize(visitorIcon);
+    }
+    public void ShowVisitorIcon()
+    {
+        Log.e("AVIV", "Show");
+        visitorIcon.view.setVisibility(VISIBLE);
+    }
+    public void HideVisitorIcon()
+    {
+        Log.e("AVIV", "Hide");
+        visitorIcon.view.setVisibility(INVISIBLE);
+    }
+    public void addZooMapIcon(int left, int top)
+    {
+        zooMapIcon = new ImageIcon(ZOO_MAP, null, left, top);
+    }
+
     public void addImageIcon(final String resource, int left, int top)
     {
         icons.add(new ImageIcon(resource, null, left, top));
@@ -148,7 +199,6 @@ Object lock = new Object();
         private int top;
         private int width;
         private int height;
-
         ImageIcon(final String resource, String url, int left, int top) {
             this.url = url;
 
@@ -165,7 +215,15 @@ Object lock = new Object();
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
-                            Log.e("AVIV", resource + " Click");
+//                            AppCompatActivity tempActivity = new AppCompatActivity();
+//                            Intent intent = new Intent(new AppCompatActivity(), EnclosureActivity.class);
+//                            Bundle clickedEnclosure = new Bundle();
+//                            clickedEnclosure.putInt("image", images[pos]); //Clicked image
+//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
+//                            clickedEnclosure.putInt("pos", pos);
+//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+//                            tempActivity.startActivity(intent);
+
                             break;
                         case MotionEvent.ACTION_CANCEL:
                             Log.e("AVIV", resource + " Not a click");
@@ -186,10 +244,11 @@ Object lock = new Object();
                 public void run() {
                     width =  view.getMeasuredWidth();
                     height = view.getMeasuredHeight();
+                    if(!resource.equals(ZOO_MAP))
+                        updateIconPositionWithSize(ImageIcon.this);
                 }
             });
             addView(view);
-
         }
     }
 }

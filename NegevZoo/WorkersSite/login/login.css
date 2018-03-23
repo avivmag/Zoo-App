@@ -30,3 +30,34 @@
 md-datepicker {
     margin-top: 17px !important;
 }
+
+body.md-toast-animating {
+    position: fixed;
+    overflow: auto !important;
+}
+
+.picture {
+    height: 320px; 
+    width: 320px;
+    margin: 15px;
+    border: black;
+    border-radius: 50%;
+}
+
+.picture_small {
+    height: 48px; 
+    width: 48px;
+    margin: 15px;
+    border: black;
+    border-radius: 50%;
+}
+
+.picture-head {
+    margin: 15px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.upload-button {
+    
+}

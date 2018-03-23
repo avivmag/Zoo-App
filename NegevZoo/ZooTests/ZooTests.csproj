@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.2.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
@@ -65,6 +66,7 @@
     <Compile Include="AnimalControllerTests.cs" />
     <Compile Include="EncloureControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControllerTests.cs" />
     <Compile Include="ZooInfoControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,13 +74,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Backend\Backend.csproj">
-      <Project>{457a9c23-6fb4-4344-a572-13d1656d21de}</Project>
-      <Name>Backend</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BL\BL.csproj">
       <Project>{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}</Project>
       <Name>BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{e226b580-03bc-41ec-83f9-927145953d01}</Project>
+      <Name>DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\NegevZoo\NegevZoo.csproj">
       <Project>{07a0246b-8add-4201-9455-05b83a4f4968}</Project>

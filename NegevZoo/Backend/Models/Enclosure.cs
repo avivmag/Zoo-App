@@ -8,11 +8,11 @@ namespace Backend.Models
 {
     public class Enclosure
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Story { get; set; }
-        public int Language { get; set; }
-        public Double Longtitude { get; set; }
-        public Double Latitude{ get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string story { get; set; }
+        public int language { get; set; }
+        public Double longtitude { get; set; }
+        public Double latitude { get; set; }
     }
 }

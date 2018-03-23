@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Backend.Models;
+using DAL;
+using DAL.Models;
 
 namespace NegevZoo.Controllers
 {
@@ -14,6 +15,7 @@ namespace NegevZoo.Controllers
     {
         #region Getters
 
+        #region Visitors App
         /// <summary>
         /// Gets all animals data in the given langauge.
         /// </summary>
@@ -21,16 +23,62 @@ namespace NegevZoo.Controllers
         /// <returns>Animals with that langauge.</returns>
         [HttpGet]
         [Route("animals/all/{language}")]
-        public IEnumerable<Animal> GetAllAnimals(int language = 1)
+        public IEnumerable<AnimalResult> GetAllAnimalsResults(int language = 1)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetAnimals(language);
+                    return db.GetAnimalsResults(language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets all animals types.
+        /// </summary>
+        /// <returns>Animals types.</returns>
+        [HttpGet]
+        [Route("animals/types/all")]
+        public IEnumerable<Animal> GetAllAnimals()
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllAnimals();
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all animals details by the given id.
+        /// </summary>
+        /// <returns>Animals detail in all the langauges exists.</returns>
+        [HttpGet]
+        [Route("animals/details/all/{animalId}")]
+        public IEnumerable<AnimalDetail> GetAllAnimalsDetailsById(int animalId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllAnimalsDetailById(animalId);
+                }
+            }
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -45,16 +93,16 @@ namespace NegevZoo.Controllers
         /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
         [Route("animals/animalId/{animalId}/{language}")]
-        public Animal GetAnimalById(int animalId, int language)
+        public AnimalResult GetAnimalById(int animalId, int language)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.GetAnimalById(animalId,language);
+                    return db.GetAnimalById(animalId, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -69,7 +117,7 @@ namespace NegevZoo.Controllers
         /// <returns>The animal with the Id with that language.</returns>
         [HttpGet]
         [Route("animals/name/{name}/{language}")]
-        public Animal GetAnimalByName(string name, int language)
+        public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
         {
             try
             {
@@ -78,13 +126,12 @@ namespace NegevZoo.Controllers
                     return db.GetAnimalByName(name, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
 
         /// <summary>
         /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
@@ -94,7 +141,7 @@ namespace NegevZoo.Controllers
         /// <returns>The animals that are in the enclosure.</returns>
         [HttpGet]
         [Route("animals/enclosure/{encId}/{language}")]
-        public IEnumerable<Animal> GetAnimalsByEnclosure(int encId, int language)
+        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(int encId, int language)
         {
             try
             {
@@ -103,7 +150,7 @@ namespace NegevZoo.Controllers
                     return db.GetAnimalsByEnclosure(encId, language);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
@@ -127,7 +174,29 @@ namespace NegevZoo.Controllers
                     db.UpdateAnimal(animal);
                 }
             }
-            catch (ArgumentException argExp)
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates an animal details.
+        /// </summary>
+        /// <param name="animalsDetails">The animal to update.</param>
+        [HttpPost]
+        [Route("animals/detail/update")]
+        public void UpdateAnimalDetails(AnimalDetail animalsDetails)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateAnimalDetails(animalsDetails);
+                }
+            }
+            catch (Exception Exp)
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
@@ -149,8 +218,7 @@ namespace NegevZoo.Controllers
                     db.DeleteAnimal(animalId);
                 }
             }
-            //TODO: add catch Invalid operation exception
-            catch 
+            catch (Exception exp)
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
