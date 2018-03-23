@@ -89,6 +89,8 @@ namespace DAL
         protected DbSet<Language> AllLanguages { get; set; }
         protected DbSet<EnclosureDetail> AllEnclosursDetails { get; set; }
         protected DbSet<AnimalDetail> AllAnimalsDetails { get; set; }
+        protected DbSet<EnclosurePicture> AllEnclosurePictures { get; set; }
+        protected DbSet<YoutubeVideoUrl> AllYoutubeVideoUrls { get; set; }
 
         #endregion 
 
@@ -1096,6 +1098,16 @@ namespace DAL
         public override DbSet<AnimalDetail> GetAllAnimalsDetails()
         {
             return AllAnimalsDetails;
+        }
+
+        public override DbSet<EnclosurePicture> GetAllEnclosurePictures()
+        {
+            return AllEnclosurePictures;
+        }
+
+        public override DbSet<YoutubeVideoUrl> GetAllEnclosureVideos()
+        {
+            return AllYoutubeVideoUrls;
         }
 
         #endregion
