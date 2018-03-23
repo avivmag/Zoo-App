@@ -8,6 +8,9 @@ using System.Web.Http;
 using DAL;
 using DAL.Models;
 using BL;
+using System.Web;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace NegevZoo.Controllers
 {
@@ -290,35 +293,39 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("enclosures/upload")]
-        public Task<HttpResponseMessage> PostFile()
+        public IHttpActionResult PostFile()
         {
-            HttpRequestMessage request = this.Request;
-            if (!request.Content.IsMimeMultipartContent())
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count < 1)
             {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                return BadRequest();
             }
 
-            Guid id = Guid.NewGuid();
-            string root = System.Web.HttpContext.Current.Server.MapPath("/assets/");
+            var fileNames = new List<String>();
 
-            string url = root + id;
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile      = httpRequest.Files[file];
 
-            var provider = new MultipartFormDataStreamProvider(url);
+                var fileExtension   = postedFile.FileName.Split('.').Last();
+                var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-            var task = request.Content.ReadAsMultipartAsync(provider).
-                ContinueWith<HttpResponseMessage>(o =>
-                {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
 
-                    string file1 = provider.FileData.First().LocalFileName;
-                    // this is the file name on the server where the file was saved 
+                postedFile.SaveAs(filePath);
 
-                    return new HttpResponseMessage()
-                    {
-                        Content = new StringContent("File uploaded.")
-                    };
-                }
-            );
-            return task;
+                fileNames.Add(fileName);
+                // NOTE: To store in memory use postedFile.InputStream
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue("assets/" + fn));
+            }
+
+            return Ok(responseObject);
         }
     }
 }

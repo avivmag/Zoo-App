@@ -23,7 +23,7 @@
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
                 <div ng-repeat="enclosure in enclosures | filter:searchTerm" ng-show="$index % 4 === colIndex" layout="column">
                     <span class="picture-head">{{ enclosure.name }}</span>
-                    <img class="picture" ng-src="{{ enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
+                    <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
                 </div>
             </div>
         </ng-content>
@@ -32,9 +32,12 @@
     <md-card ng-show="page === 'create' || page === 'edit'">
          <md-card-title layout="row" layout-align="space-between">
             <div layout="column">
-                <md-button class="md-raised md-primary" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
-                <md-card-title-text ng-if="page === 'edit'" class="md-headline">חיות במתחם ה{{ selectedEnclosure.name }}:</md-card-title-text>
-                <md-card-title-text ng-if="page === 'create'" class="md-headline">הוסף מתחם חדש:</md-card-title-text>
+                <md-button class="md-raised md-primary" style="width: 150px" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
+                <div layout="row" ng-if="page === 'edit'">
+                    <img class="picture_small" ng-src="{{ baseURL + selectedEnclosure.pictureUrl }}" alt="{{ selectedEnclosure.name }}" />
+                    <md-card-title-text style="margin-top: 20px" class="md-headline">מתחם ה{{ selectedEnclosure.name }}:</md-card-title-text>
+                </div>
+                <md-card-title-text ng-if="page === 'create'" class="md-headline">הוספת מתחם חדש:</md-card-title-text>
             </div>
 
             <div layout="column">
@@ -46,8 +49,24 @@
             </div>
         </md-card-title>
 
-        <md-card-content>
+        <md-card-content layout="row" style="margin-right: 4%">
+                <md-card-content layout="column">
+                    <md-input-container layout="row">
+                        <label ng-show="page === 'create'">הכנס שם מזהה למתחם</label>
+                        <label ng-show="page === 'edit'">שם המתחם</label>
+                        <input style="width: 200px" ng-model="selectedEnclosure.name" required type="text">
+                    </md-input-container>
 
+                    <div style="margin-top: 7px">
+                        בחר אייקון להעלות:
+                        <input type="file" file-model="myFile" accept="image/*"/>
+                        <md-button class="md-raised md-primary" ng-click="uploadFile()">העלה אייקון חדש</md-button>
+                    </div>
+                    <div layout="row">
+                        <md-button class="md-raised md-primary" ng-click="openMap($event, selectedEnclosure)">מקם את המתחם על המפה</md-button>
+                        <md-button class="md-raised md-primary" ng-click="addEnclosure(selectedEnclosure)">שמור</md-button>
+                    </div>
+                </md-card-content>
         </md-card-content>
     </md-card>
 </div>
