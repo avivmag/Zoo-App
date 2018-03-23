@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,29 +20,23 @@ import com.zoovisitors.R;
 
 public class aboutAnimalFragment extends Fragment {
 
-    private AppCompatActivity appCompatActivity;
-    private String story;
-
+    private Animal animal;
 
     public aboutAnimalFragment() {
 
     }
 
-    public void setAppCompatActivity(AppCompatActivity appCompatActivity) {
-        this.appCompatActivity = appCompatActivity;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //TextView storyTextView = (TextView) appCompatActivity.findViewById(R.id.animal_story);
-        //Log.e("About", story);
-        //storyTextView.setText(story);
         View rootView = inflater.inflate(R.layout.about_animal_res, container, false);
+
+        TextView animalStory = (TextView) rootView.findViewById(R.id.story_animal_text);
+        animalStory.setText(animal.getStory());
+
         return rootView;
     }
 
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
+    }
 }

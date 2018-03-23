@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -35,8 +36,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private ScrollView sv;
-    private LinearLayout ll;
+    private ScrollView scrollView;
+    private LinearLayout newsFeddLinearLayout;
     private Menu langMenu;
     private NewsFeed[] feed;
     private Map<String, String> LanguageMap;
@@ -53,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
         //Token for notification
+        GlobalVariables.deviceId = FirebaseInstanceId.getInstance().getToken();
         Log.e("TOKEN", "token "+ FirebaseInstanceId.getInstance().getToken());
+
+        GlobalVariables.bl.sendDeviceId();
 
         LanguageMap = new HashMap<String, String>();
         //put language in the app according to values/strings/(**)
@@ -70,16 +74,21 @@ public class MainActivity extends AppCompatActivity {
                 feed = (NewsFeed[]) response;
 
                 //feed wall initiation
-                sv = findViewById(R.id.feedWall);
-                sv.setClickable(false);
-                ll = findViewById(R.id.feedWallLayout);
+                scrollView = findViewById(R.id.feedWall);
+                scrollView.setClickable(false);
+                newsFeddLinearLayout = findViewById(R.id.feedWallLayout);
                 for (NewsFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
-                    ll.addView(tv);
+                    tv.setTextColor(getResources().getColor(R.color.black));
+                    tv.setTextSize(18);
+                    LinearLayout lineBorder = new LinearLayout(GlobalVariables.appCompatActivity);
+                    lineBorder.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 20));
+                    newsFeddLinearLayout.addView(tv);
+                    newsFeddLinearLayout.addView(lineBorder);
                 }
 
-                sv.post(new Runnable() {
+                scrollView.post(new Runnable() {
                     @Override
                     public void run() {
                         startAutoScrolling();
@@ -135,10 +144,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?newsFeddLinearLayout=31.258137,34.745620")));//&navigate=yes
                 }
                 else{
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?ll=31.258137,%2034.745620")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620")));
                 }
 
             }
@@ -175,13 +184,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void startAutoScrolling(){
 
-        int jumpSteps = ll.getMeasuredHeight()/sv.getHeight();
+        int jumpSteps = newsFeddLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
         ObjectAnimator animator[] = new ObjectAnimator[jumpSteps];
 
         for (int i = 0; i < jumpSteps; i++){
-            int scrollPos = (int) (sv.getHeight() + 1.0) * (i+1);
-            animator[i] = ObjectAnimator.ofInt(sv, "scrollY", scrollPos);
-            animator[i].setDuration(100000);
+            int scrollPos = (int) (scrollView.getHeight() + 1.0) * (i+1);
+            animator[i] = ObjectAnimator.ofInt(scrollView, "scrollY", scrollPos);
+            animator[i].setDuration(30000);
         }
 
         for (int i = 0; i < jumpSteps; i++) {

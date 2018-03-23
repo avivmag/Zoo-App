@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.zoovisitors.GlobalVariables;
+import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
@@ -164,13 +166,13 @@ public class MapView extends RelativeLayout {
     private List<ImageIcon> icons;
     private ImageIcon visitorIcon;
     private ImageIcon zooMapIcon;
-    public void addImageIcon(Drawable resource, int id, int left, int top)
+    public void addImageIcon(Drawable resource, Enclosure enclosure, int left, int top)
     {
-        icons.add(new ImageIcon(resource, id, left, top));
+        icons.add(new ImageIcon(resource, enclosure, left, top));
     }
     public void AddVisitorIcon()
     {
-        visitorIcon = new ImageIcon(VISITOR_ICON, -1, 0, 0);
+        visitorIcon = new ImageIcon(VISITOR_ICON, null, 0, 0);
         HideVisitorIcon();
     }
     public void UpdateVisitorLocation(int left, int top)
@@ -189,24 +191,24 @@ public class MapView extends RelativeLayout {
     }
     public void addZooMapIcon(int left, int top)
     {
-        zooMapIcon = new ImageIcon(ZOO_MAP, -1, left, top);
+        zooMapIcon = new ImageIcon(ZOO_MAP, null, left, top);
     }
 
     public void addImageIcon(final String resource, int left, int top)
     {
-        icons.add(new ImageIcon(resource, -1, left, top));
+        icons.add(new ImageIcon(resource, null, left, top));
     }
 
     private class ImageIcon {
         private ImageView view;
-        private int id;
+        private Enclosure enclosure;
         private int left;
         private int top;
         private int width;
         private int height;
 
-        ImageIcon(String resource, int id, int left, int top) {
-            this.id = id;
+        ImageIcon(String resource, Enclosure enclosure, int left, int top) {
+            this.enclosure = enclosure;
 
             int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             this.left = left;
@@ -224,6 +226,13 @@ public class MapView extends RelativeLayout {
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
+
+                            Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
+                            Bundle clickedEnclosure = new Bundle();
+
+                            clickedEnclosure.putSerializable("enc", enclosure);
+                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+                            GlobalVariables.appCompatActivity.startActivity(intent);
 //                            int pos = getAdapterPosition();
 //                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
 //                            Bundle clickedEnclosure = new Bundle();
@@ -259,8 +268,8 @@ public class MapView extends RelativeLayout {
             });
             addView(view);
         }
-        ImageIcon(Drawable resource, int id, int left, int top) {
-            this.id = id;
+        ImageIcon(Drawable resource, Enclosure enclosure, int left, int top) {
+            this.enclosure = enclosure;
 
 //            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             this.left = left;
@@ -279,14 +288,12 @@ public class MapView extends RelativeLayout {
                     switch (event.getAction())
                     {
                         case MotionEvent.ACTION_UP:
-//                            int pos = getAdapterPosition();
-//                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
-//                            Bundle clickedEnclosure = new Bundle();
-//                            clickedEnclosure.putInt("image", ); //Clicked image
-//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
-//                            clickedEnclosure.putInt("id", id);
-//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-//                            tempActivity.startActivity(intent);
+                            Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
+                            Bundle clickedEnclosure = new Bundle();
+
+                            clickedEnclosure.putSerializable("enc", enclosure);
+                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+                            GlobalVariables.appCompatActivity.startActivity(intent);
 
                             break;
                         case MotionEvent.ACTION_CANCEL:

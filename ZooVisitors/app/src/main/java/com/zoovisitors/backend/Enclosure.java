@@ -2,16 +2,19 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Gili on 12/01/2018.
  */
 
-public class Enclosure {
+public class Enclosure implements java.io.Serializable{
     @SerializedName("id")
     private int id;
-    private int[] animalsInEnc;
     @SerializedName("name")
     private String name;
+    @SerializedName("story")
+    private String story;
     private String closestEvent;
     private String youtubeVideoUrl;
     @SerializedName("markerIconUrl")
@@ -20,6 +23,8 @@ public class Enclosure {
     private int markerLatitude;
     @SerializedName("markerLongtitude")
     private int markerLongtitude;
+    @SerializedName("pictureUrl")
+    private String pictureUrl;
 
     public String getMarkerIconUrl() {
         return markerIconUrl;
@@ -51,14 +56,6 @@ public class Enclosure {
         this.id = id;
     }
 
-    public int[] getAnimalsInEnc() {
-        return animalsInEnc;
-    }
-
-    public void setAnimalsInEnc(int[] animalsInEnc) {
-        this.animalsInEnc = animalsInEnc;
-    }
-
     public String getName() {
         return name;
     }
@@ -81,5 +78,13 @@ public class Enclosure {
 
     public void setYoutubeVideoUrl(String youtubeVideoUrl) {
         this.youtubeVideoUrl = youtubeVideoUrl;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 }

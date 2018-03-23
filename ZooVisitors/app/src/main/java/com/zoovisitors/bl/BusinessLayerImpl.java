@@ -180,11 +180,6 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public void getSpecies() {
-        Species species = gson.fromJson(json, Species.class);
-    }
-
-    @Override
     public void getSchedule(final GetObjectInterface goi) {
         ni.post("SpecialEvents/all/" + GlobalVariables.language, new ResponseInterface<String>() {
             @Override
@@ -279,6 +274,21 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onFailure(String response) {
                 goi.onFailure("Can't get contact info from server");
+            }
+        });
+    }
+
+    @Override
+    public void sendDeviceId() {
+        ni.post("/" + "?deviceID=" + GlobalVariables.deviceId, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e("DeviceID","Succeed sending");
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Log.e("DeviceID","cannot send to server");
             }
         });
     }

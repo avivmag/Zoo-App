@@ -6,32 +6,35 @@ package com.zoovisitors.backend;
 import com.google.gson.annotations.SerializedName;
 
 public class Animal implements java.io.Serializable{
-    @SerializedName("Id")
+    @SerializedName("id")
     private int id;
-    @SerializedName("Name")
+    @SerializedName("name")
     private String name;
-    @SerializedName("Story")
+    @SerializedName("story")
     private String story;
-    @SerializedName("EncId")
+    @SerializedName("encId")
     private int encId;
-    @SerializedName("Language")
+    @SerializedName("category")
+    private String category;
+    @SerializedName("series")
+    private String series;
+    @SerializedName("family")
+    private String family;
+    @SerializedName("ditribution")
+    private String ditribution;
+    @SerializedName("reproduction")
+    private String reproduction;
+    @SerializedName("food")
+    private String food;
+    @SerializedName("preservation")
+    private int preservation;
+    @SerializedName("pictureUrl")
+    private String pictureUrl;
+    @SerializedName("language")
     private int language;
-
-
-    public Animal(String name, String story, int encId, int language, int id) {
-        this.name = name;
-        this.story = story;
-        this.encId = encId;
-        this.language = language;
-        this.id = id;
-    }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -42,39 +45,43 @@ public class Animal implements java.io.Serializable{
         return story;
     }
 
-    public void setStory(String story) {
-        this.story = story;
-    }
-
     public int getEncId() {
         return encId;
     }
 
-    public void setEncId(int encId) {
-        this.encId = encId;
+    public String getCategory() {
+        return category;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public String getDitribution() {
+        return ditribution;
+    }
+
+    public String getReproduction() {
+        return reproduction;
+    }
+
+    public String getFood() {
+        return food;
+    }
+
+    public int getPreservation() {
+        return preservation;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
     public int getLanguage() {
         return language;
-    }
-
-    public void setLanguage(int language) {
-        this.language = language;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-
-    }
-
-    @Override
-    public String toString() {
-        return "Animal{" +
-                "name='" + name + '\'' +
-                ", story='" + story + '\'' +
-                ", encId=" + encId +
-                ", language=" + language +
-                ", id=" + id +
-                '}';
     }
 }

@@ -55,6 +55,7 @@ public class LoadingScreen extends AppCompatActivity{
 //                for (int i = 0; i<100000; i++){
 //                    Log.e("kk","kddddddd");
 //                }
+                changeToHebrew();
                 return null;
             }
 

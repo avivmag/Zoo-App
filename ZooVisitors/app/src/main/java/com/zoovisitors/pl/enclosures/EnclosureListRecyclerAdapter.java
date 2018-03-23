@@ -76,9 +76,12 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
                     Intent intent = new Intent(tempActivity, EnclosureActivity.class);
                     Bundle clickedEnclosure = new Bundle();
-                    clickedEnclosure.putInt("image", images[pos]); //Clicked image
-                    clickedEnclosure.putString("name", enclosuresNames[pos]);
-                    clickedEnclosure.putInt("id", enclosures[pos].getId());
+//                    clickedEnclosure.putInt("image", images[pos]); //Clicked image
+//                    clickedEnclosure.putString("name", enclosuresNames[pos]);
+//                    clickedEnclosure.putInt("id", enclosures[pos].getId());
+//                    clickedEnclosure.putString("story", enclosures[pos].getStory());
+
+                    clickedEnclosure.putSerializable("enc", enclosures[pos]);
                     intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                     tempActivity.startActivity(intent);
                 }

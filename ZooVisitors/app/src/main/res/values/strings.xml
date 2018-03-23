@@ -25,8 +25,8 @@
     <string name="series">סדרה: מ6</string>
     <string name="family">משפחה: קופי אדם</string>
     <string name="distribution">תפוצה: דרום אמריקה</string>
-    <string name="reproduction">רבייה: 50,000</string>
-    <string name="food">אוכל: בננות. יאמממם!</string>
+    <string name="reproduction">רבייה:</string>
+    <string name="food">אוכל:</string>
     <string name="shareOnFacebook">שתף בפייסבוק</string>
     <string name="showOnMap">הראה במפה</string>
 
@@ -47,4 +47,6 @@
 
     <!-- Schedule -->
     <string name="todays_event">אירועי היום</string>
+    <string name="preservation">מצב שימור</string>
+    <string name="facebook_app_id">1991264511112012</string>
 </resources>

@@ -71,7 +71,7 @@ public class MapActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Object response) {
                             mapView.addImageIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                                    enclosures[finalI].getId(),
+                                    enclosures[finalI],
                                     enclosures[finalI].getMarkerLongtitude(),
                                     enclosures[finalI].getMarkerLatitude());
                         }
