@@ -650,7 +650,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="deviceId">The device id to add</param>
         [HttpPost]
-        [Route("notifications/updateDevice/{deviceId}")]
+        [Route("notifications/updateDevice/{message}")]
         public void Notification(string message)
         {
             try
