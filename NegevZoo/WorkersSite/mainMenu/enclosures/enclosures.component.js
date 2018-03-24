@@ -157,7 +157,7 @@
 
             $scope.addEnclosureVideo    = function(selectedEnclosure, videoUrl) {
                 $scope.isLoading        = true;
-                var watchString         = videoUrl.split('watch?v=')[1];
+                var watchString         = videoUrl.split('watch?v=')[1].split('&')[0];
                 
                 var enclosureVideo      = { enclosureId: selectedEnclosure.id, videoUrl: watchString };
 
