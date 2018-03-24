@@ -42,7 +42,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
         //TODO: When we can upload images insert this lines
 //        enclosuresImages = new String[enclosures.length];
 //        for (int i = 0; i<enclosures.length; i++)
-//            enclosuresImages[i] = enclosures[i].getImage();
+//            enclosuresImages[i] = enclosures[i].getImageURL();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -76,9 +76,12 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
                     Intent intent = new Intent(tempActivity, EnclosureActivity.class);
                     Bundle clickedEnclosure = new Bundle();
-                    clickedEnclosure.putInt("image", images[pos]); //Clicked image
-                    clickedEnclosure.putString("name", enclosuresNames[pos]);
-                    clickedEnclosure.putInt("id", enclosures[pos].getId());
+//                    clickedEnclosure.putInt("image", images[pos]); //Clicked image
+//                    clickedEnclosure.putString("name", enclosuresNames[pos]);
+//                    clickedEnclosure.putInt("id", enclosures[pos].getId());
+//                    clickedEnclosure.putString("story", enclosures[pos].getStory());
+
+                    clickedEnclosure.putSerializable("enc", enclosures[pos]);
                     intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                     tempActivity.startActivity(intent);
                 }

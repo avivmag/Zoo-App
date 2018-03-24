@@ -23,13 +23,12 @@
     <string name="title_activity_animal">AnimalActivity</string>
     <string name="about_animal">About our animals</string>
     <string name="about_species">About the species</string>
-    <string name="story">Gilor, our 22-year-old olive baboon was born in the deep forests of Brazil.\n Yossi used to run from poachers and because of that he is not very friendly.\n But you can bribe him with some bananas!</string>
-    <string name="category">Category: Killer Apes</string>
-    <string name="series">Series: M6</string>
-    <string name="family">Family: Apes</string>
-    <string name="distribution">Distribution: South America</string>
-    <string name="reproduction">Reproduction: 50,000</string>
-    <string name="food">Food: BANANAS! YUMMM</string>
+    <string name="category">Category:</string>
+    <string name="series">Series:</string>
+    <string name="family">Family:</string>
+    <string name="distribution">Distribution:</string>
+    <string name="reproduction">Reproduction:</string>
+    <string name="food">Food:</string>
     <string name="searchPlaceHolder">Type enclosure or animal</string>
     <string name="shareOnFacebook">Share on facebook</string>
     <string name="showOnMap">Show on map</string>
@@ -48,4 +47,6 @@
     <!-- Schedule -->
     <string name="todays_event">Today\'s events</string>
     <string name="choose_route">Choose a route</string>
+    <string name="preservation">Preservation</string>
+    <string name="facebook_app_id">1991264511112012</string>
 </resources>

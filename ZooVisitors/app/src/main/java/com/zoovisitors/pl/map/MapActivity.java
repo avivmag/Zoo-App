@@ -1,5 +1,8 @@
 package com.zoovisitors.pl.map;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,22 +51,43 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void setNetworkDataProvider() {
-//        bl.getEnclosures(new GetObjectInterface() {
-//            @Override
-//            public void onSuccess(Object response) {
-//                enclosures = (Enclosure[]) response;
+        // TODO: get it from the server also.
+        mapView.addZooMapIcon(0, 0);
+        bl.getEnclosures(new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosures = (Enclosure[]) response;
 
-                mapView.addZooMapIcon(0, 0);
-                for(int i = 0; i<5;i++)
-                {
-                    mapView.addImageIcon("animal_" + i, "",150 + 150*i, 200 + (int)(Math.random()*100));
+
+//                for(int i = 0; i<5;i++)
+//                {
+//                    mapView.addImageIcon("animal_" + i, "",150 + 150*i, 200 + (int)(Math.random()*100));
+//                }
+
+                // get image urls
+                for (int i = 0; i < enclosures.length; i++) {
+                    final int finalI = i;
+                    bl.getImage(enclosures[i].getMarkerIconUrl(), new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            mapView.addImageIcon(new BitmapDrawable(getResources(), (Bitmap) response),
+                                    enclosures[finalI],
+                                    enclosures[finalI].getMarkerLongtitude(),
+                                    enclosures[finalI].getMarkerLatitude());
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Log.e("AVIV", response.toString());
+                        }
+                    });
                 }
-//            }
-//            @Override
-//            public void onFailure(Object response) {
-//                Log.e(GlobalVariables.LOG_TAG, "Callback failed");
-//            }
-//        });
+            }
+            @Override
+            public void onFailure(Object response) {
+                Log.e(GlobalVariables.LOG_TAG, "Callback failed");
+            }
+        });
     }
 
     private final int MAX_ALLOWED_ACCURACY = 7;
@@ -86,9 +110,6 @@ public class MapActivity extends AppCompatActivity {
                     if(calibratedPoint == null)
                         return;
                     Log.e("AVIV", "On Map Location: " + calibratedPoint.toString());
-//                    Point currentPoint =
-//                            mapDS.LatLngPointToImagePoint(calibratedPoint);
-//                    Log.e("AVIV", "Image location: " + currentPoint.toString());
                     mapView.UpdateVisitorLocation(calibratedPoint.getX(),calibratedPoint.getY());
                 }
             }

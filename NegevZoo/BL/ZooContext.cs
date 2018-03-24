@@ -278,9 +278,12 @@ namespace BL
                     throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
                 }
 
-                enclosure.id = oldEnc.id;
-                enclosures.Remove(oldEnc);
-                enclosures.Add(enclosure);
+                //enclosure.id = oldEnc.id;
+                oldEnc.markerIconUrl = enclosure.markerIconUrl;
+                oldEnc.markerLatitude = enclosure.markerLatitude;
+                oldEnc.markerLongitude = enclosure.markerLongitude;
+                oldEnc.name = enclosure.name;
+                oldEnc.pictureUrl = enclosure.pictureUrl;
             }
         }
 
@@ -329,9 +332,10 @@ namespace BL
                 {
                     throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
                 }
-                
-                enclosuresDetails.Remove(oldEnc);
-                enclosuresDetails.Add(enclosureDetail);
+
+                oldEnc.language = enclosureDetail.language;
+                oldEnc.name = enclosureDetail.name;
+                oldEnc.story = enclosureDetail.story;
             }
         }
 
@@ -374,12 +378,10 @@ namespace BL
                     throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
                 }
 
-                enclosurePicture.id = oldPic.id;
-                allEnclosurePictures.Remove(oldPic);
-                allEnclosurePictures.Add(enclosurePicture);
+                oldPic.pictureUrl = enclosurePicture.pictureUrl;
+                oldPic.enclosureId = enclosurePicture.enclosureId;
             }
         }
-
 
         /// <summary>
         /// Updates or adds The enclosure video.
@@ -422,9 +424,8 @@ namespace BL
                     throw new ArgumentException("Wrong input. Video doesn't exists");
                 }
 
-                enclosureVideo.id = oldVideo.id;
-                allEnclosureVideos.Remove(oldVideo);
-                allEnclosureVideos.Add(enclosureVideo);
+                oldVideo.videoUrl = enclosureVideo.videoUrl;
+                oldVideo.enclosureId = enclosureVideo.enclosureId;
             }
         }
 
@@ -764,8 +765,10 @@ namespace BL
                     throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
                 }
 
-                animals.Remove(oldAnimal);
-                animals.Add(animal);
+                oldAnimal.name = animal.name;
+                oldAnimal.pictureUrl = animal.pictureUrl;
+                oldAnimal.preservation = animal.preservation;
+                oldAnimal.enclosureId = animal.enclosureId;
             }
         }
 
@@ -816,8 +819,15 @@ namespace BL
                     throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
                 }
 
-                animals.Remove(oldAnimal);
-                animals.Add(animalsDetails);
+                oldAnimal.name = animalsDetails.name;
+                oldAnimal.story = animalsDetails.story;
+                oldAnimal.series = animalsDetails.series;
+                oldAnimal.reproduction = animalsDetails.reproduction;
+                oldAnimal.language = animalsDetails.language;
+                oldAnimal.food = animalsDetails.food;
+                oldAnimal.family = animalsDetails.family;
+                oldAnimal.distribution = animalsDetails.distribution;
+                oldAnimal.category = animalsDetails.category;
             }
         }
 
@@ -918,8 +928,9 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating price. Price population already exists");
                 }
 
-                prices.Remove(oldPrice);
-                prices.Add(price);
+                oldPrice.language = price.language;
+                oldPrice.population = price.population;
+                oldPrice.pricePop = price.pricePop;
             }
         }
 
@@ -1182,8 +1193,9 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating contactInfo. Contact info address and Via already exists.");
                 }
 
-                contactInfos.Remove(oldContact);
-                contactInfos.Add(contactInfo);
+                oldContact.language = contactInfo.language;
+                oldContact.via = contactInfo.via;
+                oldContact.address = contactInfo.address;
             }
         }
 
@@ -1299,8 +1311,10 @@ namespace BL
                     throw new ArgumentException("Wrong input While updating SpecialEvent. The SpecialEvent descroption already exists.");
                 }
 
-                specialEvents.Remove(oldEvent);
-                specialEvents.Add(specialEvent);
+                oldEvent.language = specialEvent.language;
+                oldEvent.startDate = specialEvent.startDate;
+                oldEvent.endDate = specialEvent.endDate;
+                oldEvent.imageUrl = specialEvent.imageUrl;
             }
         }
 
@@ -1397,8 +1411,9 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating WallFeed. The WallFeed Info already exists");
                 }
 
-                wallFeeds.Remove(oldFeed);
-                wallFeeds.Add(feed);
+                oldFeed.language = feed.language;
+                oldFeed.info = feed.info;
+                oldFeed.created = feed.created;
             }
         }
 
@@ -1643,10 +1658,10 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating a User. Name already exists");
                 }
 
-                users.Remove(oldUser);
-                users.Add(userWorker);
+                oldUser.name = userWorker.name;
+                oldUser.password = userWorker.password;
+                oldUser.isAdmin = userWorker.isAdmin;
             }
-
         }
 
         /// <summary>

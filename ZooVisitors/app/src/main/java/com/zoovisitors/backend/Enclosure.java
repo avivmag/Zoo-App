@@ -2,30 +2,51 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Gili on 12/01/2018.
  */
 
-public class Enclosure {
+public class Enclosure implements java.io.Serializable{
     @SerializedName("id")
     private int id;
-    private int[] animalsInEnc;
     @SerializedName("name")
     private String name;
+    @SerializedName("story")
+    private String story;
     private String closestEvent;
     private String youtubeVideoUrl;
-    private String image;
+    @SerializedName("markerIconUrl")
+    private String markerIconUrl;
+    @SerializedName("markerLatitude")
+    private int markerLatitude;
+    @SerializedName("markerLongtitude")
+    private int markerLongtitude;
+    @SerializedName("pictureUrl")
+    private String pictureUrl;
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getMarkerIconUrl() {
+        return markerIconUrl;
     }
 
-    public String getImage() {
-        return image;
+    public int getMarkerLatitude() {
+        return markerLatitude;
     }
 
+    public int getMarkerLongtitude() {
+        return markerLongtitude;
+    }
 
-    //TODO:: Or I need the image of the enclosure and images of the animals
+//    public void setImageURL(String imageURL) {
+//        this.imageURL = imageURL;
+//    }
+//
+//    public String getImageURL() {
+//        return imageURL;
+//    }
+
+    //TODO:: Or I need the imageURL of the enclosure and images of the animals
 
     public int getId() {
         return id;
@@ -33,14 +54,6 @@ public class Enclosure {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int[] getAnimalsInEnc() {
-        return animalsInEnc;
-    }
-
-    public void setAnimalsInEnc(int[] animalsInEnc) {
-        this.animalsInEnc = animalsInEnc;
     }
 
     public String getName() {
@@ -65,5 +78,13 @@ public class Enclosure {
 
     public void setYoutubeVideoUrl(String youtubeVideoUrl) {
         this.youtubeVideoUrl = youtubeVideoUrl;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 }

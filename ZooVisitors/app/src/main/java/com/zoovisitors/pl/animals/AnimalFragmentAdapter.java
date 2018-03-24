@@ -12,26 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Animal;
 
 public class AnimalFragmentAdapter extends FragmentPagerAdapter {
     private Context mContext;
-
-    public void setAppCompatActivity(AppCompatActivity appCompatActivity) {
-        this.appCompatActivity = appCompatActivity;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
-    private AppCompatActivity appCompatActivity;
-    private String story;
-    private String species;
+    private Animal animal;
 
     // tab titles
     private String[] tabTitles = new String[]{"about_animal", "about_species"};
@@ -46,14 +33,13 @@ public class AnimalFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         if (position == 0) {
             aboutAnimalFragment aboutAnimalFragment =  new aboutAnimalFragment();
-            aboutAnimalFragment.setAppCompatActivity(appCompatActivity);
-            Log.e("Story", story);
-            aboutAnimalFragment.setStory(story);
-            TextView storyTextView = (TextView) appCompatActivity.findViewById(R.id.animal_story);
-            //storyTextView.setText(story);
+            aboutAnimalFragment.setAnimal(animal);
             return aboutAnimalFragment;
         } else {
-            return new aboutSpeciesFragment();
+            aboutSpeciesFragment aboutSpeciesFragment = new aboutSpeciesFragment();
+            aboutSpeciesFragment.setAnimal(animal);
+
+            return aboutSpeciesFragment;
         }
     }
 
@@ -75,5 +61,9 @@ public class AnimalFragmentAdapter extends FragmentPagerAdapter {
             default:
                 return null;
         }
+    }
+
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
     }
 }

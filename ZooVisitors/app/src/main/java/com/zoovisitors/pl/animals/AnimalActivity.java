@@ -12,7 +12,6 @@ import com.zoovisitors.backend.Species;
 public class AnimalActivity extends AppCompatActivity {
 
     private Animal animal;
-    private Species species;
     private Bundle clickedAnimal;
 
     @Override
@@ -21,18 +20,13 @@ public class AnimalActivity extends AppCompatActivity {
         clickedAnimal = getIntent().getExtras();
         setContentView(R.layout.activity_animal);
         animal = (Animal) clickedAnimal.getSerializable("animal");
-//        ((VideoView) findViewById(R.id.youtubeVideo)).setVideoURI(Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA"));
-
-//        simpleVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fishvideo));
-
 
         // Find the view pager that will allow the user to swipe between fragments
         final ViewPager viewPager = (ViewPager) findViewById(R.id.animal_viewpager);
 
         // Create an adapter that knows which fragment should be shown on each page
         AnimalFragmentAdapter adapter = new AnimalFragmentAdapter(this, getSupportFragmentManager());
-        adapter.setAppCompatActivity(this);
-        adapter.setStory(animal.getStory());
+        adapter.setAnimal(animal);
 //        adapter.setSpecies(species.getAbout());
 
         // Set the adapter onto the view pager

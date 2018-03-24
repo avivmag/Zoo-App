@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 
 public class GeneralInfoActivity extends AppCompatActivity {
@@ -13,6 +14,8 @@ public class GeneralInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_info);
+
+        GlobalVariables.bl.sendDeviceId();
 
         // Find the view pager that will allow the user to swipe between fragments
         final ViewPager viewPager = (ViewPager) findViewById(R.id.general_info_pager);

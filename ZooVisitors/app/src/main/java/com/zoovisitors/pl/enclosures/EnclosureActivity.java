@@ -1,6 +1,7 @@
 package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.GetObjectInterface;
+import com.facebook.*;
 
 
 /**
@@ -45,12 +49,15 @@ public class EnclosureActivity extends AppCompatActivity {
     private Gson gson;
     private Animal[] animals;
     private Bundle clickedEnclosure;
+    private TextView enclosureStoryText;
+    private Enclosure enclosure;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
+        enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         bl = new BusinessLayerImpl(this);
-        int id = clickedEnclosure.getInt("id");
+        int id = enclosure.getId();
 
         bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -81,35 +88,60 @@ public class EnclosureActivity extends AppCompatActivity {
 
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
+        enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
 
 
-        int enclosureImageNumber = -1;
-        String enclosureName = "";
+//        int enclosureImageNumber = -1;
+//        String enclosureName = "";
+//        String enclosureStory = "";
         if(clickedEnclosure != null) {
-            enclosureImageNumber = clickedEnclosure.getInt("image");
-            enclosureName = clickedEnclosure.getString("name");
+
+//            enclosureImageNumber = clickedEnclosure.getInt("image");
+//            enclosureName = clickedEnclosure.getString("name");
+//            enclosureStory = clickedEnclosure.getString("story");
         }
-        enclosureImageView.setImageResource(enclosureImageNumber);
-        enclosureNameTextView.setText(enclosureName);
 
-        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosureName + "_closesEvent"));
+        GlobalVariables.bl.getImage(enclosure.getPictureUrl(), new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosureImageView.setImageBitmap((Bitmap) response);
+               // enclosureImageView.setImageResource(R.mipmap.african_enclosure);
 
-        //Cards and Recycle
-        recycleView = (RecyclerView) findViewById(R.id.animal_recycle);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recycleView.setLayoutManager(layoutManager);
+                enclosureNameTextView.setText(enclosure.getName());
+                enclosureStoryText.setText(enclosure.getStory());
 
-        adapter = new AnimalsRecyclerAdapter(this, animalsImages, animals);
-        recycleView.setAdapter(adapter);
-        ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
-        imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
-        imageButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA")));
-                    }
-                });
+                ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
+
+                //Cards and Recycle
+                recycleView = (RecyclerView) findViewById(R.id.animal_recycle);
+                layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
+                recycleView.setLayoutManager(layoutManager);
+
+                adapter = new AnimalsRecyclerAdapter(GlobalVariables.appCompatActivity, animalsImages, animals);
+                recycleView.setAdapter(adapter);
+                ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
+                imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
+                imageButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA")));
+                            }
+                        });
+
+
+
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("PIC", "NOT PIC");
+            }
+        });
+
+
+        //ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+
     }
 
     @Override
