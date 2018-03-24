@@ -1,5 +1,4 @@
 **/bin/
 **/obj/
 **/.vs/
-NegevZoo/WorkersSite/index.local.html
-NegevZoo/WorkersSite/app.config.local.js
+NegevZoo/assets/*

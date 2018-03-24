@@ -1,4 +1,4 @@
-﻿app.controller("loginCtrl", ['$scope', '$state', function ($scope, $state) {
+﻿app.controller('loginCtrl', ['$scope', '$state', function ($scope, $state) {
     $scope.login = function login(username, password) {
 
         // TODO:: Build login service.

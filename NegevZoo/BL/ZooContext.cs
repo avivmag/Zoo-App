@@ -206,12 +206,12 @@ namespace BL
         public IEnumerable<EnclosurePicture> GetEnclosurePicturesById(int encId)
         {
             //check that the enclosure exists
-            if (GetAllEnclosures().Any(e => e.id == encId))
+            if (!GetAllEnclosures().Any(e => e.id == encId))
             {
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllEnclosurePictures().Where(e => e.id == encId);
+            return zooDB.GetAllEnclosurePictures().Where(e => e.enclosureId == encId);
         }
 
         /// <summary>
@@ -222,12 +222,12 @@ namespace BL
         public IEnumerable<YoutubeVideoUrl> GetEnclosureVideosById(int encId)
         {
             //check that the enclosure exists
-            if (GetAllEnclosures().Any(e => e.id == encId))
+            if (!GetAllEnclosures().Any(e => e.id == encId))
             {
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllEnclosureVideos().Where(e => e.id == encId);
+            return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
 
         /// <summary>

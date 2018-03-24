@@ -2,11 +2,11 @@
     function zooSpecialEventsController($scope, $mdDialog, zooInfoService) {
         initializeComponent();
     
-    function initializeComponent() {
-            $scope.languages            = app.languages;
-            $scope.language             = $scope.languages[0];
+        function initializeComponent() {
+            $scope.languages                = app.languages;
+            $scope.language                 = $scope.languages[0];
         
-            $scope.updateContactInfos   = function (language) {
+            $scope.updateContactInfos       = function (language) {
                 $scope.language         = language;
                 $scope.isLoading        = true;
 
@@ -40,7 +40,7 @@
                 $mdDialog.show(confirm).then(function () { deleteContactInfo(contactInfo, contactInfos); });
             }
 
-            $scope.addContactInfo       = function (contactInfo) {
+            $scope.addContactInfo           = function (contactInfo) {
                 $scope.isLoading        = true;
                 var successContent      = contactInfo.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
@@ -98,7 +98,7 @@
                     );
                 });
         }
-    }])
+}])
 .directive('zooContactInfo', function () {
     return {
         templateUrl: 'mainMenu/generalInfo/contactInfo.html'

@@ -103,7 +103,7 @@
 
             specialEvents.push({ isNew: true, language: $scope.language.id, startDate, endDate, id: 0 });
         }
-    }])
+}])
 .directive('zooEvents', function () {
     return {
         templateUrl: 'mainMenu/specialEvents/specialEvents.html'

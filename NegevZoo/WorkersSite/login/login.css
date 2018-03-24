@@ -42,6 +42,14 @@ body.md-toast-animating {
     margin: 15px;
     border: black;
     border-radius: 50%;
+    image-orientation:from-image;
+}
+
+.video {
+    height: 320px; 
+    width: 320px;
+    margin: 15px;
+    border: black;
 }
 
 .picture_small {
@@ -50,6 +58,7 @@ body.md-toast-animating {
     margin: 15px;
     border: black;
     border-radius: 50%;
+    image-orientation:from-image;
 }
 
 .picture-head {
@@ -58,6 +67,6 @@ body.md-toast-animating {
     text-align: center;
 }
 
-.upload-button {
-    
+.buttonEnclosure {
+    min-width: 125px;
 }
