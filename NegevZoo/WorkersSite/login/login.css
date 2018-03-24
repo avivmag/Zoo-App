@@ -45,6 +45,13 @@ body.md-toast-animating {
     image-orientation:from-image;
 }
 
+.video {
+    height: 320px; 
+    width: 320px;
+    margin: 15px;
+    border: black;
+}
+
 .picture_small {
     height: 48px; 
     width: 48px;
@@ -60,6 +67,6 @@ body.md-toast-animating {
     text-align: center;
 }
 
-.upload-button {
-    
+.buttonEnclosure {
+    min-width: 125px;
 }

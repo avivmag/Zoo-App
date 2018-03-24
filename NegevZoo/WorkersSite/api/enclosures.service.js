@@ -12,8 +12,12 @@
     };
 
     var enclosures          = {
-        getAllEnclosures:       function ()                                     { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) },
-        updateEnclosure:        function (enclosure)                            { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: enclosure }); }
+        getAllEnclosures:           function ()                                     { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) },
+        updateEnclosure:            function (enclosure)                            { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: enclosure }); },
+        deleteEnclosure:            function (encId)                                { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', encId] }); },
+        getEnclosureVideosById:     function (encId)                                { return httpService.httpGet({ url: [serviceBaseUrl, 'videos', encId] }); },
+        getEnclosurePicturesById:   function (encId)                                { return httpService.httpGet({ url: [serviceBaseUrl, 'pictures', encId] }); },
+        updateVideoById:            function (video)                                { return httpService.httpPost({ url: [serviceBaseUrl, 'video', 'update'], body: video }); }
     };
     var enclosureService = {
         enclosures,

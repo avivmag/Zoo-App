@@ -1,12 +1,14 @@
 ﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'fileUpload',
 
     function enclosureController($scope, $mdDialog, utilitiesService, enclosureService, fileUpload) {
-        $scope.page             = 'list';
-        $scope.baseURL          = app.baseURL;
-        
         initializeComponent();
         
+        $scope.updateEnclosures();
+
         function initializeComponent() {
+            $scope.page             = 'list';
+            $scope.baseURL          = app.baseURL;
+
             $scope.updateEnclosures     = function () {
                 $scope.isLoading        = true;
 
@@ -17,12 +19,7 @@
                         $scope.isLoading    = false;
                     },
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                            .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים')
                         
                         $scope.isLoading    = false;
                     });
@@ -46,12 +43,23 @@
                             $scope.enclosureDetails.sort(function(a, b) { return a.language-b.language; });
                         },
                         function () {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                                .ok('סגור')
-                            );
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                        });
+
+                    enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
+                        function (data) {
+                            $scope.selectedEnclosure.videos = data.data;
+                        },
+                        function () {
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                        });
+
+                    enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
+                        function (data) {
+                            $scope.selectedEnclosure.pictures = data.data;
+                        },
+                        function () {
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
                 }
             };
@@ -65,6 +73,7 @@
                     clickOutsideToClose:    true,
                 })
                 .then(function(clickPosition) {
+                    console.log('pos', clickPosition);
                     selectedEnclosure.markerLongitude   = clickPosition.width;
                     selectedEnclosure.markerLatitude    = clickPosition.height;
                 });
@@ -77,27 +86,38 @@
 
                     enclosureService.enclosures.updateEnclosure(enclosure).then(
                         function () {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .clickOutsideToClose(true)
-                                    .textContent(successContent)
-                                    .ok('סגור')
-                            );
+                            utilitiesService.utilities.alert(successContent);
 
-                            $scope.isLoading = false;
+                            $scope.updateEnclosures();
                         },
                         function () {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .clickOutsideToClose(true)
-                                    .textContent(failContent)
-                                    .ok('סגור')
-                            );
+                            utilitiesService.utilities.alert(failContent);
 
                             $scope.isLoading = false;
                         });
             };
-                
+
+            $scope.deleteEnclosure      = function(encId) {
+                $scope.isLoading        = true;
+
+                enclosureService.enclosures.deleteEnclosure(encId).then(
+                    function() {
+                        utilitiesService.utilities.alert("המתחם נמחק בהצלחה!");
+
+                        $scope.page                 = 'list';
+                        $scope.selectedEnclosure    = { };
+                        
+                        $scope.updateEnclosures();
+                    },
+
+                    function () {
+                        utilitiesService.utilities.alert("חלה שגיאה במחיקת המתחם.");
+
+                        $scope.isLoading            = false;
+                    }
+                )
+            }
+
             $scope.addEnclosureDetail   = function(enclosureDetail) {
                 $scope.isLoading            = true;
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
@@ -105,55 +125,65 @@
 
                     enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
                         function () {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .clickOutsideToClose(true)
-                                    .textContent(successContent)
-                                    .ok('סגור')
-                            );
+                            utilitiesService.utilities.alert(successContent);
 
                             $scope.isLoading = false;
                         },
                         function () {
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .clickOutsideToClose(true)
-                                    .textContent(failContent)
-                                    .ok('סגור')
-                            );
+                            utilitiesService.utilities.alert(failContent);
 
                             $scope.isLoading = false;
                         });
             }
 
-            $scope.updateEnclosures();
+            $scope.uploadFile           = function(file, element, saveProperty) {
+                $scope.isLoading            = true;
+    
+                var uploadUrl               = 'enclosures/upload';
+    
+                fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
+                    element[saveProperty]   = success.data[0];
+    
+                    utilitiesService.utilities.alert('ההעלאה הושלמה בהצלחה!')
+    
+                    $scope.isLoading        = false;
+                },
+                function () {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה')
+    
+                    $scope.isLoading        = false;
+                });
+            }
+
+            $scope.addEnclosureVideo    = function(selectedEnclosure, videoUrl) {
+                $scope.isLoading        = true;
+                var watchString         = videoUrl.split('watch?v=')[1];
+                
+                var enclosureVideo      = { enclosureId: selectedEnclosure.id, videoUrl: watchString };
+
+                enclosureService.enclosures.updateVideoById(enclosureVideo).then(
+                    function () {
+                        utilitiesService.utilities.alert('הסרטון הועלה בהצלחה!');
+
+                        selectedEnclosure.videos.push(enclosureVideo);
+
+                        $scope.isLoading    = false;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה בעת העלאת הסרטון.');
+
+                        $scope.isLoading    = false;
+                    }
+                )
+            }
         };
-
-        $scope.uploadFile = function(file, element, saveProperty) {
-            $scope.isLoading            = true;
-
-            var uploadUrl               = "enclosures/upload";
-
-            fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
-                element[saveProperty]   = success.data[0];
-
-                utilitiesService.utilities.alert('ההעלאה הושלמה בהצלחה!')
-
-                $scope.isLoading        = false;
-            },
-            function () {
-                utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה')
-
-                $scope.isLoading        = false;
-            });
-        }
 
         function MapDialogController($scope, $mdDialog) {
             $scope.img          = new Image();
-
+            
             $scope.img.onload = function () {
                 $scope.originalPicWidth = document.getElementById('pic').width;
-
+                
                 $scope.mapStyle = {
                     width:  $scope.img.width + 'px',
                     height: $scope.img.height + 'px'
@@ -161,13 +191,13 @@
             }
             
             // TODO:: get map from database.
-            $scope.img.src = "http://localhost:5987/assets/zoo_map.png";
+            $scope.img.src = app.baseUrl + 'assets/zoo_map.png';
 
             $scope.clickMap = function(event) {
                 var widthOffset     = $scope.img.width - $scope.originalPicWidth;
 
                 var clickPosition   = {
-                    width: event.layerX + widthOffset,
+                    width:  event.layerX + widthOffset,
                     height: event.layerY
                 };
 
