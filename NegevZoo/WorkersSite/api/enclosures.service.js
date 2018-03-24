@@ -12,8 +12,8 @@
     };
 
     var enclosures          = {
-        getAllEnclosures:       function ()                                 { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) },
-        updateEnclosure:        function (enclosure)                        { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: enclosure }); }
+        getAllEnclosures:       function ()                                     { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) },
+        updateEnclosure:        function (enclosure)                            { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: enclosure }); }
     };
     var enclosureService = {
         enclosures,

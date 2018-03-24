@@ -1,32 +1,33 @@
-﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'enclosureService', 'fileUpload',
-function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
-    $scope.page             = 'list';
-    $scope.baseURL          = app.baseURL;
-    initializeComponent();
-    
-    function initializeComponent() {
-        $scope.updateEnclosures     = function () {
-            $scope.isLoading        = true;
-            $scope.enclosureDetails = { };
+﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'fileUpload',
 
-            $scope.languages        = app.languages;
-            enclosureService.enclosures.getAllEnclosures().then(
-                function (data) {
-                    $scope.enclosures   = data.data;
-                    $scope.isLoading    = false;
-                },
-                function () {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                        .clickOutsideToClose(true)
-                        .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                        .ok('סגור')
-                    );
-                    
-                    $scope.isLoading    = false;
-                });
+    function enclosureController($scope, $mdDialog, utilitiesService, enclosureService, fileUpload) {
+        $scope.page             = 'list';
+        $scope.baseURL          = app.baseURL;
+        
+        initializeComponent();
+        
+        function initializeComponent() {
+            $scope.updateEnclosures     = function () {
+                $scope.isLoading        = true;
+
+                $scope.languages        = app.languages;
+                enclosureService.enclosures.getAllEnclosures().then(
+                    function (data) {
+                        $scope.enclosures   = data.data;
+                        $scope.isLoading    = false;
+                    },
+                    function () {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .textContent('אירעה שגיאה במהלך טעינת הנתונים')
+                            .ok('סגור')
+                        );
+                        
+                        $scope.isLoading    = false;
+                    });
             };
-            
+                
             $scope.switchPage           = function(page, selectedEnclosure) {
                 $scope.page                 = page;
                 $scope.selectedEnclosure    = selectedEnclosure || { };
@@ -54,7 +55,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                         });
                 }
             };
-            
+                
             $scope.openMap              = function(ev, selectedEnclosure) {
                 $mdDialog.show({
                     controller:             MapDialogController,
@@ -73,7 +74,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                 $scope.isLoading            = true;
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
-    
+
                     enclosureService.enclosures.updateEnclosure(enclosure).then(
                         function () {
                             $mdDialog.show(
@@ -82,7 +83,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                                     .textContent(successContent)
                                     .ok('סגור')
                             );
-    
+
                             $scope.isLoading = false;
                         },
                         function () {
@@ -92,16 +93,16 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                                     .textContent(failContent)
                                     .ok('סגור')
                             );
-    
+
                             $scope.isLoading = false;
                         });
             };
-            
+                
             $scope.addEnclosureDetail   = function(enclosureDetail) {
                 $scope.isLoading            = true;
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
-    
+
                     enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
                         function () {
                             $mdDialog.show(
@@ -110,7 +111,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                                     .textContent(successContent)
                                     .ok('סגור')
                             );
-    
+
                             $scope.isLoading = false;
                         },
                         function () {
@@ -120,7 +121,7 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                                     .textContent(failContent)
                                     .ok('סגור')
                             );
-    
+
                             $scope.isLoading = false;
                         });
             }
@@ -130,20 +131,16 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
 
         $scope.uploadFile = function() {
             var file = $scope.myFile;
-               
-            $scope.isLoading = true;
+                
+            console.log(file);
+            $scope.isLoading    = true;
 
-            var uploadUrl = "enclosures/upload";
+            var uploadUrl       = "enclosures/upload";
 
             fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
                 $scope.selectedEnclosure.markerIconUrl = success.data[0];
 
-                $mdDialog.show(
-                    $mdDialog.alert()
-                    .clickOutsideToClose(true)
-                    .textContent('ההעלאה הושלמה בהצלחה!')
-                    .ok('סגור')
-                );
+                utilitiesService.utilities.alert('ההעלאה הושלמה בהצלחה!')
 
                 $scope.isLoading    = false;
             },
@@ -174,10 +171,10 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
             // TODO:: get map from database.
             $scope.img.src = "http://localhost:5987/assets/zoo_map.png";
 
-            $scope.test = function(event) {
-                var widthOffset = $scope.img.width - $scope.originalPicWidth;
+            $scope.clickMap = function(event) {
+                var widthOffset     = $scope.img.width - $scope.originalPicWidth;
 
-                var clickPosition = {
+                var clickPosition   = {
                     width: event.layerX + widthOffset,
                     height: event.layerY
                 };
@@ -185,9 +182,9 @@ function enclosureController($scope, $mdDialog, enclosureService, fileUpload) {
                 $mdDialog.hide(clickPosition);
             }
         }
-    }])
-    .directive('zooEnclosures', function () {
-        return {
-            templateUrl: 'mainMenu/enclosures/enclosures.html'
-        };
-    });
+}])
+.directive('zooEnclosures', function () {
+    return {
+        templateUrl: 'mainMenu/enclosures/enclosures.html'
+    };
+});

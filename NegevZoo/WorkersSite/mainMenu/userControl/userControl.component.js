@@ -115,7 +115,7 @@
         function addEmptyUser(users) {
             users.push({ id: 0, isNew: true });
         }
-    }])
+}])
 .directive('zooUserControl', function () {
     return {
         templateUrl: 'mainMenu/userControl/userControl.html'

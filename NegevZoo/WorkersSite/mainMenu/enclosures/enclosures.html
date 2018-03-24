@@ -73,8 +73,8 @@
                 </md-card-content>
         </md-card-content>
     </md-card>
-    <md-card>
-        <md-card-content ng-if="page==='edit'">
+    <md-card ng-if="page==='edit' && !isLoading">
+        <md-card-content>
             <md-tabs md-selected="selectedTab" md-stretch-tabs="always" md-dynamic-height>
                 <md-tab ng-repeat="language in languages" label="{{ language.name }}">
                     <md-card-content style="margin-right: 4%"  layout="column">

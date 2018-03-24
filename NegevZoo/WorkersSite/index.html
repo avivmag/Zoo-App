@@ -3,27 +3,34 @@
 <head>
     <meta charset="utf-8" />
 
+    <!-- css -->
     <link rel="stylesheet" href="login/login.css">
 
-    <link rel="stylesheet"
-          href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.7/angular-material.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.7/angular-material.min.js"></script>
-
-    <script src="https://angular-ui.github.io/ui-router/release/angular-ui-router.min.js"></script>
-
-    <script src="moment.min.js"></script>
+    <!-- external sources -->
+    <link rel="stylesheet" href="ext/angular/angular-material.min.css">
+    <script src="ext/angular/angular.min.js"></script>
+    <script src="ext/angular/angular-animate.min.js"></script>
+    <script src="ext/angular/angular-aria.min.js"></script>
+    <script src="ext/angular/angular-messages.min.js"></script>
+    <script src="ext/angular/angular-material.min.js"></script>
+    <script src="ext/angular/angular-ui-router.min.js"></script>
+    <script src="ext/moment.min.js"></script>
+    
+    <!-- config -->
     <script src="app.config.js"></script>
     <script src="main.route.js"></script>
+
+    <!-- api -->
     <script src="api/http.service.js"></script>
     <script src="api/enclosures.service.js"></script>
     <script src="api/animals.service.js"></script>
     <script src="api/users.service.js"></script>
+    <script src="api/upload.service.js"></script>
     <script src="api/zooInfo.service.js"></script>
     <script src="api/utilities.service.js"></script>
+
+    
+    <!-- components -->
     <script src="index.component.js"></script>
     <script src="login/login.component.js"></script>
     <script src="mainMenu/mainMenu.component.js"></script>
@@ -35,7 +42,6 @@
     <script src="mainMenu/generalInfo/prices.component.js"></script>
     <script src="mainMenu/generalInfo/openingHours.component.js"></script>
     <script src="mainMenu/generalInfo/contactInfo.component.js"></script>
-
 </head>
 
 <body ng-app="visitors_app" ng-controller="indexController as vm">

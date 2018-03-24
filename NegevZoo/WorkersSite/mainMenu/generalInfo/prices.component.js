@@ -100,7 +100,7 @@
                     );
                 });
         }
-    }])
+}])
 .directive('zooPrices', function () {
     return {
         templateUrl: 'mainMenu/generalInfo/prices.html'
