@@ -57,11 +57,19 @@
                         <input style="width: 200px" ng-model="selectedEnclosure.name" required type="text">
                     </md-input-container>
 
-                    <div style="margin-top: 7px">
-                        בחר אייקון להעלות:
-                        <input type="file" file-model="myFile" accept="image/*"/>
-                        <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile()">העלה אייקון חדש</md-button>
-                    </div>
+                    <ng-card-content layout="column">
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר אייקון להעלות:</div>
+                            <input type="file" file-model="iconPic" accept="image/*"/>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(iconPic, selectedEnclosure, 'markerIconUrl')">העלה אייקון חדש</md-button>
+                        </div>
+
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר תמונת פרופיל להעלות:</div>
+                            <input type="file" file-model="profilePic" accept="image/*"/>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(profilePic, selectedEnclosure, 'pictureUrl')">העלה תמונת פרופיל חדשה</md-button>
+                        </div>
+                    </ng-card-content>
                     <div layout="row">
                         <md-button class="md-raised md-primary" ng-click="openMap($event, selectedEnclosure)">מקם את המתחם על המפה</md-button>
                         <md-button class="md-raised md-primary" ng-click="">נהל תמונות מתחם</md-button>

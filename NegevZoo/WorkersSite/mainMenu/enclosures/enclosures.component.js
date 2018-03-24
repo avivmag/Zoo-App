@@ -129,30 +129,22 @@
             $scope.updateEnclosures();
         };
 
-        $scope.uploadFile = function() {
-            var file = $scope.myFile;
-                
-            console.log(file);
-            $scope.isLoading    = true;
+        $scope.uploadFile = function(file, element, saveProperty) {
+            $scope.isLoading            = true;
 
-            var uploadUrl       = "enclosures/upload";
+            var uploadUrl               = "enclosures/upload";
 
             fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
-                $scope.selectedEnclosure.markerIconUrl = success.data[0];
+                element[saveProperty]   = success.data[0];
 
                 utilitiesService.utilities.alert('ההעלאה הושלמה בהצלחה!')
 
-                $scope.isLoading    = false;
+                $scope.isLoading        = false;
             },
             function () {
-                $mdDialog.show(
-                    $mdDialog.alert()
-                    .clickOutsideToClose(true)
-                    .textContent('אירעה שגיאה במהלך ההעלאה')
-                    .ok('סגור')
-                );
+                utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה')
 
-                $scope.isLoading    = false;
+                $scope.isLoading        = false;
             });
         }
 

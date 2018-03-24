@@ -42,6 +42,7 @@ body.md-toast-animating {
     margin: 15px;
     border: black;
     border-radius: 50%;
+    image-orientation:from-image;
 }
 
 .picture_small {
@@ -50,6 +51,7 @@ body.md-toast-animating {
     margin: 15px;
     border: black;
     border-radius: 50%;
+    image-orientation:from-image;
 }
 
 .picture-head {
