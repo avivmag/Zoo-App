@@ -1,5 +1,6 @@
 package com.zoovisitors.bl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -38,9 +39,9 @@ public class BusinessLayerImpl implements BusinessLayer {
     private Gson gson;
     private String json;
 
-    public BusinessLayerImpl(AppCompatActivity appCompatActivity) {
-        ni = new NetworkImpl(appCompatActivity);
-        is = new InternalStorage(appCompatActivity);
+    public BusinessLayerImpl(Activity activity) {
+        ni = new NetworkImpl(activity);
+        is = new InternalStorage(activity);
         gson = new Gson();
     }
 
