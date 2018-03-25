@@ -60,8 +60,8 @@ public class NetworkImpl implements NetworkInterface {
                         responseInterface.onSuccess(response);
                     }
                 },
-                30,
-                30,
+                120,
+                120,
                 ImageView.ScaleType.CENTER_CROP,
                 Bitmap.Config.RGB_565,
                 new Response.ErrorListener() {
