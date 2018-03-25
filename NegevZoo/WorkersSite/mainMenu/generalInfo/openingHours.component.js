@@ -115,7 +115,7 @@
                     );
                 });
         }
-    }])
+}])
 .directive('zooOpeningHours', function () {
     return {
         templateUrl: 'mainMenu/generalInfo/openingHours.html'

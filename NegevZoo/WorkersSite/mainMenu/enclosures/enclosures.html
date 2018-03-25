@@ -57,24 +57,76 @@
                         <input style="width: 200px" ng-model="selectedEnclosure.name" required type="text">
                     </md-input-container>
 
-                    <div style="margin-top: 7px">
-                        בחר אייקון להעלות:
-                        <input type="file" file-model="myFile" accept="image/*"/>
-                        <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile()">העלה אייקון חדש</md-button>
-                    </div>
+                    <ng-card-content layout="column">
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר אייקון להעלות:</div>
+                            <input type="file" file-model="iconPic" accept="image/*"/>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(iconPic, selectedEnclosure, 'markerIconUrl')">העלה אייקון חדש</md-button>
+                        </div>
+
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר תמונת פרופיל להעלות:</div>
+                            <input type="file" file-model="profilePic" accept="image/*"/>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(profilePic, selectedEnclosure, 'pictureUrl')">העלה תמונת פרופיל חדשה</md-button>
+                        </div>
+                    </ng-card-content>
                     <div layout="row">
                         <md-button class="md-raised md-primary" ng-click="openMap($event, selectedEnclosure)">מקם את המתחם על המפה</md-button>
-                        <md-button class="md-raised md-primary" ng-click="">נהל תמונות מתחם</md-button>
-                        <md-button class="md-raised md-primary" ng-click="">נהל קליפי וידאו</md-button>
                     </div>
-                    <div layout="row" layout-align="end center">
-                        <md-button style="background-color:darkviolet" class="md-raised md-accent" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
+                    <div layout="column" layout-align="end end">
+                        <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
+                        <md-button  ng-if="page==='edit'" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="deleteEnclosure(selectedEnclosure.id)">מחק מתחם</md-button>
                     </div>
                 </md-card-content>
         </md-card-content>
     </md-card>
-    <md-card>
-        <md-card-content ng-if="page==='edit'">
+
+    <md-card ng-if="page==='edit' && !isLoading" layout="column">
+        <md-card-title layout="column">
+            <md-card-title-text class="md-headline">קטעי וידאו של המתחם:</md-card-title-text>
+            
+            <div layout="row">
+                <md-input-container>
+                    <label>הוסף וידאו של חיה</label>
+                    <input style="width: 200px" ng-model="enclosureVideoUrl" type="text">
+                </md-input-container>
+                <div>
+                    <md-button class="md-raised md-primary" ng-click="addEnclosureVideo(selectedEnclosure, enclosureVideoUrl)">הוסף</md-button>
+                </div>
+            </div>
+        </md-card-title>
+        
+        <ng-content layout="row" layout-align="space-between">
+            <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+                <div ng-repeat="video in selectedEnclosure.videos" ng-show="$index % 4 === colIndex" layout="column">
+                    <youtube-video class="video" video-id="video.videoUrl"></youtube-video>
+                    <md-button class="md-raised md-warn">מחק סרטון</md-button>
+                </div>
+            </div>
+        </ng-content>
+    </md-card>
+
+    <md-card ng-if="page==='edit' && !isLoading">
+        <md-card-title>
+            <md-card-title-text class="md-headline">תמונות של המתחם:</md-card-title-text>
+        </md-card-title>
+
+        <ng-content layout="row" layout-align="space-between">
+            <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+                <div ng-repeat="picture in selectedEnclosure.pictures" ng-show="$index % 4 === colIndex" layout="column">
+                    <img class="picture" ng-src="{{ baseURL + picture.pictureUrl }}" alt="{{ enclosure.name }}" />
+                    <md-button class="md-raised md-warn">מחק תמונה</md-button>
+                </div>
+            </div>
+        </ng-content>
+    </md-card>
+
+    <md-card ng-if="page==='edit' && !isLoading">
+        <md-card-title>
+            <md-card-title-text class="md-headline">מלל המתחם בשפות השונות:</md-card-title-text>
+        </md-card-title>
+
+        <md-card-content>
             <md-tabs md-selected="selectedTab" md-stretch-tabs="always" md-dynamic-height>
                 <md-tab ng-repeat="language in languages" label="{{ language.name }}">
                     <md-card-content style="margin-right: 4%"  layout="column">
@@ -94,5 +146,20 @@
                 </md-tab>
             </md-tabs>
         </md-card-content>
+    </md-card>
+
+    <md-card ng-if="page==='edit' && !isLoading">
+        <md-card-title>
+            <md-card-title-text class="md-headline">חיות המתחם:</md-card-title-text>
+        </md-card-title>
+
+        <ng-content layout="row" layout-align="space-between">
+            <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+                <div ng-repeat="animal in selectedEnclosure.animals" ng-show="$index % 4 === colIndex" layout="column">
+                    <img class="picture" ng-src="{{ baseURL + picture.pictureUrl }}" alt="{{ enclosure.name }}" />
+                    <md-button class="md-raised md-warn">מחק תמונה</md-button>
+                </div>
+            </div>
+        </ng-content>
     </md-card>
 </div>

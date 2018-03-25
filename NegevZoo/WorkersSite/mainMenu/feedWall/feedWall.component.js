@@ -1,8 +1,8 @@
 ﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService',
-function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
-    initializeComponent();
-    
-    function initializeComponent() {
+    function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
+        initializeComponent();
+        
+        function initializeComponent() {
             $scope.languages            = app.languages;
             $scope.language             = $scope.languages[0];
         
@@ -98,7 +98,7 @@ function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
                     );
                 });
         }
-    }])
+}])
 .directive('zooFeedWall', function () {
     return {
         templateUrl: 'mainMenu/feedWall/feedWall.html'
