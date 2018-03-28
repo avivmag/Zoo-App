@@ -50,10 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GlobalVariables.appCompatActivity = this;
         //changeToHebrew();
-
-        String android_id = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        Log.e("gil", android_id);
+        
         //Initialize business layer (change for testing)
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
