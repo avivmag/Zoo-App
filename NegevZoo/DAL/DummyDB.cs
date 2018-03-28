@@ -36,6 +36,8 @@ namespace DAL
             AllLanguages        = new TestDbSet<Language>();
             AllEnclosursDetails = new TestDbSet<EnclosureDetail>();
             AllAnimalsDetails   = new TestDbSet<AnimalDetail>();
+            AllEnclosurePictures= new TestDbSet<EnclosurePicture>();
+            AllYoutubeVideoUrls = new TestDbSet<YoutubeVideoUrl>();
 
             AllLanguages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
@@ -49,6 +51,8 @@ namespace DAL
             ContactInfos.AddRange(InitialContactInfos());
             Users.AddRange(InitializeUsers());
             AllEnclosursDetails.AddRange(InitializeEnclosureDetails());
+            AllEnclosurePictures.AddRange(InitializeEnclosurePictures());
+            AllYoutubeVideoUrls.AddRange(InitializeYouTubeVidoes());
             AllAnimalsDetails.AddRange(InitializeAnimalsDetails());
         }
 
@@ -91,6 +95,7 @@ namespace DAL
         protected DbSet<AnimalDetail> AllAnimalsDetails { get; set; }
         protected DbSet<EnclosurePicture> AllEnclosurePictures { get; set; }
         protected DbSet<YoutubeVideoUrl> AllYoutubeVideoUrls { get; set; }
+        protected DbSet<Device> AllDevices { get; set; }
 
         #endregion 
 
@@ -119,6 +124,12 @@ namespace DAL
                     {
                         id          = 3,
                         name        = "זברה",
+                    },
+
+                    new Enclosure
+                    {
+                        id          = 4,
+                        name        = "קרנף לבן"
                     }
             };
         }
@@ -178,6 +189,65 @@ namespace DAL
                     name = "Zebra",
                     story = "Our saved Zebra."
 
+                },
+
+                new EnclosureDetail
+                {
+                    encId = 4,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name = "קרנף לבן",
+                    story = "למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים"
+                }
+            };
+        }
+
+        private IEnumerable<EnclosurePicture> InitializeEnclosurePictures()
+        {
+            return new List<EnclosurePicture>
+            {
+                new EnclosurePicture
+                {
+                    id = 1,
+                    enclosureId = 1,
+                    pictureUrl = "url1"
+                },
+
+                new EnclosurePicture
+                {
+                    id = 2,
+                    enclosureId = 2,
+                    pictureUrl = "url2"
+                },
+                new EnclosurePicture
+                {
+                    id = 3,
+                    enclosureId = 2,
+                    pictureUrl = "url3"
+                }
+            };
+        }
+
+        private IEnumerable<YoutubeVideoUrl> InitializeYouTubeVidoes()
+        {
+            return new List<YoutubeVideoUrl>
+            {
+                new YoutubeVideoUrl
+                {
+                    id = 1,
+                    enclosureId = 1,
+                    videoUrl = "video1"
+                },
+                new YoutubeVideoUrl
+                {
+                    id = 2,
+                    enclosureId = 2,
+                    videoUrl = "video2"
+                },
+                new YoutubeVideoUrl
+                {
+                    id = 3,
+                    enclosureId = 2,
+                    videoUrl = "video3"
                 }
             };
         }
@@ -1110,6 +1180,10 @@ namespace DAL
             return AllYoutubeVideoUrls;
         }
 
+        public override DbSet<Device> getAllDevices()
+        {
+            return AllDevices;
+        }
         #endregion
     }
 }
