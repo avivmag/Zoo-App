@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 using DAL;
@@ -359,6 +360,33 @@ namespace NegevZoo.Controllers
             }
         }
 
+
+
+
+        [HttpPost]
+        [Route("SpecialEvents/upload")]
+        public IHttpActionResult SpecialEventsImagesUpload()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count < 1)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.ImagesUpload(httpRequest, @"~/assets/specialEvents/");
+                    return Ok();
+                }
+            }
+            catch (Exception exp)
+            {
+                //TODO: add log
+                throw new Exception("kaki");
+            }
+        }
         #endregion
 
         #region Wall Feed
@@ -390,16 +418,17 @@ namespace NegevZoo.Controllers
         /// Add or updates the WallFeed.
         /// </summary>
         /// <param name="feed">The WallFeed to add or update</param>
+        /// <param name="isPush">is the feed need to be pushed</param>
         [HttpPost]
-        [Route("Wallfeed/update")]
-        public void UpdateWallFeed(WallFeed feed)
+        [Route("Wallfeed/update/{feed}/{isPush}")]
+        public void UpdateWallFeed(WallFeed feed, bool isPush)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed);
+                    db.UpdateWallFeed(feed, isPush);
                 }
             }
             catch (Exception Exp)

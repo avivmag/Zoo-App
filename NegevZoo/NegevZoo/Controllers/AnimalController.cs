@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using DAL;
 using DAL.Models;
@@ -225,5 +226,32 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+
+
+        [HttpPost]
+        [Route("animals/upload")]
+        public IHttpActionResult AnimalsImagesUpload()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count < 1)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.ImagesUpload(httpRequest, @"~/assets/animals/");
+                    return Ok();
+                }
+            }
+            catch (Exception exp)
+            {
+                //TODO: add log
+                throw new Exception("kaki");
+            }
+        }
     }
 }
