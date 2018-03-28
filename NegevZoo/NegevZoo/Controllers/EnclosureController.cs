@@ -174,7 +174,6 @@ namespace NegevZoo.Controllers
             }
         }
 
-
         /// <summary>
         /// Gets the enclosure's recurring events by it's encId.
         /// </summary>
@@ -461,7 +460,6 @@ namespace NegevZoo.Controllers
                 postedFile.SaveAs(filePath);
 
                 fileNames.Add(fileName);
-                // NOTE: To store in memory use postedFile.InputStream
             }
 
             var responseObject = new JArray();
