@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using DAL;
 using DAL.Models;
+using Newtonsoft.Json;
 
 namespace BL
 {
@@ -64,27 +67,54 @@ namespace BL
         }
 
         /// <summary>
-        /// Gets the enclosures types results.
+        /// send notification to all the users
         /// </summary>
-        /// <returns>The enclosures types .</returns>
-        public IEnumerable<Enclosure> GetAllEnclosures()
+        /// <param name="language">The enclosure's data language.</param>
+        /// <returns>The enclosures.</returns>
+        public bool SendNotificationsAllDevices(string title, string body)
         {
-            return zooDB.GetAllEnclosures();
+            Task.Factory.StartNew(() => NotifyAsync(title, body));
+
+            return true;
         }
 
-        /// <summary>
-        /// Gets the enclosure details by the enclosure type id.
-        /// </summary>
-        /// <param name="encId">The enclosure's type id.</param>
-        /// <returns>The enclosure details in all the languages.</returns>
-        public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
+        private async void NotifyAsync(string title, string body)
         {
-            if (!GetAllEnclosures().Any(e => e.id == encId))
-            {
-                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            }
+            string senderIdConfig = ConfigurationManager.AppSettings["senderId"];
+            string serverKeyConfig = ConfigurationManager.AppSettings["serverKey"];
 
-            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
+            var devices = zooDB.getAllDevices();
+            foreach (Device d in devices)
+            {
+                try
+                {
+                    var serverKey = string.Format("key={0}", serverKeyConfig);
+                    var senderId = string.Format("id={0}", senderIdConfig);
+
+                    var data = new
+                    {
+                        d.deviceId,
+                        notification = new { title, body }
+                    };
+
+                    var jsonBody = JsonConvert.SerializeObject(data);
+
+                    using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
+                    {
+                        httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
+                        httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                        httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                        using (var httpClient = new HttpClient())
+                        {
+                            await httpClient.SendAsync(httpRequest);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
 
         /// <summary>
@@ -95,6 +125,7 @@ namespace BL
         /// <returns>The enclosure.</returns>
         public EnclosureResult GetEnclosureById(int id, int language)
         {
+            //validate atrributes
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
@@ -130,7 +161,7 @@ namespace BL
 
             return enclosureResult; 
         }
-   
+
         /// <summary>
         /// Gets the enclosure by it's name.
         /// </summary>
@@ -146,7 +177,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            var encDetails = zooDB.GetAllEnclosureDetails().Where(e => e.name.Contains(name) && e.language == language);
+            var encDetails = zooDB.GetAllEnclosureDetails().Where(e => e.name.Contains(name));
 
             // it there are details in the name and language
             if (encDetails != null)
@@ -174,7 +205,31 @@ namespace BL
                                                             (e.markerLongitude <= longtitud + 5 && e.markerLongitude >= longtitud - 5) &&
                                                             (e.markerLatitude <= latitude + 5 && e.markerLatitude >= latitude - 5) );
         }
-        
+
+        /// <summary>
+        /// Gets the enclosures types results.
+        /// </summary>
+        /// <returns>The enclosures types .</returns>
+        public IEnumerable<Enclosure> GetAllEnclosures()
+        {
+            return zooDB.GetAllEnclosures();
+        }
+
+        /// <summary>
+        /// Gets the enclosure details by the enclosure type id.
+        /// </summary>
+        /// <param name="encId">The enclosure's type id.</param>
+        /// <returns>The enclosure details in all the languages.</returns>
+        public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
+        {
+            if (!GetAllEnclosures().Any(e => e.id == encId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            }
+
+            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
+        }
+
         /// <summary>
         /// Gets the enclosure's recurring events by it's id.
         /// </summary>
@@ -197,7 +252,7 @@ namespace BL
 
             return zooDB.GetAllRecuringEvents().Where(re => re.language == language && re.enclosureId == encId).ToList();
         }
-
+   
         /// <summary>
         /// Gets the enclosure's pictures by it's id.
         /// </summary>
@@ -229,6 +284,7 @@ namespace BL
 
             return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
+        
 
         /// <summary>
         /// Updates The enclosure.
@@ -309,23 +365,23 @@ namespace BL
             //2. enclosure detail name
             if (IsEmptyString(enclosureDetail.name) || IsNullOrWhiteSpace(enclosureDetail.name))
             {
-                throw new ArgumentException("Wrong input. enclosure name is empty or white space");
+                throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
-
-            //TODO: add a check to latitude or longtitude out of the range of the zoo.
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
-            //update existing enclosure
+            //get the existing enclosure detail
             EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
-
-            //check that the enclosure exists
-            if (oldEnc == null)
+            
+            if (oldEnc == null) //add a new enclosure details
             {
+                if (enclosuresDetails.Any(ed => ed.name == enclosureDetail.name))
+                {
+                    throw new ArgumentException("Wrong input. The name of the enclosure alreay exists.");
+                }
                 enclosuresDetails.Add(enclosureDetail);
-
             }
-            else
+            else //update an exists enclosure detail
             {
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosureDetail.name && enclosuresDetails.Any(en => en.name == enclosureDetail.name))//The name changed
@@ -505,9 +561,7 @@ namespace BL
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
             }
 
-            var enclosureToDelete = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id);
-
-            zooDB.GetAllEnclosureDetails().RemoveRange(enclosureToDelete);
+            zooDB.GetAllEnclosureDetails().ToList().RemoveAll(ed => ed.encId == enclosure.id);
             zooDB.GetAllEnclosures().Remove(enclosure);
         }
 
@@ -1684,7 +1738,7 @@ namespace BL
         #endregion
 
         #region Notification support
-        public void UpdateDeviceOnline(string deviceId)
+        public void UpdateDevice(string deviceId, Double Longtitude, Double Latitude)
         {
             //if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
             //{

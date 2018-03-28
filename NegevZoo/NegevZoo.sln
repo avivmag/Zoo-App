@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NegevZoo", "NegevZoo\NegevZoo.csproj", "{07A0246B-8ADD-4201-9455-05B83A4F4968}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{A462E0D4-8B51-4E82-B5CD-E5CB6311035C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkersSite", "WorkersSite\WorkersSite.csproj", "{86D6EF02-6497-41D9-BEC4-A6EA1897D322}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "Notification\Notification.csproj", "{71FB932C-F041-428E-A055-E292EC44125C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71FB932C-F041-428E-A055-E292EC44125C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71FB932C-F041-428E-A055-E292EC44125C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71FB932C-F041-428E-A055-E292EC44125C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71FB932C-F041-428E-A055-E292EC44125C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
