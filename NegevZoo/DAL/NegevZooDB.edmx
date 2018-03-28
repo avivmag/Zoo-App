@@ -47,8 +47,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="deviceId" Type="tinytext" Nullable="false" />
           <Property Name="lastPing" Type="datetime" Precision="0" Nullable="false" />
-          <Property Name="lastLongitude" Type="double" Nullable="false" />
-          <Property Name="lastLatitude" Type="double" Nullable="false" />
+          <Property Name="insidePark" Type="tinyint" Nullable="false" />
         </EntityType>
         <EntityType Name="enclosurepictures">
           <Key>
@@ -420,8 +419,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="deviceId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="lastPing" Type="DateTime" Nullable="false" />
-          <Property Name="lastLongitude" Type="Double" Nullable="false" />
-          <Property Name="lastLatitude" Type="Double" Nullable="false" />
+          <Property Name="insidePark" Type="SByte" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -624,8 +622,7 @@
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="NegevZooModel.Device">
               <MappingFragment StoreEntitySet="devices">
-                <ScalarProperty Name="lastLatitude" ColumnName="lastLatitude" />
-                <ScalarProperty Name="lastLongitude" ColumnName="lastLongitude" />
+                <ScalarProperty Name="insidePark" ColumnName="insidePark" />
                 <ScalarProperty Name="lastPing" ColumnName="lastPing" />
                 <ScalarProperty Name="deviceId" ColumnName="deviceId" />
                 <ScalarProperty Name="id" ColumnName="id" />

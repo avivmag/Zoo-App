@@ -17,7 +17,6 @@ namespace DAL
         public int id { get; set; }
         public string deviceId { get; set; }
         public System.DateTime lastPing { get; set; }
-        public double lastLongitude { get; set; }
-        public double lastLatitude { get; set; }
+        public sbyte insidePark { get; set; }
     }
 }
