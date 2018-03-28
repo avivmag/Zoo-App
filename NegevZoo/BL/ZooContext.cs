@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DAL;
 using DAL.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BL
 {
@@ -26,7 +28,7 @@ namespace BL
                 zooDB = new NegevZooDBEntities();
             }
         }
-
+        
         public ZooContext(IZooDB db)
         {
             zooDB = db;
@@ -65,71 +67,14 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
-        /// <summary>
-        /// send notification to all the users
-        /// </summary>
-        /// <param name="language">The enclosure's data language.</param>
-        /// <returns>The enclosures.</returns>
-        public void SendNotificationsAllDevices(string title, string body)
-        {
-            Task.Factory.StartNew(() => NotifyAsync(title, body));
-        }
-
-        private async void NotifyAsync(string title, string body)
-        {
-            // TODO:: compute whether the users are online or offline and send by that.
-            try
-            {
-                string key      = Properties.Settings.Default.serverKey;
-                string id       = Properties.Settings.Default.senderId;
-
-                var devices     = zooDB.getAllDevices();
-    
-                // Format the server's key.
-                var serverKey   = string.Format("key={0}", key);
-
-                // Format the sender's Id.
-                var senderId    = string.Format("id={0}", id);
-
-                // Get all registration ids from the database.
-                var registration_ids = devices.Select(d => d.deviceId).ToArray();
-
-                // Construct the request's data.
-                var data = new
-                {
-                    registration_ids,
-                    notification            = new { title, body, sound = "default", vibrate = true, background = true }
-                };
-
-                var jsonBody                = JsonConvert.SerializeObject(data);
-
-                using (var httpRequest      = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
-                {
-                    httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
-                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
-                    httpRequest.Content     = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                    using (var httpClient   = new HttpClient())
-                    {
-                        await httpClient.SendAsync(httpRequest);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // TODO:: LOG.
-                throw ex;
-            }
-        }
-
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
         /// <param name="language">The enclosure's data language.</param>
         /// <param name="id">The enclosure's id.</param>
         /// <returns>The enclosure.</returns>
+        /// 
         public EnclosureResult GetEnclosureById(int id, int language)
         {
             //validate atrributes
@@ -292,7 +237,6 @@ namespace BL
             return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
         
-
         /// <summary>
         /// Updates The enclosure.
         /// </summary>
@@ -399,6 +343,37 @@ namespace BL
                 oldEnc.language = enclosureDetail.language;
                 oldEnc.name = enclosureDetail.name;
                 oldEnc.story = enclosureDetail.story;
+            }
+        }
+
+        /// <summary>
+        /// post a file to the db
+        /// </summary>
+        /// <param name="httpRequest">The requested files.</param>
+        /// <param name="relativePath">the path.</param>
+        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        {
+            var fileNames = new List<String>();
+
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile = httpRequest.Files[file];
+
+                var fileExtension = postedFile.FileName.Split('.').Last();
+                var fileName = Guid.NewGuid() + "." + fileExtension;
+
+                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+
+                postedFile.SaveAs(filePath);
+
+                fileNames.Add(fileName);
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue(relativePath + fn));
             }
         }
 
@@ -1377,6 +1352,7 @@ namespace BL
                 oldEvent.endDate = specialEvent.endDate;
                 oldEvent.imageUrl = specialEvent.imageUrl;
             }
+            
         }
 
         /// <summary>
@@ -1417,7 +1393,7 @@ namespace BL
         /// Adds or Updates a feed wall message.
         /// </summary>
         /// <param name="feed">The wallfeed to add or update</param>
-        public void UpdateWallFeed(WallFeed feed)
+        public void UpdateWallFeed(WallFeed feed, bool isPush)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1475,6 +1451,12 @@ namespace BL
                 oldFeed.language = feed.language;
                 oldFeed.info = feed.info;
                 oldFeed.created = feed.created;
+            }
+
+            if (isPush)
+            {
+                //TODO: change the title
+                SendNotificationsAllDevices("New Wall Feed!", feed.info);
             }
         }
 
@@ -1745,26 +1727,127 @@ namespace BL
         #endregion
 
         #region Notification support
-        public void UpdateDevice(string deviceId, Double Longtitude, Double Latitude)
+
+        /// <summary>
+        /// get all the devices in the db.
+        /// </summary>
+        public IEnumerable<Device> GetAllDevices()
         {
-            //if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
-            //{
-            //    throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
-            //}
-
-            //if (zooDB.getAllOnlineDevices().Any(od => od.deviceId == deviceId))
-            //{
-            //    //reset the time to delete
-            //}
-
-            //if (zooDB.getAllOffLineDevices().Any(od => od.deviceId == deviceId))
-            //{
-            //    //remove from offline
-            //}
-                
-            //add to online
-            //start a new timer
+            return zooDB.getAllDevices();
         }
+
+        /// <summary>
+        /// updated the status of the given device.
+        /// </summary>
+        /// <param name="deviceId">The device to update.</param>
+        /// <param name="insidePark"> The location status of the device</param>
+        public void UpdateDevice(string deviceId, bool insidePark)
+        {
+            //validate the attribues
+            //1. check the device id.
+            if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
+            {
+                throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
+            }
+
+            var device = zooDB.getAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+
+            //check if the device already exists
+            if (device != null)
+            {
+                device.lastPing = DateTime.Now;
+            }
+            else
+            {
+                device = new Device
+                {
+                    deviceId = deviceId,
+                    insidePark = (sbyte)(insidePark? 1 : 0),
+                    lastPing = DateTime.Now
+                };
+
+                zooDB.getAllDevices().Add(device);
+            }
+
+        }
+
+        /// <summary>
+        /// send notification to all the devices
+        /// </summary>
+        /// <param name="title">The title of the notification.</param>
+        /// <param name="body">The body of the notification</param>
+        public void SendNotificationsAllDevices(string title, string body)
+        {
+            Task.Factory.StartNew(() => NotifyAsync(title, body, true));
+        }
+
+        /// <summary>
+        /// send notification to the online devices
+        /// </summary>
+        /// <param name="title">The title of the notification.</param>
+        /// <param name="body">The body of the notification</param>
+        public void SendNotificationsOnlineDevices(string title, string body)
+        {
+            Task.Factory.StartNew(() => NotifyAsync(title, body, false));
+        }
+
+        private async void NotifyAsync(string title, string body, bool toAll)
+        {
+            // TODO:: compute whether the users are online or offline and send by that.
+            try
+            {
+                string key = Properties.Settings.Default.serverKey;
+                string id = Properties.Settings.Default.senderId;
+                
+                var devices = new List<Device>();
+
+                if (toAll) //the notification should be sent to all the users
+                {
+                    devices.AddRange(zooDB.getAllDevices().ToList());
+                }
+                else
+                {   //the notification should be sent to the online users.
+                    //TODO: check if 30 minuits is the difference between online of offline
+                    devices.AddRange(zooDB.getAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
+                }
+
+                // Format the server's key.
+                var serverKey = string.Format("key={0}", key);
+
+                // Format the sender's Id.
+                var senderId = string.Format("id={0}", id);
+
+                // Get all registration ids from the database.
+                var registration_ids = devices.Select(d => d.deviceId).ToArray();
+
+                // Construct the request's data.
+                var data = new
+                {
+                    registration_ids,
+                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                };
+
+                var jsonBody = JsonConvert.SerializeObject(data);
+
+                using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
+                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        await httpClient.SendAsync(httpRequest);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO:: LOG.
+                throw ex;
+            }
+        }
+
         #endregion
 
         #region private functions
@@ -1793,7 +1876,6 @@ namespace BL
         {
             return String.IsNullOrWhiteSpace(str);
         }
-
         #endregion
 
         public void Dispose()

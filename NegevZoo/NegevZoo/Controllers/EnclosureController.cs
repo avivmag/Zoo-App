@@ -438,38 +438,52 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("enclosures/upload")]
-        public IHttpActionResult PostFile()
+        public IHttpActionResult EnclosureImagesUpload()
         {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
             }
-
-            var fileNames = new List<String>();
-
-            foreach (string file in httpRequest.Files)
+            
+            try
             {
-                var postedFile      = httpRequest.Files[file];
-
-                var fileExtension   = postedFile.FileName.Split('.').Last();
-                var fileName        = Guid.NewGuid() + "." + fileExtension;
-
-                var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
-
-                postedFile.SaveAs(filePath);
-
-                fileNames.Add(fileName);
+                using (var db = GetContext())
+                {
+                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/");
+                    return Ok();
+                }
+            }
+            catch (Exception exp)
+            {
+                //TODO: add log
+                throw new Exception("kaki");
             }
 
-            var responseObject = new JArray();
+            //var fileNames = new List<String>();
+            
+            //foreach (string file in httpRequest.Files)
+            //{
+            //    var postedFile      = httpRequest.Files[file];
 
-            foreach (var fn in fileNames)
-            {
-                responseObject.Add(new JValue("assets/" + fn));
-            }
+            //    var fileExtension   = postedFile.FileName.Split('.').Last();
+            //    var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-            return Ok(responseObject);
+            //    var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
+
+            //    postedFile.SaveAs(filePath);
+
+            //    fileNames.Add(fileName);
+            //}
+
+            //var responseObject = new JArray();
+
+            //foreach (var fn in fileNames)
+            //{
+            //    responseObject.Add(new JValue("assets/" + fn));
+            //}
+
+            //return Ok(responseObject);
         }
     }
 }
