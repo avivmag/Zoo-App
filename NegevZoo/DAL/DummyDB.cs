@@ -1180,7 +1180,7 @@ namespace DAL
             return AllYoutubeVideoUrls;
         }
 
-        public override DbSet<Devices> getAllDevices()
+        public override DbSet<Device> getAllDevices()
         {
             return AllDevices;
         }
