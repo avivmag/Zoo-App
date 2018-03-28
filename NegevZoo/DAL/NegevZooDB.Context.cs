@@ -132,5 +132,7 @@ namespace DAL
         public virtual DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
         public virtual DbSet<AnimalDetail> AnimalsDetails { get; set; }
         public virtual DbSet<EnclosureDetail> EnclosureDetails { get; set; }
+        public virtual DbSet<Device> Devices { get; set; }
+
     }
 }
