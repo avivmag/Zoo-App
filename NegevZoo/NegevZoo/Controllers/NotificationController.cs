@@ -42,19 +42,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    var result = db.SendNotificationsAllDevices(title, body);
-                    if (result)
-                    {
-                        return Ok();
-                    }
-                    else
-                    {
-                        throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-                    }
+                    db.SendNotificationsAllDevices(title, body);
                 }
+
+                return Ok();
             }
             catch(Exception exp)
             {
+                // TODO:: LOG.
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

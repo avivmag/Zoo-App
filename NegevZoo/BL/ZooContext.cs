@@ -71,76 +71,58 @@ namespace BL
         /// </summary>
         /// <param name="language">The enclosure's data language.</param>
         /// <returns>The enclosures.</returns>
-        public bool SendNotificationsAllDevices(string title, string body)
+        public void SendNotificationsAllDevices(string title, string body)
         {
             Task.Factory.StartNew(() => NotifyAsync(title, body));
-
-            return true;
         }
-        private List<Device> devices = new List<Device>
-        { new Device
-            {
-                id = 1,
-                deviceId = "eN0AceUN7UU:APA91bFZSmLewxCsT13KqymCRHliez5Sne_RQIf_WgZFD88ipMgllXLsF7VnAQcfNgXiAbnfpN1iYSJBJXNljXNLI1ad8lS4yxmNPAOOYoexkNhva0dljXeB01U8DO4eEjaeNqQctHOM",
-                lastLatitude = 123,
-                lastLongitude = 123,
-                lastPing = DateTime.Now
-            },
-            new Device
-            {
-                id = 2,
-                deviceId = "fvrmYyAgPNw:APA91bGLfdNxyaFCgm0Q0XaroIuBXtHDn_04uqx-7rsqkgZy63N6yxzYbOAkHVSZgZ0rR49QxRkJSgXrfrIEjK_5Xft-huNVQQEjIttvhgvnOIwHBhz2g0kkZyDEwMipaQbUxtGJaxMx",
-                lastLatitude = 123,
-                lastLongitude = 123,
-                lastPing = DateTime.Now
-            }
-        };
 
         private async void NotifyAsync(string title, string body)
         {
-            //string senderIdConfig = Properties.Settings.Default.senderId;
-            //string serverKeyConfig = Properties.Settings.Default.serverKey;
+            // TODO:: compute whether the users are online or offline and send by that.
+            try
+            {
+                string key      = Properties.Settings.Default.serverKey;
+                string id       = Properties.Settings.Default.senderId;
 
-            //var devices = zooDB.getAllDevices();
-            //foreach (Device d in devices)
-            //{
-                //TODO: check that the device is in the park
+                var devices     = zooDB.getAllDevices();
+    
+                // Format the server's key.
+                var serverKey   = string.Format("key={0}", key);
 
-                try
+                // Format the sender's Id.
+                var senderId    = string.Format("id={0}", id);
+
+                // Get all registration ids from the database.
+                var registration_ids = devices.Select(d => d.deviceId).ToArray();
+
+                // Construct the request's data.
+                var data = new
                 {
-                string senderIdConfig = "777829984351";
-                string serverKeyConfig = "AAAAtRpHqF8:APA91bHQd7MJTMz-_dNhAU-kfLCJO-WYZAuqAQ2u4Z0evwW9K69DWcAXHoW5rPkr71LU_6SEkRUY2Op95qwNe8gkkZtCWQDDQwJf7TMJrrB8dYmdhu6s0doCjokrWxXngPgAcXeLTcMS";
-                var serverKey = string.Format("key={0}", serverKeyConfig);
-                var senderId = string.Format("id={0}", senderIdConfig);
-                //string deviceId = "eN0AceUN7UU:APA91bFZSmLewxCsT13KqymCRHliez5Sne_RQIf_WgZFD88ipMgllXLsF7VnAQcfNgXiAbnfpN1iYSJBJXNljXNLI1ad8lS4yxmNPAOOYoexkNhva0dljXeB01U8DO4eEjaeNqQctHOM";
-                var deviceId = "fvrmYyAgPNw:APA91bGLfdNxyaFCgm0Q0XaroIuBXtHDn_04uqx-7rsqkgZy63N6yxzYbOAkHVSZgZ0rR49QxRkJSgXrfrIEjK_5Xft-huNVQQEjIttvhgvnOIwHBhz2g0kkZyDEwMipaQbUxtGJaxMx";
-                    var data = new
+                    registration_ids,
+                    notification            = new { title, body, sound = "default", vibrate = true, background = true }
+                };
+
+                var jsonBody                = JsonConvert.SerializeObject(data);
+
+                using (var httpRequest      = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
+                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Content     = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    using (var httpClient   = new HttpClient())
                     {
-                        //d.deviceId,
-                        deviceId,
-                        notification = new { title, body }
-                    };
-
-                    var jsonBody = JsonConvert.SerializeObject(data);
-
-                    using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
-                    {
-                        httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
-                        httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
-                        httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                        using (var httpClient = new HttpClient())
-                        {
-                            var result = await httpClient.SendAsync(httpRequest);
-                        }
+                        await httpClient.SendAsync(httpRequest);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException("ALALALAL");
-                }
-            //}
+            }
+            catch (Exception ex)
+            {
+                // TODO:: LOG.
+                throw ex;
+            }
         }
+
 
         /// <summary>
         /// Gets the enclosure by id.
