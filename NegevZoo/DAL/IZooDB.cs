@@ -46,7 +46,7 @@ namespace DAL
 
         public abstract DbSet<YoutubeVideoUrl> GetAllEnclosureVideos();
 
-        //public abstract DbSet<> getAllOnlineDevices();
+        public abstract DbSet<Device> getAllOnlineDevices();
         #endregion
 
         #region Cache
