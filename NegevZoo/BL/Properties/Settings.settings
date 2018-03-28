@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BL.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="senderId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">777829984351</Value>
+    </Setting>
+    <Setting Name="serverKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AAAAtRpHqF8:APA91bHQd7MJTMz-_dNhAU-kfLCJO-WYZAuqAQ2u4Z0evwW9K69DWcAXHoW5rPkr71LU_6SEkRUY2Op95qwNe8gkkZtCWQDDQwJf7TMJrrB8dYmdhu6s0doCjokrWxXngPgAcXeLTcMS</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
