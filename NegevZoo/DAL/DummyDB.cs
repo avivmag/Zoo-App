@@ -95,7 +95,7 @@ namespace DAL
         protected DbSet<AnimalDetail> AllAnimalsDetails { get; set; }
         protected DbSet<EnclosurePicture> AllEnclosurePictures { get; set; }
         protected DbSet<YoutubeVideoUrl> AllYoutubeVideoUrls { get; set; }
-        protected DbSet<Devices> AllDevices { get; set; }
+        protected DbSet<Device> AllDevices { get; set; }
 
         #endregion 
 

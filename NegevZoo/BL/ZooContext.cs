@@ -86,6 +86,8 @@ namespace BL
             var devices = zooDB.getAllDevices();
             foreach (Device d in devices)
             {
+                //TODO: check that the device is in the park
+
                 try
                 {
                     var serverKey = string.Format("key={0}", serverKeyConfig);

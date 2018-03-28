@@ -45,7 +45,7 @@ namespace DAL
         public abstract DbSet<EnclosurePicture> GetAllEnclosurePictures();
 
         public abstract DbSet<YoutubeVideoUrl> GetAllEnclosureVideos();
-
+        
         public abstract DbSet<Device> getAllDevices();
         #endregion
 
