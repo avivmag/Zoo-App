@@ -77,25 +77,47 @@ namespace BL
 
             return true;
         }
+        private List<Device> devices = new List<Device>
+        { new Device
+            {
+                id = 1,
+                deviceId = "eN0AceUN7UU:APA91bFZSmLewxCsT13KqymCRHliez5Sne_RQIf_WgZFD88ipMgllXLsF7VnAQcfNgXiAbnfpN1iYSJBJXNljXNLI1ad8lS4yxmNPAOOYoexkNhva0dljXeB01U8DO4eEjaeNqQctHOM",
+                lastLatitude = 123,
+                lastLongitude = 123,
+                lastPing = DateTime.Now
+            },
+            new Device
+            {
+                id = 2,
+                deviceId = "fvrmYyAgPNw:APA91bGLfdNxyaFCgm0Q0XaroIuBXtHDn_04uqx-7rsqkgZy63N6yxzYbOAkHVSZgZ0rR49QxRkJSgXrfrIEjK_5Xft-huNVQQEjIttvhgvnOIwHBhz2g0kkZyDEwMipaQbUxtGJaxMx",
+                lastLatitude = 123,
+                lastLongitude = 123,
+                lastPing = DateTime.Now
+            }
+        };
 
         private async void NotifyAsync(string title, string body)
         {
-            string senderIdConfig = ConfigurationManager.AppSettings["senderId"];
-            string serverKeyConfig = ConfigurationManager.AppSettings["serverKey"];
+            //string senderIdConfig = Properties.Settings.Default.senderId;
+            //string serverKeyConfig = Properties.Settings.Default.serverKey;
 
-            var devices = zooDB.getAllDevices();
-            foreach (Device d in devices)
-            {
+            //var devices = zooDB.getAllDevices();
+            //foreach (Device d in devices)
+            //{
                 //TODO: check that the device is in the park
 
                 try
                 {
-                    var serverKey = string.Format("key={0}", serverKeyConfig);
-                    var senderId = string.Format("id={0}", senderIdConfig);
-
+                string senderIdConfig = "777829984351";
+                string serverKeyConfig = "AAAAtRpHqF8:APA91bHQd7MJTMz-_dNhAU-kfLCJO-WYZAuqAQ2u4Z0evwW9K69DWcAXHoW5rPkr71LU_6SEkRUY2Op95qwNe8gkkZtCWQDDQwJf7TMJrrB8dYmdhu6s0doCjokrWxXngPgAcXeLTcMS";
+                var serverKey = string.Format("key={0}", serverKeyConfig);
+                var senderId = string.Format("id={0}", senderIdConfig);
+                //string deviceId = "eN0AceUN7UU:APA91bFZSmLewxCsT13KqymCRHliez5Sne_RQIf_WgZFD88ipMgllXLsF7VnAQcfNgXiAbnfpN1iYSJBJXNljXNLI1ad8lS4yxmNPAOOYoexkNhva0dljXeB01U8DO4eEjaeNqQctHOM";
+                var deviceId = "fvrmYyAgPNw:APA91bGLfdNxyaFCgm0Q0XaroIuBXtHDn_04uqx-7rsqkgZy63N6yxzYbOAkHVSZgZ0rR49QxRkJSgXrfrIEjK_5Xft-huNVQQEjIttvhgvnOIwHBhz2g0kkZyDEwMipaQbUxtGJaxMx";
                     var data = new
                     {
-                        d.deviceId,
+                        //d.deviceId,
+                        deviceId,
                         notification = new { title, body }
                     };
 
@@ -109,14 +131,15 @@ namespace BL
 
                         using (var httpClient = new HttpClient())
                         {
-                            await httpClient.SendAsync(httpRequest);
+                            var result = await httpClient.SendAsync(httpRequest);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
+                    throw new ArgumentException("ALALALAL");
                 }
-            }
+            //}
         }
 
         /// <summary>
