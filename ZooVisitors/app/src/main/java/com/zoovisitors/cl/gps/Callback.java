@@ -10,6 +10,6 @@ import android.os.Bundle;
 public interface Callback {
     void onLocationChanged(Location location);
 //    void onStatusChanged(String provider, int status, Bundle extras);
-    void onProviderEnabled(String provider);
-    void onProviderDisabled(String provider);
+    void onProviderEnabled();
+    void onProviderDisabled();
 }

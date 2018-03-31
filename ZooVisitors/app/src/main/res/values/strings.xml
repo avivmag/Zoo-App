@@ -49,4 +49,15 @@
     <string name="todays_event">אירועי היום</string>
     <string name="preservation">מצב שימור</string>
     <string name="facebook_app_id">1991264511112012</string>
+
+    <!--Gps provider dialog-->
+    <string name="gps_no_permission_dialog_title">הרשאת מיקום</string>
+    <string name="gps_no_permission_dialog_message">ביטול הרשאה למיקום המכשיר יבטל חלק מתכונות האפליקציה</string>
+    <string name="gps_no_permission_dialog_approve">אפשר מיקום</string>
+    <string name="gps_no_permission_dialog_disapprove">אל תאפשר מיקום</string>
+    <string name="gps_no_activated_dialog_activate_needed">אנא הדליקו את שירות מיקומי המכשיר</string>
+    <string name="gps_no_activated_dialog_open_settings">פתח הגדרות</string>
+    <string name="gps_no_activated_dialog_do_not_open_settings">ביטול</string>
+    <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
+
 </resources>
