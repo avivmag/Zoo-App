@@ -26,6 +26,7 @@ namespace NegevZoo.Controllers
 
         /// <summary>
         /// Gets all the enclosures resultes with data in that language.
+        /// This method use for the visitore app to get all the enclosures with the wanted language.
         /// </summary>
         /// <param name="language">The data language</param>
         /// <returns>All enclosures with that language.</returns>
@@ -43,6 +44,83 @@ namespace NegevZoo.Controllers
             catch
             {
                 //TODO: add to log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets enclosure by it's encId.
+        /// This function uses the vistore app to get the enclosure data by it's id
+        /// </summary>
+        /// <param name="language">The data language</param>
+        /// <param name="id">The eclosure's encId</param>
+        /// <returns>The enclosures with this encId and language.</returns>
+        [HttpGet]
+        [Route("enclosures/id/{encId}/{language}")]
+        public EnclosureResult GetEnclosureById(int encId, int language = 1)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureById(encId, language);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets enclosure by it's name.
+        /// This funcion is used by the visitor application.
+        /// </summary>
+        /// <param name="language">The data language</param>
+        /// <param name="name">The eclosure's name</param>
+        /// <returns>The enclosures with this name and language.</returns>
+        [HttpGet]
+        [Route("enclosures/name/{name}/{language}")]
+        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureByName(name, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets enclosure by it's position.
+        /// </summary>
+        /// <param name="language">The data language</param>
+        /// <param name="langtitude">The eclosure's langtitude</param>
+        /// <param name="latitude">The eclosure's latitude</param>
+        /// <returns>The enclosures with this aproximate position.</returns>
+        [HttpGet]
+        [Route("enclosures/position/{longtitude}/{latitude}/{language}")]
+        public Enclosure GetEnclosureByPosition(int longtitude, int latitude, int language = 1)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetEnclosureByPosition(longtitude, latitude, language);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -92,81 +170,6 @@ namespace NegevZoo.Controllers
             catch (Exception Exp)
             {
                 //TODO: add to log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets enclosure by it's encId.
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="id">The eclosure's encId</param>
-        /// <returns>The enclosures with this encId and language.</returns>
-        [HttpGet]
-        [Route("enclosures/id/{encId}/{language}")]
-        public EnclosureResult GetEnclosureById(int encId, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureById(encId, language);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add a log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets enclosure by it's name.
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="name">The eclosure's name</param>
-        /// <returns>The enclosures with this name and language.</returns>
-        [HttpGet]
-        [Route("enclosures/name/{name}/{language}")]
-        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureByName(name, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add a log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets enclosure by it's position.
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="langtitude">The eclosure's langtitude</param>
-        /// <param name="latitude">The eclosure's latitude</param>
-        /// <returns>The enclosures with this aproximate position.</returns>
-        [HttpGet]
-        [Route("enclosures/position/{longtitude}/{latitude}/{language}")]
-        public Enclosure GetEnclosureByPosition(int longtitude, int latitude, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureByPosition(longtitude, latitude, language);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -435,39 +438,52 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("enclosures/upload")]
-        public IHttpActionResult PostFile()
+        public IHttpActionResult EnclosureImagesUpload()
         {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
             }
-
-            var fileNames = new List<String>();
-
-            foreach (string file in httpRequest.Files)
+            
+            try
             {
-                var postedFile      = httpRequest.Files[file];
-
-                var fileExtension   = postedFile.FileName.Split('.').Last();
-                var fileName        = Guid.NewGuid() + "." + fileExtension;
-
-                var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
-
-                postedFile.SaveAs(filePath);
-
-                fileNames.Add(fileName);
-                // NOTE: To store in memory use postedFile.InputStream
+                using (var db = GetContext())
+                {
+                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/");
+                    return Ok();
+                }
+            }
+            catch (Exception exp)
+            {
+                //TODO: add log
+                throw new Exception("kaki");
             }
 
-            var responseObject = new JArray();
+            //var fileNames = new List<String>();
+            
+            //foreach (string file in httpRequest.Files)
+            //{
+            //    var postedFile      = httpRequest.Files[file];
 
-            foreach (var fn in fileNames)
-            {
-                responseObject.Add(new JValue("assets/" + fn));
-            }
+            //    var fileExtension   = postedFile.FileName.Split('.').Last();
+            //    var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-            return Ok(responseObject);
+            //    var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
+
+            //    postedFile.SaveAs(filePath);
+
+            //    fileNames.Add(fileName);
+            //}
+
+            //var responseObject = new JArray();
+
+            //foreach (var fn in fileNames)
+            //{
+            //    responseObject.Add(new JValue("assets/" + fn));
+            //}
+
+            //return Ok(responseObject);
         }
     }
 }

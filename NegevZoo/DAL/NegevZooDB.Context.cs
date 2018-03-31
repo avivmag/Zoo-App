@@ -114,6 +114,11 @@ namespace DAL
             return YoutubeVideoUrls;
         }
 
+        public override DbSet<Device> getAllDevices()
+        {
+            return Devices;
+        }
+
         public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<ContactInfo> ContactInfos { get; set; }
         public virtual DbSet<EnclosurePicture> EnclosurePictures { get; set; }
@@ -132,5 +137,7 @@ namespace DAL
         public virtual DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
         public virtual DbSet<AnimalDetail> AnimalsDetails { get; set; }
         public virtual DbSet<EnclosureDetail> EnclosureDetails { get; set; }
+        public virtual DbSet<Device> Devices { get; set; }
+
     }
 }

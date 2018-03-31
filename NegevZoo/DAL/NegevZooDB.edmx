@@ -40,6 +40,15 @@
           <Property Name="address" Type="tinytext" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
         </EntityType>
+        <EntityType Name="devices">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="deviceId" Type="tinytext" Nullable="false" />
+          <Property Name="lastPing" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="insidePark" Type="tinyint" Nullable="false" />
+        </EntityType>
         <EntityType Name="enclosurepictures">
           <Key>
             <PropertyRef Name="id" />
@@ -52,7 +61,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false"/>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="tinytext" Nullable="false" />
           <Property Name="markerLongitude" Type="double" />
           <Property Name="markerLatitude" Type="double" />
@@ -185,6 +194,7 @@
           <EntitySet Name="animals" EntityType="Self.animals" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="animalsdetails" EntityType="Self.animalsdetails" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="contactinfo" EntityType="Self.contactinfo" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="devices" EntityType="Self.devices" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosurepictures" EntityType="Self.enclosurepictures" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosures" EntityType="Self.enclosures" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosuresdetails" EntityType="Self.enclosuresdetails" Schema="negev_zoo" store:Type="Tables" />
@@ -374,6 +384,7 @@
           <EntitySet Name="YoutubeVideoUrls" EntityType="NegevZooModel.YoutubeVideoUrl" />
           <EntitySet Name="AnimalDetails" EntityType="NegevZooModel.AnimalDetail" />
           <EntitySet Name="EnclosureDetails" EntityType="NegevZooModel.EnclosureDetail" />
+          <EntitySet Name="Devices" EntityType="NegevZooModel.Device" />
         </EntityContainer>
         <EntityType Name="AnimalDetail">
           <Key>
@@ -400,6 +411,15 @@
           <Property Name="language" Type="Int64" Nullable="false" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="story" Type="String" Nullable="false" MaxLength="16777215" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="deviceId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="lastPing" Type="DateTime" Nullable="false" />
+          <Property Name="insidePark" Type="SByte" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -596,6 +616,16 @@
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="language" ColumnName="language" />
                 <ScalarProperty Name="encId" ColumnName="encId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Devices">
+            <EntityTypeMapping TypeName="NegevZooModel.Device">
+              <MappingFragment StoreEntitySet="devices">
+                <ScalarProperty Name="insidePark" ColumnName="insidePark" />
+                <ScalarProperty Name="lastPing" ColumnName="lastPing" />
+                <ScalarProperty Name="deviceId" ColumnName="deviceId" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
