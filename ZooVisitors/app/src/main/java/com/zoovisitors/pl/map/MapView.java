@@ -222,9 +222,6 @@ public class MapView extends RelativeLayout {
         protected void UpdateView(boolean shouldBeCentered) {
 
             view.setBackgroundColor(Color.TRANSPARENT);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                view.setElevation(20);
-//            }
 
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);

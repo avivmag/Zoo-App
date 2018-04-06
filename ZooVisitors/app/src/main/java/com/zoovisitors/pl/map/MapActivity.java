@@ -1,13 +1,8 @@
 package com.zoovisitors.pl.map;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,17 +17,16 @@ import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.bl.map.Dummy;
-import com.zoovisitors.cl.gps.Callback;
-import com.zoovisitors.cl.gps.CleanProvider;
+import com.zoovisitors.cl.gps.ProviderBasedActivity;
 
-public class MapActivity extends AppCompatActivity
+public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
     private Enclosure[] enclosures;
     private BusinessLayer bl;
     private DataStructure mapDS;
-    private CleanProvider provider;
+    private static final int MAX_ALLOWED_ACCURACY = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +45,6 @@ public class MapActivity extends AppCompatActivity
 
         mapView.AddVisitorIcon();
         setNetworkDataProvider();
-        setLocationProvider();
     }
 
     private void setNetworkDataProvider() {
@@ -68,9 +61,9 @@ public class MapActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(Object response) {
                             mapView.addImageIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                                enclosures[finalI],
-                                enclosures[finalI].getMarkerLongtitude(),
-                                enclosures[finalI].getMarkerLatitude());
+                                    enclosures[finalI],
+                                    enclosures[finalI].getMarkerLongtitude(),
+                                    enclosures[finalI].getMarkerLatitude());
                         }
 
                         @Override
@@ -80,6 +73,7 @@ public class MapActivity extends AppCompatActivity
                     });
                 }
             }
+
             @Override
             public void onFailure(Object response) {
                 Log.e(GlobalVariables.LOG_TAG, "Callback failed");
@@ -87,49 +81,43 @@ public class MapActivity extends AppCompatActivity
         });
     }
 
-    private final int MAX_ALLOWED_ACCURACY = 7;
+    private boolean needToShowIcon = true;
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case CleanProvider.PERMISSION_REQUEST_GPS:
-                provider.onRequestPermissionsResult(grantResults[0]);
-                break;
+    public void onLocationChanged(android.location.Location location) {
+        if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
+            Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG).show();
+            if (needToShowIcon) {
+                needToShowIcon = false;
+                mapView.ShowVisitorIcon();
+            }
+
+            Point p = Dummy.locationToPoint(new Location(location.getLatitude(), location.getLongitude()));
+            Point calibratedPoint = mapDS.getOnMapPosition(p);
+            if (calibratedPoint == null)
+                return;
+            mapView.UpdateVisitorLocation(calibratedPoint.getX(), calibratedPoint.getY());
         }
     }
 
-    private void setLocationProvider() {
-        provider = new CleanProvider(this, new Callback() {
-            boolean needToShowIcon = true;
-
-            @Override
-            public void onLocationChanged(android.location.Location location) {
-                if (GlobalVariables.DEBUG || location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
-                    Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG).show();
-                    if (needToShowIcon) {
-                        needToShowIcon = false;
-                        mapView.ShowVisitorIcon();
-                    }
-
-                    Point p = Dummy.locationToPoint(new Location(location.getLatitude(), location.getLongitude()));
-                    Point calibratedPoint = mapDS.getOnMapPosition(p);
-                    if (calibratedPoint == null)
-                        return;
-                    mapView.UpdateVisitorLocation(calibratedPoint.getX(), calibratedPoint.getY());
-                }
-            }
-
-            @Override
-            public void onProviderEnabled() {
-                needToShowIcon = true;
-            }
-
-            @Override
-            public void onProviderDisabled() {
-                mapView.HideVisitorIcon();
-            }
-        });
-        provider.start();
+    @Override
+    public void onProviderEnabled() {
+        needToShowIcon = true;
     }
+
+    @Override
+    public void onProviderDisabled() {
+        mapView.HideVisitorIcon();
+    }
+
+    @Override
+    public int getMinTime() {
+        return 0;
+    }
+
+    @Override
+    public int getMinDistance() {
+        return 0;
+    }
+
 }
