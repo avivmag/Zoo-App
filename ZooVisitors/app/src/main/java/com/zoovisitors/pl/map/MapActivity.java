@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.Misc;
+import com.zoovisitors.backend.RecurringEvents;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
@@ -23,7 +25,9 @@ public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
-    private Enclosure[] enclosures;
+//    private Enclosure[] enclosures;
+//    private Misc[] miscs;
+    private RecurringEvents[] recurringEvents;
     private BusinessLayer bl;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
@@ -52,26 +56,19 @@ public class MapActivity extends ProviderBasedActivity
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                enclosures = (Enclosure[]) response;
+                // TODO: fake recurring events here, need to update the json somehow
+                getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response, new RecurringEvents[]);
+            }
 
-                // get image urls
-                for (int i = 0; i < enclosures.length; i++) {
-                    final int finalI = i;
-                    bl.getImage(enclosures[i].getMarkerIconUrl(), new GetObjectInterface() {
-                        @Override
-                        public void onSuccess(Object response) {
-                            mapView.addImageIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                                    enclosures[finalI],
-                                    enclosures[finalI].getMarkerLongtitude(),
-                                    enclosures[finalI].getMarkerLatitude());
-                        }
-
-                        @Override
-                        public void onFailure(Object response) {
-                            Log.e(GlobalVariables.LOG_TAG, response.toString());
-                        }
-                    });
-                }
+            @Override
+            public void onFailure(Object response) {
+                Log.e(GlobalVariables.LOG_TAG, response.toString());
+            }
+        });
+        bl.getMisc(new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                getMiscIconsAndSetImagesOnMap((Misc[]) response);
             }
 
             @Override
@@ -79,6 +76,46 @@ public class MapActivity extends ProviderBasedActivity
                 Log.e(GlobalVariables.LOG_TAG, "Callback failed");
             }
         });
+    }
+
+    private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
+        for (int i = 0; i < miscs.length; i++) {
+            final int finalI = i;
+            bl.getImage(miscs[i].getMarkerIconUrl(), new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
+                            miscs[finalI],
+                            miscs[finalI].getMarkerLongtitude(),
+                            miscs[finalI].getMarkerLatitude());
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e(GlobalVariables.LOG_TAG, response.toString());
+                }
+            });
+        }
+    }
+
+    private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
+        for (int i = 0; i < enclosures.length; i++) {
+            final int finalI = i;
+            bl.getImage(enclosures[i].getMarkerIconUrl(), new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    mapView.addEnclosureIcon(new BitmapDrawable(getResources(), (Bitmap) response),
+                            enclosures[finalI],
+                            enclosures[finalI].getMarkerLongtitude(),
+                            enclosures[finalI].getMarkerLatitude());
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e(GlobalVariables.LOG_TAG, response.toString());
+                }
+            });
+        }
     }
 
     private boolean needToShowIcon = true;

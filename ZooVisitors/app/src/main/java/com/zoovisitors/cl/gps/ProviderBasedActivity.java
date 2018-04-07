@@ -142,7 +142,6 @@ public abstract class ProviderBasedActivity extends Activity {
     }
 
     public abstract void onLocationChanged(Location location);
-    //    void onStatusChanged(String provider, int status, Bundle extras);
     public abstract void onProviderEnabled();
     public abstract void onProviderDisabled();
     public abstract int getMinTime();

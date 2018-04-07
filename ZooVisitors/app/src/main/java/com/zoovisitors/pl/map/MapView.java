@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.Misc;
 import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class MapView extends RelativeLayout {
         super(context, attrs, defStyle);
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         enclosureIcons = new ArrayList<>();
+        miscIcons = new ArrayList<>();
     }
 
     @Override
@@ -93,6 +95,10 @@ public class MapView extends RelativeLayout {
                 updateIconPositionWithoutSize(zooMapIcon);
                 for (ImageIcon icon :
                         enclosureIcons) {
+                    updateIconPositionWithSize(icon);
+                }
+                for(ImageIcon icon:
+                        miscIcons) {
                     updateIconPositionWithSize(icon);
                 }
                 if(visitorIcon.view.getVisibility() == VISIBLE)
@@ -164,11 +170,16 @@ public class MapView extends RelativeLayout {
     }
 
     private List<EnclosureIcon> enclosureIcons;
+    private List<MiscIcon> miscIcons;
     private ImageIcon visitorIcon;
     private ImageIcon zooMapIcon;
-    public void addImageIcon(Drawable resource, Enclosure enclosure, int left, int top)
+    public void addEnclosureIcon(Drawable resource, Enclosure enclosure, int left, int top)
     {
         enclosureIcons.add(new EnclosureIcon(resource, enclosure, left, top));
+    }
+    public void addMiscIcon(Drawable resource, Misc misc, int left, int top)
+    {
+        miscIcons.add(new MiscIcon(resource, misc, left, top));
     }
     public void AddVisitorIcon()
     {
@@ -193,11 +204,6 @@ public class MapView extends RelativeLayout {
     {
         zooMapIcon = new ImageIcon(ZOO_MAP, left, top, false);
     }
-
-//    public void addImageIcon(final String resource, int left, int top)
-//    {
-//        enclosureIcons.add(new ImageIcon(resource, left, top));
-//    }
 
     private class ImageIcon {
         protected ImageView view;
@@ -242,6 +248,21 @@ public class MapView extends RelativeLayout {
         }
     }
 
+    private class MiscIcon extends ImageIcon {
+        private Misc misc;
+        MiscIcon(Drawable resource, Misc misc, int left, int top) {
+            super(left, top);
+            this.misc = misc;
+
+            this.left = left;
+            this.top = top;
+            view = new ImageView(getContext());
+            view.setImageDrawable(resource);
+
+            UpdateView(true);
+        }
+    }
+
     private class EnclosureIcon extends ImageIcon {
         private Enclosure enclosure;
 
@@ -269,7 +290,7 @@ public class MapView extends RelativeLayout {
 
                             break;
                         case MotionEvent.ACTION_CANCEL:
-                            Log.e("AVIV", resource + " Not a click");
+//                            Log.e("AVIV", resource + " Not a click");
                             break;
                     }
 
