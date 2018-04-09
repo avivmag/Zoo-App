@@ -231,9 +231,15 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("animals/upload")]
-        public IHttpActionResult AnimalsImagesUpload()
+        public IHttpActionResult AnimalsImagesUpload(String path)
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new Exception("Wrong input. Path is empty");
+            }
+
             var httpRequest = HttpContext.Current.Request;
+
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
@@ -243,7 +249,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/animals/");
+                    db.ImagesUpload(httpRequest, @"~/assets/animals/" + path);
                     return Ok();
                 }
             }
