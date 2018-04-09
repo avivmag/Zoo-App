@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -53,7 +52,7 @@ public class MapView extends RelativeLayout {
     public MapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
-        icons = new ArrayList<ImageIcon>();
+        enclosureIcons = new ArrayList<>();
     }
 
     @Override
@@ -93,7 +92,7 @@ public class MapView extends RelativeLayout {
 
                 updateIconPositionWithoutSize(zooMapIcon);
                 for (ImageIcon icon :
-                        icons) {
+                        enclosureIcons) {
                     updateIconPositionWithSize(icon);
                 }
                 if(visitorIcon.view.getVisibility() == VISIBLE)
@@ -138,6 +137,7 @@ public class MapView extends RelativeLayout {
                     Integer.MAX_VALUE);
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
             icon.view.setLayoutParams(params);
+            icon.view.setVisibility(VISIBLE);
         }
     }
     private void updateIconPositionWithoutSize(ImageIcon icon) {
@@ -163,16 +163,16 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    private List<ImageIcon> icons;
+    private List<EnclosureIcon> enclosureIcons;
     private ImageIcon visitorIcon;
     private ImageIcon zooMapIcon;
     public void addImageIcon(Drawable resource, Enclosure enclosure, int left, int top)
     {
-        icons.add(new ImageIcon(resource, enclosure, left, top));
+        enclosureIcons.add(new EnclosureIcon(resource, enclosure, left, top));
     }
     public void AddVisitorIcon()
     {
-        visitorIcon = new ImageIcon(VISITOR_ICON, null, 0, 0);
+        visitorIcon = new ImageIcon(VISITOR_ICON, 0, 0, true);
         HideVisitorIcon();
     }
     public void UpdateVisitorLocation(int left, int top)
@@ -191,66 +191,37 @@ public class MapView extends RelativeLayout {
     }
     public void addZooMapIcon(int left, int top)
     {
-        zooMapIcon = new ImageIcon(ZOO_MAP, null, left, top);
+        zooMapIcon = new ImageIcon(ZOO_MAP, left, top, false);
     }
 
-    public void addImageIcon(final String resource, int left, int top)
-    {
-        icons.add(new ImageIcon(resource, null, left, top));
-    }
+//    public void addImageIcon(final String resource, int left, int top)
+//    {
+//        enclosureIcons.add(new ImageIcon(resource, left, top));
+//    }
 
     private class ImageIcon {
-        private ImageView view;
-        private Enclosure enclosure;
-        private int left;
-        private int top;
-        private int width;
-        private int height;
+        protected ImageView view;
+        protected int left;
+        protected int top;
+        protected int width;
+        protected int height;
 
-        ImageIcon(String resource, Enclosure enclosure, int left, int top) {
-            this.enclosure = enclosure;
-
-            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
+        ImageIcon(int left, int top) {
             this.left = left;
             this.top = top;
+        }
+
+        ImageIcon(String resource, int left, int top, boolean shouldBeCentered) {
+            this(left, top);
+            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             view = new ImageView(getContext());
             view.setImageResource(resourceId);
+            UpdateView(shouldBeCentered);
+        }
+
+        protected void UpdateView(boolean shouldBeCentered) {
+
             view.setBackgroundColor(Color.TRANSPARENT);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                view.setElevation(100);
-//            }
-
-            view.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction())
-                    {
-                        case MotionEvent.ACTION_UP:
-
-                            Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
-                            Bundle clickedEnclosure = new Bundle();
-
-                            clickedEnclosure.putSerializable("enc", enclosure);
-                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-                            GlobalVariables.appCompatActivity.startActivity(intent);
-//                            int pos = getAdapterPosition();
-//                            Intent intent = new Intent(tempActivity, EnclosureActivity.class);
-//                            Bundle clickedEnclosure = new Bundle();
-//                            clickedEnclosure.putInt("image", ); //Clicked image
-//                            clickedEnclosure.putString("name", enclosuresNames[pos]);
-//                            clickedEnclosure.putInt("id", id);
-//                            intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-//                            tempActivity.startActivity(intent);
-
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                            Log.e("AVIV", resource + " Not a click");
-                            break;
-                    }
-
-                    return true;
-                }
-            });
 
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -262,25 +233,26 @@ public class MapView extends RelativeLayout {
                 public void run() {
                     width =  view.getMeasuredWidth();
                     height = view.getMeasuredHeight();
-                    if(!resource.equals(ZOO_MAP))
+                    if(shouldBeCentered)
                         updateIconPositionWithSize(ImageIcon.this);
                 }
             });
+            view.setVisibility(shouldBeCentered ? INVISIBLE : VISIBLE);
             addView(view);
         }
-        ImageIcon(Drawable resource, Enclosure enclosure, int left, int top) {
+    }
+
+    private class EnclosureIcon extends ImageIcon {
+        private Enclosure enclosure;
+
+        EnclosureIcon(Drawable resource, Enclosure enclosure, int left, int top) {
+            super(left, top);
             this.enclosure = enclosure;
 
-//            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
             this.left = left;
             this.top = top;
             view = new ImageView(getContext());
-//            view.setImageResource(resourceId);
             view.setImageDrawable(resource);
-            view.setBackgroundColor(Color.TRANSPARENT);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                view.setElevation(100);
-//            }
 
             view.setOnTouchListener(new OnTouchListener() {
                 @Override
@@ -305,21 +277,7 @@ public class MapView extends RelativeLayout {
                 }
             });
 
-            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-            view.setLayoutParams(layoutParams);
-
-            view.post(new Runnable() {
-                @Override
-                public void run() {
-                    width =  view.getMeasuredWidth();
-                    height = view.getMeasuredHeight();
-                    if(!resource.equals(ZOO_MAP))
-                        updateIconPositionWithSize(ImageIcon.this);
-                }
-            });
-            addView(view);
+            UpdateView(true);
         }
     }
 }
