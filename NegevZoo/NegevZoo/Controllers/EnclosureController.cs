@@ -441,10 +441,16 @@ namespace NegevZoo.Controllers
         #endregion
 
         [HttpPost]
-        [Route("enclosures/upload")]
-        public IHttpActionResult EnclosureImagesUpload()
+        [Route("enclosures/upload/{path}")]
+        public IHttpActionResult EnclosureImagesUpload(String path)
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new Exception("Wrong input. Path is empty");
+            }
+
             var httpRequest = HttpContext.Current.Request;
+
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
@@ -454,14 +460,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/");
+                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/" + path);
                     return Ok();
                 }
             }
             catch (Exception exp)
             {
                 //TODO: add log
-                throw new Exception("kaki");
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
 
             //var fileNames = new List<String>();
