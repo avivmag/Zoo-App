@@ -36,7 +36,7 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// update on an online user.
+        /// update on a device.
         /// </summary>
         /// <param name="deviceId">The device id to add</param>
         /// <param name="inPark">a boolean that indicates if the device is in the park</param>

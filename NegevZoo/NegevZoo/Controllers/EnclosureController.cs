@@ -297,6 +297,58 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// Adds or updates an enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePicture">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/picture/update")]
+        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosurePicture(enclosurePicture);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+        
+        /// <summary>
+        /// Adds or updates an enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideo">The enclosures to update.</param>
+        [HttpPost]
+        [Route("enclosures/video/update")]
+        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateEnclosureVideo(enclosureVideo);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+
+
+
+
+        /// <summary>
         /// Deletes an enclosure.
         /// </summary>
         /// <param name="id">The enclosure's encId to delete.</param>
@@ -335,54 +387,6 @@ namespace NegevZoo.Controllers
             {
                 //TODO: add log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Adds or updates an enclosure picture.
-        /// </summary>
-        /// <param name="enclosurePicture">The enclosures to update.</param>
-        [HttpPost]
-        [Route("enclosures/picture/update")]
-        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.UpdateEnclosurePicture(enclosurePicture);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO add a log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
-            }
-        }
-
-        /// <summary>
-        /// Adds or updates an enclosure video.
-        /// </summary>
-        /// <param name="enclosureVideo">The enclosures to update.</param>
-        [HttpPost]
-        [Route("enclosures/video/update")]
-        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.UpdateEnclosureVideo(enclosureVideo);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO add a log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
             }
         }
 
