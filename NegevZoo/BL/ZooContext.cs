@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 using DAL;
 using DAL.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BL
 {
@@ -14,16 +19,23 @@ namespace BL
 
         public ZooContext(bool isTesting = true, bool newDb = false)
         {
-            if (isTesting)
+            try
             {
-                zooDB = zooDB ?? DummyDB.GetInstance();
+                if (isTesting)
+                {
+                    zooDB = zooDB ?? DummyDB.GetInstance();
+                }
+                else
+                {
+                    zooDB = new NegevZooDBEntities();
+                }
             }
-            else
+            catch
             {
-                zooDB = new NegevZooDBEntities();
+                throw new Exception("Could not connect to the database");
             }
         }
-
+        
         public ZooContext(IZooDB db)
         {
             zooDB = db;
@@ -62,39 +74,17 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
-        /// <summary>
-        /// Gets the enclosures types results.
-        /// </summary>
-        /// <returns>The enclosures types .</returns>
-        public IEnumerable<Enclosure> GetAllEnclosures()
-        {
-            return zooDB.GetAllEnclosures();
-        }
-
-        /// <summary>
-        /// Gets the enclosure details by the enclosure type id.
-        /// </summary>
-        /// <param name="encId">The enclosure's type id.</param>
-        /// <returns>The enclosure details in all the languages.</returns>
-        public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
-        {
-            if (!GetAllEnclosures().Any(e => e.id == encId))
-            {
-                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            }
-
-            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
-        }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
         /// <param name="language">The enclosure's data language.</param>
         /// <param name="id">The enclosure's id.</param>
         /// <returns>The enclosure.</returns>
+        /// 
         public EnclosureResult GetEnclosureById(int id, int language)
         {
+            //validate atrributes
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
@@ -130,7 +120,7 @@ namespace BL
 
             return enclosureResult; 
         }
-   
+
         /// <summary>
         /// Gets the enclosure by it's name.
         /// </summary>
@@ -146,7 +136,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            var encDetails = zooDB.GetAllEnclosureDetails().Where(e => e.name.Contains(name) && e.language == language);
+            var encDetails = zooDB.GetAllEnclosureDetails().Where(e => e.name.Contains(name));
 
             // it there are details in the name and language
             if (encDetails != null)
@@ -174,7 +164,31 @@ namespace BL
                                                             (e.markerLongitude <= longtitud + 5 && e.markerLongitude >= longtitud - 5) &&
                                                             (e.markerLatitude <= latitude + 5 && e.markerLatitude >= latitude - 5) );
         }
-        
+
+        /// <summary>
+        /// Gets the enclosures types results.
+        /// </summary>
+        /// <returns>The enclosures types .</returns>
+        public IEnumerable<Enclosure> GetAllEnclosures()
+        {
+            return zooDB.GetAllEnclosures();
+        }
+
+        /// <summary>
+        /// Gets the enclosure details by the enclosure type id.
+        /// </summary>
+        /// <param name="encId">The enclosure's type id.</param>
+        /// <returns>The enclosure details in all the languages.</returns>
+        public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
+        {
+            if (!GetAllEnclosures().Any(e => e.id == encId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            }
+
+            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
+        }
+
         /// <summary>
         /// Gets the enclosure's recurring events by it's id.
         /// </summary>
@@ -197,7 +211,7 @@ namespace BL
 
             return zooDB.GetAllRecuringEvents().Where(re => re.language == language && re.enclosureId == encId).ToList();
         }
-
+   
         /// <summary>
         /// Gets the enclosure's pictures by it's id.
         /// </summary>
@@ -229,7 +243,7 @@ namespace BL
 
             return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
-
+        
         /// <summary>
         /// Updates The enclosure.
         /// </summary>
@@ -269,7 +283,7 @@ namespace BL
                 //check that the enclosure exists
                 if (oldEnc == null)
                 {
-                    throw new ArgumentException("Wrong input. Enclosure doesn't exits");
+                    throw new ArgumentException("Wrong input. Enclosure id doesn't exits");
                 }
 
                 // check that if the name changed, it doesn't exits
@@ -309,23 +323,29 @@ namespace BL
             //2. enclosure detail name
             if (IsEmptyString(enclosureDetail.name) || IsNullOrWhiteSpace(enclosureDetail.name))
             {
-                throw new ArgumentException("Wrong input. enclosure name is empty or white space");
+                throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
-
-            //TODO: add a check to latitude or longtitude out of the range of the zoo.
+            
+            //3. check that the enclosure id exists
+            if (!GetAllEnclosures().Any(e => e.id == enclosureDetail.encId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists..");
+            }
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
-            //update existing enclosure
             EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
 
-            //check that the enclosure exists
-            if (oldEnc == null)
+            if (oldEnc == null) //add a new enclosure details
             {
+                if (enclosuresDetails.Any(ed => ed.name == enclosureDetail.name))
+                {
+                    throw new ArgumentException("Wrong input. The name of the enclosure alreay exists.");
+                }
                 enclosuresDetails.Add(enclosureDetail);
-
             }
-            else
+            else //update an exists enclosure detail
+            //get the existing enclosure detail
             {
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosureDetail.name && enclosuresDetails.Any(en => en.name == enclosureDetail.name))//The name changed
@@ -367,15 +387,25 @@ namespace BL
 
             if (enclosurePicture.id == default(int)) // add a new enclosure picture
             {
+                if (allEnclosurePictures.Any(p => p.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure picture. The picture url already exists.");
+                }
+
                 allEnclosurePictures.Add(enclosurePicture);
             }
             else //update an existsing picture
             {
-                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.enclosureId == enclosurePicture.enclosureId);
+                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.id == enclosurePicture.id);
 
                 if (oldPic == null)
                 {
                     throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
+                }
+
+                if (oldPic.pictureUrl != enclosurePicture.pictureUrl && allEnclosurePictures.Any(ep => ep.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure picture. The picture url is already exists");
                 }
 
                 oldPic.pictureUrl = enclosurePicture.pictureUrl;
@@ -395,7 +425,6 @@ namespace BL
             {
                 throw new ArgumentException("No video given");
             }
-
             
             //1. check that the enclosure exists
             if (!GetAllEnclosures().Any(e => e.id == enclosureVideo.enclosureId))
@@ -413,6 +442,11 @@ namespace BL
 
             if (enclosureVideo.id == default(int)) //add video
             {
+                if (allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure video. The enclosure vido url already exists");
+                }
+
                 allEnclosureVideos.Add(enclosureVideo);
             }
             else //update video
@@ -422,6 +456,11 @@ namespace BL
                 if (oldVideo == null)
                 {
                     throw new ArgumentException("Wrong input. Video doesn't exists");
+                }
+
+                if (oldVideo.videoUrl != enclosureVideo.videoUrl && allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
 
                 oldVideo.videoUrl = enclosureVideo.videoUrl;
@@ -505,9 +544,7 @@ namespace BL
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
             }
 
-            var enclosureToDelete = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id);
-
-            zooDB.GetAllEnclosureDetails().RemoveRange(enclosureToDelete);
+            zooDB.GetAllEnclosureDetails().ToList().RemoveAll(ed => ed.encId == enclosure.id);
             zooDB.GetAllEnclosures().Remove(enclosure);
         }
 
@@ -1316,6 +1353,7 @@ namespace BL
                 oldEvent.endDate = specialEvent.endDate;
                 oldEvent.imageUrl = specialEvent.imageUrl;
             }
+            
         }
 
         /// <summary>
@@ -1356,7 +1394,7 @@ namespace BL
         /// Adds or Updates a feed wall message.
         /// </summary>
         /// <param name="feed">The wallfeed to add or update</param>
-        public void UpdateWallFeed(WallFeed feed)
+        public void UpdateWallFeed(WallFeed feed, bool isPush)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1414,6 +1452,12 @@ namespace BL
                 oldFeed.language = feed.language;
                 oldFeed.info = feed.info;
                 oldFeed.created = feed.created;
+            }
+
+            if (isPush)
+            {
+                //TODO: change the title
+                SendNotificationsAllDevices("New Wall Feed!", feed.info);
             }
         }
 
@@ -1684,26 +1728,127 @@ namespace BL
         #endregion
 
         #region Notification support
-        public void UpdateDeviceOnline(string deviceId)
+
+        /// <summary>
+        /// get all the devices in the db.
+        /// </summary>
+        public IEnumerable<Device> GetAllDevices()
         {
-            //if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
-            //{
-            //    throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
-            //}
-
-            //if (zooDB.getAllOnlineDevices().Any(od => od.deviceId == deviceId))
-            //{
-            //    //reset the time to delete
-            //}
-
-            //if (zooDB.getAllOffLineDevices().Any(od => od.deviceId == deviceId))
-            //{
-            //    //remove from offline
-            //}
-                
-            //add to online
-            //start a new timer
+            return zooDB.getAllDevices();
         }
+
+        /// <summary>
+        /// updated the status of the given device.
+        /// </summary>
+        /// <param name="deviceId">The device to update.</param>
+        /// <param name="insidePark"> The location status of the device</param>
+        public void UpdateDevice(string deviceId, bool insidePark)
+        {
+            //validate the attribues
+            //1. check the device id.
+            if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
+            {
+                throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
+            }
+
+            var device = zooDB.getAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+
+            //check if the device already exists
+            if (device != null)
+            {
+                device.lastPing = DateTime.Now;
+            }
+            else
+            {
+                device = new Device
+                {
+                    deviceId = deviceId,
+                    insidePark = (sbyte)(insidePark? 1 : 0),
+                    lastPing = DateTime.Now
+                };
+
+                zooDB.getAllDevices().Add(device);
+            }
+
+        }
+
+        /// <summary>
+        /// send notification to all the devices
+        /// </summary>
+        /// <param name="title">The title of the notification.</param>
+        /// <param name="body">The body of the notification</param>
+        public void SendNotificationsAllDevices(string title, string body)
+        {
+            Task.Factory.StartNew(() => NotifyAsync(title, body, true));
+        }
+
+        /// <summary>
+        /// send notification to the online devices
+        /// </summary>
+        /// <param name="title">The title of the notification.</param>
+        /// <param name="body">The body of the notification</param>
+        public void SendNotificationsOnlineDevices(string title, string body)
+        {
+            Task.Factory.StartNew(() => NotifyAsync(title, body, false));
+        }
+
+        private async void NotifyAsync(string title, string body, bool toAll)
+        {
+            // TODO:: compute whether the users are online or offline and send by that.
+            try
+            {
+                string key = Properties.Settings.Default.serverKey;
+                string id = Properties.Settings.Default.senderId;
+                
+                var devices = new List<Device>();
+
+                if (toAll) //the notification should be sent to all the users
+                {
+                    devices.AddRange(zooDB.getAllDevices().ToList());
+                }
+                else
+                {   //the notification should be sent to the online users.
+                    //TODO: check if 30 minuits is the difference between online of offline
+                    devices.AddRange(zooDB.getAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
+                }
+
+                // Format the server's key.
+                var serverKey = string.Format("key={0}", key);
+
+                // Format the sender's Id.
+                var senderId = string.Format("id={0}", id);
+
+                // Get all registration ids from the database.
+                var registration_ids = devices.Select(d => d.deviceId).ToArray();
+
+                // Construct the request's data.
+                var data = new
+                {
+                    registration_ids,
+                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                };
+
+                var jsonBody = JsonConvert.SerializeObject(data);
+
+                using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
+                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        await httpClient.SendAsync(httpRequest);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO:: LOG.
+                throw ex;
+            }
+        }
+
         #endregion
 
         #region private functions
@@ -1732,8 +1877,38 @@ namespace BL
         {
             return String.IsNullOrWhiteSpace(str);
         }
-
         #endregion
+
+        /// <summary>
+        /// post a file to the db
+        /// </summary>
+        /// <param name="httpRequest">The requested files.</param>
+        /// <param name="relativePath">the path.</param>
+        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        {
+            var fileNames = new List<String>();
+
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile = httpRequest.Files[file];
+
+                var fileExtension = postedFile.FileName.Split('.').Last();
+                var fileName = Guid.NewGuid() + "." + fileExtension;
+
+                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+
+                postedFile.SaveAs(filePath);
+
+                fileNames.Add(fileName);
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue(relativePath + fn));
+            }
+        }
 
         public void Dispose()
         {

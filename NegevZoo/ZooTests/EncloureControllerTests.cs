@@ -13,10 +13,11 @@ namespace ZooTests
     [TestClass]
     public class EncloureControllerTests
     {
+        #region tests SetUp and TearDown
+
         private EnclosureController enclosureController;
         private int nonExistantLang;
 
-        #region tests SetUp and TearDown
         [TestInitialize]
         public void SetUp()
         {
@@ -36,20 +37,20 @@ namespace ZooTests
 
         #region GetAllEnclosureResults()
         [TestMethod]
-        public void GetAllEnclosuresLangHe()
+        public void GetAllEnclosuresResutlsLangHe()
         {
-            Assert.AreEqual(3, enclosureController.GetAllEnclosureResults((int)Languages.he).Count());
+            Assert.AreEqual(4, enclosureController.GetAllEnclosureResults((int)Languages.he).Count());
         }
 
         [TestMethod]
-        public void GetAllEnclosuresLangEng()
+        public void GetAllEnclosuresResultsLangEng()
         {
             Assert.AreEqual(3, enclosureController.GetAllEnclosureResults((int)Languages.en).Count());
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void GetAllEnclosuresLangNotExist()
+        public void GetAllEnclosuresResultsLangNotExist()
         {
             enclosureController.GetAllEnclosureResults(nonExistantLang);
         }
@@ -71,6 +72,17 @@ namespace ZooTests
             Assert.IsNotNull(enc);
             Assert.AreEqual(1, enc.Id);
             Assert.AreEqual("Monkeys", enc.Name);
+        }
+
+        [TestMethod]
+        public void GetEnclosuresByValidIdDataDoesntExists()
+        {
+            var enc = enclosureController.GetEnclosureById(4,2);
+            
+            Assert.IsNotNull(enc);
+            Assert.AreEqual(4, enc.Id);
+            Assert.AreEqual("קרנף לבן", enc.Name);
+            Assert.AreEqual("למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים", enc.Story);
         }
 
         [TestMethod]
@@ -116,6 +128,21 @@ namespace ZooTests
         }
 
         [TestMethod]
+        public void GetEnclosuresByNameValidInputDataDoesntExistsInWantedLang()
+        {
+            IEnumerable<EnclosureResult> encs = enclosureController.GetEnclosureByName("קרנף לבן", 2);
+
+            Assert.AreEqual(1, encs.Count());
+
+            EnclosureResult enc = encs.First();
+            
+            Assert.IsNotNull(enc);
+            Assert.AreEqual(4, enc.Id);
+            Assert.AreEqual("קרנף לבן", enc.Name);
+            Assert.AreEqual("למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים", enc.Story);
+        }
+
+        [TestMethod]
         public void GetEnclosuresByNamePartialyName()
         {
             IEnumerable<EnclosureResult> encs = enclosureController.GetEnclosureByName("Monkeys", 2);
@@ -140,20 +167,52 @@ namespace ZooTests
         {
             enclosureController.GetEnclosureByName("Houman Monkeys", nonExistantLang);
         }
-
-        [TestMethod]
-        public void GetEnclosuresByNameValidNameWrongLang()
-        {
-            var encs = enclosureController.GetEnclosureByName("Houman Monkeys");
-
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(0, encs.Count());
-        }
         #endregion
 
         //TODO: Add tests after implementaion.
         #region GetEnclsoureByPosition
 
+        #endregion
+
+        #region GetAllEnclosures()
+        [TestMethod]
+        public void GetAllEnclosures()
+        {
+            IEnumerable<Enclosure> encs = enclosureController.GetAllEnclosures();
+
+            Assert.AreEqual(4, encs.Count());
+        }
+        #endregion
+
+        #region GetEnclosureDetailsById
+        [TestMethod]
+        public void GetEnclosureDetailsByIdValidInput()
+        {
+            // 2 details
+            IEnumerable<EnclosureDetail> details = enclosureController.GetEnclosureDetailsById(1);
+
+            Assert.AreEqual(2, details.Count());
+
+            EnclosureDetail enc = details.First();
+            Assert.AreEqual("תצוגת הקופים", enc.name);
+
+            enc = details.Last();
+            Assert.AreEqual("Monkeys", enc.name);
+
+            //1 detial
+            details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(1, details.Count());
+
+            enc = details.First();
+            Assert.AreEqual("קרנף לבן", enc.name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetEnclosureDetailsByIdWrongId()
+        {
+            enclosureController.GetEnclosureDetailsById(-4);
+        }
         #endregion
 
         #region GetAllRecurringEvents
@@ -162,7 +221,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.he);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = encs.ElementAt(0);
             Assert.IsNotNull(enc);
@@ -187,7 +246,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.he);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = encs.SingleOrDefault(en => en.Name == "זברה");
             Assert.IsNotNull(enc);
@@ -212,6 +271,625 @@ namespace ZooTests
             enclosureController.GetRecurringEvents(nonExistantLang);
         }
         #endregion
+
+        #region GetEnclosurePicturesById
+        [TestMethod]
+        public void GetEnclosurePictureByIdValidInput()
+        {
+            //only 1 result
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+            Assert.AreEqual("url1", pictures.First().pictureUrl);
+
+            //more than 1
+            pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+            Assert.AreEqual("url2", pictures.First().pictureUrl);
+            Assert.AreEqual("url3", pictures.Last().pictureUrl);
+        }
+
+        [TestMethod]
+        public void GetEnclosurePictureByIdEmptyUrl()
+        {
+            //only 1 result
+            var pictures = enclosureController.GetEnclosurePicturesById(4);
+            Assert.AreEqual(0, pictures.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetEnclosurePictureByIdWrongId()
+        {
+            //only 1 result
+            var pictures = enclosureController.GetEnclosurePicturesById(-4);
+        }
+        #endregion
+
+        #region GetEnclosureVideosUrlById
+        [TestMethod]
+        public void GetEnclosureVideoUrlByIdValidInput()
+        {
+            //only 1 result
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+            Assert.AreEqual("video1", videos.First().videoUrl);
+
+            //more than 1
+            videos = enclosureController.GetEnclosureVideosById(2);
+            Assert.AreEqual(2, videos.Count());
+            Assert.AreEqual("video2", videos.First().videoUrl);
+            Assert.AreEqual("video3", videos.Last().videoUrl);
+        }
+
+        [TestMethod]
+        public void GetEnclosureVideoByIdEmptyUrl()
+        {
+            //only 1 result
+            var videos = enclosureController.GetEnclosureVideosById(4);
+            Assert.AreEqual(0, videos.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetEnclosureVideoByIdWrongId()
+        {
+            enclosureController.GetEnclosureVideosById(-4);
+        }
+        #endregion
+
+        #region UpdateEnclosure
+        [TestMethod]
+        public void UpdateEnclosureAddEncValidTest()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new Enclosure
+            {
+                id = default(int),
+                name = "Lions enclosure"
+            };
+
+            enclosureController.UpdateEnclosure(enc);
+
+            encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.AreEqual(3, encs.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureAddExistingName()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new Enclosure
+            {
+                id = default(int),
+                name = "תצוגת הקופים",
+                //story = "Finalt they are here",
+                //language = (int)Languages.en
+            };
+
+            enclosureController.UpdateEnclosure(enc);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureAddEmptyName()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new Enclosure
+            {
+                id = default(int),
+                name = "",
+                //story = "Finalt they are here",
+                //language = (int)Languages.en
+            };
+
+            enclosureController.UpdateEnclosure(enc);
+        }
+
+        [TestMethod]
+        public void UpdateEnclosureValidInput()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(4, encs.Count());
+
+            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
+            Assert.IsNotNull(monkeyEncEn);
+
+            monkeyEncEn.name = "קקי";
+            enclosureController.UpdateEnclosure(monkeyEncEn);
+
+            encs = enclosureController.GetAllEnclosures();
+            Assert.AreEqual(4, encs.Count());
+
+            var updatedEnc = encs.SingleOrDefault(en => en.name == "קקי");
+            Assert.IsNotNull(updatedEnc);
+
+            var nothing = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
+            Assert.IsNull(nothing);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureExistingName()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(4, encs.Count());
+
+            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
+            Assert.IsNotNull(monkeyEncEn);
+
+            Enclosure zebra = new Enclosure
+            {
+                id = monkeyEncEn.id,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
+                name = "זברה"
+            };
+
+            enclosureController.UpdateEnclosure(zebra);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureEmptyName()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(4, encs.Count());
+
+            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
+            Assert.IsNotNull(monkeyEncEn);
+
+            Enclosure zebra = new Enclosure
+            {
+                id = monkeyEncEn.id,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
+                name = ""
+            };
+
+            enclosureController.UpdateEnclosure(zebra);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDoesntExists()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(4, encs.Count());
+
+            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
+            Assert.IsNotNull(monkeyEncEn);
+
+            Enclosure zebra = new Enclosure
+            {
+                id = -4,
+                markerLatitude = monkeyEncEn.markerLatitude,
+                markerLongitude = monkeyEncEn.markerLongitude,
+                name = "זברה"
+            };
+
+            enclosureController.UpdateEnclosure(zebra);
+        }
+        #endregion
+
+        #region UpdateEnclosureDetails
+
+        [TestMethod]
+        public void UpdateEnclosureDetailsAddEncDetValidInput()
+        {
+            var details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(1, details.Count());
+            Assert.AreEqual("קרנף לבן", details.First().name);
+
+            var enc = new EnclosureDetail
+            {
+                encId = 4,
+                name = "Rhino enclosure",
+                language = (int)Languages.en,
+                story = "This is a story"
+            };
+
+            enclosureController.UpdateEnclosureDetail(enc);
+
+            details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(2, details.Count());
+            Assert.AreEqual("Rhino enclosure", details.SingleOrDefault(d => d.language == (int)Languages.en).name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDetailsAddEncDetExistingName()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new EnclosureDetail
+            {
+                encId       = 4,
+                name        = "Monkeys",
+                story       = "Finalt they are here",
+                language    = (int)Languages.en
+            };
+
+            enclosureController.UpdateEnclosureDetail(enc);
+        }
+
+        [TestMethod]
+        public void UpdateEnclosureDetailsUpdateEncDetValidInput()
+        {
+            var details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(1, details.Count());
+            Assert.AreEqual("קרנף לבן", details.First().name);
+
+            var enc = new EnclosureDetail
+            {
+                encId = 2,
+                language = (int)Languages.he, //hebrew
+                name = "קופי אדם",
+                story = "הקופים שלנו הם הכי חכמים!"
+
+            };
+
+            enc.name = "123";
+
+            enclosureController.UpdateEnclosureDetail(enc);
+
+            details = enclosureController.GetEnclosureDetailsById(2);
+            Assert.AreEqual(2, details.Count());
+            Assert.AreEqual("123", details.SingleOrDefault(d => d.language == (int)Languages.he).name);
+            Assert.AreEqual("Houman Monkeys", details.SingleOrDefault(d => d.language == (int)Languages.en).name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDetailsEncDoesntExists()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new EnclosureDetail
+            {
+                encId = -4,
+                name = "Lions enclosure",
+                language = (int)Languages.en,
+                story = "This is a story"
+            };
+
+            enclosureController.UpdateEnclosureDetail(enc);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDetailsEmptyName()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new EnclosureDetail
+            {
+                encId = 2,
+                name = "",
+                story = "Finalt they are here",
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateEnclosureDetail(enc);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDetailsWrongLanguage()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new EnclosureDetail
+            {
+                encId = 2,
+                name = "Monkeys",
+                story = "Finalt they are here",
+                language = -4
+            };
+
+            enclosureController.UpdateEnclosureDetail(enc);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureDetailsUpdateEncDetExistingName()
+        {
+            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
+            Assert.IsNotNull(encs);
+            Assert.AreEqual(3, encs.Count());
+
+            var enc = new EnclosureDetail
+            {
+                encId = 2,
+                language = (int)Languages.en, //english
+                name = "Houman Monkeys",
+                story = "Computer Science students."
+
+            };
+
+            enc.name = "Monkeys";
+
+            enclosureController.UpdateEnclosureDetail(enc);
+        }
+
+        #endregion
+
+        #region UpdateEnclosurePicture
+        [TestMethod]
+        public void UpdateEnclosurePictureAddEncPicValidInput()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id          =default(int),
+                enclosureId = 1,
+                pictureUrl  = "url4"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+
+            pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(2, pictures.Count());
+            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureEncDoesntExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = -1,
+                pictureUrl = "url4"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePicturesEmptyUrl()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = 1,
+                pictureUrl = ""
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureAddEncPicUrlExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = 1,
+                pictureUrl = "url3"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        public void UpdateEnclosurePictureUpdateEncPicValidInput()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url2", pic.pictureUrl);
+            Assert.AreEqual(2, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = 2,
+                enclosureId = 2,
+                pictureUrl = "url2"
+            };
+
+            newPic.pictureUrl = "url4";
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+
+            pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureUpdateEncPicUrlExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url2", pic.pictureUrl);
+            Assert.AreEqual(2, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = 2,
+                enclosureId = 2,
+                pictureUrl = "url2"
+            };
+
+            newPic.pictureUrl = "url1";
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+        #endregion
+
+        #region UpdateVideoUrl
+
+        [TestMethod]
+        public void UpdateEnclosureVideoAddEncVidValidInput()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id          = default(int),
+                enclosureId = 1,
+                videoUrl    = "video4"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+
+            videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(2, videos.Count());
+            Assert.AreEqual("video4", videos.SingleOrDefault(p => p.videoUrl== "video4").videoUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVidoeEncDoesntExists()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = -1,
+                videoUrl = "video4"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVideosEmptyUrl()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = 1,
+                videoUrl = ""
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVideoAddEncVidUrlExists()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = 1,
+                videoUrl = "video2"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+
+        #endregion
+
+
+
+
+        #region DeleteEnclosure
+
+        [TestMethod]
+        public void DeleteEnclosureValidInput()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            var details = enclosureController.GetEnclosureDetailsById(4);
+            var animalsController = new AnimalController();
+
+            Assert.AreEqual(0, enclosureController.GetRecurringEvents(4, 1).Count());
+            Assert.AreEqual(0, animalsController.GetAnimalsByEnclosure(4, 1).Count());
+            Assert.AreEqual(4, encs.Count());
+            Assert.AreEqual(1, details.Count());
+
+            enclosureController.DeleteEnclosure(4);
+
+            encs = enclosureController.GetAllEnclosures();
+
+            Assert.AreEqual(3, encs.Count());
+        }
+
+        #endregion
+
 
         #region DeleteRecurringEvent
         [TestMethod]
@@ -238,110 +916,6 @@ namespace ZooTests
         public void DeleteRecuringEventIdDoesntExists()
         {
             enclosureController.DeleteRecurringEvent(1000);
-        }
-        #endregion
-
-        #region UpdateEnclosure
-        [TestMethod]
-        public void UpdateEnclosureAddEncValidTest()
-        {
-            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
-
-            var enc = new Enclosure
-            {
-                id = default(int),
-                name = "Lions enclosure"
-            };
-
-            enclosureController.UpdateEnclosure(enc);
-
-            encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosureAddTestExistingName()
-        {
-            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
-
-            var enc = new Enclosure
-            {
-                id = default(int),
-                name = "תצוגת הקופים",
-                //story = "Finalt they are here",
-                //language = (int)Languages.en
-            };
-
-            enclosureController.UpdateEnclosure(enc);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosureAddTestEmptyName()
-        {
-            var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
-
-            var enc = new Enclosure
-            {
-                id = default(int),
-                name = "",
-                //story = "Finalt they are here",
-                //language = (int)Languages.en
-            };
-
-            enclosureController.UpdateEnclosure(enc);
-        }
-
-        [TestMethod]
-        public void UpdateEnclosureValidTest()
-        {
-            var encs = enclosureController.GetAllEnclosures();
-
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
-
-            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
-            Assert.IsNotNull(monkeyEncEn);
-
-            monkeyEncEn.name = "קקי";
-            enclosureController.UpdateEnclosure(monkeyEncEn);
-
-            encs = enclosureController.GetAllEnclosures();
-            Assert.AreEqual(3, encs.Count());
-
-            var updatedEnc = encs.SingleOrDefault(en => en.name == "קקי");
-            Assert.IsNotNull(updatedEnc);
-
-            var nothing = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
-            Assert.IsNull(nothing);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosureExistingName()
-        {
-            var encs = enclosureController.GetAllEnclosures();
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
-
-            var monkeyEncEn = encs.SingleOrDefault(en => en.name == "תצוגת הקופים");
-            Assert.IsNotNull(monkeyEncEn);
-
-            Enclosure zebra = new Enclosure
-            {
-                id = monkeyEncEn.id,
-                markerLatitude = monkeyEncEn.markerLatitude,
-                markerLongitude = monkeyEncEn.markerLongitude,
-                name = "זברה"
-            };
-
-            enclosureController.UpdateEnclosure(zebra);
         }
         #endregion
     }

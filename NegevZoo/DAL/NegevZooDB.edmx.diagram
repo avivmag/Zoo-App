@@ -23,6 +23,7 @@
         <EntityTypeShape EntityType="NegevZooModel.YoutubeVideoUrl" Width="1.5" PointX="11" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.AnimalDetail" Width="1.5" PointX="0.75" PointY="10.75" />
         <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.75" PointY="10.75" />
+        <EntityTypeShape EntityType="NegevZooModel.Device" Width="1.5" PointX="11.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

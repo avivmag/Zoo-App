@@ -33,11 +33,14 @@ namespace DAL
             OpeningHours        = new TestDbSet<OpeningHour>();
             ContactInfos        = new TestDbSet<ContactInfo>();
             Users               = new TestDbSet<User>();
-            AllLanguages        = new TestDbSet<Language>();
-            AllEnclosursDetails = new TestDbSet<EnclosureDetail>();
-            AllAnimalsDetails   = new TestDbSet<AnimalDetail>();
+            Languages           = new TestDbSet<Language>();
+            EnclosursDetails    = new TestDbSet<EnclosureDetail>();
+            AnimalsDetails      = new TestDbSet<AnimalDetail>();
+            EnclosurePictures   = new TestDbSet<EnclosurePicture>();
+            YoutubeVideoUrls    = new TestDbSet<YoutubeVideoUrl>();
+            Devices             = new TestDbSet<Device>();
 
-            AllLanguages.AddRange(InitializeLanguages());
+            Languages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
             Enclosures.AddRange(InitializeEnclosures());
             WallFeeds.AddRange(InitializeWallFeeds());
@@ -48,10 +51,13 @@ namespace DAL
             OpeningHours.AddRange(InitialOpeningHour());
             ContactInfos.AddRange(InitialContactInfos());
             Users.AddRange(InitializeUsers());
-            AllEnclosursDetails.AddRange(InitializeEnclosureDetails());
-            AllAnimalsDetails.AddRange(InitializeAnimalsDetails());
+            EnclosursDetails.AddRange(InitializeEnclosureDetails());
+            EnclosurePictures.AddRange(InitializeEnclosurePictures());
+            YoutubeVideoUrls.AddRange(InitializeYouTubeVidoes());
+            AnimalsDetails.AddRange(InitializeAnimalsDetails());
+            Devices.AddRange(InitializeDevices());
         }
-
+        
         private IZooDB CreateInstance()
         {
             throw new NotImplementedException();
@@ -86,11 +92,12 @@ namespace DAL
         protected DbSet<ContactInfo> ContactInfos { get; set; }
         protected DbSet<SpecialEvent> SpecialEvents { get; set; }
         protected DbSet<User> Users { get; set; }
-        protected DbSet<Language> AllLanguages { get; set; }
-        protected DbSet<EnclosureDetail> AllEnclosursDetails { get; set; }
-        protected DbSet<AnimalDetail> AllAnimalsDetails { get; set; }
-        protected DbSet<EnclosurePicture> AllEnclosurePictures { get; set; }
-        protected DbSet<YoutubeVideoUrl> AllYoutubeVideoUrls { get; set; }
+        protected DbSet<Language> Languages { get; set; }
+        protected DbSet<EnclosureDetail> EnclosursDetails { get; set; }
+        protected DbSet<AnimalDetail> AnimalsDetails { get; set; }
+        protected DbSet<EnclosurePicture> EnclosurePictures { get; set; }
+        protected DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
+        protected DbSet<Device> Devices { get; set; }
 
         #endregion 
 
@@ -119,6 +126,12 @@ namespace DAL
                     {
                         id          = 3,
                         name        = "זברה",
+                    },
+
+                    new Enclosure
+                    {
+                        id          = 4,
+                        name        = "קרנף לבן"
                     }
             };
         }
@@ -178,6 +191,65 @@ namespace DAL
                     name = "Zebra",
                     story = "Our saved Zebra."
 
+                },
+
+                new EnclosureDetail
+                {
+                    encId = 4,
+                    language = GetAllLanguages().SingleOrDefault(l => l.id == 1).id, //hebrew
+                    name = "קרנף לבן",
+                    story = "למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים"
+                }
+            };
+        }
+
+        private IEnumerable<EnclosurePicture> InitializeEnclosurePictures()
+        {
+            return new List<EnclosurePicture>
+            {
+                new EnclosurePicture
+                {
+                    id = 1,
+                    enclosureId = 1,
+                    pictureUrl = "url1"
+                },
+
+                new EnclosurePicture
+                {
+                    id = 2,
+                    enclosureId = 2,
+                    pictureUrl = "url2"
+                },
+                new EnclosurePicture
+                {
+                    id = 3,
+                    enclosureId = 2,
+                    pictureUrl = "url3"
+                }
+            };
+        }
+
+        private IEnumerable<YoutubeVideoUrl> InitializeYouTubeVidoes()
+        {
+            return new List<YoutubeVideoUrl>
+            {
+                new YoutubeVideoUrl
+                {
+                    id = 1,
+                    enclosureId = 1,
+                    videoUrl = "video1"
+                },
+                new YoutubeVideoUrl
+                {
+                    id = 2,
+                    enclosureId = 2,
+                    videoUrl = "video2"
+                },
+                new YoutubeVideoUrl
+                {
+                    id = 3,
+                    enclosureId = 2,
+                    videoUrl = "video3"
                 }
             };
         }
@@ -225,7 +297,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 1,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    language        = Languages.SingleOrDefault(l => l.id == 1).id, //hebrew
                     name            = "בבון הזית",
                     category        = "קופים",
                     series          = "קוף",
@@ -238,7 +310,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 1,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    language        = Languages.SingleOrDefault(l => l.id == 2).id, //english
                     name            = "Olive Baboon",
                     category        = "Monkies",
                     series          = "Monk",
@@ -253,7 +325,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 2,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    language        = Languages.SingleOrDefault(l => l.id == 1).id, //hebrew
                     name            = "גורילה",
                     category        = "קופים",
                     series          = "קוף",
@@ -266,7 +338,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 2,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    language        = Languages.SingleOrDefault(l => l.id == 2).id, //english
                     name            = "Gorila",
                     category        = "Monkies",
                     series          = "Monk",
@@ -281,7 +353,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 3,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 1).id, //hebrew
+                    language        = Languages.SingleOrDefault(l => l.id == 1).id, //hebrew
                     name            = "קוף",
                     category        = "קופים",
                     series          = "קוף",
@@ -294,7 +366,7 @@ namespace DAL
                 new AnimalDetail
                 {
                     animalId        = 3,
-                    language        = AllLanguages.SingleOrDefault(l => l.id == 2).id, //english
+                    language        = Languages.SingleOrDefault(l => l.id == 2).id, //english
                     name            = "Monkey",
                     category        = "Monkies",
                     series          = "Monk",
@@ -319,7 +391,7 @@ namespace DAL
                     {
                         id          = 1,
                         info        = "Purim Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                         
                     },
@@ -328,7 +400,7 @@ namespace DAL
                     {
                         id          = 2,
                         info        = "אירועי פורים",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -336,7 +408,7 @@ namespace DAL
                     {
                         id          = 3,
                         info        = "Passeover Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -345,7 +417,7 @@ namespace DAL
 
                         id          = 4,
                         info        = "אירועי פסח",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -353,7 +425,7 @@ namespace DAL
                     {
                         id          = 5,
                         info        = "Shavuut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -361,7 +433,7 @@ namespace DAL
                     {
                         id          = 6,
                         info        = "אירועי שבועות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -369,7 +441,7 @@ namespace DAL
                     {
                         id          = 7,
                         info        = "Sukut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -377,14 +449,14 @@ namespace DAL
                     {
                         id          = 8,
                         info        = "אירועי סוכות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 9,
                         info        = "Purim Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
 
                     },
@@ -393,7 +465,7 @@ namespace DAL
                     {
                         id          = 10,
                         info        = "אירועי פורים",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -401,7 +473,7 @@ namespace DAL
                     {
                         id          = 11,
                         info        = "Passeover Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -409,7 +481,7 @@ namespace DAL
                     {
                         id          = 12,
                         info        = "אירועי פסח",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -417,7 +489,7 @@ namespace DAL
                     {
                         id          = 13,
                         info        = "Shavuut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -425,7 +497,7 @@ namespace DAL
                     {
                         id          = 14,
                         info        = "אירועי שבועות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -433,7 +505,7 @@ namespace DAL
                     {
                         id          = 15,
                         info        = "Sukut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -441,14 +513,14 @@ namespace DAL
                     {
                         id          = 16,
                         info        = "אירועי סוכות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 17,
                         info        = "Purim Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
 
                     },
@@ -457,7 +529,7 @@ namespace DAL
                     {
                         id          = 18,
                         info        = "אירועי פורים",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -465,7 +537,7 @@ namespace DAL
                     {
                         id          = 19,
                         info        = "Passeover Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -473,7 +545,7 @@ namespace DAL
                     {
                         id          = 20,
                         info        = "אירועי פסח",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -481,7 +553,7 @@ namespace DAL
                     {
                         id          = 21,
                         info        = "Shavuut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -489,7 +561,7 @@ namespace DAL
                     {
                         id          = 22,
                         info        = "אירועי שבועות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -497,7 +569,7 @@ namespace DAL
                     {
                         id          = 23,
                         info        = "Sukut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -505,14 +577,14 @@ namespace DAL
                     {
                         id          = 24,
                         info        = "אירועי סוכות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 25,
                         info        = "Purim Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
 
                     },
@@ -521,7 +593,7 @@ namespace DAL
                     {
                         id          = 26,
                         info        = "אירועי פורים",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -529,7 +601,7 @@ namespace DAL
                     {
                         id          = 27,
                         info        = "Passeover Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -537,7 +609,7 @@ namespace DAL
                     {
                         id          = 28,
                         info        = "אירועי פסח",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -545,7 +617,7 @@ namespace DAL
                     {
                         id          = 29,
                         info        = "Shavuut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -553,7 +625,7 @@ namespace DAL
                     {
                         id          = 30,
                         info        = "אירועי שבועות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -561,7 +633,7 @@ namespace DAL
                     {
                         id          = 31,
                         info        = "Sukut Events",
-                        language    = (int)Languages.en,
+                        language    = (int)DAL.Languages.en,
                         created     = new DateTime(2018,3,11)
                     },
 
@@ -569,7 +641,7 @@ namespace DAL
                     {
                         id          = 32,
                         info        = "אירועי סוכות",
-                        language    = (int)Languages.he,
+                        language    = (int)DAL.Languages.he,
                         created     = new DateTime(2018,3,11)
                     }
                 };
@@ -588,7 +660,7 @@ namespace DAL
                         id          = 1,
                         population  = "Adult",
                         pricePop    = 40,
-                        language    = (int)Languages.en
+                        language    = (int)DAL.Languages.en
                     },
 
                     new Price
@@ -596,7 +668,7 @@ namespace DAL
                         id          = 2,
                         population  = "מבוגר",
                         pricePop    = 40,
-                        language    = (int)Languages.he
+                        language    = (int)DAL.Languages.he
                     },
 
                     new Price
@@ -604,7 +676,7 @@ namespace DAL
                         id          = 3,
                         population  = "Children under 18",
                         pricePop    = 25,
-                        language    = (int)Languages.en
+                        language    = (int)DAL.Languages.en
                     },
 
                     new Price
@@ -612,7 +684,7 @@ namespace DAL
                         id          = 4,
                         population  = "ילד מתחת לגיל 18",
                         pricePop    = 25,
-                        language    = (int)Languages.he
+                        language    = (int)DAL.Languages.he
                     },
 
                     new Price
@@ -620,7 +692,7 @@ namespace DAL
                         id          = 5,
                         population  = "Soldier",
                         pricePop    = 25,
-                        language    = (int)Languages.en
+                        language    = (int)DAL.Languages.en
                     },
 
                     new Price
@@ -628,7 +700,7 @@ namespace DAL
                         id          = 6,
                         population  = "חייל",
                         pricePop    = 25,
-                        language    = (int)Languages.he
+                        language    = (int)DAL.Languages.he
                     },
 
                     new Price
@@ -636,7 +708,7 @@ namespace DAL
                         id          = 7,
                         population  = "Pensioner",
                         pricePop    = 10,
-                        language    = (int)Languages.en
+                        language    = (int)DAL.Languages.en
                     },
 
                     new Price
@@ -644,7 +716,7 @@ namespace DAL
                         id          = 8,
                         population  = "פנסיונר",
                         pricePop    = 25,
-                        language    = (int)Languages.he
+                        language    = (int)DAL.Languages.he
                     },
 
                     new Price
@@ -652,7 +724,7 @@ namespace DAL
                         id          = 9,
                         population  = "Student",
                         pricePop    = 10,
-                        language    = (int)Languages.en
+                        language    = (int)DAL.Languages.en
                     },
 
                     new Price
@@ -660,7 +732,7 @@ namespace DAL
                         id          = 10,
                         population  = "סטודנט",
                         pricePop    = 25,
-                        language    = (int)Languages.he
+                        language    = (int)DAL.Languages.he
                     }
             };
         }
@@ -679,7 +751,7 @@ namespace DAL
                         aboutUs             = "We are Negev Zoo!!! We love animals",
                         contactInfoNote     = "Contact between 08:00 - 22:00",
                         openingHoursNote    = "The cashier desk will bew closed two hours before the zoo is closing.",
-                        language            = (int)Languages.en
+                        language            = (int)DAL.Languages.en
                     },
 
                     new GeneralInfo
@@ -688,7 +760,7 @@ namespace DAL
                         aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
                         contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
                         openingHoursNote    = "הקופות יסגרו שעתיים לפני סגירת הגן",
-                        language            = (int)Languages.he
+                        language            = (int)DAL.Languages.he
                     }
             };
         }
@@ -772,7 +844,7 @@ namespace DAL
                     description             = "1קקי",
                     startDate               = new DateTime(2018,3,5),
                     endDate                 = new DateTime(2018,3,8),
-                    language                = (int) Languages.he
+                    language                = (int) DAL.Languages.he
                 },
                 new SpecialEvent
                 {
@@ -780,7 +852,7 @@ namespace DAL
                     description             = "Kaki1",
                     startDate               = new DateTime(2018,3,5),
                     endDate                 = new DateTime(2018,3,8),
-                    language                = (int) Languages.en
+                    language                = (int) DAL.Languages.en
                 },
                 new SpecialEvent
                 {
@@ -788,7 +860,7 @@ namespace DAL
                     description             = "אירועי פורים",
                     startDate               = new DateTime(2018,3,1),
                     endDate                 = new DateTime(2018,3,8),
-                    language                = (int) Languages.he
+                    language                = (int) DAL.Languages.he
                 },
                 new SpecialEvent
                 {
@@ -796,7 +868,7 @@ namespace DAL
                     description             = "Purim Events",
                     startDate               = new DateTime(2018,3,1),
                     endDate                 = new DateTime(2018,3,8),
-                    language                = (int) Languages.en
+                    language                = (int) DAL.Languages.en
                 }
             };
         }
@@ -820,7 +892,7 @@ namespace DAL
                     day         = 11,
                     startTime   = new TimeSpan(11, 30, 00),
                     endTime     = new TimeSpan(12, 0, 0),
-                    language    = (int)Languages.en
+                    language    = (int)DAL.Languages.en
                 },
 
                 new OpeningHour
@@ -838,7 +910,7 @@ namespace DAL
                     day = 12,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.en
+                    language = (int)DAL.Languages.en
                 },
 
                 new OpeningHour
@@ -856,7 +928,7 @@ namespace DAL
                     day = 13,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.en
+                    language = (int)DAL.Languages.en
                 },
 
                 new OpeningHour
@@ -874,7 +946,7 @@ namespace DAL
                     day = 14,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.en
+                    language = (int)DAL.Languages.en
                 },
 
                 new OpeningHour
@@ -892,7 +964,7 @@ namespace DAL
                     day = 15,
                     startTime = new TimeSpan(9, 30, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.en
+                    language = (int)DAL.Languages.en
                 },
 
                 new OpeningHour
@@ -910,7 +982,7 @@ namespace DAL
                     day = 17,
                     startTime = new TimeSpan(9, 45, 0),
                     endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)Languages.en
+                    language = (int)DAL.Languages.en
                 },
             };
         }
@@ -924,7 +996,7 @@ namespace DAL
                     id          = 1,
                     via         = "טלפון",
                     address     = "08-641-4777",
-                    language    =(int)Languages.he
+                    language    =(int)DAL.Languages.he
                 },
 
                 new ContactInfo
@@ -932,7 +1004,7 @@ namespace DAL
                     id          = 2,
                     via         = "Phone",
                     address     = "08-641-4777",
-                    language    =(int)Languages.en
+                    language    =(int)DAL.Languages.en
                 },
 
                 new ContactInfo
@@ -940,7 +1012,7 @@ namespace DAL
                     id          = 3,
                     via         = "דואר",
                     address     = "דרך אילן רמון 5, באר שבע",
-                    language    =(int)Languages.he
+                    language    =(int)DAL.Languages.he
                 },
 
                 new ContactInfo
@@ -948,7 +1020,7 @@ namespace DAL
                     id          = 4,
                     via         = "Post Mail",
                     address     = "Via Ilan Ramon 5, Beer-Sheva",
-                    language    =(int)Languages.en
+                    language    =(int)DAL.Languages.en
                 },
 
                 new ContactInfo
@@ -956,7 +1028,7 @@ namespace DAL
                     id          = 5,
                     via         = "דואר אלקטרוני",
                     address     = "gilorisr@post.bgu.ac.il",
-                    language    =(int)Languages.he
+                    language    =(int)DAL.Languages.he
                 },
 
                 new ContactInfo
@@ -964,7 +1036,7 @@ namespace DAL
                     id          = 6,
                     via         = "E-Mail",
                     address     = "gilorisr@post.bgu.ac.il",
-                    language    =(int)Languages.en
+                    language    =(int)DAL.Languages.en
                 }
             };
         }
@@ -1030,7 +1102,27 @@ namespace DAL
                 }
             };
         }
-
+        
+        private IEnumerable<Device> InitializeDevices()
+        {
+            return new List<Device>
+            {
+                new Device
+                {
+                    id = 1,
+                    deviceId = "123",
+                    insidePark = (sbyte)1,
+                    lastPing = new DateTime(2018,03,25,10,00,00)
+                },
+                new Device
+                {
+                    id = 2,
+                    deviceId = "1234",
+                    insidePark = (sbyte)1,
+                    lastPing = DateTime.Now
+                }
+            };
+        }
         #endregion
 
         #region Getters
@@ -1087,29 +1179,33 @@ namespace DAL
 
         public override DbSet<Language> GetAllLanguages()
         {
-            return AllLanguages;
+            return Languages;
         }
 
         public override DbSet<EnclosureDetail> GetAllEnclosureDetails()
         {
-            return AllEnclosursDetails;
+            return EnclosursDetails;
         }
 
         public override DbSet<AnimalDetail> GetAllAnimalsDetails()
         {
-            return AllAnimalsDetails;
+            return AnimalsDetails;
         }
 
         public override DbSet<EnclosurePicture> GetAllEnclosurePictures()
         {
-            return AllEnclosurePictures;
+            return EnclosurePictures;
         }
 
         public override DbSet<YoutubeVideoUrl> GetAllEnclosureVideos()
         {
-            return AllYoutubeVideoUrls;
+            return YoutubeVideoUrls;
         }
 
+        public override DbSet<Device> getAllDevices()
+        {
+            return Devices;
+        }
         #endregion
     }
 }

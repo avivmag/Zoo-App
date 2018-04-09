@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 using DAL;
@@ -186,7 +188,7 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region Contact Info
-        
+
         /// <summary>
         /// Gets all the ContactInfo elements with data in that language.
         /// </summary>
@@ -260,7 +262,7 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region Special events
-        
+
         /// <summary>
         /// Gets all the SpecialEvent elements with data in that language.
         /// </summary>
@@ -301,7 +303,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    return db.GetSpecialEventsByDate(startDate, endDate ,language);
+                    return db.GetSpecialEventsByDate(startDate, endDate, language);
                 }
 
             }
@@ -358,6 +360,33 @@ namespace NegevZoo.Controllers
             }
         }
 
+
+
+
+        [HttpPost]
+        [Route("SpecialEvents/upload")]
+        public IHttpActionResult SpecialEventsImagesUpload()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count < 1)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.ImagesUpload(httpRequest, @"~/assets/specialEvents/");
+                    return Ok();
+                }
+            }
+            catch (Exception exp)
+            {
+                //TODO: add log
+                throw new Exception("kaki");
+            }
+        }
         #endregion
 
         #region Wall Feed
@@ -389,16 +418,17 @@ namespace NegevZoo.Controllers
         /// Add or updates the WallFeed.
         /// </summary>
         /// <param name="feed">The WallFeed to add or update</param>
+        /// <param name="isPush">is the feed need to be pushed</param>
         [HttpPost]
-        [Route("Wallfeed/update")]
-        public void UpdateWallFeed(WallFeed feed)
+        [Route("Wallfeed/update/{feed}/{isPush}")]
+        public void UpdateWallFeed(WallFeed feed, bool isPush)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed);
+                    db.UpdateWallFeed(feed, isPush);
                 }
             }
             catch (Exception Exp)
@@ -429,11 +459,11 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         #endregion
 
         #region General Info
-        
+
         /// <summary>
         /// Gets the zoo's about info.
         /// </summary>
@@ -589,7 +619,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         #endregion
 
         #region Languages
@@ -616,90 +646,6 @@ namespace NegevZoo.Controllers
             }
         }
         #endregion
-
-        #region Notifications
-
-        /// <summary>
-        /// update on an online user.
-        /// </summary>
-        /// <param name="deviceId">The device id to add</param>
-        [HttpPost]
-        [Route("notifications/updateDevice/{deviceId}")]
-        public void UpdateDeviceOnline(string deviceId)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    db.UpdateDeviceOnline(deviceId);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-
-
-        private string deviceId = "eN0AceUN7UU:APA91bFZSmLewxCsT13KqymCRHliez5Sne_RQIf_WgZFD88ipMgllXLsF7VnAQcfNgXiAbnfpN1iYSJBJXNljXNLI1ad8lS4yxmNPAOOYoexkNhva0dljXeB01U8DO4eEjaeNqQctHOM";
-        
-        /// <summary>
-        /// update on an online user.
-        /// </summary>
-        /// <param name="deviceId">The device id to add</param>
-        [HttpGet]
-        [Route("notifications/updateDevice/{message}")]
-        public void Notification(string message)
-        {
-            try
-            {
-                string applicationID = "1:777829984351:android:996e3b073e4dadd3";
-                //string senderId = "30............8";
-                WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
-                tRequest.Method = "post";
-                tRequest.ContentType = "application/json";
-                var data = new
-                {
-                    to = deviceId,
-                    notification = new
-                    {
-                        body = "Osama",
-                        title = "AlBaami",
-                        sound = "Enabled"
-                    }
-                };
-
-                var serializer = new JavaScriptSerializer();
-                var json = serializer.Serialize(data);
-                Byte[] byteArray = Encoding.UTF8.GetBytes(json);
-                tRequest.Headers.Add(string.Format("Authorization: key={0}", applicationID));
-                tRequest.Headers.Add(string.Format("Sender: id={0}", 1));
-                tRequest.ContentLength = byteArray.Length;
-
-                using (Stream dataStream = tRequest.GetRequestStream())
-                {
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-                    using (WebResponse tResponse = tRequest.GetResponse())
-                    {
-                        using (Stream dataStreamResponse = tResponse.GetResponseStream())
-                        {
-                            using (StreamReader tReader = new StreamReader(dataStreamResponse))
-                            {
-                                String sResponseFromServer = tReader.ReadToEnd();
-                                string str = sResponseFromServer;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                string str = ex.Message;
-            }
-        }
-        #endregion 
 
         #region ModelClasses
         //This inner class is so we will be able to return a primitive object via http get

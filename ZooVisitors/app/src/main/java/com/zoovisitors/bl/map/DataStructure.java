@@ -25,7 +25,7 @@ public class DataStructure {
      * all the routes between the points
      */
     private Map<Point, Set<Point>> routes;
-    private final int MAX_DISTANCE_OF_ROUTE = 35*35; // 0.0000000032
+    private final int MAX_DISTANCE_OF_ROUTE = 50*50; // 0.0000000032
     //                                      meters
     private final int MAX_DISTANCE_FROM_POINT = MAX_DISTANCE_OF_ROUTE * MAX_DISTANCE_OF_ROUTE * 3;//7 * 0.0111111;
     /**
@@ -83,6 +83,25 @@ public class DataStructure {
                 }
             }
         }
+
+//        // TODO: only for testing comment this
+//        Map.Entry<Point, Set<Point>> lowest = null, biggest = null;
+//        int low = 10000,big = 0;
+//        for (Map.Entry<Point, Set<Point>> entry:
+//             routes.entrySet()) {
+//            if(entry.getValue().size() > big)
+//            {
+//                big = entry.getValue().size();
+//                biggest = entry;
+//            }
+//            if(entry.getValue().size() < low)
+//            {
+//                low = entry.getValue().size();
+//                lowest = entry;
+//            }
+//        }
+//        Log.e("AVIV", "Biggest: " + biggest);
+//        Log.e("AVIV", "Smallest: " + lowest);
     }
 
     private long lastUpdate = 0;
