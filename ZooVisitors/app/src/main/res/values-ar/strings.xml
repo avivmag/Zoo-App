@@ -45,4 +45,7 @@
     <string name="todays_event"></string>
     <string name="choose_route"></string>
     <string name="facebook_app_id">1991264511112012</string>
+
+
+    <string name="personal">Personal Stories</string>
 </resources>

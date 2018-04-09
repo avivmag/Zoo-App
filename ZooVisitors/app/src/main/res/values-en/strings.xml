@@ -49,4 +49,7 @@
     <string name="choose_route">Choose a route</string>
     <string name="preservation">Preservation</string>
     <string name="facebook_app_id">1991264511112012</string>
+
+
+    <string name="personal">Personal Stories</string>
 </resources>
