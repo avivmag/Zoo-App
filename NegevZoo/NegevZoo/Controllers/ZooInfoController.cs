@@ -619,7 +619,34 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
+        /// <summary>
+        /// Gets the zoo's map url.
+        /// </summary>
+        /// <returns>The map url.</returns>
+        [HttpGet]
+        [Route("about/getmap")]
+        public IEnumerable<MapResult> GetMapUrl()
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetMapUrl()
+                        .Select(zi =>
+                            new MapResult
+                            {
+                                Url = zi
+                            })
+                        .ToArray();
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
         #endregion
 
         #region Languages
