@@ -625,7 +625,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <returns>The map url.</returns>
         [HttpGet]
-        [Route("about/getmap")]
+        [Route("map/url")]
         public IEnumerable<MapResult> GetMapUrl()
         {
             try

@@ -324,6 +324,16 @@ namespace ZooTests
             animalsController.DeleteAnimal(-4);
         }
 
+
         #endregion
+        [TestMethod]
+        public void GetAnimalWithStory()
+        {
+            var allAnimals = animalsController.GetAllAnimalsResults();
+            Assert.AreEqual(3, allAnimals.Count());
+
+            var animalsWithStory = animalsController.GetAnimalsWithStoryResults();
+            Assert.AreEqual(2, animalsWithStory.Count());
+        }
     }
 }

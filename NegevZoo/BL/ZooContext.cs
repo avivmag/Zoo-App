@@ -74,7 +74,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -690,6 +690,16 @@ namespace BL
         }
 
         /// <summary>
+        /// Gets animal with stories.
+        /// </summary>
+        /// <param name="language">The data's language</param>
+        /// <returns>The animal stories.</returns>
+        public IEnumerable<AnimalResult> GetAnimalsWithStoryResults(int language)
+        {
+            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Story));
+        }
+
+        /// <summary>
         /// Gets all the animals types.
         /// </summary>
         /// <returns>The animals types.</returns>
@@ -712,21 +722,7 @@ namespace BL
 
             return zooDB.GetAllAnimalsDetails().Where(an => an.animalId == animalId);
         }
-
-        /// <summary>
-        /// Gets all the animals.
-        /// </summary>
-        /// <param name="language">The animal's data language.</param>
-        /// <returns>The animals.</returns>
-        //public IEnumerable<Animal> GetAnimals(int language)
-        //{
-        //    if (!ValidLanguage(language))
-        //    {
-        //        throw new ArgumentException("Wrong input. Wrong language.");
-        //    }
-        //    return zooDB.GetAllAnimals().Where(a => /*a.language == language*/a.id == language).ToArray();
-        //}
-
+        
         /// <summary>
         /// Gets animal by Id and language.
         /// </summary>
