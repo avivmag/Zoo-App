@@ -480,8 +480,10 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/" + path);
-                    return Ok();
+                    var responseObject = db.ImagesUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
+
+
+                    return Ok(responseObject);
                 }
             }
             catch (Exception exp)
