@@ -91,11 +91,13 @@
     <Compile Include="Language.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Logger.cs" />
     <Compile Include="MiscMarker.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AnimalResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
+    <Compile Include="Models\MapResult.cs" />
     <Compile Include="Models\OpeningHourResult.cs" />
     <Compile Include="NegevZooDB.Context.cs">
       <AutoGen>True</AutoGen>

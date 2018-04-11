@@ -254,6 +254,75 @@ namespace DAL
             };
         }
 
+        private IEnumerable<RecurringEvent> InitialRecurringEvents()
+        {
+            return new List<RecurringEvent>
+            {
+                new RecurringEvent
+                {
+                    id                      = 1,
+                    enclosureId             = 1,
+                    day                     = 1,
+                    description             = "האכלה",
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+                new RecurringEvent
+                {
+                    id                      = 2,
+                    enclosureId             = 1,
+                    day                     = 11,
+                    description             = "Feeding",
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
+                },
+
+                new RecurringEvent
+                {
+                    id                      = 3,
+                    enclosureId             = 2,
+                    day                     = 1,
+                    description             = "משחק",
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+                new RecurringEvent
+                {
+                    id                      = 4,
+                    enclosureId             = 2,
+                    day                     = 11,
+                    description             = "Playing",
+                    startTime               = new TimeSpan(13, 30, 0),
+                    endTime                 = new TimeSpan(14, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
+                },
+                
+                new RecurringEvent
+                {
+                    id                      = 5,
+                    enclosureId             = 2,
+                    day                     = 7,
+                    description             = "האכלה",
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+                new RecurringEvent
+                {
+                    id                      = 6,
+                    enclosureId             = 2,
+                    day                     = 17,
+                    description             = "Feeding",
+                    startTime               = new TimeSpan(10, 30, 0),
+                    endTime                 = new TimeSpan(11, 0, 0),
+                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
+                }
+            };
+        }
+
         /// <summary>
         /// Initializes the animals mock.
         /// </summary>
@@ -360,8 +429,7 @@ namespace DAL
                     distribution    = "",
                     family          = "",
                     food            = "",
-                    reproduction    = "",
-                    story           = "קופיקו הוא הקוף של מרקו."
+                    reproduction    = ""
                 },
                 new AnimalDetail
                 {
@@ -373,8 +441,7 @@ namespace DAL
                     distribution    = "",
                     family          = "",
                     food            = "",
-                    reproduction    = "",
-                    story           = "Kofifo is Marco's monkey."
+                    reproduction    = ""
                 },
             };
         }
@@ -751,6 +818,7 @@ namespace DAL
                         aboutUs             = "We are Negev Zoo!!! We love animals",
                         contactInfoNote     = "Contact between 08:00 - 22:00",
                         openingHoursNote    = "The cashier desk will bew closed two hours before the zoo is closing.",
+                        mapBackgroundUrl    = "MapUrl",
                         language            = (int)DAL.Languages.en
                     },
 
@@ -760,80 +828,12 @@ namespace DAL
                         aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
                         contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
                         openingHoursNote    = "הקופות יסגרו שעתיים לפני סגירת הגן",
+                        mapBackgroundUrl    = "MapUrl",
                         language            = (int)DAL.Languages.he
                     }
             };
         }
-
-        private IEnumerable<RecurringEvent> InitialRecurringEvents()
-        {
-            return new List<RecurringEvent>
-            {
-                new RecurringEvent
-                {
-                    id                      = 1,
-                    enclosureId             = 1,
-                    day                     = 1,
-                    description             = "האכלה",
-                    startTime               = new TimeSpan(10, 30, 0),
-                    endTime                 = new TimeSpan(11, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-                new RecurringEvent
-                {
-                    id                      = 2,
-                    enclosureId             = 1,
-                    day                     = 11,
-                    description             = "Feeding",
-                    startTime               = new TimeSpan(10, 30, 0),
-                    endTime                 = new TimeSpan(11, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
-                },
-
-                new RecurringEvent
-                {
-                    id                      = 3,
-                    enclosureId             = 2,
-                    day                     = 1,
-                    description             = "משחק",
-                    startTime               = new TimeSpan(13, 30, 0),
-                    endTime                 = new TimeSpan(14, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-                new RecurringEvent
-                {
-                    id                      = 4,
-                    enclosureId             = 2,
-                    day                     = 1,
-                    description             = "Playing",
-                    startTime               = new TimeSpan(13, 30, 0),
-                    endTime                 = new TimeSpan(14, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
-                },
-                
-                new RecurringEvent
-                {
-                    id                      = 5,
-                    enclosureId             = 2,
-                    day                     = 7,
-                    description             = "האכלה",
-                    startTime               = new TimeSpan(10, 30, 0),
-                    endTime                 = new TimeSpan(11, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-                new RecurringEvent
-                {
-                    id                      = 6,
-                    enclosureId             = 2,
-                    day                     = 17,
-                    description             = "Feeding",
-                    startTime               = new TimeSpan(10, 30, 0),
-                    endTime                 = new TimeSpan(11, 0, 0),
-                    language                = GetAllLanguages().SingleOrDefault(l => l.name == "English").id
-                }
-            };
-        }
-
+        
         private IEnumerable<SpecialEvent> InitialSpecialEvents()
         {
             return new List<SpecialEvent>
