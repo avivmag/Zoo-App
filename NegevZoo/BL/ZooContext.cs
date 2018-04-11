@@ -19,13 +19,20 @@ namespace BL
 
         public ZooContext(bool isTesting = true, bool newDb = false)
         {
-            if (isTesting)
+            try
             {
-                zooDB = zooDB ?? DummyDB.GetInstance();
+                if (isTesting)
+                {
+                    zooDB = zooDB ?? DummyDB.GetInstance();
+                }
+                else
+                {
+                    zooDB = new NegevZooDBEntities();
+                }
             }
-            else
+            catch
             {
-                zooDB = new NegevZooDBEntities();
+                throw new Exception("Could not connect to the database");
             }
         }
         
@@ -276,7 +283,7 @@ namespace BL
                 //check that the enclosure exists
                 if (oldEnc == null)
                 {
-                    throw new ArgumentException("Wrong input. Enclosure doesn't exits");
+                    throw new ArgumentException("Wrong input. Enclosure id doesn't exits");
                 }
 
                 // check that if the name changed, it doesn't exits
@@ -318,12 +325,17 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
+            
+            //3. check that the enclosure id exists
+            if (!GetAllEnclosures().Any(e => e.id == enclosureDetail.encId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists..");
+            }
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
-            //get the existing enclosure detail
             EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
-            
+
             if (oldEnc == null) //add a new enclosure details
             {
                 if (enclosuresDetails.Any(ed => ed.name == enclosureDetail.name))
@@ -333,6 +345,7 @@ namespace BL
                 enclosuresDetails.Add(enclosureDetail);
             }
             else //update an exists enclosure detail
+            //get the existing enclosure detail
             {
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosureDetail.name && enclosuresDetails.Any(en => en.name == enclosureDetail.name))//The name changed
@@ -343,37 +356,6 @@ namespace BL
                 oldEnc.language = enclosureDetail.language;
                 oldEnc.name = enclosureDetail.name;
                 oldEnc.story = enclosureDetail.story;
-            }
-        }
-
-        /// <summary>
-        /// post a file to the db
-        /// </summary>
-        /// <param name="httpRequest">The requested files.</param>
-        /// <param name="relativePath">the path.</param>
-        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
-        {
-            var fileNames = new List<String>();
-
-            foreach (string file in httpRequest.Files)
-            {
-                var postedFile = httpRequest.Files[file];
-
-                var fileExtension = postedFile.FileName.Split('.').Last();
-                var fileName = Guid.NewGuid() + "." + fileExtension;
-
-                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
-
-                postedFile.SaveAs(filePath);
-
-                fileNames.Add(fileName);
-            }
-
-            var responseObject = new JArray();
-
-            foreach (var fn in fileNames)
-            {
-                responseObject.Add(new JValue(relativePath + fn));
             }
         }
 
@@ -405,15 +387,25 @@ namespace BL
 
             if (enclosurePicture.id == default(int)) // add a new enclosure picture
             {
+                if (allEnclosurePictures.Any(p => p.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure picture. The picture url already exists.");
+                }
+
                 allEnclosurePictures.Add(enclosurePicture);
             }
             else //update an existsing picture
             {
-                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.enclosureId == enclosurePicture.enclosureId);
+                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.id == enclosurePicture.id);
 
                 if (oldPic == null)
                 {
                     throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
+                }
+
+                if (oldPic.pictureUrl != enclosurePicture.pictureUrl && allEnclosurePictures.Any(ep => ep.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure picture. The picture url is already exists");
                 }
 
                 oldPic.pictureUrl = enclosurePicture.pictureUrl;
@@ -433,7 +425,6 @@ namespace BL
             {
                 throw new ArgumentException("No video given");
             }
-
             
             //1. check that the enclosure exists
             if (!GetAllEnclosures().Any(e => e.id == enclosureVideo.enclosureId))
@@ -451,6 +442,11 @@ namespace BL
 
             if (enclosureVideo.id == default(int)) //add video
             {
+                if (allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure video. The enclosure vido url already exists");
+                }
+
                 allEnclosureVideos.Add(enclosureVideo);
             }
             else //update video
@@ -460,6 +456,11 @@ namespace BL
                 if (oldVideo == null)
                 {
                     throw new ArgumentException("Wrong input. Video doesn't exists");
+                }
+
+                if (oldVideo.videoUrl != enclosureVideo.videoUrl && allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
 
                 oldVideo.videoUrl = enclosureVideo.videoUrl;
@@ -1877,6 +1878,37 @@ namespace BL
             return String.IsNullOrWhiteSpace(str);
         }
         #endregion
+
+        /// <summary>
+        /// post a file to the db
+        /// </summary>
+        /// <param name="httpRequest">The requested files.</param>
+        /// <param name="relativePath">the path.</param>
+        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        {
+            var fileNames = new List<String>();
+
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile = httpRequest.Files[file];
+
+                var fileExtension = postedFile.FileName.Split('.').Last();
+                var fileName = Guid.NewGuid() + "." + fileExtension;
+
+                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+
+                postedFile.SaveAs(filePath);
+
+                fileNames.Add(fileName);
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue(relativePath + fn));
+            }
+        }
 
         public void Dispose()
         {

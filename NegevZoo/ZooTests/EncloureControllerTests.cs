@@ -488,7 +488,7 @@ namespace ZooTests
         #region UpdateEnclosureDetails
 
         [TestMethod]
-        public void UpdateEnclosureDetailsAddEncDetValidTest()
+        public void UpdateEnclosureDetailsAddEncDetValidInput()
         {
             var details = enclosureController.GetEnclosureDetailsById(4);
             Assert.AreEqual(1, details.Count());
@@ -529,6 +529,32 @@ namespace ZooTests
         }
 
         [TestMethod]
+        public void UpdateEnclosureDetailsUpdateEncDetValidInput()
+        {
+            var details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(1, details.Count());
+            Assert.AreEqual("קרנף לבן", details.First().name);
+
+            var enc = new EnclosureDetail
+            {
+                encId = 2,
+                language = (int)Languages.he, //hebrew
+                name = "קופי אדם",
+                story = "הקופים שלנו הם הכי חכמים!"
+
+            };
+
+            enc.name = "123";
+
+            enclosureController.UpdateEnclosureDetail(enc);
+
+            details = enclosureController.GetEnclosureDetailsById(2);
+            Assert.AreEqual(2, details.Count());
+            Assert.AreEqual("123", details.SingleOrDefault(d => d.language == (int)Languages.he).name);
+            Assert.AreEqual("Houman Monkeys", details.SingleOrDefault(d => d.language == (int)Languages.en).name);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateEnclosureDetailsEncDoesntExists()
         {
@@ -537,7 +563,7 @@ namespace ZooTests
 
             var enc = new EnclosureDetail
             {
-                encId = default(int),
+                encId = -4,
                 name = "Lions enclosure",
                 language = (int)Languages.en,
                 story = "This is a story"
@@ -585,32 +611,6 @@ namespace ZooTests
         }
 
         [TestMethod]
-        public void UpdateEnclosureDetailsUpdateEncDetValidTest()
-        {
-            var details = enclosureController.GetEnclosureDetailsById(4);
-            Assert.AreEqual(1, details.Count());
-            Assert.AreEqual("קרנף לבן", details.First().name);
-
-            var enc = new EnclosureDetail
-            {
-                encId = 2,
-                language = (int)Languages.he, //hebrew
-                name = "קופי אדם",
-                story = "הקופים שלנו הם הכי חכמים!"
-
-            };
-
-            enc.name = "123";
-
-            enclosureController.UpdateEnclosureDetail(enc);
-
-            details = enclosureController.GetEnclosureDetailsById(2);
-            Assert.AreEqual(2, details.Count());
-            Assert.AreEqual("123", details.SingleOrDefault(d => d.language == (int)Languages.he).name);
-            Assert.AreEqual("Houman Monkeys", details.SingleOrDefault(d => d.language == (int)Languages.en).name);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateEnclosureDetailsUpdateEncDetExistingName()
         {
@@ -633,6 +633,239 @@ namespace ZooTests
         }
 
         #endregion
+
+        #region UpdateEnclosurePicture
+        [TestMethod]
+        public void UpdateEnclosurePictureAddEncPicValidInput()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id          =default(int),
+                enclosureId = 1,
+                pictureUrl  = "url4"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+
+            pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(2, pictures.Count());
+            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureEncDoesntExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = -1,
+                pictureUrl = "url4"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePicturesEmptyUrl()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = 1,
+                pictureUrl = ""
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureAddEncPicUrlExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(1);
+            Assert.AreEqual(1, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url1", pic.pictureUrl);
+            Assert.AreEqual(1, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = default(int),
+                enclosureId = 1,
+                pictureUrl = "url3"
+            };
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+
+        [TestMethod]
+        public void UpdateEnclosurePictureUpdateEncPicValidInput()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url2", pic.pictureUrl);
+            Assert.AreEqual(2, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = 2,
+                enclosureId = 2,
+                pictureUrl = "url2"
+            };
+
+            newPic.pictureUrl = "url4";
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+
+            pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosurePictureUpdateEncPicUrlExists()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(2, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url2", pic.pictureUrl);
+            Assert.AreEqual(2, pic.enclosureId);
+
+            var newPic = new EnclosurePicture
+            {
+                id = 2,
+                enclosureId = 2,
+                pictureUrl = "url2"
+            };
+
+            newPic.pictureUrl = "url1";
+
+            enclosureController.UpdateEnclosurePicture(newPic);
+        }
+        #endregion
+
+        #region UpdateVideoUrl
+
+        [TestMethod]
+        public void UpdateEnclosureVideoAddEncVidValidInput()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id          = default(int),
+                enclosureId = 1,
+                videoUrl    = "video4"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+
+            videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(2, videos.Count());
+            Assert.AreEqual("video4", videos.SingleOrDefault(p => p.videoUrl== "video4").videoUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVidoeEncDoesntExists()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = -1,
+                videoUrl = "video4"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVideosEmptyUrl()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = 1,
+                videoUrl = ""
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateEnclosureVideoAddEncVidUrlExists()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+            Assert.AreEqual(1, vid.enclosureId);
+
+            var newVid = new YoutubeVideoUrl
+            {
+                id = default(int),
+                enclosureId = 1,
+                videoUrl = "video2"
+            };
+
+            enclosureController.UpdateEnclosureVideo(newVid);
+        }
+
+
+        #endregion
+
+
+
 
         #region DeleteEnclosure
 

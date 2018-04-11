@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.VideoView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
@@ -24,8 +25,10 @@ import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends AppCompatActivity{
-    private final int NUMBER_OF_THREAD = 1;
+    private final int NUMBER_OF_THREAD = 3;
     private boolean endAllThreads = false;
+    private CountDownLatch doneSignal;
+    private VideoView videoview;
 
 
     @SuppressLint("StaticFieldLeak")
@@ -33,7 +36,11 @@ public class LoadingScreen extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
-        final VideoView videoview = (VideoView) findViewById(R.id.loading_video);
+        GlobalVariables.deviceId = FirebaseInstanceId.getInstance().getToken();
+        //TODO: Delete this when sending device id to the server
+        Log.e("TOKEN", "token " + GlobalVariables.deviceId);
+
+       videoview = (VideoView) findViewById(R.id.loading_video);
         videoview.setTranslationX(-525f);
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -41,39 +48,44 @@ public class LoadingScreen extends AppCompatActivity{
                 mp.setLooping(true);
             }
         });
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.loading);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
         videoview.setVideoURI(uri);
-        Log.e("ll","ll");
 
+        Log.e("ll", "ll");
 
-        List<Thread> threadList = new ArrayList<Thread>();
-        final CountDownLatch doneSignal = new CountDownLatch(NUMBER_OF_THREAD);
+        doneSignal = new CountDownLatch(NUMBER_OF_THREAD);
 
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+            }
+
             @Override
             protected Void doInBackground(Void... voids) {
-//                for (int i = 0; i<100000; i++){
-//                    Log.e("kk","kddddddd");
-//                }
-                changeToHebrew();
+
+                doStartVideo();
+                doChangeToHebrew();
+                doWait();
+
                 return null;
             }
-
             @Override
             protected void onPostExecute(Void aVoid) {
-                endAllThreads = true;
+                try {
+                    doneSignal.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                goToMain();
             }
         }.execute();
-        videoview.start();
-//        try {
-//            doneSignal.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//            while (endAllThreads == false);
+    }
+
+
+    private void goToMain(){
         Intent loadingIntent = new Intent(LoadingScreen.this, MainActivity.class);
         startActivity(loadingIntent);
-
     }
 
 
@@ -88,4 +100,59 @@ public class LoadingScreen extends AppCompatActivity{
             res.updateConfiguration(conf, dm);
         }
     }
+
+
+
+    private void doChangeToHebrew(){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                changeToHebrew();
+                doneSignal.countDown();
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void aVoid) {}
+        }.execute();
+    }
+
+
+    private void doWait(){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                doneSignal.countDown();
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void aVoid) {}
+        }.execute();
+    }
+
+
+    private void doStartVideo(){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                videoview.start();
+                Log.e("VIDEO", "VIDEO");
+                doneSignal.countDown();
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void aVoid) {}
+        }.execute();
+    }
+
+
+
+
 }
