@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-public class LoadingScreen extends AppCompatActivity{
+public class LoadingScreen extends BaseActivity {
     private final int NUMBER_OF_THREAD = 1;
     private boolean endAllThreads = false;
 

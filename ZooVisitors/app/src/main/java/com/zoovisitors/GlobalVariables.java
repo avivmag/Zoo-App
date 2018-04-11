@@ -9,7 +9,7 @@ import com.zoovisitors.bl.BusinessLayer;
  */
 
 public class GlobalVariables {
-    public static String ServerAddress = "negevzoo.sytes.net:50000/";
+    public static String ServerAddress = "negevzoo.sytes.net:50555/";
     public static String LOG_TAG = "zoovisitors";
     public static int language = 1; //Hebrew
     public static boolean DEBUG = true;
@@ -17,4 +17,5 @@ public class GlobalVariables {
     public static BusinessLayer bl;
     public static int firstEnter = 0;
     public static String deviceId;
+    public static AppCompatActivity foregroundActivity;
 }

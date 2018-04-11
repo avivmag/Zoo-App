@@ -4,7 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.location.gps" />
+
     <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -18,19 +20,17 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".pl.animals.AnimalActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pl.MainActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-
             </intent-filter>
         </activity>
-        <activity android:name=".pl.enclosures.EnclosureActivity"/>
+        <activity android:name=".pl.enclosures.EnclosureActivity" />
 
-       <!-- <meta-data android:name="com.facebook.share" -->
+        <!-- <meta-data android:name="com.facebook.share" -->
 
         <activity android:name=".pl.map.MapActivity" />
         <activity
@@ -46,7 +46,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".pl.LoadingScreen"
+        <activity
+            android:name=".pl.LoadingScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,8 +56,10 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".cl.gps.GpsService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
-
-
 
 </manifest>

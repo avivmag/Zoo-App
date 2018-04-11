@@ -34,10 +34,10 @@ public class DataStructure {
      */
     private final long MAX_UPDATE_THRESHOLD = 120*1000;
     // the borders of the zoo
-    private double minX = Double.MAX_VALUE;
-    private double maxX = Double.MIN_VALUE;
-    private double minY = Double.MAX_VALUE;
-    private double maxY = Double.MIN_VALUE;
+    private double minX;
+    private double maxX;
+    private double minY;
+    private double maxY;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
@@ -53,26 +53,34 @@ public class DataStructure {
                          double xLongitudeRatio,
                          double yLatitudeRatio,
                          double sinAlpha,
-                         double cosAlpha
+                         double cosAlpha,
+                         double minX,
+                         double maxX,
+                         double minY,
+                         double maxY
     ) {
         this.points = points;
         this.zooEntranceLocation = zooEntranceLocation;
         this.zooEntrancePoint = zooEntrancePoint;
         this.sinAlpha = sinAlpha;
         this.cosAlpha = cosAlpha;
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
 
         this.xLongitudeRatio = xLongitudeRatio;
         this.yLatitudeRatio = yLatitudeRatio;
         routes = new HashMap<>();
 
-        for (Point point:
-                points) {
-            routes.put(point, new HashSet<>());
-            minX = Math.min(minX, point.getX());
-            maxX = Math.max(maxX, point.getX());
-            minY = Math.min(minY, point.getY());
-            maxY = Math.max(maxY, point.getY());
-        }
+//        for (Point point:
+//                points) {
+//            routes.put(point, new HashSet<>());
+//            minX = Math.min(minX, point.getX());
+//            maxX = Math.max(maxX, point.getX());
+//            minY = Math.min(minY, point.getY());
+//            maxY = Math.max(maxY, point.getY());
+//        }
 
         // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
         for (int curr = 0; curr < points.length; curr++) {
@@ -109,11 +117,11 @@ public class DataStructure {
     {
         Point ans;
         // new update is needed
-//        if(System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
+        if(System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
             ans = getOnMapPositionFirstTime(point);
-//        } else {
-//            ans = getOnMapPositionContinues(point);
-//        }
+        } else {
+            ans = getOnMapPositionContinues(point);
+        }
         if(ans == null)
             return null;
         lastUpdate = System.currentTimeMillis();

@@ -7,8 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.pl.BaseActivity;
 
-public class GeneralInfoActivity extends AppCompatActivity {
+public class GeneralInfoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

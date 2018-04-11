@@ -1,18 +1,13 @@
-package com.zoovisitors.bl.map;
+package com.zoovisitors.dal.data_handler;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 
 import java.util.Arrays;
 
-/**
- * Created by aviv on 16-Mar-18.
- */
-
-public class Dummy {
+public class Memory {
     private static Location[] locations = {
             new Location(31.25806349,34.74502552),
             new Location(31.25810072,34.74500303),
@@ -467,13 +462,18 @@ public class Dummy {
     private static Location ZOO_EXIT_LOCATION = new Location(31.25960466,34.74386817); //-0.00154117
     public static Point ZOO_ENTRANCE_POINT = new Point(1154, 1630);                              // 1.5573580533024333719582850521437
     private static Point ZOO_EXIT_POINT = new Point(291, 286);
+    // the borders of the zoo
+    private double minX = Double.MAX_VALUE;
+    private double maxX = Double.MIN_VALUE;
+    private double minY = Double.MAX_VALUE;
+    private double maxY = Double.MIN_VALUE;
 
     private static double getAlpha(){
         return Math.abs(Math.atan2(ZOO_ENTRANCE_POINT.getY() - ZOO_EXIT_POINT.getY(),
                 ZOO_ENTRANCE_POINT.getX() - ZOO_EXIT_POINT.getX()))
                 -
-            Math.abs(Math.atan2((ZOO_ENTRANCE_LOCATION.getLatitude() - ZOO_EXIT_LOCATION.getLatitude()) * getYLatitudeRatio(),
-                    (ZOO_ENTRANCE_LOCATION.getLongitude() - ZOO_EXIT_LOCATION.getLongitude()) * getXLongitudeRatio()));
+                Math.abs(Math.atan2((ZOO_ENTRANCE_LOCATION.getLatitude() - ZOO_EXIT_LOCATION.getLatitude()) * getYLatitudeRatio(),
+                        (ZOO_ENTRANCE_LOCATION.getLongitude() - ZOO_EXIT_LOCATION.getLongitude()) * getXLongitudeRatio()));
     }
 
     public static Point locationToPoint(Location location) {
@@ -524,7 +524,7 @@ public class Dummy {
         }
 //        Point p = locationToPoint(new Location(31.25823983,34.74393641));
 //        System.out.println(new Point(p.getX() + ZOO_ENTRANCE_POINT.getX(), p.getY()  + ZOO_ENTRANCE_POINT.getY()));
-        Arrays.sort(points, (p1,p2) -> Double.compare(p1.getX(),p2.getX()));
+        Arrays.sort(points, (p1, p2) -> Double.compare(p1.getX(),p2.getX()));
         return points;
     }
     public static double getXLongitudeRatio()
