@@ -344,9 +344,29 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds or updates a recurring event element.
+        /// </summary>
+        /// <param name="recEvent">The RecurringEvent element to update or add.</param>
+        [HttpPost]
+        [Route("enclosures/recurring/update")]
+        public void UpdateRecurringEvent(RecurringEvent recEvent)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateRecurringEvent(recEvent);
+                }
 
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
-
+            }
+        }
 
         /// <summary>
         /// Deletes an enclosure.
@@ -361,25 +381,6 @@ namespace NegevZoo.Controllers
                 using (var db = this.GetContext())
                 {
                     db.DeleteEnclosure(encId);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        [HttpDelete]
-        [Route("enclosures/recurring/delete/{eventId}")]
-        public void DeleteRecurringEvent(int eventId)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.DeleteRecurringEvent(eventId);
                 }
 
             }
@@ -410,10 +411,9 @@ namespace NegevZoo.Controllers
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
             }
         }
-
+        
         /// <summary>
         /// delete an enclosure video.
         /// </summary>
@@ -437,7 +437,27 @@ namespace NegevZoo.Controllers
 
             }
         }
+        
+        [HttpDelete]
+        [Route("enclosures/recurring/delete/{eventId}")]
+        public void DeleteRecurringEvent(int eventId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteRecurringEvent(eventId);
+                }
 
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+       
         #endregion
 
         [HttpPost]
