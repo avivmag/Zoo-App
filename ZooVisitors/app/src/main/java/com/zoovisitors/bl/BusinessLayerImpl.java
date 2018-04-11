@@ -1,17 +1,9 @@
 package com.zoovisitors.bl;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.AboutUs;
@@ -22,7 +14,6 @@ import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.backend.Species;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
@@ -114,14 +105,6 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     public void getImage(String url, GetObjectInterface goi) {
-        // if resource exists
-//        if(is.isExists(url)) {
-//            Drawable d = is.loadImageFromInternalStorage(url);
-//            if(d == null)
-//                goi.onFailure("file not found.");
-//            else
-//                goi.onSuccess(d);
-//        } else {
             ni.postImage(url, new ResponseInterface<Bitmap>() {
                 @Override
                 public void onSuccess(Bitmap response) {
@@ -133,35 +116,12 @@ public class BusinessLayerImpl implements BusinessLayer {
                     goi.onFailure(response);
                 }
             });
-//        }
-        // Retrieves an image specified by the URL, displays it in the UI.
-//        ImageRequest request = new ImageRequest(
-//                url,
-//                new Response.Listener<Bitmap>() {
-//                    @Override
-//                    public void onResponse(Bitmap response) {
-//                        is.saveImageToInternalStorage(url, response);
-//                        getImage(url, goi);
-//                    }
-//                },
-//                0,
-//                0,
-//                ImageView.ScaleType.CENTER_CROP,
-//                Bitmap.Config.RGB_565,
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        goi.onFailure("Cannot reach url");
-//                    }
-//                });
     }
 
     @Override
     public void getNewsFeed(final GetObjectInterface goi) {
 
         ni.post("Wallfeed/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-
-
 
             @Override
             public void onSuccess(String response) {
@@ -280,8 +240,28 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
+    public void getPersonalStories(final GetObjectInterface goi){
+        ni.post("animals/story/" + GlobalVariables.language, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Animal[] animals = gson.fromJson(response, Animal[].class);
+
+                if (animals.length <= 0)
+                    goi.onFailure("No Data in the server");
+                else
+                    goi.onSuccess(animals);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure("Can't get animals from the server");
+            }
+        });
+    }
+
+    @Override
     public void sendDeviceId() {
-        ni.post("/" + "?deviceID=" + GlobalVariables.deviceId, new ResponseInterface<String>() {
+        ni.post("/" + "?deviceID=" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
                 Log.e("DeviceID","Succeed sending");

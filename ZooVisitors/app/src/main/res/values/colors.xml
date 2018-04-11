@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="orangeNegev">#FF7000</color>
+    <color name="grayNegev">#E1D9CC</color>
+    <color name="brownNegev">#5b4a40</color>
 </resources>

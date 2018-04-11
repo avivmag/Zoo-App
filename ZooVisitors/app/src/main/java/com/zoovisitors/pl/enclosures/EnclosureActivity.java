@@ -117,7 +117,7 @@ public class EnclosureActivity extends AppCompatActivity {
                 layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
                 recycleView.setLayoutManager(layoutManager);
 
-                adapter = new AnimalsRecyclerAdapter(GlobalVariables.appCompatActivity, animalsImages, animals);
+                adapter = new AnimalsRecyclerAdapter(animalsImages, animals);
                 recycleView.setAdapter(adapter);
                 ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
                 imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
@@ -151,10 +151,6 @@ public class EnclosureActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-//        int id = item.getItemId();
-//        if(id == R.id.action_settings)
-//            return true;
         return super.onOptionsItemSelected(item);
     }
 

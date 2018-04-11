@@ -11,16 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.VideoView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
@@ -36,9 +32,9 @@ public class LoadingScreen extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
-        GlobalVariables.deviceId = FirebaseInstanceId.getInstance().getToken();
+        GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         //TODO: Delete this when sending device id to the server
-        Log.e("TOKEN", "token " + GlobalVariables.deviceId);
+        Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
 
        videoview = (VideoView) findViewById(R.id.loading_video);
         videoview.setTranslationX(-525f);
