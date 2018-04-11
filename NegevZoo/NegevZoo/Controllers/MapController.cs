@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,18 +26,17 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/map/misc/");
+                    db.FileUpload(httpRequest, @"~/assets/map/misc/");
                     return Ok();
                 }
             }
-            catch (Exception exp)
+            catch (Exception Exp)
             {
-                //TODO: add log
-                throw new Exception("kaki");
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-
+        
         // TODO:: Under construction.
     }
 }
