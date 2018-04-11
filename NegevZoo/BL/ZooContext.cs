@@ -181,10 +181,10 @@ namespace BL
         /// <returns>The enclosure details in all the languages.</returns>
         public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
         {
-            if (!GetAllEnclosures().Any(e => e.id == encId))
-            {
-                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            }
+            //if (!GetAllEnclosures().Any(e => e.id == encId))
+            //{
+            //    throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            //}
 
             return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
         }
@@ -358,7 +358,7 @@ namespace BL
                 oldEnc.story = enclosureDetail.story;
             }
         }
-
+        
         /// <summary>
         /// Updates or adds The enclosure picture.
         /// </summary>
@@ -468,54 +468,87 @@ namespace BL
             }
         }
 
-        /// <summary>
-        /// Delete The enclosure video.
-        /// </summary>
-        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
-        public void DeleteEnclosureVideo(int enclosureVideoId)
-        {
-            //check that the enclosure exists
-            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
 
-            if (enclosureVideo != null)
+        /// <summary>
+        /// Adds or updates a recurring event element.
+        /// </summary>
+        /// <param name="recEvent">The RecurringEvent element to update or add.</param>
+        public void UpdateRecurringEvent(RecurringEvent recEvent)
+        {
+            //validate attributes
+            //0.Exists
+            if (recEvent == default(RecurringEvent))
             {
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+                throw new ArgumentException("No RecurringEvent was given");
             }
 
-            zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
-        }
+            //1. validate language
+            if (!ValidLanguage((int)recEvent.language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
 
-        /// <summary>
-        /// Delete The enclosure picture.
-        /// </summary>
-        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
-        public void DeleteEnclosurePicture(int enclosurePictureId)
-        {
-            //check that the enclosure exists
-            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.enclosureId == enclosurePictureId);
+            //2. check that the enclosure exists
+            if (!GetAllEnclosures().Any(e => e.id == recEvent.enclosureId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure doesn't exists");
+            }
 
-            if (enclosurePicure != null){
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            //3. check the description
+            if (IsEmptyString(recEvent.description) || IsNullOrWhiteSpace(recEvent.description))
+            {
+                throw new ArgumentException("Wrong input. The descrioption is empty or white spaces");
+            }
+
+            //4. check the day
+            if (Enum.ToObject(typeof(Days), recEvent.day) == null || recEvent.day / 10 != (recEvent.language - 1))
+            {
+                throw new ArgumentException("Wrong input. The day is not defined");
+            }
+
+            //5. check the time
+            if (recEvent.endTime.Subtract(recEvent.startTime) <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("Wrong input. The start time is bigger or equal to the end time");
+            }
+
+            var allRecurringEvents = zooDB.GetAllRecuringEvents();
+
+            //TODO: Add Notification!
+            if (recEvent.id == default(int)) //add recurring event
+            {
+                //check that there isn't other Recurring event to this enclosure in the same time.
+                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                {
+                    throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
+                }
+
+                allRecurringEvents.Add(recEvent);
+            }
+            else //update RecurringEvent
+            {
+                var oldRecEvent = allRecurringEvents.SingleOrDefault(re => re.id == recEvent.id);
+
+                if (recEvent == null)
+                {
+                    throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
+                }
+
+                if ((oldRecEvent.startTime != recEvent.startTime || oldRecEvent.endTime != recEvent.endTime) &&
+                     allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
+                }
+
+                oldRecEvent.enclosureId = recEvent.enclosureId;
+                oldRecEvent.day         = recEvent.day;
+                oldRecEvent.description = recEvent.description;
+                oldRecEvent.startTime   = recEvent.startTime;
+                oldRecEvent.endTime     = recEvent.endTime;
             }
             
-            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
         }
 
-        /// <summary>
-        /// Delete The recurringEvent.
-        /// </summary>
-        /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
-        {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
-
-            if (recEvent == null)
-            {
-                throw new ArgumentException("Wrong input. RecurringEvent's id doesn't exists.");
-            }
-
-            zooDB.GetAllRecuringEvents().Remove(recEvent);
-        }
 
         /// <summary>
         /// Delete The enclosure.
@@ -544,8 +577,62 @@ namespace BL
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
             }
 
-            zooDB.GetAllEnclosureDetails().ToList().RemoveAll(ed => ed.encId == enclosure.id);
+            var toRemove = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id).ToList();
+
+            zooDB.GetAllEnclosureDetails().RemoveRange(toRemove);
             zooDB.GetAllEnclosures().Remove(enclosure);
+        }
+
+        /// <summary>
+        /// Delete The enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
+        public void DeleteEnclosurePicture(int enclosurePictureId)
+        {
+            //check that the enclosure picture exists
+            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.id == enclosurePictureId);
+
+            if (enclosurePicure == null){
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+            
+            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
+        }
+
+        /// <summary>
+        /// Delete The enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
+        public void DeleteEnclosureVideo(int enclosureVideoId)
+        {
+            //check that the enclosure exists
+            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
+
+            if (enclosureVideo == null)
+            {
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+
+            zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
+        }
+
+
+
+
+        /// <summary>
+        /// Delete The recurringEvent.
+        /// </summary>
+        /// <param name="id">The RecurringEvent's id to delete.</param>
+        public void DeleteRecurringEvent(int id)
+        {
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+
+            if (recEvent == null)
+            {
+                throw new ArgumentException("Wrong input. RecurringEvent's id doesn't exists.");
+            }
+
+            zooDB.GetAllRecuringEvents().Remove(recEvent);
         }
 
         /// <summary>
@@ -1608,6 +1695,20 @@ namespace BL
 
             generalInfo.contactInfoNote= note;
         }
+
+        /// <summary>
+        /// Gets the zoo's map url.
+        /// </summary>
+        /// <returns>The zoo's url map.</returns>
+        public IEnumerable<String> GetMapUrl()
+        {
+            var language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id;
+
+            return zooDB.GetGeneralInfo()
+                .Where(ge => ge.language == language)
+                .Select(ge => ge.mapBackgroundUrl)
+                .ToArray();
+        }
         #endregion
 
         #region Languages
@@ -1877,6 +1978,16 @@ namespace BL
         {
             return String.IsNullOrWhiteSpace(str);
         }
+
+        private bool ValidateTime(RecurringEvent re, RecurringEvent recEvent)
+        {
+            return  (re.day == recEvent.day) &&
+                    ((re.startTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
+                    re.startTime.Subtract(recEvent.endTime) < TimeSpan.Zero)
+                    ||
+                    (re.endTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
+                    re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
+        }
         #endregion
 
         /// <summary>
@@ -1915,4 +2026,4 @@ namespace BL
             zooDB.SaveChanges();
         }
     }
-}
+    }

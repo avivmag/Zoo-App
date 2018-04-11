@@ -208,14 +208,15 @@ namespace ZooTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
         public void GetEnclosureDetailsByIdWrongId()
         {
-            enclosureController.GetEnclosureDetailsById(-4);
+            var details = enclosureController.GetEnclosureDetailsById(-4);
+            Assert.AreEqual(0, details.Count());
         }
         #endregion
 
         #region GetAllRecurringEvents
+
         [TestMethod]
         public void GetAllRecutnigEventsValidInput()
         {
@@ -861,9 +862,70 @@ namespace ZooTests
             enclosureController.UpdateEnclosureVideo(newVid);
         }
 
-
         #endregion
 
+        #region UpdateRecurringEvent
+
+        [TestMethod]
+        public void UpdateRecurringEventAddRecEventValidInput()
+        {
+            var events = enclosureController.GetRecurringEvents(2,2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id          = default(int),
+                enclosureId = 2,
+                day         = 12,
+                description = "Looking",
+                startTime   = new TimeSpan(10,30,00),
+                endTime     = new TimeSpan(11,30,00),
+                language    = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+
+            events = enclosureController.GetRecurringEvents(2,2);
+            Assert.AreEqual(3, events.Count());
+            Assert.IsNotNull(events.SingleOrDefault(re => re.description == "Looking"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventEmptyDesc()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 12,
+                description = "",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+
+            events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(3, events.Count());
+            Assert.IsNotNull(events.SingleOrDefault(re => re.description == "Looking"));
+        }
+
+        #endregion
 
 
 
@@ -884,8 +946,123 @@ namespace ZooTests
             enclosureController.DeleteEnclosure(4);
 
             encs = enclosureController.GetAllEnclosures();
-
             Assert.AreEqual(3, encs.Count());
+
+            details = enclosureController.GetEnclosureDetailsById(4);
+            Assert.AreEqual(0, details.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteEnclosureExistingAnimals()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            var details = enclosureController.GetEnclosureDetailsById(1);
+            var animalsController = new AnimalController();
+
+            var recurringEvents = enclosureController.GetRecurringEvents(1, 1);
+            Assert.AreEqual(1, recurringEvents.Count());
+            enclosureController.DeleteRecurringEvent((int)recurringEvents.First().id);
+            Assert.AreEqual(0, enclosureController.GetRecurringEvents(1, 1).Count());
+
+            Assert.AreEqual(2, animalsController.GetAnimalsByEnclosure(1, 1).Count());
+            Assert.AreEqual(4, encs.Count());
+            Assert.AreEqual(2, details.Count());
+
+            enclosureController.DeleteEnclosure(1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteEnclosureExistingRecurringEvents()
+        {
+            var encs = enclosureController.GetAllEnclosures();
+            var details = enclosureController.GetEnclosureDetailsById(1);
+            var animalsController = new AnimalController();
+
+            var animals = animalsController.GetAnimalsByEnclosure(1, 1).ToList();
+            Assert.AreEqual(2, animals.Count());
+            foreach (AnimalResult a in animals)
+            {
+                animalsController.DeleteAnimal((int)a.Id);
+            }
+            animals = animalsController.GetAnimalsByEnclosure(1, 1).ToList();
+            Assert.AreEqual(0, animals.Count());
+
+            Assert.AreEqual(4, encs.Count());
+            Assert.AreEqual(2, details.Count());
+
+            Assert.AreEqual(1, enclosureController.GetRecurringEvents(1, 1).Count());
+
+            enclosureController.DeleteEnclosure(1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteEnclosureWrongId()
+        {
+            enclosureController.DeleteEnclosure(-1);
+        }
+
+        #endregion
+
+        #region DeleteEnclosurePicture
+
+        [TestMethod]
+        public void DeleteEnclosurePictureValidInput()
+        {
+            var pictures = enclosureController.GetEnclosurePicturesById(2);
+
+            Assert.AreEqual(2, pictures.Count());
+
+            var pic = pictures.First();
+            Assert.AreEqual("url2", pic.pictureUrl);
+
+            enclosureController.DeleteEnclosurePicture((int)pic.id);
+
+            pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(1, pictures.Count());
+
+            pic = pictures.First();
+            Assert.AreEqual("url3", pic.pictureUrl);
+
+            enclosureController.DeleteEnclosurePicture((int)pic.id);
+
+            pictures = enclosureController.GetEnclosurePicturesById(2);
+            Assert.AreEqual(0, pictures.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteEnclosurePictureWrongId()
+        {
+            enclosureController.DeleteEnclosurePicture(-1);
+        }
+        #endregion
+
+        #region DeleteEnclosureVideo
+
+        [TestMethod]
+        public void DeleteEnclosureVideoValidInput()
+        {
+            var videos = enclosureController.GetEnclosureVideosById(1);
+
+            Assert.AreEqual(1, videos.Count());
+
+            var vid = videos.First();
+            Assert.AreEqual("video1", vid.videoUrl);
+
+            enclosureController.DeleteEnclosureVideo((int)vid.id);
+
+            videos = enclosureController.GetEnclosureVideosById(1);
+            Assert.AreEqual(0, videos.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteEnclosureVideoWrongId()
+        {
+            enclosureController.DeleteEnclosurePicture(-1);
         }
 
         #endregion
