@@ -73,12 +73,13 @@
                     clickOutsideToClose:    true,
                     locals : {
                         selectedEnclosure:  $scope.selectedEnclosure,
-                        mapUrl:             'http://localhost:5987/assets/map/zoo_map.png'
                     }
                 })
                 .then(function(clickPosition) {
-                    selectedEnclosure.markerLongitude   = clickPosition.width;
-                    selectedEnclosure.markerLatitude    = clickPosition.height;
+                    if (angular.isDefined(clickPosition)) {
+                        selectedEnclosure.markerLongitude   = clickPosition.width;
+                        selectedEnclosure.markerLatitude    = clickPosition.height;
+                    }
                 });
             };
 
@@ -181,7 +182,9 @@
             }
         };
 
-        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapUrl) {
+        MapDialogController.$Inject = ['mapService'];
+
+        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService) {
             $scope.img          = new Image();
 
             $scope.img.onload = function () {
@@ -195,7 +198,12 @@
             }
             
             // TODO:: get map from database.
-            $scope.img.src = mapUrl;
+            mapQuery = mapService.getMap().then(function (data) {
+                $scope.img.src = data.data[0];
+            },
+            function () {
+                utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
+            });
 
             $scope.clickMap = function(event) {
                 var widthOffset     = $scope.img.width - $scope.originalPicWidth;
