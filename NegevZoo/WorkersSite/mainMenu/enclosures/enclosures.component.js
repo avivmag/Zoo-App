@@ -71,11 +71,15 @@
                     parent:                 angular.element(document.body),
                     targetEvent:            ev,
                     clickOutsideToClose:    true,
+                    locals : {
+                        selectedEnclosure:  $scope.selectedEnclosure,
+                    }
                 })
                 .then(function(clickPosition) {
-                    console.log('pos', clickPosition);
-                    selectedEnclosure.markerLongitude   = clickPosition.width;
-                    selectedEnclosure.markerLatitude    = clickPosition.height;
+                    if (angular.isDefined(clickPosition)) {
+                        selectedEnclosure.markerLongitude   = clickPosition.width;
+                        selectedEnclosure.markerLatitude    = clickPosition.height;
+                    }
                 });
             };
 
@@ -136,24 +140,39 @@
                         });
             }
 
-            $scope.uploadFile           = function(file, element, saveProperty) {
-                $scope.isLoading            = true;
-    
-                var uploadUrl               = 'enclosures/upload';
-    
-                fileUpload.uploadFileToUrl(file, uploadUrl).then(function (success) {
-                    element[saveProperty]   = success.data[0];
-    
-                    utilitiesService.utilities.alert('ההעלאה הושלמה בהצלחה!')
-    
-                    $scope.isLoading        = false;
-                },
-                function () {
-                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה')
-    
-                    $scope.isLoading        = false;
-                });
-            }
+            $scope.uploadPicture        = function (picture, enclosure) {
+                $scope.isLoading        = true;
+
+                var uploadUrl           = 'enclosures/upload/pictures';
+
+                var fileUploadQuery     = fileUpload.uploadFileToUrl(picture, uploadUrl).then(
+                    (success)   => {
+                        enclosure.pictureUrl    = success.data[0];
+                        
+                        $scope.isLoading        = false;
+                    },
+                    ()          => {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                        $scope.isLoading        = false; 
+                    });
+            };
+
+            $scope.uploadIcon           = function (icon, enclosure) {                
+                $scope.isLoading        = true;
+
+                var uploadUrl           = 'enclosures/upload/markers';
+
+                var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
+                    (success)   => {
+                        enclosure.markerIconUrl     = success.data[0];
+                        
+                        $scope.isLoading            = false;
+                    },
+                    ()          => {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                        $scope.isLoading            = false; 
+                    });
+            };
 
             $scope.addEnclosureVideo    = function(selectedEnclosure, videoUrl) {
                 $scope.isLoading        = true;
@@ -175,32 +194,44 @@
                         $scope.isLoading    = false;
                     }
                 )
-            }
+            };
         };
 
-        function MapDialogController($scope, $mdDialog) {
+        MapDialogController.$Inject = ['mapService'];
+
+        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService) {
             $scope.img          = new Image();
-            
+
             $scope.img.onload = function () {
                 $scope.originalPicWidth = document.getElementById('pic').width;
                 
                 $scope.mapStyle = {
                     width:  $scope.img.width + 'px',
-                    height: $scope.img.height + 'px'
-                }
+                    height: $scope.img.height + 'px',
+                    cursor: 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto'
+                };
             }
             
-            // TODO:: get map from database.
-            $scope.img.src = app.baseUrl + 'assets/zoo_map.png';
+            // Get the map url from the server.
+            mapQuery = mapService.getMap().then(function (data) {
+
+                $scope.img.src = app.baseURL + data.data[0].url;
+            },
+            function () {
+                utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
+            });
 
             $scope.clickMap = function(event) {
+                // Get the offset of the adjusted image.
                 var widthOffset     = $scope.img.width - $scope.originalPicWidth;
 
+                // Adjust the position by the offset.
                 var clickPosition   = {
                     width:  event.layerX + widthOffset,
                     height: event.layerY
                 };
 
+                // Return the offset when the dialog closes.
                 $mdDialog.hide(clickPosition);
             }
         }

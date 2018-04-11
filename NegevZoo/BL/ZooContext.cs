@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -1984,6 +1985,17 @@ namespace BL
                     (re.endTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
                     re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
         }
+
+        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
+        {
+            Bitmap result = new Bitmap(nWidth, nHeight);
+
+            using (Graphics g = Graphics.FromImage((Image)result))
+                g.DrawImage(b, 0, 0, nWidth, nHeight);
+
+            return result;
+        }
+
         #endregion
 
         /// <summary>
@@ -1991,20 +2003,29 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
-        public void FileUpload(HttpRequest httpRequest, string relativePath)
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
         {
             var fileNames = new List<String>();
 
             foreach (string file in httpRequest.Files)
             {
-                var postedFile = httpRequest.Files[file];
+                var postedFile      = httpRequest.Files[file];
 
-                var fileExtension = postedFile.FileName.Split('.').Last();
-                var fileName = Guid.NewGuid() + "." + fileExtension;
+                var fileExtension   = postedFile.FileName.Split('.').Last();
+                var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+                var filePath    = HttpContext.Current.Server.MapPath(relativePath + fileName);
 
                 postedFile.SaveAs(filePath);
+
+                Bitmap iconBM = new Bitmap(filePath);
+
+
+                Bitmap resizedIconBM = ResizeImage(iconBM, 32, 32);
+
+                iconBM.Dispose();
+
+                resizedIconBM.Save(filePath);
 
                 fileNames.Add(fileName);
             }
@@ -2013,8 +2034,10 @@ namespace BL
 
             foreach (var fn in fileNames)
             {
-                responseObject.Add(new JValue(relativePath + fn));
+                responseObject.Add(new JValue(relativePath.Substring(2) + fn));
             }
+
+            return responseObject;
         }
 
         public void Dispose()

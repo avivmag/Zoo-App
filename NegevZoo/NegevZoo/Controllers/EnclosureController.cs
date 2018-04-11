@@ -480,8 +480,10 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/enclosures/" + path);
-                    return Ok();
+                    var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
+
+
+                    return Ok(responseObject);
                 }
             }
             catch (Exception Exp)
@@ -489,31 +491,6 @@ namespace NegevZoo.Controllers
                 Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
-
-            //var fileNames = new List<String>();
-            
-            //foreach (string file in httpRequest.Files)
-            //{
-            //    var postedFile      = httpRequest.Files[file];
-
-            //    var fileExtension   = postedFile.FileName.Split('.').Last();
-            //    var fileName        = Guid.NewGuid() + "." + fileExtension;
-
-            //    var filePath = HttpContext.Current.Server.MapPath(@"~/assets/" + fileName);
-
-            //    postedFile.SaveAs(filePath);
-
-            //    fileNames.Add(fileName);
-            //}
-
-            //var responseObject = new JArray();
-
-            //foreach (var fn in fileNames)
-            //{
-            //    responseObject.Add(new JValue("assets/" + fn));
-            //}
-
-            //return Ok(responseObject);
         }
     }
 }
