@@ -21,7 +21,7 @@
         
         <ng-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
-                <div ng-repeat="enclosure in enclosures | filter:searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                <div ng-repeat="enclosure in enclosures | filter:enclosure_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
                     <span class="picture-head">{{ enclosure.name }}</span>
                     <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
                 </div>
@@ -61,13 +61,13 @@
                         <div style="margin-top: 7px" layout="row">
                             <div style="width: 200px">בחר אייקון להעלות:</div>
                             <input type="file" file-model="iconPic" accept="image/*"/>
-                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(iconPic, selectedEnclosure, 'markerIconUrl')">העלה אייקון חדש</md-button>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadIcon(iconPic, selectedEnclosure, 'markerIconUrl')">העלה אייקון חדש</md-button>
                         </div>
 
                         <div style="margin-top: 7px" layout="row">
                             <div style="width: 200px">בחר תמונת פרופיל להעלות:</div>
                             <input type="file" file-model="profilePic" accept="image/*"/>
-                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadFile(profilePic, selectedEnclosure, 'pictureUrl')">העלה תמונת פרופיל חדשה</md-button>
+                            <md-button style="margin-right: 20px" class="md-raised md-primary" ng-click="uploadPicture(profilePic, selectedEnclosure)">העלה תמונת פרופיל חדשה</md-button>
                         </div>
                     </ng-card-content>
                     <div layout="row">
