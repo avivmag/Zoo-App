@@ -27,7 +27,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -51,7 +51,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -73,7 +73,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -93,9 +93,9 @@ namespace NegevZoo.Controllers
                     db.DeleteUser(UserId);
                 }
             }
-            catch
+            catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

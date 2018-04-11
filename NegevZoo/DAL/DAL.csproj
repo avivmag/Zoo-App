@@ -91,6 +91,7 @@
     <Compile Include="Language.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Logger.cs" />
     <Compile Include="MiscMarker.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>

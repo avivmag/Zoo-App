@@ -1991,7 +1991,7 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
-        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        public void FileUpload(HttpRequest httpRequest, string relativePath)
         {
             var fileNames = new List<String>();
 
