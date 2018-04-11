@@ -21,7 +21,7 @@
         
         <ng-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
-                <div ng-repeat="enclosure in enclosures | filter:searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                <div ng-repeat="enclosure in enclosures | filter:enclosure_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
                     <span class="picture-head">{{ enclosure.name }}</span>
                     <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
                 </div>
