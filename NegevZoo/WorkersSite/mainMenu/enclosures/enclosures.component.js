@@ -71,9 +71,12 @@
                     parent:                 angular.element(document.body),
                     targetEvent:            ev,
                     clickOutsideToClose:    true,
+                    locals : {
+                        selectedEnclosure:  $scope.selectedEnclosure,
+                        mapUrl:             'http://localhost:5987/assets/map/zoo_map.png'
+                    }
                 })
                 .then(function(clickPosition) {
-                    console.log('pos', clickPosition);
                     selectedEnclosure.markerLongitude   = clickPosition.width;
                     selectedEnclosure.markerLatitude    = clickPosition.height;
                 });
@@ -178,20 +181,21 @@
             }
         };
 
-        function MapDialogController($scope, $mdDialog) {
+        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapUrl) {
             $scope.img          = new Image();
-            
+
             $scope.img.onload = function () {
                 $scope.originalPicWidth = document.getElementById('pic').width;
                 
                 $scope.mapStyle = {
                     width:  $scope.img.width + 'px',
-                    height: $scope.img.height + 'px'
-                }
+                    height: $scope.img.height + 'px',
+                    cursor: 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto'
+                };
             }
             
             // TODO:: get map from database.
-            $scope.img.src = app.baseUrl + 'assets/zoo_map.png';
+            $scope.img.src = mapUrl;
 
             $scope.clickMap = function(event) {
                 var widthOffset     = $scope.img.width - $scope.originalPicWidth;
