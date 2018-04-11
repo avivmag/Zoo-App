@@ -11,14 +11,14 @@ public class OpeningHours {
     private int id;
     @SerializedName("day")
     private String day;
-    @SerializedName("startHour")
-    private int startHour;
-    @SerializedName("startMin")
-    private int startMin;
-    @SerializedName("endHour")
-    private int endHour;
-    @SerializedName("endMin")
-    private int endMin;
+    @SerializedName("startTime")
+    private String startTime;
+    @SerializedName("endTime")
+    private String endTime;
+//    @SerializedName("endHour")
+//    private int endHour;
+//    @SerializedName("endMin")
+//    private int endMin;
 
 
     public int getId() {
@@ -29,19 +29,12 @@ public class OpeningHours {
         return day;
     }
 
-    public int getStartHour() {
-        return startHour;
+    public String getStartTime() {
+        return startTime.substring(0, 5);
     }
 
-    public int getStartMin() {
-        return startMin;
+    public String getEndTime() {
+        return endTime.substring(0, 5);
     }
-
-    public int getEndHour() {
-        return endHour;
-    }
-
-    public int getEndMin() {
-        return endMin;
-    }
+    
 }

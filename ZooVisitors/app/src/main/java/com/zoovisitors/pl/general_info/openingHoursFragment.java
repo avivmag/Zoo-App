@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class openingHoursFragment extends Fragment {
                 OpeningHours[] openingHours = (OpeningHours[]) response;
                 TableLayout openingHoursTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
                 int textSize = 14;
+                ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.aligator);
 
                 //Build the table for the opening hours
                 for (OpeningHours oh : openingHours){
@@ -47,8 +49,8 @@ public class openingHoursFragment extends Fragment {
                     TextView startTimeColumn = new TextView(getContext()); //column of the start time
                     TextView endTimeColumn = new TextView(getContext()); //column of the end time
                     dayColumn.setText(oh.getDay());
-                    startTimeColumn.setText("" + fixTime(oh.getStartHour()) + ":" + fixTime(oh.getStartMin()));
-                    endTimeColumn.setText("" + fixTime(oh.getEndHour()) + ":" + fixTime(oh.getEndMin()));
+                    startTimeColumn.setText("" + oh.getStartTime());//fixTime(oh.getStartHour()) + ":" + fixTime(oh.getStartMin()));
+                    endTimeColumn.setText("" + oh.getEndTime());
 
                     TableRow.LayoutParams clp = new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
                     lp.setMargins(0,0,0,10);

@@ -55,7 +55,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".pl.personalStories.PersonalStories" />
+        <activity android:name=".pl.personalStories.PersonalStoriesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pl.general_info.WatchAll"></activity>
     </application>
 

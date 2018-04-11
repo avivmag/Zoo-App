@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class contactInfoFragment extends Fragment {
             public void onSuccess(Object response) {
                 ContactInfo[] contactInfos = (ContactInfo[]) response;
                 TableLayout contactInfoTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
-
+                ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.swan);
                 int textSize = 16;
                 //Build the table for the infos
                 for (ContactInfo ci : contactInfos) {
