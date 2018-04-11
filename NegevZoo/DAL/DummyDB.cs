@@ -429,8 +429,7 @@ namespace DAL
                     distribution    = "",
                     family          = "",
                     food            = "",
-                    reproduction    = "",
-                    story           = "קופיקו הוא הקוף של מרקו."
+                    reproduction    = ""
                 },
                 new AnimalDetail
                 {
@@ -442,8 +441,7 @@ namespace DAL
                     distribution    = "",
                     family          = "",
                     food            = "",
-                    reproduction    = "",
-                    story           = "Kofifo is Marco's monkey."
+                    reproduction    = ""
                 },
             };
         }
