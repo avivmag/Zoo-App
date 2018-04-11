@@ -46,6 +46,7 @@
     <string name="choose_route"></string>
     <string name="facebook_app_id">1991264511112012</string>
 
+    <string name="personal">Personal Stories</string>
     <!--Gps provider dialog-->
     <string name="gps_no_permission_dialog_title"></string>
     <string name="gps_no_permission_dialog_message"></string>

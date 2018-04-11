@@ -297,48 +297,6 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// Deletes an enclosure.
-        /// </summary>
-        /// <param name="id">The enclosure's encId to delete.</param>
-        [HttpDelete]
-        [Route("enclosures/delete/{encId}")]
-        public void DeleteEnclosure(int encId)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.DeleteEnclosure(encId);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        [HttpDelete]
-        [Route("enclosures/recurring/delete/{eventId}")]
-        public void DeleteRecurringEvent(int eventId)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.DeleteRecurringEvent(eventId);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                //TODO: add log
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
         /// Adds or updates an enclosure picture.
         /// </summary>
         /// <param name="enclosurePicture">The enclosures to update.</param>
@@ -361,7 +319,7 @@ namespace NegevZoo.Controllers
 
             }
         }
-
+        
         /// <summary>
         /// Adds or updates an enclosure video.
         /// </summary>
@@ -387,6 +345,53 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// Adds or updates a recurring event element.
+        /// </summary>
+        /// <param name="recEvent">The RecurringEvent element to update or add.</param>
+        [HttpPost]
+        [Route("enclosures/recurring/update")]
+        public void UpdateRecurringEvent(RecurringEvent recEvent)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateRecurringEvent(recEvent);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO add a log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            }
+        }
+
+        /// <summary>
+        /// Deletes an enclosure.
+        /// </summary>
+        /// <param name="id">The enclosure's encId to delete.</param>
+        [HttpDelete]
+        [Route("enclosures/delete/{encId}")]
+        public void DeleteEnclosure(int encId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteEnclosure(encId);
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
         /// delete an enclosure picture.
         /// </summary>
         /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
@@ -406,10 +411,9 @@ namespace NegevZoo.Controllers
             {
                 //TODO add a log
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
             }
         }
-
+        
         /// <summary>
         /// delete an enclosure video.
         /// </summary>
@@ -433,14 +437,40 @@ namespace NegevZoo.Controllers
 
             }
         }
+        
+        [HttpDelete]
+        [Route("enclosures/recurring/delete/{eventId}")]
+        public void DeleteRecurringEvent(int eventId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteRecurringEvent(eventId);
+                }
 
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+       
         #endregion
 
         [HttpPost]
-        [Route("enclosures/upload")]
-        public IHttpActionResult EnclosureImagesUpload()
+        [Route("enclosures/upload/{path}")]
+        public IHttpActionResult EnclosureImagesUpload(String path)
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new Exception("Wrong input. Path is empty");
+            }
+
             var httpRequest = HttpContext.Current.Request;
+
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
@@ -450,14 +480,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/");
+                    db.ImagesUpload(httpRequest, @"~/assets/enclosures/" + path);
                     return Ok();
                 }
             }
             catch (Exception exp)
             {
                 //TODO: add log
-                throw new Exception("kaki");
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
 
             //var fileNames = new List<String>();

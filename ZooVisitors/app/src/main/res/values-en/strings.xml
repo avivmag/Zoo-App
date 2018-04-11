@@ -50,6 +50,8 @@
     <string name="preservation">Preservation</string>
     <string name="facebook_app_id">1991264511112012</string>
 
+
+    <string name="personal">Personal Stories</string>
     <!--Gps provider dialog-->
     <string name="gps_no_permission_dialog_title">Locations permission</string>
     <string name="gps_no_permission_dialog_message">Disapproving location permission will block some of the app features</string>
@@ -59,5 +61,4 @@
     <string name="gps_no_activated_dialog_open_settings">Open settings</string>
     <string name="gps_no_activated_dialog_do_not_open_settings">Cancel</string>
     <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
-
 </resources>

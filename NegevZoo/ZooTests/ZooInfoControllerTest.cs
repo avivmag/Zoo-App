@@ -1324,6 +1324,14 @@ namespace ZooTests
 
         #endregion
 
+
+        [TestMethod]
+        public void GetMapUrl()
+        {
+            var mapUrl = ZooInfoController.GetMapUrl();
+            Assert.AreEqual(mapUrl.Count(), 1);
+            Assert.AreEqual("MapUrl", mapUrl.First().Url);
+        }
         #endregion
     }
 }

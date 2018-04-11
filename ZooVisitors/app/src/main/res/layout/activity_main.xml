@@ -83,6 +83,13 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/personal"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:text="@string/personal" />
+
+                <Button
                     android:id="@+id/otherInfoButton"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
@@ -91,6 +98,7 @@
                     android:text="@string/other_info" />
 
                 <Button
+                    style="@style/ButtonNegevZooStyle"
                     android:id="@+id/mapButton"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"

@@ -60,6 +60,9 @@
             android:name=".cl.gps.GpsService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <activity android:name=".pl.personalStories.PersonalStories" />
+        <activity android:name=".pl.general_info.WatchAll" />
     </application>
 
 </manifest>

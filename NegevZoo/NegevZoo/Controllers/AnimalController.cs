@@ -40,6 +40,29 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets all animals that have special story.
+        /// </summary>
+        /// <param name="language">The data language.</param>
+        /// <returns>Animals with spiceial story in the wanted langauge.</returns>
+        [HttpGet]
+        [Route("animals/story/{language}")]
+        public IEnumerable<AnimalResult> GetAnimalsWithStoryResults(int language = 1)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAnimalsWithStoryResults(language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                //TODO: add log
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -231,9 +254,15 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("animals/upload")]
-        public IHttpActionResult AnimalsImagesUpload()
+        public IHttpActionResult AnimalsImagesUpload(String path)
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new Exception("Wrong input. Path is empty");
+            }
+
             var httpRequest = HttpContext.Current.Request;
+
             if (httpRequest.Files.Count < 1)
             {
                 return BadRequest();
@@ -243,7 +272,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/animals/");
+                    db.ImagesUpload(httpRequest, @"~/assets/animals/" + path);
                     return Ok();
                 }
             }

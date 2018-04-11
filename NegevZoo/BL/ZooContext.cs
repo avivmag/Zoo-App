@@ -19,13 +19,20 @@ namespace BL
 
         public ZooContext(bool isTesting = true, bool newDb = false)
         {
-            if (isTesting)
+            try
             {
-                zooDB = zooDB ?? DummyDB.GetInstance();
+                if (isTesting)
+                {
+                    zooDB = zooDB ?? DummyDB.GetInstance();
+                }
+                else
+                {
+                    zooDB = new NegevZooDBEntities();
+                }
             }
-            else
+            catch
             {
-                zooDB = new NegevZooDBEntities();
+                throw new Exception("Could not connect to the database");
             }
         }
         
@@ -67,7 +74,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -174,10 +181,10 @@ namespace BL
         /// <returns>The enclosure details in all the languages.</returns>
         public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
         {
-            if (!GetAllEnclosures().Any(e => e.id == encId))
-            {
-                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            }
+            //if (!GetAllEnclosures().Any(e => e.id == encId))
+            //{
+            //    throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            //}
 
             return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
         }
@@ -276,7 +283,7 @@ namespace BL
                 //check that the enclosure exists
                 if (oldEnc == null)
                 {
-                    throw new ArgumentException("Wrong input. Enclosure doesn't exits");
+                    throw new ArgumentException("Wrong input. Enclosure id doesn't exits");
                 }
 
                 // check that if the name changed, it doesn't exits
@@ -318,12 +325,17 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
+            
+            //3. check that the enclosure id exists
+            if (!GetAllEnclosures().Any(e => e.id == enclosureDetail.encId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists..");
+            }
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
-            //get the existing enclosure detail
             EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
-            
+
             if (oldEnc == null) //add a new enclosure details
             {
                 if (enclosuresDetails.Any(ed => ed.name == enclosureDetail.name))
@@ -333,6 +345,7 @@ namespace BL
                 enclosuresDetails.Add(enclosureDetail);
             }
             else //update an exists enclosure detail
+            //get the existing enclosure detail
             {
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosureDetail.name && enclosuresDetails.Any(en => en.name == enclosureDetail.name))//The name changed
@@ -345,38 +358,7 @@ namespace BL
                 oldEnc.story = enclosureDetail.story;
             }
         }
-
-        /// <summary>
-        /// post a file to the db
-        /// </summary>
-        /// <param name="httpRequest">The requested files.</param>
-        /// <param name="relativePath">the path.</param>
-        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
-        {
-            var fileNames = new List<String>();
-
-            foreach (string file in httpRequest.Files)
-            {
-                var postedFile = httpRequest.Files[file];
-
-                var fileExtension = postedFile.FileName.Split('.').Last();
-                var fileName = Guid.NewGuid() + "." + fileExtension;
-
-                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
-
-                postedFile.SaveAs(filePath);
-
-                fileNames.Add(fileName);
-            }
-
-            var responseObject = new JArray();
-
-            foreach (var fn in fileNames)
-            {
-                responseObject.Add(new JValue(relativePath + fn));
-            }
-        }
-
+        
         /// <summary>
         /// Updates or adds The enclosure picture.
         /// </summary>
@@ -405,15 +387,25 @@ namespace BL
 
             if (enclosurePicture.id == default(int)) // add a new enclosure picture
             {
+                if (allEnclosurePictures.Any(p => p.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure picture. The picture url already exists.");
+                }
+
                 allEnclosurePictures.Add(enclosurePicture);
             }
             else //update an existsing picture
             {
-                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.enclosureId == enclosurePicture.enclosureId);
+                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.id == enclosurePicture.id);
 
                 if (oldPic == null)
                 {
                     throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
+                }
+
+                if (oldPic.pictureUrl != enclosurePicture.pictureUrl && allEnclosurePictures.Any(ep => ep.pictureUrl == enclosurePicture.pictureUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure picture. The picture url is already exists");
                 }
 
                 oldPic.pictureUrl = enclosurePicture.pictureUrl;
@@ -433,7 +425,6 @@ namespace BL
             {
                 throw new ArgumentException("No video given");
             }
-
             
             //1. check that the enclosure exists
             if (!GetAllEnclosures().Any(e => e.id == enclosureVideo.enclosureId))
@@ -451,6 +442,11 @@ namespace BL
 
             if (enclosureVideo.id == default(int)) //add video
             {
+                if (allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while adding enclosure video. The enclosure vido url already exists");
+                }
+
                 allEnclosureVideos.Add(enclosureVideo);
             }
             else //update video
@@ -462,59 +458,97 @@ namespace BL
                     throw new ArgumentException("Wrong input. Video doesn't exists");
                 }
 
+                if (oldVideo.videoUrl != enclosureVideo.videoUrl && allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
+                }
+
                 oldVideo.videoUrl = enclosureVideo.videoUrl;
                 oldVideo.enclosureId = enclosureVideo.enclosureId;
             }
         }
 
-        /// <summary>
-        /// Delete The enclosure video.
-        /// </summary>
-        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
-        public void DeleteEnclosureVideo(int enclosureVideoId)
-        {
-            //check that the enclosure exists
-            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
 
-            if (enclosureVideo != null)
+        /// <summary>
+        /// Adds or updates a recurring event element.
+        /// </summary>
+        /// <param name="recEvent">The RecurringEvent element to update or add.</param>
+        public void UpdateRecurringEvent(RecurringEvent recEvent)
+        {
+            //validate attributes
+            //0.Exists
+            if (recEvent == default(RecurringEvent))
             {
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+                throw new ArgumentException("No RecurringEvent was given");
             }
 
-            zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
-        }
+            //1. validate language
+            if (!ValidLanguage((int)recEvent.language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
 
-        /// <summary>
-        /// Delete The enclosure picture.
-        /// </summary>
-        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
-        public void DeleteEnclosurePicture(int enclosurePictureId)
-        {
-            //check that the enclosure exists
-            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.enclosureId == enclosurePictureId);
+            //2. check that the enclosure exists
+            if (!GetAllEnclosures().Any(e => e.id == recEvent.enclosureId))
+            {
+                throw new ArgumentException("Wrong input. Enclosure doesn't exists");
+            }
 
-            if (enclosurePicure != null){
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            //3. check the description
+            if (IsEmptyString(recEvent.description) || IsNullOrWhiteSpace(recEvent.description))
+            {
+                throw new ArgumentException("Wrong input. The descrioption is empty or white spaces");
+            }
+
+            //4. check the day
+            if (Enum.ToObject(typeof(Days), recEvent.day) == null || recEvent.day / 10 != (recEvent.language - 1))
+            {
+                throw new ArgumentException("Wrong input. The day is not defined");
+            }
+
+            //5. check the time
+            if (recEvent.endTime.Subtract(recEvent.startTime) <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("Wrong input. The start time is bigger or equal to the end time");
+            }
+
+            var allRecurringEvents = zooDB.GetAllRecuringEvents();
+
+            //TODO: Add Notification!
+            if (recEvent.id == default(int)) //add recurring event
+            {
+                //check that there isn't other Recurring event to this enclosure in the same time.
+                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                {
+                    throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
+                }
+
+                allRecurringEvents.Add(recEvent);
+            }
+            else //update RecurringEvent
+            {
+                var oldRecEvent = allRecurringEvents.SingleOrDefault(re => re.id == recEvent.id);
+
+                if (recEvent == null)
+                {
+                    throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
+                }
+
+                if ((oldRecEvent.startTime != recEvent.startTime || oldRecEvent.endTime != recEvent.endTime) &&
+                     allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                {
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
+                }
+
+                oldRecEvent.enclosureId = recEvent.enclosureId;
+                oldRecEvent.day         = recEvent.day;
+                oldRecEvent.description = recEvent.description;
+                oldRecEvent.startTime   = recEvent.startTime;
+                oldRecEvent.endTime     = recEvent.endTime;
             }
             
-            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
         }
 
-        /// <summary>
-        /// Delete The recurringEvent.
-        /// </summary>
-        /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
-        {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
-
-            if (recEvent == null)
-            {
-                throw new ArgumentException("Wrong input. RecurringEvent's id doesn't exists.");
-            }
-
-            zooDB.GetAllRecuringEvents().Remove(recEvent);
-        }
 
         /// <summary>
         /// Delete The enclosure.
@@ -543,8 +577,62 @@ namespace BL
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
             }
 
-            zooDB.GetAllEnclosureDetails().ToList().RemoveAll(ed => ed.encId == enclosure.id);
+            var toRemove = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id).ToList();
+
+            zooDB.GetAllEnclosureDetails().RemoveRange(toRemove);
             zooDB.GetAllEnclosures().Remove(enclosure);
+        }
+
+        /// <summary>
+        /// Delete The enclosure picture.
+        /// </summary>
+        /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
+        public void DeleteEnclosurePicture(int enclosurePictureId)
+        {
+            //check that the enclosure picture exists
+            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.id == enclosurePictureId);
+
+            if (enclosurePicure == null){
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+            
+            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
+        }
+
+        /// <summary>
+        /// Delete The enclosure video.
+        /// </summary>
+        /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
+        public void DeleteEnclosureVideo(int enclosureVideoId)
+        {
+            //check that the enclosure exists
+            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
+
+            if (enclosureVideo == null)
+            {
+                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+            }
+
+            zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
+        }
+
+
+
+
+        /// <summary>
+        /// Delete The recurringEvent.
+        /// </summary>
+        /// <param name="id">The RecurringEvent's id to delete.</param>
+        public void DeleteRecurringEvent(int id)
+        {
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+
+            if (recEvent == null)
+            {
+                throw new ArgumentException("Wrong input. RecurringEvent's id doesn't exists.");
+            }
+
+            zooDB.GetAllRecuringEvents().Remove(recEvent);
         }
 
         /// <summary>
@@ -602,6 +690,16 @@ namespace BL
         }
 
         /// <summary>
+        /// Gets animal with stories.
+        /// </summary>
+        /// <param name="language">The data's language</param>
+        /// <returns>The animal stories.</returns>
+        public IEnumerable<AnimalResult> GetAnimalsWithStoryResults(int language)
+        {
+            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Story));
+        }
+
+        /// <summary>
         /// Gets all the animals types.
         /// </summary>
         /// <returns>The animals types.</returns>
@@ -624,21 +722,7 @@ namespace BL
 
             return zooDB.GetAllAnimalsDetails().Where(an => an.animalId == animalId);
         }
-
-        /// <summary>
-        /// Gets all the animals.
-        /// </summary>
-        /// <param name="language">The animal's data language.</param>
-        /// <returns>The animals.</returns>
-        //public IEnumerable<Animal> GetAnimals(int language)
-        //{
-        //    if (!ValidLanguage(language))
-        //    {
-        //        throw new ArgumentException("Wrong input. Wrong language.");
-        //    }
-        //    return zooDB.GetAllAnimals().Where(a => /*a.language == language*/a.id == language).ToArray();
-        //}
-
+        
         /// <summary>
         /// Gets animal by Id and language.
         /// </summary>
@@ -1607,6 +1691,20 @@ namespace BL
 
             generalInfo.contactInfoNote= note;
         }
+
+        /// <summary>
+        /// Gets the zoo's map url.
+        /// </summary>
+        /// <returns>The zoo's url map.</returns>
+        public IEnumerable<String> GetMapUrl()
+        {
+            var language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id;
+
+            return zooDB.GetGeneralInfo()
+                .Where(ge => ge.language == language)
+                .Select(ge => ge.mapBackgroundUrl)
+                .ToArray();
+        }
         #endregion
 
         #region Languages
@@ -1876,11 +1974,52 @@ namespace BL
         {
             return String.IsNullOrWhiteSpace(str);
         }
+
+        private bool ValidateTime(RecurringEvent re, RecurringEvent recEvent)
+        {
+            return  (re.day == recEvent.day) &&
+                    ((re.startTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
+                    re.startTime.Subtract(recEvent.endTime) < TimeSpan.Zero)
+                    ||
+                    (re.endTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
+                    re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
+        }
         #endregion
+
+        /// <summary>
+        /// post a file to the db
+        /// </summary>
+        /// <param name="httpRequest">The requested files.</param>
+        /// <param name="relativePath">the path.</param>
+        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        {
+            var fileNames = new List<String>();
+
+            foreach (string file in httpRequest.Files)
+            {
+                var postedFile = httpRequest.Files[file];
+
+                var fileExtension = postedFile.FileName.Split('.').Last();
+                var fileName = Guid.NewGuid() + "." + fileExtension;
+
+                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+
+                postedFile.SaveAs(filePath);
+
+                fileNames.Add(fileName);
+            }
+
+            var responseObject = new JArray();
+
+            foreach (var fn in fileNames)
+            {
+                responseObject.Add(new JValue(relativePath + fn));
+            }
+        }
 
         public void Dispose()
         {
             zooDB.SaveChanges();
         }
     }
-}
+    }

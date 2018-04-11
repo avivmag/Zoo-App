@@ -29,6 +29,7 @@ import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
+import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
@@ -42,7 +43,7 @@ public class MainActivity extends BaseActivity {
     private Menu langMenu;
     private NewsFeed[] feed;
     private Map<String, String> LanguageMap;
-
+    private String[] newsFeedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +55,6 @@ public class MainActivity extends BaseActivity {
         //Initialize business layer (change for testing)
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
-        //Token for notification
-        GlobalVariables.deviceId = FirebaseInstanceId.getInstance().getToken();
-        Log.e("TOKEN", "token "+ FirebaseInstanceId.getInstance().getToken());
-
         GlobalVariables.bl.sendDeviceId();
 
         LanguageMap = new HashMap<String, String>();
@@ -89,6 +86,11 @@ public class MainActivity extends BaseActivity {
                     newsFeddLinearLayout.addView(lineBorder);
                 }
 
+                newsFeedList = new String[feed.length];
+                for (int i=0; i<feed.length; i++){
+                    newsFeedList[i] = feed[i].getStory();
+                }
+
                 scrollView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -103,6 +105,21 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //watch all button
+        findViewById(R.id.feedWallButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent watchAll = new Intent(MainActivity.this, WatchAll.class);
+                Bundle newsFeedBundle = new Bundle();
+                if (newsFeedList == null){
+                    newsFeedList = new String[]{"NO NEWS FEED"};
+                }
+                Log.e("NEWS", newsFeedList[0]);
+                newsFeedBundle.putSerializable("newsFeed", newsFeedList);
+                watchAll.putExtras(newsFeedBundle);
+                startActivity(watchAll);
+            }
+        });
 
         //enclosure button
         findViewById(R.id.enclosureListButton).setOnClickListener(new View.OnClickListener() {
@@ -145,7 +162,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?newsFeddLinearLayout=31.258137,34.745620")));//&navigate=yes
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
                 }
                 else{
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620")));

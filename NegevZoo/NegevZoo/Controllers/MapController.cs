@@ -13,7 +13,7 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("map/upload")]
-        public IHttpActionResult mapImagesUpload()
+        public IHttpActionResult MapImagesUpload()
         {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count < 1)
@@ -25,7 +25,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.ImagesUpload(httpRequest, @"~/assets/map/");
+                    db.ImagesUpload(httpRequest, @"~/assets/map/misc/");
                     return Ok();
                 }
             }
@@ -35,6 +35,8 @@ namespace NegevZoo.Controllers
                 throw new Exception("kaki");
             }
         }
+
+
         // TODO:: Under construction.
     }
 }
