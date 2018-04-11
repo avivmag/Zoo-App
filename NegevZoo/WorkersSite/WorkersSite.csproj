@@ -87,6 +87,9 @@
     <Content Include="login\login.component.js" />
     <Content Include="login\login.css" />
     <Content Include="login\login.html" />
+	<Content Include="mainMenu\enclosures\enclosures.component.js" />
+    <Content Include="mainMenu\enclosures\enclosures.html" />
+    <Content Include="mainMenu\enclosures\map.dialog.html" />
     <Content Include="main.route.js" />
     <Content Include="mainMenu\feedWall\feedWall.component.js" />
     <Content Include="mainMenu\feedWall\feedWall.html" />
@@ -113,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />
-    <Folder Include="mainMenu\enclosures\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
