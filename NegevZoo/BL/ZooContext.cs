@@ -2082,7 +2082,7 @@ namespace BL
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
         /// <returns>An array of the uploaded images path.</returns>
-        public JArray ImagesUpload(HttpRequest httpRequest, string relativePath)
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
         {
             var fileNames           = new List<String>();
 

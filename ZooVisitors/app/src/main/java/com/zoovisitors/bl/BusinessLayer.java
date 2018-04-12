@@ -16,6 +16,7 @@ public interface BusinessLayer {
     public void getOpeningHours(final GetObjectInterface goi);
     public void getAboutUs(final GetObjectInterface goi);
     public void getContactInfo(final GetObjectInterface goi);
+    public void getPersonalStories(final GetObjectInterface goi);
 
     //notification
     public void sendDeviceId();

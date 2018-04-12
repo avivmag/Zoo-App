@@ -1,9 +1,7 @@
-package com.zoovisitors.pl.enclosures;
-
+package com.zoovisitors.pl.personalStories;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,27 +13,26 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.pl.animals.AnimalActivity;
+import com.zoovisitors.pl.enclosures.EnclosureListRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Gili on 28/12/2017.
+ * Created by Gili on 11/04/2018.
  */
 
-public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
-
-    private String[] animalsImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
+public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<PersonalStoriesRecyclerAdapter.ViewHolder> {
+    private String[] animalsImages;
     private int[] images;
     private Animal[] animals;
 
-    public AnimalsRecyclerAdapter(String[] animalsImages, Animal[] animals){
+    public PersonalStoriesRecyclerAdapter(String[] animalsImages, Animal[] animals) {
         this.animalsImages = animalsImages;
         this.animals = animals;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
-        public int currentItem;
+    class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView animal_card_image;
         public TextView animalName;
 
@@ -72,18 +69,19 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                 }
             });
         }
+
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public PersonalStoriesRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.animal_card, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(v);
+        PersonalStoriesRecyclerAdapter.ViewHolder viewHolder = new PersonalStoriesRecyclerAdapter.ViewHolder(v);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(PersonalStoriesRecyclerAdapter.ViewHolder viewHolder, int i) {
         viewHolder.animalName.setText(animals[i].getName());
         viewHolder.animal_card_image.setImageResource(images[i]);
     }
@@ -92,4 +90,5 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
     public int getItemCount() {
         return animals.length;
     }
+
 }

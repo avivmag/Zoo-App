@@ -148,4 +148,5 @@ public abstract class ProviderBasedActivity extends Activity {
     public abstract int getMinTime();
     public abstract int getMinDistance();
 
+
 }

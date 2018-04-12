@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 
@@ -27,12 +28,9 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
     private String[] enclosuresImages = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
     private String[] enclosuresNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
     private Enclosure[] enclosures;
-
-    private AppCompatActivity tempActivity;
     private int[] images;
 
-    public EnclosureListRecyclerAdapter(AppCompatActivity appCompatActivity, Enclosure[] enclosures){
-        this.tempActivity = appCompatActivity;
+    public EnclosureListRecyclerAdapter(Enclosure[] enclosures){
         this.enclosures = enclosures;
 
         enclosuresNames = new String[enclosures.length];
@@ -55,7 +53,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
             List<Integer> imagesList = new ArrayList<Integer>();
             for (String image : enclosuresImages) {
 //                AppCompatActivity tempActivity = new AppCompatActivity();
-                imagesList.add(tempActivity.getResources().getIdentifier(image, "mipmap", tempActivity.getPackageName()));
+                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
 
             }
 
@@ -74,12 +72,12 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-                    Intent intent = new Intent(tempActivity, EnclosureActivity.class);
+                    Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
                     Bundle clickedEnclosure = new Bundle();
 
                     clickedEnclosure.putSerializable("enc", enclosures[pos]);
                     intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-                    tempActivity.startActivity(intent);
+                    GlobalVariables.appCompatActivity.startActivity(intent);
                 }
             });
         }
