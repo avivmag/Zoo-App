@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -36,7 +37,7 @@ namespace BL
                 throw new Exception("Could not connect to the database");
             }
         }
-        
+
         public ZooContext(IZooDB db)
         {
             zooDB = db;
@@ -75,7 +76,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -182,11 +183,6 @@ namespace BL
         /// <returns>The enclosure details in all the languages.</returns>
         public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
         {
-            //if (!GetAllEnclosures().Any(e => e.id == encId))
-            //{
-            //    throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            //}
-
             return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
         }
 
@@ -244,7 +240,22 @@ namespace BL
 
             return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
-        
+
+        /// <summary>
+        /// Gets the recurring events.
+        /// </summary>
+        /// <param name="language">The RecurringEvent's data language.</param>
+        /// <returns>The RecurringEvents.</returns>
+        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
+        {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            return zooDB.GetAllRecuringEvents().Where(gr => gr.language == language);
+        }
+
         /// <summary>
         /// Updates The enclosure.
         /// </summary>
@@ -468,8 +479,7 @@ namespace BL
                 oldVideo.enclosureId = enclosureVideo.enclosureId;
             }
         }
-
-
+        
         /// <summary>
         /// Adds or updates a recurring event element.
         /// </summary>
@@ -535,8 +545,7 @@ namespace BL
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
 
-                if ((oldRecEvent.startTime != recEvent.startTime || oldRecEvent.endTime != recEvent.endTime) &&
-                     allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
@@ -549,7 +558,6 @@ namespace BL
             }
             
         }
-
 
         /// <summary>
         /// Delete The enclosure.
@@ -616,10 +624,7 @@ namespace BL
 
             zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
         }
-
-
-
-
+        
         /// <summary>
         /// Delete The recurringEvent.
         /// </summary>
@@ -635,21 +640,7 @@ namespace BL
 
             zooDB.GetAllRecuringEvents().Remove(recEvent);
         }
-
-        /// <summary>
-        /// Gets the recurring events.
-        /// </summary>
-        /// <param name="language">The RecurringEvent's data language.</param>
-        /// <returns>The RecurringEvents.</returns>
-        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
-        {
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            return zooDB.GetAllRecuringEvents().Where(gr => gr.language == language);
-        }
+        
         #endregion
 
         #region Animals
@@ -1718,6 +1709,14 @@ namespace BL
 
         #endregion
 
+        #region Map
+        public MapSettingsResult GetMapSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region Users
         /// <summary>
         /// Gets the users.
@@ -1726,6 +1725,29 @@ namespace BL
         public IEnumerable<User> GetAllUsers()
         {
             return zooDB.GetAllUsers().ToArray();
+        }
+
+        /// <summary>
+        /// Connect a worker user to the system.
+        /// </summary>
+        /// <param name="userName">The wanted user name</param>
+        /// <param name="password">The user's password</param>
+        /// <returns>a boolean that indicates if the proccess succeded.</returns>
+        public bool Login(string userName, string password)
+        {
+            User user = GetAllUsers().SingleOrDefault(u => u.name == userName);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            //if (VerifyMd5Hash(password + user.salt, user.password))
+            //{
+            //    return true;
+            //}
+
+            return false;
         }
 
         /// <summary>
@@ -1759,6 +1781,8 @@ namespace BL
                 throw new ArgumentException("No UserWorker given");
             }
 
+            //TODO: Add an authorization test.
+
             // 1. Name
             if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
             {
@@ -1771,8 +1795,6 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            //TODO: add permissions?
-
             var users = zooDB.GetAllUsers();
 
             if (userWorker.id == default(int)) //add a user
@@ -1783,6 +1805,8 @@ namespace BL
                     throw new ArgumentException("Wrong input while adding a User. Name already exists");
                 }
 
+                //userWorker.salt = GenerateSalt();
+                
                 users.Add(userWorker);
             }
             else //update a user
@@ -1802,6 +1826,7 @@ namespace BL
 
                 oldUser.name = userWorker.name;
                 oldUser.password = userWorker.password;
+                //userWorker.salt = GenerateSalt();
                 oldUser.isAdmin = userWorker.isAdmin;
             }
         }
@@ -1996,6 +2021,56 @@ namespace BL
             return result;
         }
 
+        private Random random = new Random();
+        private String GenerateSalt()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 32).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        bool VerifyMd5Hash(string input, string hash)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Hash the input.
+                string hashOfInput = GetMd5Hash(input);
+
+                // Create a StringComparer an compare the hashes.
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+                if (0 == comparer.Compare(hashOfInput, hash))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        private string GetMd5Hash(string input)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                // Create a new Stringbuilder to collect the bytes
+                // and create a string.
+                StringBuilder sBuilder = new StringBuilder();
+
+                // Loop through each byte of the hashed data 
+                // and format each one as a hexadecimal string.
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+
+                // Return the hexadecimal string.
+                return sBuilder.ToString();
+            }
+        }
         #endregion
 
         /// <summary>
@@ -2045,4 +2120,4 @@ namespace BL
             zooDB.SaveChanges();
         }
     }
-    }
+}
