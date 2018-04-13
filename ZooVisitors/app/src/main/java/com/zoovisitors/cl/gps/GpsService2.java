@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.dal.data_handler.map.Memory;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -31,22 +32,20 @@ public abstract class GpsService2 extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                GpsService2.this.onLocationChanged(location);
+                if (isInPark()) {
+                    // TODO: send in park
+                } else {
+                    // TODO: send not in park
+                }
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
             @Override
-            public void onProviderEnabled(String provider) {
-                GpsService2.this.onProviderEnabled();
-            }
+            public void onProviderEnabled(String provider) { }
 
             @Override
             public void onProviderDisabled(String provider) {
-                GpsService2.this.onProviderDisabled();
                 handleActivation();
             }
         };
@@ -133,13 +132,7 @@ public abstract class GpsService2 extends Service {
         }
     }
 
-//    public abstract void onLocationChanged(Location location);
-//    public abstract void onProviderEnabled();
-//    public abstract void onProviderDisabled();
-//    public abstract int getMinTime();
-//    public abstract int getMinDistance();
-
-    public boolean isInPark() {
-
+    public boolean isInPark(Location location) {
+        return Memory.getMinX()
     }
 }

@@ -33,11 +33,6 @@ public class DataStructure {
      * currently set to 2 minutes.
      */
     private final long MAX_UPDATE_THRESHOLD = 120*1000;
-    // the borders of the zoo
-    private double minX;
-    private double maxX;
-    private double minY;
-    private double maxY;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
@@ -46,6 +41,11 @@ public class DataStructure {
     double yLatitudeRatio;
     private double sinAlpha;
     private double cosAlpha;
+    // the borders of the zoo
+    private double minLatitude;
+    private double maxLatitude;
+    private double minLongitude;
+    private double maxLongitude;
 
     public DataStructure(Point[] points,
                          Location zooEntranceLocation,
@@ -54,20 +54,20 @@ public class DataStructure {
                          double yLatitudeRatio,
                          double sinAlpha,
                          double cosAlpha,
-                         double minX,
-                         double maxX,
-                         double minY,
-                         double maxY
+                         double minLatitude,
+                         double maxLatitude,
+                         double minLongitude,
+                         double maxLongitude
     ) {
         this.points = points;
         this.zooEntranceLocation = zooEntranceLocation;
         this.zooEntrancePoint = zooEntrancePoint;
         this.sinAlpha = sinAlpha;
         this.cosAlpha = cosAlpha;
-        this.minX = minX;
-        this.maxX = maxX;
-        this.minY = minY;
-        this.maxY = maxY;
+        this.minLatitude = minLatitude;
+        this.maxLatitude = maxLatitude;
+        this.minLongitude = minLongitude;
+        this.maxLongitude = maxLongitude;
 
         this.xLongitudeRatio = xLongitudeRatio;
         this.yLatitudeRatio = yLatitudeRatio;
@@ -115,6 +115,7 @@ public class DataStructure {
     private long lastUpdate = 0;
     public Point getOnMapPosition(Point point)
     {
+
         Point ans;
         // new update is needed
         if(System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
@@ -135,12 +136,6 @@ public class DataStructure {
      * to the given point (should be used to call getOnMapPositionContinues)
      */
     private Point getOnMapPositionContinues(Point estimatedPoint) {
-        if (estimatedPoint.getX() < minX - MAX_DISTANCE_FROM_POINT ||
-                estimatedPoint.getX() > maxX + MAX_DISTANCE_FROM_POINT ||
-                estimatedPoint.getY() < minY - MAX_DISTANCE_FROM_POINT ||
-                estimatedPoint.getY() > maxY + MAX_DISTANCE_FROM_POINT)
-            return null;
-
         double distanceToNearest = Double.MAX_VALUE;
         Point nearestFromTheSet = null;
         for(Point p : routes.get(lastLocation)) {
@@ -172,12 +167,6 @@ public class DataStructure {
      */
     private Point getOnMapPositionFirstTime(Point point)
     {
-        if (point.getX() < minX - MAX_DISTANCE_FROM_POINT ||
-                point.getX() > maxX + MAX_DISTANCE_FROM_POINT ||
-                point.getY() < minY - MAX_DISTANCE_FROM_POINT ||
-                point.getY() > maxY + MAX_DISTANCE_FROM_POINT)
-            return null;
-
         // reduce number of checks
         int[] indexRange = getIndexRangeInPoints(point.getX());
         if(indexRange == null)

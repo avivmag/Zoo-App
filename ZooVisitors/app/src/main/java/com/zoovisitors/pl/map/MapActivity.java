@@ -18,8 +18,8 @@ import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
-import com.zoovisitors.bl.map.Dummy;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
+import com.zoovisitors.dal.data_handler.map.Memory;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -31,6 +31,7 @@ public class MapActivity extends ProviderBasedActivity
     private BusinessLayer bl;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
+    private final double MAX_MARGIN = 10 * 0.0111111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +39,17 @@ public class MapActivity extends ProviderBasedActivity
         setContentView(R.layout.activity_map);
         mapView = findViewById(R.id.map_test_frame);
         bl = new BusinessLayerImpl(this);
-        mapDS = new DataStructure(Dummy.getPoints(),
-                Dummy.ZOO_ENTRANCE_LOCATION,
-                Dummy.ZOO_ENTRANCE_POINT,
-                Dummy.getXLongitudeRatio(),
-                Dummy.getYLatitudeRatio(),
-                Dummy.getSinAlpha(),
-                Dummy.getCosAlpha()
+        mapDS = new DataStructure(Memory.getPoints(),
+                Memory.ZOO_ENTRANCE_LOCATION,
+                Memory.ZOO_ENTRANCE_POINT,
+                Memory.getXLongitudeRatio(),
+                Memory.getYLatitudeRatio(),
+                Memory.getSinAlpha(),
+                Memory.getCosAlpha(),
+                Memory.minLatitude,
+                Memory.maxLatitude,
+                Memory.minLongitude,
+                Memory.maxLongitude
         );
 
         mapView.AddVisitorIcon();
@@ -124,12 +129,19 @@ public class MapActivity extends ProviderBasedActivity
     public void onLocationChanged(android.location.Location location) {
         if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
             Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG).show();
+
+            if (location.getLatitude() < Memory.minLatitude - MAX_MARGIN ||
+                    location.getLatitude() > Memory.maxLatitude + MAX_MARGIN ||
+                    location.getLongitude() < Memory.minLongitude - MAX_MARGIN ||
+                    location.getLongitude() > Memory.maxLongitude + MAX_MARGIN)
+                return;
+
             if (needToShowIcon) {
                 needToShowIcon = false;
                 mapView.ShowVisitorIcon();
             }
 
-            Point p = Dummy.locationToPoint(new Location(location.getLatitude(), location.getLongitude()));
+            Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location.getLongitude()));
             Point calibratedPoint = mapDS.getOnMapPosition(p);
             if (calibratedPoint == null)
                 return;
