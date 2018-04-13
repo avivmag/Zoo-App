@@ -2011,16 +2011,6 @@ namespace BL
                     re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
         }
 
-        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
-        {
-            Bitmap result = new Bitmap(nWidth, nHeight);
-
-            using (Graphics g = Graphics.FromImage((Image)result))
-                g.DrawImage(b, 0, 0, nWidth, nHeight);
-
-            return result;
-        }
-
         private Random random = new Random();
         private String GenerateSalt()
         {
@@ -2071,6 +2061,95 @@ namespace BL
                 return sBuilder.ToString();
             }
         }
+
+        #endregion
+
+        #region Images
+
+        /// <summary>
+        /// Resizes an image.
+        /// </summary>
+        /// <param name="b">The original bitmap.</param>
+        /// <param name="nWidth">new width.</param>
+        /// <param name="nHeight">new height.</param>
+        /// <returns>A resized image.</returns>
+        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
+        {
+            Bitmap result = new Bitmap(nWidth, nHeight);
+
+            using (Graphics g = Graphics.FromImage(result))
+                g.DrawImage(b, 0, 0, nWidth, nHeight);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets the image's orientation field to default value and flips the image correctly.
+        /// </summary>
+        /// <param name="b">The bitmap.</param>
+        private void SetOrientationToDefault(Bitmap b)
+        {
+            // 0x112 Is the orientation property that windows uses to orientate the image.
+            if (Array.IndexOf(b.PropertyIdList, 274) > -1)
+            {
+                var orientation = (int)b.GetPropertyItem(274).Value[0];
+                switch (orientation)
+                {
+                    case 1:
+                        // No rotation required.
+                        break;
+                    case 2:
+                        b.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        break;
+                    case 3:
+                        b.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case 4:
+                        b.RotateFlip(RotateFlipType.Rotate180FlipX);
+                        break;
+                    case 5:
+                        b.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        break;
+                    case 6:
+                        b.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case 7:
+                        b.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        break;
+                    case 8:
+                        b.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                }
+                // This EXIF data is now invalid and should be removed.
+                b.RemovePropertyItem(274);
+            }
+        }
+
+        /// <summary>
+        /// Saves the image as icon.
+        /// </summary>
+        /// <param name="filePath">The file path to save.</param>
+        private void SaveAsIcon(string filePath)
+        {
+            // Get the image from file.
+            var image = new Bitmap(filePath);
+
+            // Sets the image orientation to default value.
+            SetOrientationToDefault(image);
+
+            // Resize the image.
+            var resizedImage = ResizeImage(image, 48, 48);
+
+            // Dispose the original image file desc.
+            image.Dispose();
+
+            // Save the new resized image.
+            resizedImage.Save(filePath);
+
+            // Dispose the resized image file desc.
+            resizedImage.Dispose();
+        }
+        
         #endregion
 
         /// <summary>
@@ -2078,9 +2157,10 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
+        /// <returns>An array of the uploaded images path.</returns>
         public JArray FileUpload(HttpRequest httpRequest, string relativePath)
         {
-            var fileNames = new List<String>();
+            var fileNames           = new List<String>();
 
             foreach (string file in httpRequest.Files)
             {
@@ -2089,18 +2169,14 @@ namespace BL
                 var fileExtension   = postedFile.FileName.Split('.').Last();
                 var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-                var filePath    = HttpContext.Current.Server.MapPath(relativePath + fileName);
+                var filePath        = HttpContext.Current.Server.MapPath(relativePath + fileName);
 
                 postedFile.SaveAs(filePath);
 
-                Bitmap iconBM = new Bitmap(filePath);
-
-
-                Bitmap resizedIconBM = ResizeImage(iconBM, 32, 32);
-
-                iconBM.Dispose();
-
-                resizedIconBM.Save(filePath);
+                if (relativePath.Contains("icon") || relativePath.Contains("marker"))
+                {
+                    SaveAsIcon(filePath);
+                }
 
                 fileNames.Add(fileName);
             }

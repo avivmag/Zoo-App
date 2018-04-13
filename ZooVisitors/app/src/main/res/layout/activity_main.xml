@@ -4,49 +4,124 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zoovisitors.pl.MainActivity">
+    android:background="@color/grayNegev"
+    tools:context="com.zoovisitors.pl.MainActivity"
+    tools:layout_editor_absoluteY="56dp">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="558dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:background="@color/grayNegev"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.507">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ScrollView
-            android:id="@+id/feedWall"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="202dp"
-            android:scrollbars="vertical"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_border"
+            android:orientation="vertical">
 
-            >
-
-            <LinearLayout
-                android:id="@+id/feedWallLayout"
+            <ScrollView
+                android:id="@+id/feedWall"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="150dp"
+
+                android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:id="@+id/feedWallLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
 
-            </LinearLayout>
-        </ScrollView>
+                </LinearLayout>
+            </ScrollView>
 
-        <Button
-            android:id="@+id/feedWallButton"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:onClick="onClickWatchAllButton"
-            android:text="@string/watch_all_feed" />
+            <Button
+                android:id="@+id/feedWallButton"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="3dp"
+                android:background="@drawable/button_shape"
+                android:onClick="onClickWatchAllButton"
+                android:text="@string/watch_all_feed" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/otherInfoButton"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape"
+                android:onClick="onClickMapButton"
+                android:text="@string/map" />
+
+             <Button
+                android:id="@+id/enclosureListButton"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="350dp"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape"
+                android:gravity="bottom|center"
+                android:onClick="onClickScheduleButton"
+                android:text="@string/our_enclosures"
+                android:textAllCaps="false" />
+
+           <!-- <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/enclosureListButton"
+                android:layout_width="150dp"
+                android:layout_height="100dp" />
+-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/mapButton"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape"
+                android:onClick="onClickMapButton"
+                android:text="@string/map" />
+
+            <Button
+                android:id="@+id/personalStoriesButton"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape"
+                android:onClick="onClickEnclosuresButton"
+                android:text="@string/schedule" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,74 +130,25 @@
 
             <Button
                 android:id="@+id/scheduleButton"
+                style="@style/ButtonNegevZooStyle"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
+                android:background="@drawable/button_shape"
                 android:onClick="onClickEnclosuresButton"
                 android:text="@string/schedule" />
 
             <Button
-                android:id="@+id/enclosureListButton"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:id="@+id/wazeImg"
+                style="@style/ButtonNegevZooStyle"
+                android:layout_width="350dp"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:onClick="onClickScheduleButton"
-                android:text="@string/our_enclosures" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/personal"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_weight="1"
-                    android:text="@string/personal" />
-
-                <Button
-                    android:id="@+id/otherInfoButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_weight="1"
-                    android:onClick="onClickMoreInfoButton"
-                    android:text="@string/other_info" />
-
-                <Button
-                    style="@style/ButtonNegevZooStyle"
-                    android:id="@+id/mapButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_weight="1"
-                    android:onClick="onClickMapButton"
-                    android:text="@string/map" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/wazeImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:duplicateParentState="false"
-                    app:srcCompat="@mipmap/waze" />
-
-            </LinearLayout>
+                android:background="@drawable/button_shape"
+                android:onClick="onClickMapButton"
+                android:text="@string/map" />
 
         </LinearLayout>
 

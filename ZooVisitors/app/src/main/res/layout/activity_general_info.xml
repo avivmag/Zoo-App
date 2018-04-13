@@ -11,6 +11,7 @@
         android:id="@+id/linear_general_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/grayNegev"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -20,9 +21,10 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/generalInfoTab"
+            style="@style/MyCustomTabLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_green_dark">
+            android:background="@color/brownNegev">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/general_info"
@@ -53,8 +55,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/general_info_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

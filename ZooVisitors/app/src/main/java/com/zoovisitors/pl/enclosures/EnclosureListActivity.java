@@ -9,6 +9,7 @@ import android.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnclosureListActivity extends AppCompatActivity {
-    private BusinessLayer bl;
     private RecyclerView recycleViewEnc;
     private RecyclerView.LayoutManager layoutManagerEnc;
     private RecyclerView.Adapter adapterEnc;
@@ -33,14 +33,12 @@ public class EnclosureListActivity extends AppCompatActivity {
     private Animal[] animals;
     //TODO: Delete this line when we have get images
     private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
-    private AppCompatActivity tempActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure_list);
-        bl = new BusinessLayerImpl(this);
-        bl.getEnclosures(new GetObjectInterface() {
+        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 final Enclosure[] enclosures = (Enclosure[]) response;
@@ -50,13 +48,13 @@ public class EnclosureListActivity extends AppCompatActivity {
 
                 //Adapt the recycle to view the card
                 recycleViewEnc = (RecyclerView) findViewById(R.id.enclosure_recycle);
-                layoutManagerEnc = new LinearLayoutManager(tempActivity);
+                layoutManagerEnc = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                 recycleViewEnc.setLayoutManager(layoutManagerEnc);
-                adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosures);
+                adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
                 recycleViewEnc.setAdapter(adapterEnc);
 
 
-                bl.getAllAnimals(new GetObjectInterface() {
+                GlobalVariables.bl.getAllAnimals(new GetObjectInterface() {
                     @Override
                     public void onSuccess(Object response) {
 
@@ -69,7 +67,7 @@ public class EnclosureListActivity extends AppCompatActivity {
 
                         //Adapt the recycle to view the card
                         recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle_enc_list);
-                        layoutManagerAnim = new LinearLayoutManager(tempActivity);
+                        layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                         recycleViewAnim.setLayoutManager(layoutManagerAnim);
 
                         //adapterAnim = new AnimalsRecyclerAdapter(tempActivity, animalsImages, animals);
@@ -87,7 +85,7 @@ public class EnclosureListActivity extends AppCompatActivity {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
                         if (query.equals("")) {
-                            adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosures);
+                            adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
                             recycleViewEnc.setAdapter(adapterEnc);
                         }
 
@@ -103,7 +101,7 @@ public class EnclosureListActivity extends AppCompatActivity {
                             enclosuresToAdapt[i] = matchedSearchEnclosures.get(i);
                         }
 
-                        adapterEnc = new EnclosureListRecyclerAdapter(tempActivity, enclosuresToAdapt);
+                        adapterEnc = new EnclosureListRecyclerAdapter(enclosuresToAdapt);
                         recycleViewEnc.setAdapter(adapterEnc);
 
                         //Search for animals
@@ -120,7 +118,7 @@ public class EnclosureListActivity extends AppCompatActivity {
                             animalsToAdapt[i] = matchedSearchAnimals.get(i);
                         }
 
-                        adapterAnim = new AnimalsRecyclerAdapter(tempActivity, animalsImages, animalsToAdapt);
+                        adapterAnim = new AnimalsRecyclerAdapter(animalsImages, animalsToAdapt);
                         recycleViewAnim.setAdapter(adapterAnim);
 
 
