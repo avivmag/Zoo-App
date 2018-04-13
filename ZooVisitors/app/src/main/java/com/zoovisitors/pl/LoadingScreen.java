@@ -20,7 +20,7 @@ import com.zoovisitors.R;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-public class LoadingScreen extends AppCompatActivity{
+public class LoadingScreen extends BaseActivity {
     private final int NUMBER_OF_THREAD = 3;
     private boolean endAllThreads = false;
     private CountDownLatch doneSignal;

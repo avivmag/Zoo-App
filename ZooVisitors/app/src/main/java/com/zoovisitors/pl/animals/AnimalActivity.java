@@ -8,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Species;
+import com.zoovisitors.pl.BaseActivity;
 
-public class AnimalActivity extends AppCompatActivity {
+public class AnimalActivity extends BaseActivity {
 
     private Animal animal;
     private Bundle clickedAnimal;

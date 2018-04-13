@@ -17,17 +17,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 
 import com.zoovisitors.R;
+import com.zoovisitors.pl.BaseActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public abstract class ProviderBasedActivity extends Activity {
+public abstract class ProviderBasedActivity extends BaseActivity {
     public static final int PERMISSION_REQUEST_GPS = 310;
     private LocationManager lm;
     private LocationListener locationListener;
 
     public void startProviderActivity() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        getMinDistance();
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -142,7 +142,6 @@ public abstract class ProviderBasedActivity extends Activity {
     }
 
     public abstract void onLocationChanged(Location location);
-    //    void onStatusChanged(String provider, int status, Bundle extras);
     public abstract void onProviderEnabled();
     public abstract void onProviderDisabled();
     public abstract int getMinTime();
