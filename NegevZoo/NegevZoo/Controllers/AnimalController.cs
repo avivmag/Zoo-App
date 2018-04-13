@@ -63,6 +63,78 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets animal by its Id, in the given language.
+        /// </summary>
+        /// <param name="id">The animal's Id.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>The animal with the Id with that language.</returns>
+        [HttpGet]
+        [Route("animals/animalId/{animalId}/{language}")]
+        public AnimalResult GetAnimalById(int animalId, int language)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalById(animalId, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+        
+        /// <summary>
+        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
+        /// </summary>
+        /// <param name="encId">The enclosure animalId.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>The animals that are in the enclosure.</returns>
+        [HttpGet]
+        [Route("animals/enclosure/{encId}/{language}")]
+        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(int encId, int language)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalsByEnclosure(encId, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets animal by its name, in the given language.
+        /// </summary>
+        /// <param name="name">The animal's name.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>The animal with the Id with that language.</returns>
+        [HttpGet]
+        [Route("animals/name/{name}/{language}")]
+        public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalByName(name, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -108,78 +180,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-        /// <summary>
-        /// Gets animal by its Id, in the given language.
-        /// </summary>
-        /// <param name="id">The animal's Id.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The animal with the Id with that language.</returns>
-        [HttpGet]
-        [Route("animals/animalId/{animalId}/{language}")]
-        public AnimalResult GetAnimalById(int animalId, int language)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalById(animalId, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets animal by its name, in the given language.
-        /// </summary>
-        /// <param name="name">The animal's name.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The animal with the Id with that language.</returns>
-        [HttpGet]
-        [Route("animals/name/{name}/{language}")]
-        public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalByName(name, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
-        /// </summary>
-        /// <param name="encId">The enclosure animalId.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The animals that are in the enclosure.</returns>
-        [HttpGet]
-        [Route("animals/enclosure/{encId}/{language}")]
-        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(int encId, int language)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalsByEnclosure(encId, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
+        
         #endregion
 
         #region Setters
@@ -272,7 +273,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/animals/" + path);
+                    db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/');
                     return Ok();
                 }
             }
