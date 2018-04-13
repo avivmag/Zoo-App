@@ -1374,7 +1374,7 @@ namespace BL
         /// Adds or update the SpecialEvents element.
         /// </summary>
         /// <param name="specialEvent">The SpecialEvent element to add or update.</param>
-        public void UpdateSpecialEvent(SpecialEvent specialEvent)
+        public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             //validate SpecialEvent attributs
             //0. Exists
@@ -1395,12 +1395,24 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
+            //3. check the title
+            if (String.IsNullOrWhiteSpace(specialEvent.title))
+            {
+                throw new ArgumentException("Wrong input. The title is null or white space");
+            }
+
+            //4. check the description
+            if (String.IsNullOrWhiteSpace(specialEvent.description))
+            {
+                throw new ArgumentException("Wrong input. The description is null or white space");
+            }
+
             var specialEvents = zooDB.GetAllSpecialEvents();
 
             if (specialEvent.id == default(int)) //add a new special event
             {
-                //check that the description doesn't exists.
-                if (specialEvents.Any(sp => sp.description == specialEvent.description))
+                //check that the description and title doesn't exists together.
+                if (specialEvents.Any(se => se.description == specialEvent.description && se.title == specialEvent.title))
                 {
                     throw new ArgumentException("Wrong input while adding a SpecialEvent. The SpecialEvent description already exists");
                 }
@@ -1417,18 +1429,24 @@ namespace BL
                     throw new ArgumentException("Wrong input. The SpecialEvent's id doesn't exists");
                 }
 
-                //check that if the description changed than it doesn't already exists
-                if (oldEvent.description != specialEvent.description && specialEvents.Any(se => se.description == specialEvent.description))
+                //check that if the description or title changed than they doesn't already exists together
+                if ((oldEvent.description != specialEvent.description || oldEvent.title != specialEvent.title) && specialEvents.Any(se => se.description == specialEvent.description && se.title == specialEvent.title))
                 {
                     throw new ArgumentException("Wrong input While updating SpecialEvent. The SpecialEvent descroption already exists.");
                 }
 
-                oldEvent.language = specialEvent.language;
-                oldEvent.startDate = specialEvent.startDate;
-                oldEvent.endDate = specialEvent.endDate;
-                oldEvent.imageUrl = specialEvent.imageUrl;
+                oldEvent.description    = specialEvent.description;
+                oldEvent.title          = specialEvent.title;
+                oldEvent.startDate      = specialEvent.startDate;
+                oldEvent.endDate        = specialEvent.endDate;
+                oldEvent.imageUrl       = specialEvent.imageUrl;
+                oldEvent.language       = specialEvent.language;
             }
             
+            if (isPush)
+            {
+                SendNotificationsAllDevices(specialEvent.title, specialEvent.description);
+            }
         }
 
         /// <summary>
@@ -1478,14 +1496,14 @@ namespace BL
                 throw new ArgumentException("No wall feed was given");
             }
 
-            ////1. valid creation date
-            //if (DateTime.Compare(DateTime.Today, feed.Created) < 0)
-            //{
-            //    throw new ArgumentException("Wrong input. The creation date can't be later than today.");
-            //}
+            //1. check the title
+            if (String.IsNullOrWhiteSpace(feed.title))
+            {
+                throw new ArgumentException("Wrong input. The title is null or white space");
+            }
 
             //2. check the info
-            if (String.IsNullOrWhiteSpace(feed.info) || String.IsNullOrEmpty(feed.info))
+            if (String.IsNullOrWhiteSpace(feed.info))
             {
                 throw new ArgumentException("Wrong input. The info is null or white space");
             }
@@ -1500,10 +1518,10 @@ namespace BL
 
             if (feed.id == default(int)) //add new feed wall
             {
-                //check that the info doesn't exists
-                if (wallFeeds.Any(wf => wf.info == feed.info))
+                //check that the info and title doesn't exists together
+                if (wallFeeds.Any(wf => wf.info == feed.info && wf.title == feed.title))
                 {
-                    throw new ArgumentException("Wrong input while adding WallFeed. The WallFeed info is already exists.");
+                    throw new ArgumentException("Wrong input while adding WallFeed. The WallFeed info and title are already exists.");
                 }
 
                 wallFeeds.Add(feed);
@@ -1518,21 +1536,21 @@ namespace BL
                     throw new ArgumentException("Wrong input. The WallFeed's id doesn't exists");
                 }
 
-                //check that if the info changed than it doesn't already exits
-                if (oldFeed.info != feed.info && wallFeeds.Any(wf => wf.info == feed.info))
+                //check that if the info ot title changed than they doesn't already exits together
+                if ((oldFeed.info != feed.info || oldFeed.title != feed.title) && wallFeeds.Any(wf => wf.info == feed.info && wf.title == feed.title))
                 {
-                    throw new ArgumentException("Wrong input while updating WallFeed. The WallFeed Info already exists");
+                    throw new ArgumentException("Wrong input while updating WallFeed. The WallFeed Info and title are already exists");
                 }
 
                 oldFeed.language = feed.language;
+                oldFeed.title = feed.title;
                 oldFeed.info = feed.info;
                 oldFeed.created = feed.created;
             }
 
             if (isPush)
             {
-                //TODO: change the title
-                SendNotificationsAllDevices("New Wall Feed!", feed.info);
+                SendNotificationsAllDevices(feed.title, feed.info);
             }
         }
 
@@ -1742,10 +1760,10 @@ namespace BL
                 return false;
             }
 
-            //if (VerifyMd5Hash(password + user.salt, user.password))
-            //{
-            //    return true;
-            //}
+            if (VerifyMd5Hash(password + user.salt, user.password))
+            {
+                return true;
+            }
 
             return false;
         }
@@ -1805,8 +1823,8 @@ namespace BL
                     throw new ArgumentException("Wrong input while adding a User. Name already exists");
                 }
 
-                //userWorker.salt = GenerateSalt();
-                
+                userWorker.salt = GenerateSalt();
+
                 users.Add(userWorker);
             }
             else //update a user
@@ -1826,7 +1844,7 @@ namespace BL
 
                 oldUser.name = userWorker.name;
                 oldUser.password = userWorker.password;
-                //userWorker.salt = GenerateSalt();
+                userWorker.salt = GenerateSalt();
                 oldUser.isAdmin = userWorker.isAdmin;
             }
         }

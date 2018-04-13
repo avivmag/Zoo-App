@@ -136,6 +136,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="description" Type="tinytext" />
           <Property Name="day" Type="uint" Nullable="false" />
           <Property Name="enclosureId" Type="int" Nullable="false" />
@@ -158,6 +159,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="description" Type="tinytext" Nullable="false" />
           <Property Name="startDate" Type="date" Nullable="false" />
           <Property Name="endDate" Type="date" Nullable="false" />
@@ -171,6 +173,7 @@
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="salt" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="isAdmin" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="wallfeeds">
@@ -179,6 +182,7 @@
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="created" Type="date" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="info" Type="text" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
         </EntityType>
@@ -317,6 +321,7 @@
           <Property Name="language" Type="Int64" Nullable="false" />
           <Property Name="startTime" Type="Time" Nullable="false" />
           <Property Name="endTime" Type="Time" Nullable="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Route">
           <Key>
@@ -338,6 +343,7 @@
           <Property Name="endDate" Type="DateTime" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
           <Property Name="imageUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -347,6 +353,7 @@
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="isAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="salt" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="WallFeed">
           <Key>
@@ -356,6 +363,7 @@
           <Property Name="created" Type="DateTime" Nullable="false" />
           <Property Name="info" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="YoutubeVideoUrl">
           <Key>
@@ -531,6 +539,7 @@
           <EntitySetMapping Name="RecurringEvents">
             <EntityTypeMapping TypeName="NegevZooModel.RecurringEvent">
               <MappingFragment StoreEntitySet="recurringevents">
+                <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="endTime" ColumnName="endTime" />
                 <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -555,6 +564,7 @@
           <EntitySetMapping Name="SpecialEvents">
             <EntityTypeMapping TypeName="NegevZooModel.SpecialEvent">
               <MappingFragment StoreEntitySet="specialevents">
+                <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="startDate" ColumnName="startDate" />
@@ -567,6 +577,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="NegevZooModel.User">
               <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="salt" ColumnName="salt" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="password" ColumnName="password" />
@@ -577,6 +588,7 @@
           <EntitySetMapping Name="WallFeeds">
             <EntityTypeMapping TypeName="NegevZooModel.WallFeed">
               <MappingFragment StoreEntitySet="wallfeeds">
+                <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="created" ColumnName="created" />
                 <ScalarProperty Name="info" ColumnName="info" />
