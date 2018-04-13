@@ -457,260 +457,263 @@ namespace DAL
                     new WallFeed
                     {
                         id          = 1,
-                        info        = "Purim Events",
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                         
                     },
 
                     new WallFeed
                     {
                         id          = 2,
-                        info        = "אירועי פורים",
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 3,
-                        info        = "Passeover Events",
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
 
                         id          = 4,
-                        info        = "אירועי פסח",
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 5,
-                        info        = "Shavuut Events",
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 6,
-                        info        = "אירועי שבועות",
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 7,
-                        info        = "Sukut Events",
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 8,
-                        info        = "אירועי סוכות",
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 9,
-                        info        = "Purim Events",
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
 
                     },
 
                     new WallFeed
                     {
                         id          = 10,
-                        info        = "אירועי פורים",
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 11,
-                        info        = "Passeover Events",
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
+
                         id          = 12,
-                        info        = "אירועי פסח",
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 13,
-                        info        = "Shavuut Events",
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 14,
-                        info        = "אירועי שבועות",
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 15,
-                        info        = "Sukut Events",
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 16,
-                        info        = "אירועי סוכות",
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 17,
-                        info        = "Purim Events",
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
 
                     },
 
                     new WallFeed
                     {
                         id          = 18,
-                        info        = "אירועי פורים",
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 19,
-                        info        = "Passeover Events",
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
+
                         id          = 20,
-                        info        = "אירועי פסח",
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 21,
-                        info        = "Shavuut Events",
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 22,
-                        info        = "אירועי שבועות",
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 23,
-                        info        = "Sukut Events",
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 24,
-                        info        = "אירועי סוכות",
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
                     new WallFeed
                     {
                         id          = 25,
-                        info        = "Purim Events",
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
 
                     },
 
                     new WallFeed
                     {
                         id          = 26,
-                        info        = "אירועי פורים",
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 27,
-                        info        = "Passeover Events",
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
+
                         id          = 28,
-                        info        = "אירועי פסח",
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 29,
-                        info        = "Shavuut Events",
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 30,
-                        info        = "אירועי שבועות",
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 31,
-                        info        = "Sukut Events",
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
                         language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
                     },
 
                     new WallFeed
                     {
                         id          = 32,
-                        info        = "אירועי סוכות",
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
                         language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    }
+                    },
                 };
         }
 
@@ -841,6 +844,7 @@ namespace DAL
                 new SpecialEvent
                 {
                     id                      = 1,
+                    title                   = "כותרת1",
                     description             = "1קקי",
                     startDate               = new DateTime(2018,3,5),
                     endDate                 = new DateTime(2018,3,8),
@@ -849,6 +853,7 @@ namespace DAL
                 new SpecialEvent
                 {
                     id                      = 2,
+                    title                   = "title1",
                     description             = "Kaki1",
                     startDate               = new DateTime(2018,3,5),
                     endDate                 = new DateTime(2018,3,8),
@@ -857,7 +862,8 @@ namespace DAL
                 new SpecialEvent
                 {
                     id                      = 3,
-                    description             = "אירועי פורים",
+                    title                   = "אירועי פורים",
+                    description             = "ישנם אירועים רבים ומגוונים",
                     startDate               = new DateTime(2018,3,1),
                     endDate                 = new DateTime(2018,3,8),
                     language                = (int) DAL.Languages.he
@@ -865,7 +871,8 @@ namespace DAL
                 new SpecialEvent
                 {
                     id                      = 4,
-                    description             = "Purim Events",
+                    title                   = "Purim Events",
+                    description             = "There are many kinds of events",
                     startDate               = new DateTime(2018,3,1),
                     endDate                 = new DateTime(2018,3,8),
                     language                = (int) DAL.Languages.en

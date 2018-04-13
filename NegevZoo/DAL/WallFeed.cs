@@ -18,5 +18,6 @@ namespace DAL
         public System.DateTime created { get; set; }
         public string info { get; set; }
         public long language { get; set; }
+        public string title { get; set; }
     }
 }

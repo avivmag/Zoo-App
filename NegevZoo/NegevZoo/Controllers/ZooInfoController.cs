@@ -320,14 +320,14 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="specialEvent">The element to add or update</param>
         [HttpPost]
-        [Route("SpecialEvents/update")]
-        public void UpdateSpecialEvent(SpecialEvent specialEvent)
+        [Route("SpecialEvents/update/{specialEvent}/{isPush}")]
+        public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateSpecialEvent(specialEvent);
+                    db.UpdateSpecialEvent(specialEvent, isPush);
                 }
 
             }

@@ -9,20 +9,20 @@
         <EntityTypeShape EntityType="NegevZooModel.ContactInfo" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.EnclosurePicture" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.Enclosure" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.GeneralInfo" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.GeneralInfo" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.Language" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.MiscMarker" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.MiscMarker" Width="1.5" PointX="0.875" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.OpeningHour" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.Price" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.RecommendedRoute" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.RecurringEvent" Width="1.5" PointX="6.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.Price" Width="1.5" PointX="2.625" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.RecommendedRoute" Width="1.5" PointX="4.75" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.RecurringEvent" Width="1.5" PointX="6.75" PointY="6.125" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.Route" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.SpecialEvent" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.User" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.WallFeed" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.User" Width="1.5" PointX="8.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="NegevZooModel.WallFeed" Width="1.5" PointX="10.75" PointY="6.25" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.YoutubeVideoUrl" Width="1.5" PointX="11" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NegevZooModel.AnimalDetail" Width="1.5" PointX="0.75" PointY="10.75" />
-        <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.75" PointY="10.75" />
+        <EntityTypeShape EntityType="NegevZooModel.AnimalDetail" Width="1.5" PointX="0.5" PointY="6" />
+        <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.625" PointY="7.875" />
         <EntityTypeShape EntityType="NegevZooModel.Device" Width="1.5" PointX="11.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
