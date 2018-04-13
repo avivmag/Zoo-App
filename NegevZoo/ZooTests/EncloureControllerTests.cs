@@ -896,6 +896,35 @@ namespace ZooTests
         }
 
         [TestMethod]
+        public void UpdateRecurringEventAddRecEventCloseTimeValidInput()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 17,
+                description = "Looking",
+                startTime = new TimeSpan(10, 00, 00),
+                endTime = new TimeSpan(10, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+
+            events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(3, events.Count());
+            Assert.IsNotNull(events.SingleOrDefault(re => re.description == "Looking"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateRecurringEventEmptyDesc()
         {
@@ -925,9 +954,305 @@ namespace ZooTests
             Assert.IsNotNull(events.SingleOrDefault(re => re.description == "Looking"));
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongEnclosure()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = -2,
+                day = 12,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWronEnclosure()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = -2,
+                day = 12,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongDay()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 8,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongDayAccordingToLanguage()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 2,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = (int)Languages.en
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongTime()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 12,
+                description = "Looking",
+                endTime = new TimeSpan(10, 30, 00),
+                startTime = new TimeSpan(11, 30, 00),
+                language = 2
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongTimeEndEqualsStart()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 12,
+                description = "Looking",
+                endTime = new TimeSpan(11, 30, 00),
+                startTime = new TimeSpan(11, 30, 00),
+                language = 2
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventWrongLanguage()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 12,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = -1
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventAddEventTimeExists()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = default(int),
+                enclosureId = 2,
+                day = 17,
+                description = "Looking",
+                startTime = new TimeSpan(10, 30, 00),
+                endTime = new TimeSpan(11, 30, 00),
+                language = 2
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        public void UpdateRecurringEventUpdateRecEventValidInput()
+        {
+            var events = enclosureController.GetRecurringEvents(1);
+            Assert.AreEqual(1, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(1, recEvent.id);
+            Assert.AreEqual(1, recEvent.day);
+            Assert.AreEqual("האכלה", recEvent.description);
+            
+            var newRecEvent = new RecurringEvent
+            {
+                id = 6,
+                enclosureId = 2,
+                day = 17,
+                description = "Feeding",
+                startTime = new TimeSpan(10, 30, 0),
+                endTime = new TimeSpan(11, 0, 0),
+                language = (int) Languages.en
+            };
+
+            newRecEvent.description = "kaki";
+            newRecEvent.day = 16;
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+
+            events = enclosureController.GetRecurringEvents(2,2);
+            Assert.AreEqual(2, events.Count());
+            Assert.IsNotNull(events.SingleOrDefault(re => re.description == "kaki"));
+            Assert.IsNotNull(events.SingleOrDefault(re => re.day == 16));
+            Assert.IsNull(events.SingleOrDefault(re => re.day == 17));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventUpdateEventDoesntExists()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = -1,
+                enclosureId = 1,
+                day = 1,
+                description = "האכלה",
+                startTime = new TimeSpan(10, 30, 0),
+                endTime = new TimeSpan(11, 0, 0),
+                language = (int)Languages.he
+            };
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateRecurringEventUpdateTimeExists()
+        {
+            var events = enclosureController.GetRecurringEvents(2, 2);
+            Assert.AreEqual(2, events.Count());
+
+            var recEvent = events.First();
+            Assert.AreEqual(4, recEvent.id);
+            Assert.AreEqual(11, recEvent.day);
+            Assert.AreEqual("Playing", recEvent.description);
+
+            var newRecEvent = new RecurringEvent
+            {
+                id = 6,
+                enclosureId = 2,
+                day = 17,
+                description = "Feeding",
+                startTime = new TimeSpan(10, 30, 0),
+                endTime = new TimeSpan(11, 0, 0),
+                language = (int)Languages.en
+            };
+
+            newRecEvent.day = 11;
+            newRecEvent.startTime = new TimeSpan(13, 15, 0);
+            newRecEvent.endTime = new TimeSpan(13, 45, 0);
+
+            enclosureController.UpdateRecurringEvent(newRecEvent);
+        }
+
         #endregion
-
-
 
         #region DeleteEnclosure
 
@@ -1066,7 +1391,6 @@ namespace ZooTests
         }
 
         #endregion
-
 
         #region DeleteRecurringEvent
         [TestMethod]

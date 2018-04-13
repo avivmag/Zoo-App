@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.pl.animals.AnimalActivity;
@@ -25,14 +26,10 @@ import java.util.List;
 public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
 
     private String[] animalsImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    //private String[] animalsNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-
-    private AppCompatActivity tempActivity;
     private int[] images;
     private Animal[] animals;
 
-    public AnimalsRecyclerAdapter(AppCompatActivity appCompatActivity, String[] animalsImages, Animal[] animals){
-        this.tempActivity = appCompatActivity;
+    public AnimalsRecyclerAdapter(String[] animalsImages, Animal[] animals){
         this.animalsImages = animalsImages;
         this.animals = animals;
     }
@@ -46,8 +43,7 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
             super(itemView);
             List<Integer> imagesList = new ArrayList<Integer>();
             for (String image : animalsImages) {
-//                AppCompatActivity tempActivity = new AppCompatActivity();
-                imagesList.add(tempActivity.getResources().getIdentifier(image, "mipmap", tempActivity.getPackageName()));
+                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
             }
 
             int[] ret = new int[imagesList.size()];
@@ -65,14 +61,14 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-                    Intent intent = new Intent(tempActivity, AnimalActivity.class);
+                    Intent intent = new Intent(GlobalVariables.appCompatActivity, AnimalActivity.class);
                     Bundle clickedAnimal = new Bundle();
                     clickedAnimal.putInt("image", images[pos]); //Clicked image
                     clickedAnimal.putString("name", animals[pos].getName());
                     clickedAnimal.putSerializable("animal", animals[pos]);
 
                     intent.putExtras(clickedAnimal);
-                    tempActivity.startActivity(intent);
+                    GlobalVariables.appCompatActivity.startActivity(intent);
                 }
             });
         }

@@ -31,6 +31,7 @@ import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
+import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
 import java.util.HashMap;
@@ -153,6 +154,15 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent otherInfoIntent = new Intent(MainActivity.this, ScheduleActivity.class);
+                startActivity(otherInfoIntent);
+            }
+        });
+
+        //Personal stories button
+        findViewById(R.id.personalStoriesButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherInfoIntent = new Intent(MainActivity.this, PersonalStoriesActivity.class);
                 startActivity(otherInfoIntent);
             }
         });

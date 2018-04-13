@@ -32,11 +32,11 @@ public abstract class GpsService2 extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (isInPark()) {
+//                if (isInPark()) {
                     // TODO: send in park
-                } else {
+//                } else {
                     // TODO: send not in park
-                }
+//                }
             }
 
             @Override
@@ -133,6 +133,8 @@ public abstract class GpsService2 extends Service {
     }
 
     public boolean isInPark(Location location) {
-        return Memory.getMinX()
+        // TODO:
+        return true;
+//        return Memory.getMinX()
     }
 }

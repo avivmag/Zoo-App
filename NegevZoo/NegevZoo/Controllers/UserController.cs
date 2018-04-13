@@ -27,10 +27,35 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
+        /// <summary>
+        /// Connect a worker user to the system.
+        /// </summary>
+        /// <param name="userName">The wanted user name</param>
+        /// <param name="password">The user's password</param>
+        /// <returns>a boolean that indicates if the proccess succeded.</returns>
+        [HttpGet]
+        [Route("users/login/{userName}/{password}")]
+        public bool Login(string userName, string password)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.Login(userName, password);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
 
         /// <summary>
         /// Gets User by user name and password.
@@ -51,7 +76,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -73,7 +98,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -93,9 +118,9 @@ namespace NegevZoo.Controllers
                     db.DeleteUser(UserId);
                 }
             }
-            catch
+            catch (Exception Exp)
             {
-                //TODO: add log
+                Logger.GetInstance().WriteLine(Exp.Message);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

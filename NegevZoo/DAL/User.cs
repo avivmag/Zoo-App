@@ -18,5 +18,6 @@ namespace DAL
         public string name { get; set; }
         public string password { get; set; }
         public bool isAdmin { get; set; }
+        public string salt { get; set; }
     }
 }

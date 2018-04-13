@@ -5,7 +5,7 @@
         <item name="android:windowFullscreen">true</item>
         <!-- Customize your theme here. -->
         <!-- <item name="colorPrimary">@color/colorPrimary</item> -->
-        <item name="colorPrimary">#ff7000</item>
+        <item name="colorPrimary">@color/brownNegev</item>
         <!-- <item name="colorPrimaryDark">@color/colorPrimaryDark</item> -->
         <!-- <item name="colorPrimaryDark">#ffffff</item> -->
         <item name="colorAccent">@color/colorAccent</item>
@@ -21,9 +21,18 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ButtonNegevZooStyle">
-        <item name="android:background">#ff7000</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MyCustomTabText</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+    </style>
+
+    <style name="MyCustomTabText" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 </resources>

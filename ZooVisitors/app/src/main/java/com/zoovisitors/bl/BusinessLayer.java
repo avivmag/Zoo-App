@@ -6,7 +6,6 @@ package com.zoovisitors.bl;
 
 public interface BusinessLayer {
 
-
     void getAnimals(int pos, final GetObjectInterface goi);
     void getAllAnimals(final GetObjectInterface goi);
     void getEnclosures(final GetObjectInterface goi);
@@ -18,6 +17,7 @@ public interface BusinessLayer {
     void getOpeningHours(final GetObjectInterface goi);
     void getAboutUs(final GetObjectInterface goi);
     void getContactInfo(final GetObjectInterface goi);
+    void getPersonalStories(final GetObjectInterface goi);
 
     //notification
     void sendDeviceId();

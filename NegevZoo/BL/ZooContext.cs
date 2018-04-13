@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -35,7 +37,7 @@ namespace BL
                 throw new Exception("Could not connect to the database");
             }
         }
-        
+
         public ZooContext(IZooDB db)
         {
             zooDB = db;
@@ -74,7 +76,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -181,11 +183,6 @@ namespace BL
         /// <returns>The enclosure details in all the languages.</returns>
         public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
         {
-            //if (!GetAllEnclosures().Any(e => e.id == encId))
-            //{
-            //    throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
-            //}
-
             return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
         }
 
@@ -243,7 +240,22 @@ namespace BL
 
             return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
         }
-        
+
+        /// <summary>
+        /// Gets the recurring events.
+        /// </summary>
+        /// <param name="language">The RecurringEvent's data language.</param>
+        /// <returns>The RecurringEvents.</returns>
+        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
+        {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            return zooDB.GetAllRecuringEvents().Where(gr => gr.language == language);
+        }
+
         /// <summary>
         /// Updates The enclosure.
         /// </summary>
@@ -467,8 +479,7 @@ namespace BL
                 oldVideo.enclosureId = enclosureVideo.enclosureId;
             }
         }
-
-
+        
         /// <summary>
         /// Adds or updates a recurring event element.
         /// </summary>
@@ -534,8 +545,7 @@ namespace BL
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
 
-                if ((oldRecEvent.startTime != recEvent.startTime || oldRecEvent.endTime != recEvent.endTime) &&
-                     allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
@@ -548,7 +558,6 @@ namespace BL
             }
             
         }
-
 
         /// <summary>
         /// Delete The enclosure.
@@ -615,10 +624,7 @@ namespace BL
 
             zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
         }
-
-
-
-
+        
         /// <summary>
         /// Delete The recurringEvent.
         /// </summary>
@@ -634,21 +640,7 @@ namespace BL
 
             zooDB.GetAllRecuringEvents().Remove(recEvent);
         }
-
-        /// <summary>
-        /// Gets the recurring events.
-        /// </summary>
-        /// <param name="language">The RecurringEvent's data language.</param>
-        /// <returns>The RecurringEvents.</returns>
-        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language)
-        {
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            return zooDB.GetAllRecuringEvents().Where(gr => gr.language == language);
-        }
+        
         #endregion
 
         #region Animals
@@ -1382,7 +1374,7 @@ namespace BL
         /// Adds or update the SpecialEvents element.
         /// </summary>
         /// <param name="specialEvent">The SpecialEvent element to add or update.</param>
-        public void UpdateSpecialEvent(SpecialEvent specialEvent)
+        public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             //validate SpecialEvent attributs
             //0. Exists
@@ -1403,12 +1395,24 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
+            //3. check the title
+            if (String.IsNullOrWhiteSpace(specialEvent.title))
+            {
+                throw new ArgumentException("Wrong input. The title is null or white space");
+            }
+
+            //4. check the description
+            if (String.IsNullOrWhiteSpace(specialEvent.description))
+            {
+                throw new ArgumentException("Wrong input. The description is null or white space");
+            }
+
             var specialEvents = zooDB.GetAllSpecialEvents();
 
             if (specialEvent.id == default(int)) //add a new special event
             {
-                //check that the description doesn't exists.
-                if (specialEvents.Any(sp => sp.description == specialEvent.description))
+                //check that the description and title doesn't exists together.
+                if (specialEvents.Any(se => se.description == specialEvent.description && se.title == specialEvent.title))
                 {
                     throw new ArgumentException("Wrong input while adding a SpecialEvent. The SpecialEvent description already exists");
                 }
@@ -1425,18 +1429,24 @@ namespace BL
                     throw new ArgumentException("Wrong input. The SpecialEvent's id doesn't exists");
                 }
 
-                //check that if the description changed than it doesn't already exists
-                if (oldEvent.description != specialEvent.description && specialEvents.Any(se => se.description == specialEvent.description))
+                //check that if the description or title changed than they doesn't already exists together
+                if ((oldEvent.description != specialEvent.description || oldEvent.title != specialEvent.title) && specialEvents.Any(se => se.description == specialEvent.description && se.title == specialEvent.title))
                 {
                     throw new ArgumentException("Wrong input While updating SpecialEvent. The SpecialEvent descroption already exists.");
                 }
 
-                oldEvent.language = specialEvent.language;
-                oldEvent.startDate = specialEvent.startDate;
-                oldEvent.endDate = specialEvent.endDate;
-                oldEvent.imageUrl = specialEvent.imageUrl;
+                oldEvent.description    = specialEvent.description;
+                oldEvent.title          = specialEvent.title;
+                oldEvent.startDate      = specialEvent.startDate;
+                oldEvent.endDate        = specialEvent.endDate;
+                oldEvent.imageUrl       = specialEvent.imageUrl;
+                oldEvent.language       = specialEvent.language;
             }
             
+            if (isPush)
+            {
+                SendNotificationsAllDevices(specialEvent.title, specialEvent.description);
+            }
         }
 
         /// <summary>
@@ -1486,14 +1496,14 @@ namespace BL
                 throw new ArgumentException("No wall feed was given");
             }
 
-            ////1. valid creation date
-            //if (DateTime.Compare(DateTime.Today, feed.Created) < 0)
-            //{
-            //    throw new ArgumentException("Wrong input. The creation date can't be later than today.");
-            //}
+            //1. check the title
+            if (String.IsNullOrWhiteSpace(feed.title))
+            {
+                throw new ArgumentException("Wrong input. The title is null or white space");
+            }
 
             //2. check the info
-            if (String.IsNullOrWhiteSpace(feed.info) || String.IsNullOrEmpty(feed.info))
+            if (String.IsNullOrWhiteSpace(feed.info))
             {
                 throw new ArgumentException("Wrong input. The info is null or white space");
             }
@@ -1508,10 +1518,10 @@ namespace BL
 
             if (feed.id == default(int)) //add new feed wall
             {
-                //check that the info doesn't exists
-                if (wallFeeds.Any(wf => wf.info == feed.info))
+                //check that the info and title doesn't exists together
+                if (wallFeeds.Any(wf => wf.info == feed.info && wf.title == feed.title))
                 {
-                    throw new ArgumentException("Wrong input while adding WallFeed. The WallFeed info is already exists.");
+                    throw new ArgumentException("Wrong input while adding WallFeed. The WallFeed info and title are already exists.");
                 }
 
                 wallFeeds.Add(feed);
@@ -1526,21 +1536,21 @@ namespace BL
                     throw new ArgumentException("Wrong input. The WallFeed's id doesn't exists");
                 }
 
-                //check that if the info changed than it doesn't already exits
-                if (oldFeed.info != feed.info && wallFeeds.Any(wf => wf.info == feed.info))
+                //check that if the info ot title changed than they doesn't already exits together
+                if ((oldFeed.info != feed.info || oldFeed.title != feed.title) && wallFeeds.Any(wf => wf.info == feed.info && wf.title == feed.title))
                 {
-                    throw new ArgumentException("Wrong input while updating WallFeed. The WallFeed Info already exists");
+                    throw new ArgumentException("Wrong input while updating WallFeed. The WallFeed Info and title are already exists");
                 }
 
                 oldFeed.language = feed.language;
+                oldFeed.title = feed.title;
                 oldFeed.info = feed.info;
                 oldFeed.created = feed.created;
             }
 
             if (isPush)
             {
-                //TODO: change the title
-                SendNotificationsAllDevices("New Wall Feed!", feed.info);
+                SendNotificationsAllDevices(feed.title, feed.info);
             }
         }
 
@@ -1717,6 +1727,14 @@ namespace BL
 
         #endregion
 
+        #region Map
+        public MapSettingsResult GetMapSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region Users
         /// <summary>
         /// Gets the users.
@@ -1725,6 +1743,29 @@ namespace BL
         public IEnumerable<User> GetAllUsers()
         {
             return zooDB.GetAllUsers().ToArray();
+        }
+
+        /// <summary>
+        /// Connect a worker user to the system.
+        /// </summary>
+        /// <param name="userName">The wanted user name</param>
+        /// <param name="password">The user's password</param>
+        /// <returns>a boolean that indicates if the proccess succeded.</returns>
+        public bool Login(string userName, string password)
+        {
+            User user = GetAllUsers().SingleOrDefault(u => u.name == userName);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (VerifyMd5Hash(password + user.salt, user.password))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1758,6 +1799,8 @@ namespace BL
                 throw new ArgumentException("No UserWorker given");
             }
 
+            //TODO: Add an authorization test.
+
             // 1. Name
             if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
             {
@@ -1770,8 +1813,6 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            //TODO: add permissions?
-
             var users = zooDB.GetAllUsers();
 
             if (userWorker.id == default(int)) //add a user
@@ -1781,6 +1822,8 @@ namespace BL
                 {
                     throw new ArgumentException("Wrong input while adding a User. Name already exists");
                 }
+
+                userWorker.salt = GenerateSalt();
 
                 users.Add(userWorker);
             }
@@ -1801,6 +1844,7 @@ namespace BL
 
                 oldUser.name = userWorker.name;
                 oldUser.password = userWorker.password;
+                userWorker.salt = GenerateSalt();
                 oldUser.isAdmin = userWorker.isAdmin;
             }
         }
@@ -1984,6 +2028,146 @@ namespace BL
                     (re.endTime.Subtract(recEvent.startTime) > TimeSpan.Zero &&
                     re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
         }
+
+        private Random random = new Random();
+        private String GenerateSalt()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 32).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        bool VerifyMd5Hash(string input, string hash)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Hash the input.
+                string hashOfInput = GetMd5Hash(input);
+
+                // Create a StringComparer an compare the hashes.
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+                if (0 == comparer.Compare(hashOfInput, hash))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        private string GetMd5Hash(string input)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                // Create a new Stringbuilder to collect the bytes
+                // and create a string.
+                StringBuilder sBuilder = new StringBuilder();
+
+                // Loop through each byte of the hashed data 
+                // and format each one as a hexadecimal string.
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+
+                // Return the hexadecimal string.
+                return sBuilder.ToString();
+            }
+        }
+
+        #endregion
+
+        #region Images
+
+        /// <summary>
+        /// Resizes an image.
+        /// </summary>
+        /// <param name="b">The original bitmap.</param>
+        /// <param name="nWidth">new width.</param>
+        /// <param name="nHeight">new height.</param>
+        /// <returns>A resized image.</returns>
+        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
+        {
+            Bitmap result = new Bitmap(nWidth, nHeight);
+
+            using (Graphics g = Graphics.FromImage(result))
+                g.DrawImage(b, 0, 0, nWidth, nHeight);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets the image's orientation field to default value and flips the image correctly.
+        /// </summary>
+        /// <param name="b">The bitmap.</param>
+        private void SetOrientationToDefault(Bitmap b)
+        {
+            // 0x112 Is the orientation property that windows uses to orientate the image.
+            if (Array.IndexOf(b.PropertyIdList, 274) > -1)
+            {
+                var orientation = (int)b.GetPropertyItem(274).Value[0];
+                switch (orientation)
+                {
+                    case 1:
+                        // No rotation required.
+                        break;
+                    case 2:
+                        b.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        break;
+                    case 3:
+                        b.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case 4:
+                        b.RotateFlip(RotateFlipType.Rotate180FlipX);
+                        break;
+                    case 5:
+                        b.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        break;
+                    case 6:
+                        b.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case 7:
+                        b.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        break;
+                    case 8:
+                        b.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                }
+                // This EXIF data is now invalid and should be removed.
+                b.RemovePropertyItem(274);
+            }
+        }
+
+        /// <summary>
+        /// Saves the image as icon.
+        /// </summary>
+        /// <param name="filePath">The file path to save.</param>
+        private void SaveAsIcon(string filePath)
+        {
+            // Get the image from file.
+            var image = new Bitmap(filePath);
+
+            // Sets the image orientation to default value.
+            SetOrientationToDefault(image);
+
+            // Resize the image.
+            var resizedImage = ResizeImage(image, 48, 48);
+
+            // Dispose the original image file desc.
+            image.Dispose();
+
+            // Save the new resized image.
+            resizedImage.Save(filePath);
+
+            // Dispose the resized image file desc.
+            resizedImage.Dispose();
+        }
+        
         #endregion
 
         /// <summary>
@@ -1991,20 +2175,26 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
-        public void ImagesUpload(HttpRequest httpRequest, string relativePath)
+        /// <returns>An array of the uploaded images path.</returns>
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
         {
-            var fileNames = new List<String>();
+            var fileNames           = new List<String>();
 
             foreach (string file in httpRequest.Files)
             {
-                var postedFile = httpRequest.Files[file];
+                var postedFile      = httpRequest.Files[file];
 
-                var fileExtension = postedFile.FileName.Split('.').Last();
-                var fileName = Guid.NewGuid() + "." + fileExtension;
+                var fileExtension   = postedFile.FileName.Split('.').Last();
+                var fileName        = Guid.NewGuid() + "." + fileExtension;
 
-                var filePath = HttpContext.Current.Server.MapPath(relativePath + fileName);
+                var filePath        = HttpContext.Current.Server.MapPath(relativePath + fileName);
 
                 postedFile.SaveAs(filePath);
+
+                if (relativePath.Contains("icon") || relativePath.Contains("marker"))
+                {
+                    SaveAsIcon(filePath);
+                }
 
                 fileNames.Add(fileName);
             }
@@ -2013,8 +2203,10 @@ namespace BL
 
             foreach (var fn in fileNames)
             {
-                responseObject.Add(new JValue(relativePath + fn));
+                responseObject.Add(new JValue(relativePath.Substring(2) + fn));
             }
+
+            return responseObject;
         }
 
         public void Dispose()
@@ -2022,4 +2214,4 @@ namespace BL
             zooDB.SaveChanges();
         }
     }
-    }
+}

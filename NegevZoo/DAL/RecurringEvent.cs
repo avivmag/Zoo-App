@@ -21,5 +21,6 @@ namespace DAL
         public long language { get; set; }
         public System.TimeSpan startTime { get; set; }
         public System.TimeSpan endTime { get; set; }
+        public string title { get; set; }
     }
 }

@@ -64,7 +64,7 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = default(int),
-                created = new DateTime(2018, 03, 14),
+                title = "KAKI!!",
                 info = "Another Kaki appears in the zoo",
                 language =(int)Languages.en
             };
@@ -85,8 +85,8 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "Purim Events",
+                title = "Purim Events",
+                info = "Our Purim Events started!",
                 language = (int)Languages.en
             };
 
@@ -103,32 +103,14 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "Purim Events",
+                title = "Purim Events",
+                info = "Our Purim Events started!",
                 language = nonExistantLangauge
             };
 
             ZooInfoController.UpdateWallFeed(feed, false);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedWrongCreationDate()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2019, 03, 05),
-                info = "Purim Events",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
+        
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateWallFeedWrongInfoEmptySpaces()
@@ -139,8 +121,26 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = default(int),
-                created = new DateTime(2018, 03, 05),
+                title = "KAKI!",
                 info = "   ",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongDescriptionEmptySpaces()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "   ",
+                info = "KAKI!",
                 language = (int)Languages.en
             };
 
@@ -157,8 +157,26 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = default(int),
-                created = new DateTime(2018, 03, 05),
+                title = "KAKI!",
                 info = "",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongDescriptionEmpty()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "",
+                info = "KAKI!",
                 language = (int)Languages.en
             };
 
@@ -174,8 +192,8 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = 1,
-                created = new DateTime(2018, 03, 05),
-                info = "Purim is back again!",
+                title = "Purim is back again!",
+                info = "And we are here to take your money!",
                 language = (int)Languages.en
             };
 
@@ -196,8 +214,8 @@ namespace ZooTests
             var feed = new WallFeed
             {
                 id = 1,
-                created = new DateTime(2018, 03, 05),
-                info = "Sukut Events",
+                title = "Sukut Events",
+                info = "Our Sukut Events started!",
                 language = (int)Languages.en
             };
 
@@ -215,7 +233,8 @@ namespace ZooTests
             {
                 id = -4,
                 created = new DateTime(2018, 03, 05),
-                info = "Purim is back again!",
+                title = "Sukut Events",
+                info = "Our Sukut Events started!",
                 language = (int)Languages.en
             };
 
@@ -985,13 +1004,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018,9,1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents((int)Languages.en);
             Assert.AreEqual(3, specialEvents.Count());
@@ -1010,13 +1030,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018, 9, 1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1029,13 +1050,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 endDate = new DateTime(2018, 7, 1),
                 startDate = new DateTime(2018, 9, 1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1048,13 +1070,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018, 9, 1),
                 language = nonExistantLangauge
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1066,6 +1089,7 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
@@ -1075,7 +1099,7 @@ namespace ZooTests
             var oldDescription = eve.description;
             eve.description = "New Event";
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents((int)Languages.en);
             Assert.AreEqual(2, specialEvents.Count());
@@ -1093,15 +1117,17 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
                 language = (int)Languages.en
             };
 
-            eve.description = "Purim Events";
+            eve.title = "Purim Events";
+            eve.description = "There are many kinds of events";
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1114,6 +1140,7 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
@@ -1122,7 +1149,7 @@ namespace ZooTests
 
             eve.id = -3;
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
         #endregion
 
@@ -1133,7 +1160,7 @@ namespace ZooTests
             var specialEvents = ZooInfoController.GetAllSpecialEvents();
             Assert.AreEqual(2, specialEvents.Count());
 
-            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.description == "אירועי פורים");
+            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.title == "אירועי פורים");
 
             ZooInfoController.DeleteSpecialEvent(eve.id);
 
