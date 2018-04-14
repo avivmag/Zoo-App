@@ -69,7 +69,7 @@ namespace ZooTests
                 language =(int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed,false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
 
             feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(17, feeds.Count());
@@ -90,7 +90,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace ZooTests
                 language = nonExistantLangauge
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
         
         [TestMethod]
@@ -126,7 +126,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -144,7 +144,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -162,7 +162,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -180,7 +180,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
 
             feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
             Assert.AreEqual(16, feeds.Count());
@@ -219,7 +219,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
 
         [TestMethod]
@@ -238,7 +238,7 @@ namespace ZooTests
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateWallFeed(feed, false);
+            ZooInfoController.UpdateWallFeed(feed, false, true);
         }
         #endregion
 

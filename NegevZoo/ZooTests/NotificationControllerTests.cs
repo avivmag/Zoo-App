@@ -57,5 +57,36 @@ namespace ZooTests
 
         }
         #endregion
+
+        //[TestMethod]
+        //public void SendRecEventNotification()
+        //{
+        //    var enclosureController = new EnclosureController();
+
+        //    var allRecEvents = enclosureController.GetRecurringEvents(3, 1);
+        //    Assert.AreEqual(0, allRecEvents.Count());
+
+        //    var currentTime = DateTime.Now;
+
+        //    var recEve = new RecurringEvent
+        //    {
+        //        id          = default(int),
+        //        enclosureId = 3,
+        //        day         = (long)currentTime.DayOfWeek,
+        //        startTime   = new TimeSpan(currentTime.Hour,currentTime.Minute-3,currentTime.Second),
+        //        endTime     = new TimeSpan(currentTime.Hour, currentTime.Minute + 10, currentTime.Second),
+        //        title       = "בדיקה",
+        //        description = "קקי",
+        //        language    = (long)Languages.he
+        //    };
+
+        //    enclosureController.UpdateRecurringEvent(recEve);
+
+        //    allRecEvents = enclosureController.GetRecurringEvents(3, 1);
+        //    Assert.AreEqual(1, allRecEvents.Count());
+
+        //    var response = NotificationController.SendNotificationsOnlineRecurringEvents();
+            
+        //}
     }
 }
