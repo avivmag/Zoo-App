@@ -111,5 +111,29 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
+        /// <summary>
+        /// send notification to online devices about RecurringEvents.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        [HttpGet]
+        [Route("notification/online/recurring")]
+        public IHttpActionResult SendNotificationsOnlineRecurringEvents()
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.SendNotificationsOnlineDevicesRecurringEvents();
+                }
+
+                return Ok();
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
     }
 }

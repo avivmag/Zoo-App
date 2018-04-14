@@ -122,7 +122,7 @@ namespace BL
 
             return enclosureResult; 
         }
-
+        
         /// <summary>
         /// Gets the enclosure by it's name.
         /// </summary>
@@ -1487,7 +1487,9 @@ namespace BL
         /// Adds or Updates a feed wall message.
         /// </summary>
         /// <param name="feed">The wallfeed to add or update</param>
-        public void UpdateWallFeed(WallFeed feed, bool isPush)
+        /// <param name="isPush">represents if the feed should be send as push notification</param>
+        /// <param name="isWallFeed">represents if the feed should be added to the wall feed</param>
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1496,19 +1498,25 @@ namespace BL
                 throw new ArgumentException("No wall feed was given");
             }
 
-            //1. check the title
+            //1. check that one of the boolean expressions is true
+            if (!isPush && !isWallFeed)
+            {
+                throw new ArgumentException("The feed should be added to the wall feed or sent as push");
+            }
+
+            //2. check the title
             if (String.IsNullOrWhiteSpace(feed.title))
             {
                 throw new ArgumentException("Wrong input. The title is null or white space");
             }
 
-            //2. check the info
+            //3. check the info
             if (String.IsNullOrWhiteSpace(feed.info))
             {
                 throw new ArgumentException("Wrong input. The info is null or white space");
             }
 
-            //3. check the language
+            //4. check the language
             if (!ValidLanguage((int)feed.language))
             {
                 throw new ArgumentException("Wrong input. Wrong language");
@@ -1516,7 +1524,8 @@ namespace BL
 
             var wallFeeds = zooDB.GetAllWallFeeds();
 
-            if (feed.id == default(int)) //add new feed wall
+
+            if (isWallFeed && feed.id == default(int)) //add new feed wall
             {
                 //check that the info and title doesn't exists together
                 if (wallFeeds.Any(wf => wf.info == feed.info && wf.title == feed.title))
@@ -1931,6 +1940,32 @@ namespace BL
         public void SendNotificationsOnlineDevices(string title, string body)
         {
             Task.Factory.StartNew(() => NotifyAsync(title, body, false));
+        }
+
+        /// <summary>
+        /// send notification to the online devices about recurring events if there are at the moment
+        /// </summary>
+        public void SendNotificationsOnlineDevicesRecurringEvents()
+        {
+            //get all the recurring events in english
+            var allRecEvents = GetAllRecurringEvents(1);
+
+            //get the current time
+            var currentTime = DateTime.Now;
+            
+            foreach(RecurringEvent recEve in allRecEvents)
+            {
+                // get the difference between now and the recEve
+                var timeDif = recEve.startTime.Subtract(new TimeSpan(currentTime.Hour, currentTime.Minute, currentTime.Second));
+                
+                //get the current day of week. add 1 because days start from 0 in c#
+                var curDayOfWeek = (long)currentTime.DayOfWeek + 1;
+
+                if (curDayOfWeek == recEve.day &&  timeDif.Hours == 0 && timeDif.Minutes < 15)
+                {
+                    Task.Factory.StartNew(() => NotifyAsync(recEve.title, recEve.description, false));
+                }
+            }
         }
 
         private async void NotifyAsync(string title, string body, bool toAll)

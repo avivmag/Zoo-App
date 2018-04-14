@@ -360,7 +360,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         [HttpPost]
         [Route("SpecialEvents/upload")]
         public IHttpActionResult SpecialEventsImagesUpload()
@@ -417,16 +417,17 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="feed">The WallFeed to add or update</param>
         /// <param name="isPush">is the feed need to be pushed</param>
+        /// <param name="isWallFeed"> is the feed should be added to the feed wall</param>
         [HttpPost]
-        [Route("Wallfeed/update/{feed}/{isPush}")]
-        public void UpdateWallFeed(WallFeed feed, bool isPush)
+        [Route("Wallfeed/update/{feed}/{isPush}/{isWallFeed}")]
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed, isPush);
+                    db.UpdateWallFeed(feed, isPush, isWallFeed);
                 }
             }
             catch (Exception Exp)
