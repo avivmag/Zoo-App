@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
     private LinearLayout newsFeddLinearLayout;
     private Menu langMenu;
