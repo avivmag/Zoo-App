@@ -14,7 +14,7 @@ namespace DAL
 
         protected Logger()
         {
-            filePath = String.Format(@"logs\{0}.log", DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss"));
+            filePath = String.Format(@"c:\Zoo-Logs\{0}.log", DateTime.Now.ToString("yyyy-MM-dd"));
         }
 
         public static Logger GetInstance()
@@ -44,7 +44,7 @@ namespace DAL
             }
         }
 
-        public void WriteLine(String message/*Actions action, params string[] options*/)
+        public void WriteLine(String message)
         {
             try
             {

@@ -19,7 +19,7 @@ namespace BL
     {
         private IZooDB zooDB;
 
-        public ZooContext(bool isTesting = true, bool newDb = false)
+        public ZooContext(bool isTesting = true)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace BL
                     zooDB = new NegevZooDBEntities();
                 }
             }
-            catch
+            catch (Exception exp)
             {
                 throw new Exception("Could not connect to the database");
             }
@@ -1947,12 +1947,16 @@ namespace BL
         /// </summary>
         public void SendNotificationsOnlineDevicesRecurringEvents()
         {
-            //get all the recurring events in english
+            //get all the recurring events in hebrew
+            //TODO: The notification will be sent only in hebrew at the moment.
+            //      Need to add a method to get all the recurring events.
+            //      But there is a problem with which messeage will be sent to whom
             var allRecEvents = GetAllRecurringEvents(1);
-
+            Console.WriteLine("Package received");
             //get the current time
             var currentTime = DateTime.Now;
-            
+
+            Console.WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
                 // get the difference between now and the recEve
@@ -1961,9 +1965,14 @@ namespace BL
                 //get the current day of week. add 1 because days start from 0 in c#
                 var curDayOfWeek = (long)currentTime.DayOfWeek + 1;
 
-                if (curDayOfWeek == recEve.day &&  timeDif.Hours == 0 && timeDif.Minutes < 15)
+                if (curDayOfWeek == recEve.day &&  timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
+                    Console.WriteLine("Event found" + recEve.title + ", ", recEve.description);
                     Task.Factory.StartNew(() => NotifyAsync(recEve.title, recEve.description, false));
+                }
+                else
+                {
+                    Console.WriteLine("No events found");
                 }
             }
         }
