@@ -3,3 +3,5 @@
 **/.vs/
 NegevZoo/assets/*
 *.config
+WorkersSite/index.local.html
+WorkersSite/app.config.local.js
