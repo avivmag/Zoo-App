@@ -1,6 +1,6 @@
-﻿app.controller('zooEnclosureCtrl', ['$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'fileUpload',
+﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$rootScope', '$mdDialog', 'utilitiesService', 'enclosureService', 'fileUpload',
 
-    function enclosureController($scope, $mdDialog, utilitiesService, enclosureService, fileUpload) {
+    function enclosureController($q, $scope, $rootScope, $mdDialog, utilitiesService, enclosureService, fileUpload) {
         initializeComponent();
         
         $scope.updateEnclosures();
@@ -88,16 +88,33 @@
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
 
-                    enclosureService.enclosures.updateEnclosure(enclosure).then(
-                        function () {
-                            utilitiesService.utilities.alert(successContent);
+                    var pictureUploadQuery  = $scope.uploadPicture($scope.profilePic, enclosure);
 
-                            $scope.updateEnclosures();
+                    var iconUploadQuery     = $scope.uploadIcon($scope.iconPic, enclosure);
+
+                    var uploadPromises      = [pictureUploadQuery, iconUploadQuery];
+
+                    $q.all(uploadPromises).then(
+                        () => {
+                            enclosureService.enclosures.updateEnclosure(enclosure).then(
+                                function () {
+                                    utilitiesService.utilities.alert(successContent);
+                                    
+                                    $scope.page     = 'list';
+        
+                                    $scope.updateEnclosures();
+
+                                },
+                                function () {
+                                    utilitiesService.utilities.alert(failContent);
+        
+                                    $scope.isLoading = false;
+                                });
                         },
-                        function () {
+                        () => {
                             utilitiesService.utilities.alert(failContent);
 
-                            $scope.isLoading = false;
+                            $isLoading = false;
                         });
             };
 
@@ -141,6 +158,10 @@
             }
 
             $scope.uploadPicture        = function (picture, enclosure) {
+                if (!angular.isDefined(picture)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
 
                 var uploadUrl           = 'enclosures/upload/pictures';
@@ -148,16 +169,21 @@
                 var fileUploadQuery     = fileUpload.uploadFileToUrl(picture, uploadUrl).then(
                     (success)   => {
                         enclosure.pictureUrl    = success.data[0];
-                        
-                        $scope.isLoading        = false;
+
+                        $scope.profilePic = null;
                     },
                     ()          => {
                         utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
-                        $scope.isLoading        = false; 
                     });
+
+                return fileUploadQuery;
             };
 
-            $scope.uploadIcon           = function (icon, enclosure) {                
+            $scope.uploadIcon           = function (icon, enclosure) {
+                if (!angular.isDefined(icon)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
 
                 var uploadUrl           = 'enclosures/upload/markers';
@@ -165,13 +191,14 @@
                 var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
                     (success)   => {
                         enclosure.markerIconUrl     = success.data[0];
-                        
-                        $scope.isLoading            = false;
+
+                        $scope.iconPic = null;
                     },
                     ()          => {
                         utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
-                        $scope.isLoading            = false; 
                     });
+
+                return fileUploadQuery;
             };
 
             $scope.addEnclosureVideo    = function(selectedEnclosure, videoUrl) {
@@ -199,18 +226,20 @@
 
         MapDialogController.$Inject = ['mapService'];
 
-        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService) {
+        function MapDialogController($scope, $rootScope, $mdDialog, selectedEnclosure, mapService) {
             $scope.img          = new Image();
 
-            $scope.img.onload = function () {
+            $scope.mapStyle     = { };
+
+            $scope.img.onload   = function () {
                 $scope.originalPicWidth = document.getElementById('pic').width;
                 
-                $scope.mapStyle = {
-                    width:  $scope.img.width + 'px',
-                    height: $scope.img.height + 'px',
-                    cursor: 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto'
-                };
-            }
+                $scope.mapStyle.width   = $scope.img.width + 'px';
+                $scope.mapStyle.height  = $scope.img.height + 'px';
+                $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+                
+                $rootScope.$apply();
+            };
             
             // Get the map url from the server.
             mapQuery = mapService.getMap().then(function (data) {

@@ -419,7 +419,7 @@ namespace NegevZoo.Controllers
         /// <param name="isPush">is the feed need to be pushed</param>
         /// <param name="isWallFeed"> is the feed should be added to the feed wall</param>
         [HttpPost]
-        [Route("Wallfeed/update/{feed}/{isPush}/{isWallFeed}")]
+        [Route("Wallfeed/update/{isPush}/{isWallFeed}")]
         public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
         {
             try
