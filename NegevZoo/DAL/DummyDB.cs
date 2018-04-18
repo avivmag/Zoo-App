@@ -447,274 +447,6 @@ namespace DAL
         }
 
         /// <summary>
-        /// Initializes the wall feeds mock.
-        /// </summary>
-        /// <returns>Mock wall feeds list.</returns>
-        private IEnumerable<WallFeed> InitializeWallFeeds()
-        {
-            return new List<WallFeed>
-                {
-                    new WallFeed
-                    {
-                        id          = 1,
-                        info        = "Purim Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                        
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 2,
-                        info        = "אירועי פורים",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 3,
-                        info        = "Passeover Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-
-                        id          = 4,
-                        info        = "אירועי פסח",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 5,
-                        info        = "Shavuut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 6,
-                        info        = "אירועי שבועות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 7,
-                        info        = "Sukut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 8,
-                        info        = "אירועי סוכות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-                    new WallFeed
-                    {
-                        id          = 9,
-                        info        = "Purim Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 10,
-                        info        = "אירועי פורים",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 11,
-                        info        = "Passeover Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 12,
-                        info        = "אירועי פסח",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 13,
-                        info        = "Shavuut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 14,
-                        info        = "אירועי שבועות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 15,
-                        info        = "Sukut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 16,
-                        info        = "אירועי סוכות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-                    new WallFeed
-                    {
-                        id          = 17,
-                        info        = "Purim Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 18,
-                        info        = "אירועי פורים",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 19,
-                        info        = "Passeover Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 20,
-                        info        = "אירועי פסח",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 21,
-                        info        = "Shavuut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 22,
-                        info        = "אירועי שבועות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 23,
-                        info        = "Sukut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 24,
-                        info        = "אירועי סוכות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-                    new WallFeed
-                    {
-                        id          = 25,
-                        info        = "Purim Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 26,
-                        info        = "אירועי פורים",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 27,
-                        info        = "Passeover Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 28,
-                        info        = "אירועי פסח",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 29,
-                        info        = "Shavuut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 30,
-                        info        = "אירועי שבועות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 31,
-                        info        = "Sukut Events",
-                        language    = (int)DAL.Languages.en,
-                        created     = new DateTime(2018,3,11)
-                    },
-
-                    new WallFeed
-                    {
-                        id          = 32,
-                        info        = "אירועי סוכות",
-                        language    = (int)DAL.Languages.he,
-                        created     = new DateTime(2018,3,11)
-                    }
-                };
-        }
-
-        /// <summary>
         /// Initializes the prices mock.
         /// </summary>
         /// <returns>Mock prices list.</returns>
@@ -804,79 +536,11 @@ namespace DAL
             };
         }
 
-        /// <summary>
-        /// Initializes the General Info mock.
-        /// </summary>
-        /// <returns>Mock general info list.</returns>
-        private IEnumerable<GeneralInfo> InitializeGeneralInfo()
-        {
-            return new List<GeneralInfo>
-                {
-                    new GeneralInfo
-                    {
-                        name                = "NegevZoo",
-                        aboutUs             = "We are Negev Zoo!!! We love animals",
-                        contactInfoNote     = "Contact between 08:00 - 22:00",
-                        openingHoursNote    = "The cashier desk will bew closed two hours before the zoo is closing.",
-                        mapBackgroundUrl    = "MapUrl",
-                        language            = (int)DAL.Languages.en
-                    },
-
-                    new GeneralInfo
-                    {
-                        name                = "נגב זו",
-                        aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
-                        contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
-                        openingHoursNote    = "הקופות יסגרו שעתיים לפני סגירת הגן",
-                        mapBackgroundUrl    = "MapUrl",
-                        language            = (int)DAL.Languages.he
-                    }
-            };
-        }
-        
-        private IEnumerable<SpecialEvent> InitialSpecialEvents()
-        {
-            return new List<SpecialEvent>
-            {
-                new SpecialEvent
-                {
-                    id                      = 1,
-                    description             = "1קקי",
-                    startDate               = new DateTime(2018,3,5),
-                    endDate                 = new DateTime(2018,3,8),
-                    language                = (int) DAL.Languages.he
-                },
-                new SpecialEvent
-                {
-                    id                      = 2,
-                    description             = "Kaki1",
-                    startDate               = new DateTime(2018,3,5),
-                    endDate                 = new DateTime(2018,3,8),
-                    language                = (int) DAL.Languages.en
-                },
-                new SpecialEvent
-                {
-                    id                      = 3,
-                    description             = "אירועי פורים",
-                    startDate               = new DateTime(2018,3,1),
-                    endDate                 = new DateTime(2018,3,8),
-                    language                = (int) DAL.Languages.he
-                },
-                new SpecialEvent
-                {
-                    id                      = 4,
-                    description             = "Purim Events",
-                    startDate               = new DateTime(2018,3,1),
-                    endDate                 = new DateTime(2018,3,8),
-                    language                = (int) DAL.Languages.en
-                }
-            };
-        }
-
         private IEnumerable<OpeningHour> InitialOpeningHour()
         {
             return new List<OpeningHour>
             {
+                //sunday
                 new OpeningHour
                 {
                     id          = 1,
@@ -895,6 +559,7 @@ namespace DAL
                     language    = (int)DAL.Languages.en
                 },
 
+                //monday
                 new OpeningHour
                 {
                     id = 3,
@@ -913,6 +578,7 @@ namespace DAL
                     language = (int)DAL.Languages.en
                 },
 
+                //
                 new OpeningHour
                 {
                     id = 5,
@@ -931,6 +597,7 @@ namespace DAL
                     language = (int)DAL.Languages.en
                 },
 
+                //
                 new OpeningHour
                 {
                     id = 7,
@@ -949,6 +616,7 @@ namespace DAL
                     language = (int)DAL.Languages.en
                 },
 
+                //
                 new OpeningHour
                 {
                     id = 9,
@@ -986,6 +654,357 @@ namespace DAL
                 },
             };
         }
+
+
+
+
+
+        /// <summary>
+        /// Initializes the wall feeds mock.
+        /// </summary>
+        /// <returns>Mock wall feeds list.</returns>
+        private IEnumerable<WallFeed> InitializeWallFeeds()
+        {
+            return new List<WallFeed>
+                {
+                    new WallFeed
+                    {
+                        id          = 1,
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
+                        language    = (int)DAL.Languages.en,
+                        
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 2,
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 3,
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+
+                        id          = 4,
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 5,
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 6,
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 7,
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 8,
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+                    new WallFeed
+                    {
+                        id          = 9,
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
+                        language    = (int)DAL.Languages.en,
+
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 10,
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 11,
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+
+                        id          = 12,
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 13,
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 14,
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 15,
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 16,
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+                    new WallFeed
+                    {
+                        id          = 17,
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
+                        language    = (int)DAL.Languages.en,
+
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 18,
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 19,
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+
+                        id          = 20,
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 21,
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 22,
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 23,
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 24,
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+                    new WallFeed
+                    {
+                        id          = 25,
+                        title       = "Purim Events",
+                        info        = "Our Purim Events started!",
+                        language    = (int)DAL.Languages.en,
+
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 26,
+                        title       = "אירועי פורים",
+                        info        = "אירועי פורים שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 27,
+                        title       = "Passeover Events",
+                        info        = "Our Passeover Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+
+                        id          = 28,
+                        title       = "אירועי פסח",
+                        info        = "אירועי פסח שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 29,
+                        title       = "Shavuut Events",
+                        info        = "Our Shavuut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 30,
+                        title       = "אירועי שבועות",
+                        info        = "אירועי שבועות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 31,
+                        title       = "Sukut Events",
+                        info        = "Our Sukut Events started!",
+                        language    = (int)DAL.Languages.en,
+                    },
+
+                    new WallFeed
+                    {
+                        id          = 32,
+                        title       = "אירועי סוכות",
+                        info        = "אירועי סוכות שלנו החלו!",
+                        language    = (int)DAL.Languages.he,
+                    },
+                };
+        }
+
+        
+        /// <summary>
+        /// Initializes the General Info mock.
+        /// </summary>
+        /// <returns>Mock general info list.</returns>
+        private IEnumerable<GeneralInfo> InitializeGeneralInfo()
+        {
+            return new List<GeneralInfo>
+                {
+                    new GeneralInfo
+                    {
+                        name                = "NegevZoo",
+                        aboutUs             = "We are Negev Zoo!!! We love animals",
+                        contactInfoNote     = "Contact between 08:00 - 22:00",
+                        openingHoursNote    = "The cashier desk will bew closed two hours before the zoo is closing.",
+                        mapBackgroundUrl    = "MapUrl",
+                        language            = (int)DAL.Languages.en
+                    },
+
+                    new GeneralInfo
+                    {
+                        name                = "נגב זו",
+                        aboutUs             = "אנחנו נגב זו!!! אנחנו אוהבים חיות",
+                        contactInfoNote     = "ניתן ליצור קשר בין השעות 08:00 לבין 22:00",
+                        openingHoursNote    = "הקופות יסגרו שעתיים לפני סגירת הגן",
+                        mapBackgroundUrl    = "MapUrl",
+                        language            = (int)DAL.Languages.he
+                    }
+            };
+        }
+        
+        private IEnumerable<SpecialEvent> InitialSpecialEvents()
+        {
+            return new List<SpecialEvent>
+            {
+                new SpecialEvent
+                {
+                    id                      = 1,
+                    title                   = "כותרת1",
+                    description             = "1קקי",
+                    startDate               = new DateTime(2018,3,5),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) DAL.Languages.he
+                },
+                new SpecialEvent
+                {
+                    id                      = 2,
+                    title                   = "title1",
+                    description             = "Kaki1",
+                    startDate               = new DateTime(2018,3,5),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) DAL.Languages.en
+                },
+                new SpecialEvent
+                {
+                    id                      = 3,
+                    title                   = "אירועי פורים",
+                    description             = "ישנם אירועים רבים ומגוונים",
+                    startDate               = new DateTime(2018,3,1),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) DAL.Languages.he
+                },
+                new SpecialEvent
+                {
+                    id                      = 4,
+                    title                   = "Purim Events",
+                    description             = "There are many kinds of events",
+                    startDate               = new DateTime(2018,3,1),
+                    endDate                 = new DateTime(2018,3,8),
+                    language                = (int) DAL.Languages.en
+                }
+            };
+        }
+
+        
 
         private IEnumerable<ContactInfo> InitialContactInfos()
         {

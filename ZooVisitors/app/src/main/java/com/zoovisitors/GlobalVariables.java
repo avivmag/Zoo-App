@@ -18,6 +18,7 @@ public class GlobalVariables {
     public static AppCompatActivity appCompatActivity;
     public static BusinessLayer bl;
     public static int firstEnter = 0;
+    public static AppCompatActivity foregroundActivity;
     public static String firebaseToken;
     public static String deviceId;
 

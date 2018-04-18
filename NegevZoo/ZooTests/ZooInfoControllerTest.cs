@@ -30,231 +30,6 @@ namespace ZooTests
         }
         #endregion
 
-        #region feeds
-
-        #region getAllWallFeed
-        [TestMethod]
-        public void GetAllWallFeedLangHe()
-        {
-            Assert.AreEqual(16, ZooInfoController.GetAllFeeds(1).Count());
-        }
-
-        [TestMethod]
-        public void GetAllWallFeedLangEng()
-        {
-            Assert.AreEqual(16, ZooInfoController.GetAllFeeds(2).Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAllWallFeedLanguageNotExist()
-        {
-            Assert.AreEqual(ZooInfoController.GetAllFeeds(nonExistantLangauge).Count(), 0);
-        }
-
-        #endregion
-
-        #region updateFeedWall
-        [TestMethod]
-        public void UpdateWallFeedAddFeedValidTest()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2018, 03, 14),
-                info = "Another Kaki appears in the zoo",
-                language =(int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed,false);
-
-            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(17, feeds.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedAddFeedInfoAlreadyExists()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "Purim Events",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedLanguageDoesntExists()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "Purim Events",
-                language = nonExistantLangauge
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedWrongCreationDate()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2019, 03, 05),
-                info = "Purim Events",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedWrongInfoEmptySpaces()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "   ",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedWrongInfoEmpty()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = default(int),
-                created = new DateTime(2018, 03, 05),
-                info = "",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        public void UpdateWallFeedValidInput()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = 1,
-                created = new DateTime(2018, 03, 05),
-                info = "Purim is back again!",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-
-            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-            Assert.IsTrue(feeds.Any(f => f.info == feed.info));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedInfoAlreadyExists()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = 1,
-                created = new DateTime(2018, 03, 05),
-                info = "Sukut Events",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateWallFeedIdDoesntExists()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var feed = new WallFeed
-            {
-                id = -4,
-                created = new DateTime(2018, 03, 05),
-                info = "Purim is back again!",
-                language = (int)Languages.en
-            };
-
-            ZooInfoController.UpdateWallFeed(feed, false);
-        }
-        #endregion
-
-        #region deleteWallFeed
-        [TestMethod]
-        public void DeleteWallFeedValidInput()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            var firstFeed = feeds.SingleOrDefault(f => f.id == 1);
-            Assert.IsNotNull(firstFeed);
-
-            ZooInfoController.DeleteWallFeed((int)firstFeed.id);
-
-            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(15, feeds.Count());
-
-            feeds = ZooInfoController.GetAllFeeds((int)Languages.he);
-            Assert.AreEqual(16, feeds.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void DeleteWallFeedIdDoesntExists()
-        {
-            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
-            Assert.AreEqual(16, feeds.Count());
-
-            ZooInfoController.DeleteWallFeed(-4);
-        }
-        #endregion
-
-        #endregion
-
         #region prices
 
         #region getAllPrices
@@ -433,10 +208,12 @@ namespace ZooTests
             var price = new Price
             {
                 id = 9,
-                population = "Adult",
+                population = "Student",
                 pricePop = 10,
                 language = (int)Languages.en
             };
+
+            price.population = "Adult";
 
             ZooInfoController.UpdatePrice(price);
         }
@@ -459,7 +236,7 @@ namespace ZooTests
             ZooInfoController.UpdatePrice(price);
         }
         #endregion
-
+        
         #region DeletePrice
         [TestMethod]
         public void DeletePriceValidInput()
@@ -492,11 +269,12 @@ namespace ZooTests
 
         #region OpeningHour
 
-        #region getAllOpeningHours
+        #region GetAllOpeningHourResults
+
         [TestMethod]
-        public void GetAllOpeningHours()
+        public void GetAllOpeningHourResults()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
 
             Assert.AreEqual(6, openingHours.Count());
             Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
@@ -504,45 +282,75 @@ namespace ZooTests
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void GetAllOpeningHoursLangDoeantExists()
+        public void GetAllOpeningHourReusltsLangDoeantExists()
         {
-            ZooInfoController.GetAllOpeningHours(nonExistantLangauge);
+            ZooInfoController.GetAllOpeningHourResults(nonExistantLangauge);
         }
 
+        #endregion
+
+        #region GetAllOpeningHourResults
+
+        [TestMethod]
+        public void GetAllOpeningHourTypes()
+        {
+            var openingHours = ZooInfoController.GetAllOpeningHoursType();
+
+            Assert.AreEqual(6, openingHours.Count());
+            Assert.IsTrue(openingHours.Any(oh => oh.day == 1));
+        }
+        
         #endregion
 
         #region updateOpeningHour
         [TestMethod]
         public void UpdateOpeningHourAddValidInput()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours((int)Languages.en);
+            var openingHours = ZooInfoController.GetAllOpeningHoursType();
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "Sunday"));
+            Assert.IsTrue(openingHours.Any(oh => oh.day == 1));
+            Assert.IsFalse(openingHours.Any(oh => oh.day == 6));
+
+            var openingHourResultHeb = ZooInfoController.GetAllOpeningHourResults();
+            Assert.IsFalse(openingHourResultHeb.Any(oh => oh.Day == "שישי"));
+
+            var openingHourResultEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.IsFalse(openingHourResultHeb.Any(oh => oh.Day == "Friday"));
 
             OpeningHour opHour = new OpeningHour
             {
                 id = default(int),
                 day = 6,
                 startTime = new TimeSpan(9, 45, 0),
-                endTime = new TimeSpan(18, 0, 0),
-                language = (int)Languages.en
+                endTime = new TimeSpan(18, 0, 0)
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
 
-            openingHours = ZooInfoController.GetAllOpeningHours();
-            Assert.AreEqual(6, openingHours.Count());
+            openingHours = ZooInfoController.GetAllOpeningHoursType();
+
+            Assert.AreEqual(7, openingHours.Count());
+            Assert.IsTrue(openingHours.Any(oh => oh.day == 6));
+
+            //heb
+            openingHourResultHeb = ZooInfoController.GetAllOpeningHourResults();
+            Assert.AreEqual(7, openingHourResultHeb.Count());
+            Assert.IsTrue(openingHourResultHeb.Any(oh => oh.Day == "שישי"));
+
+            openingHourResultEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.AreEqual(7, openingHourResultEn.Count());
+            Assert.IsTrue(openingHourResultEn.Any(oh => oh.Day == "Friday"));
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourAddDayAlreadyExists()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
 
             Assert.AreEqual(6, openingHours.Count());
-            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון" ));
+            Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
 
             OpeningHour opHour = new OpeningHour
             {
@@ -550,7 +358,6 @@ namespace ZooTests
                 day = 7,
                 startTime = new TimeSpan(9, 45, 0),
                 endTime = new TimeSpan(18, 0, 0),
-                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -560,7 +367,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourWrongTime()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
 
             Assert.AreEqual(6, openingHours.Count());
             Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
@@ -571,7 +378,6 @@ namespace ZooTests
                 day = 5,
                 startTime = new TimeSpan(18, 0, 0),
                 endTime = new TimeSpan(9, 45, 0),
-                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -581,7 +387,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourWrongDay()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
 
             Assert.AreEqual(6, openingHours.Count());
             Assert.IsTrue(openingHours.Any(oh => oh.Day == "ראשון"));
@@ -601,8 +407,15 @@ namespace ZooTests
         [TestMethod]
         public void UpdateOpeningHour()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHoursType();
             Assert.AreEqual(6, openingHours.Count());
+            Assert.IsTrue(openingHours.Any(oh => oh.day == 1));
+
+            var openingHourResultHeb = ZooInfoController.GetAllOpeningHourResults();
+            Assert.IsTrue(openingHourResultHeb.Any(oh => oh.Day == "שבת"));
+
+            var openingHourResultEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.IsTrue(openingHourResultEn.Any(oh => oh.Day == "Saturday"));
 
             OpeningHour opHour = new OpeningHour
             {
@@ -613,16 +426,36 @@ namespace ZooTests
                 language = (int)Languages.he
             };
 
-            opHour.endTime = new TimeSpan(20, 0, 0);
+            var newTime = new TimeSpan(20, 0, 0);
+            opHour.endTime = newTime;
 
             ZooInfoController.UpdateOpeningHour(opHour);
+
+            openingHours = ZooInfoController.GetAllOpeningHoursType();
+
+            opHour = openingHours.SingleOrDefault(oh => oh.day == 7);
+            Assert.IsNotNull(opHour);
+            Assert.AreEqual(newTime, opHour.endTime);
+
+            //heb
+            openingHourResultHeb = ZooInfoController.GetAllOpeningHourResults();
+            Assert.AreEqual(6, openingHourResultHeb.Count());
+            var fridayHeb = openingHourResultHeb.SingleOrDefault(oh => oh.Day == "שבת");
+            Assert.IsNotNull(fridayHeb);
+            Assert.AreEqual(newTime, fridayHeb.EndTime);
+            
+            openingHourResultEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.AreEqual(6, openingHourResultEn.Count());
+            var fridayEn = (openingHourResultEn.SingleOrDefault(oh => oh.Day == "Saturday"));
+            Assert.IsNotNull(fridayEn);
+            Assert.AreEqual(newTime, fridayEn.EndTime);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourDayAlreadyExists()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
             Assert.AreEqual(6, openingHours.Count());
 
             OpeningHour opHour = new OpeningHour
@@ -631,7 +464,6 @@ namespace ZooTests
                 day = 2,
                 startTime = new TimeSpan(11, 30, 00),
                 endTime = new TimeSpan(12, 0, 0),
-                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -641,7 +473,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourIdDoesntExists()
         {
-            var openingHours = ZooInfoController.GetAllOpeningHours();
+            var openingHours = ZooInfoController.GetAllOpeningHourResults();
             Assert.AreEqual(6, openingHours.Count());
 
             OpeningHour opHour = new OpeningHour
@@ -650,7 +482,6 @@ namespace ZooTests
                 day = 7,
                 startTime = new TimeSpan(10, 45, 0),
                 endTime = new TimeSpan(18, 0, 0),
-                language = (int)Languages.he
             };
 
             ZooInfoController.UpdateOpeningHour(opHour);
@@ -665,12 +496,30 @@ namespace ZooTests
             var openingHours = ZooInfoController.GetAllOpeningHoursType();
             Assert.AreEqual(6, openingHours.Count());
 
+            //hebrew
+            var openingHourResultsHeb = ZooInfoController.GetAllOpeningHourResults(1);
+            Assert.AreEqual(6, openingHourResultsHeb.Count());
+
+            //english
+            var openingHourResultsEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.AreEqual(6, openingHourResultsEn.Count());
+
             OpeningHour opHour = openingHours.SingleOrDefault(oh => oh.day == 1);
 
             ZooInfoController.DeleteOpeningHour(opHour.id);
 
             openingHours = ZooInfoController.GetAllOpeningHoursType();
             Assert.AreEqual(5, openingHours.Count());
+
+            //hebrew
+            openingHourResultsHeb = ZooInfoController.GetAllOpeningHourResults(1);
+            Assert.AreEqual(5, openingHourResultsHeb.Count());
+            Assert.IsFalse(openingHourResultsHeb.Any(oh => oh.Day == "ראשון"));
+
+            //english
+            openingHourResultsEn = ZooInfoController.GetAllOpeningHourResults(2);
+            Assert.AreEqual(5, openingHourResultsEn.Count());
+            Assert.IsFalse(openingHourResultsEn.Any(oh => oh.Day == "Sunday"));
         }
 
         [TestMethod]
@@ -682,6 +531,255 @@ namespace ZooTests
         #endregion
 
         #endregion
+
+
+
+        #region feeds
+
+        #region getAllWallFeed
+        [TestMethod]
+        public void GetAllWallFeedLangHe()
+        {
+            Assert.AreEqual(16, ZooInfoController.GetAllFeeds(1).Count());
+        }
+
+        [TestMethod]
+        public void GetAllWallFeedLangEng()
+        {
+            Assert.AreEqual(16, ZooInfoController.GetAllFeeds(2).Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAllWallFeedLanguageNotExist()
+        {
+            Assert.AreEqual(ZooInfoController.GetAllFeeds(nonExistantLangauge).Count(), 0);
+        }
+
+        #endregion
+
+        #region updateFeedWall
+        [TestMethod]
+        public void UpdateWallFeedAddFeedValidTest()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "KAKI!!",
+                info = "Another Kaki appears in the zoo",
+                language =(int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+
+            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(17, feeds.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedAddFeedInfoAlreadyExists()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "Purim Events",
+                info = "Our Purim Events started!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedLanguageDoesntExists()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "Purim Events",
+                info = "Our Purim Events started!",
+                language = nonExistantLangauge
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongInfoEmptySpaces()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "KAKI!",
+                info = "   ",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongDescriptionEmptySpaces()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "   ",
+                info = "KAKI!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongInfoEmpty()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "KAKI!",
+                info = "",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedWrongDescriptionEmpty()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = default(int),
+                title = "",
+                info = "KAKI!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        public void UpdateWallFeedValidInput()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = 1,
+                title = "Purim is back again!",
+                info = "And we are here to take your money!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+
+            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+            Assert.IsTrue(feeds.Any(f => f.info == feed.info));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedInfoAlreadyExists()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = 1,
+                title = "Sukut Events",
+                info = "Our Sukut Events started!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateWallFeedIdDoesntExists()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var feed = new WallFeed
+            {
+                id = -4,
+                created = new DateTime(2018, 03, 05),
+                title = "Sukut Events",
+                info = "Our Sukut Events started!",
+                language = (int)Languages.en
+            };
+
+            ZooInfoController.UpdateWallFeed(feed, false, true);
+        }
+        #endregion
+
+        #region deleteWallFeed
+        [TestMethod]
+        public void DeleteWallFeedValidInput()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            var firstFeed = feeds.SingleOrDefault(f => f.id == 1);
+            Assert.IsNotNull(firstFeed);
+
+            ZooInfoController.DeleteWallFeed((int)firstFeed.id);
+
+            feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(15, feeds.Count());
+
+            feeds = ZooInfoController.GetAllFeeds((int)Languages.he);
+            Assert.AreEqual(16, feeds.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteWallFeedIdDoesntExists()
+        {
+            var feeds = ZooInfoController.GetAllFeeds((int)Languages.en);
+            Assert.AreEqual(16, feeds.Count());
+
+            ZooInfoController.DeleteWallFeed(-4);
+        }
+        #endregion
+
+        #endregion
+
+
+
 
         #region contactInfo
 
@@ -985,13 +1083,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018,9,1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents((int)Languages.en);
             Assert.AreEqual(3, specialEvents.Count());
@@ -1010,13 +1109,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018, 9, 1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1029,13 +1129,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 endDate = new DateTime(2018, 7, 1),
                 startDate = new DateTime(2018, 9, 1),
                 language = (int)Languages.en
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1048,13 +1149,14 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = default(int),
-                description = "The big holiday",
+                title = "The big holiday",
+                description = "We have a Kaytana",
                 startDate = new DateTime(2018, 7, 1),
                 endDate = new DateTime(2018, 9, 1),
                 language = nonExistantLangauge
             };
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1066,6 +1168,7 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
@@ -1075,7 +1178,7 @@ namespace ZooTests
             var oldDescription = eve.description;
             eve.description = "New Event";
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
 
             specialEvents = ZooInfoController.GetAllSpecialEvents((int)Languages.en);
             Assert.AreEqual(2, specialEvents.Count());
@@ -1093,15 +1196,17 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
                 language = (int)Languages.en
             };
 
-            eve.description = "Purim Events";
+            eve.title = "Purim Events";
+            eve.description = "There are many kinds of events";
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
 
         [TestMethod]
@@ -1114,6 +1219,7 @@ namespace ZooTests
             SpecialEvent eve = new SpecialEvent
             {
                 id = 2,
+                title = "title1",
                 description = "Kaki1",
                 startDate = new DateTime(2018, 3, 5),
                 endDate = new DateTime(2018, 3, 8),
@@ -1122,7 +1228,7 @@ namespace ZooTests
 
             eve.id = -3;
 
-            ZooInfoController.UpdateSpecialEvent(eve);
+            ZooInfoController.UpdateSpecialEvent(eve, false);
         }
         #endregion
 
@@ -1133,7 +1239,7 @@ namespace ZooTests
             var specialEvents = ZooInfoController.GetAllSpecialEvents();
             Assert.AreEqual(2, specialEvents.Count());
 
-            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.description == "אירועי פורים");
+            SpecialEvent eve = specialEvents.SingleOrDefault(se => se.title == "אירועי פורים");
 
             ZooInfoController.DeleteSpecialEvent(eve.id);
 

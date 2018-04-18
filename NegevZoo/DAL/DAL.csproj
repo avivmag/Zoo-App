@@ -98,7 +98,9 @@
     <Compile Include="Models\AnimalResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
     <Compile Include="Models\MapResult.cs" />
+    <Compile Include="Models\MapSettingsResult.cs" />
     <Compile Include="Models\OpeningHourResult.cs" />
+    <Compile Include="Models\RecurringEventResult.cs" />
     <Compile Include="NegevZooDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -145,7 +147,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="NegevZooDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>NegevZooDB.Designer.cs</LastGenOutput>

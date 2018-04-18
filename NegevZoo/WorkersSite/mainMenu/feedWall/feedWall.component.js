@@ -5,6 +5,8 @@
         function initializeComponent() {
             $scope.languages            = app.languages;
             $scope.language             = $scope.languages[0];
+            $scope.isFeedWall           = true;
+            $scope.isPushMessage        = false;
         
             $scope.updateFeed           = function (language) {
                 $scope.language         = language;
@@ -40,12 +42,12 @@
                 $mdDialog.show(confirm).then(function () { deleteFeed(feed, feedWall); });
             }
 
-            $scope.addFeed              = function (feed) {
+            $scope.addFeed              = function (feed, isFeedWall, isPushMessage) {
                 $scope.isLoading        = true;
                 var successContent      = feed.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = feed.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
 
-                zooInfoService.feedWall.updateFeed(feed).then(
+                zooInfoService.feedWall.updateFeed(feed, isFeedWall, isPushMessage).then(
                     function () {
                         $mdDialog.show(
                             $mdDialog.alert()

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-public class LoadingScreen extends AppCompatActivity{
+public class LoadingScreen extends BaseActivity {
     private boolean endAllThreads = false;
     private CountDownLatch doneSignal;
     private VideoView videoview;

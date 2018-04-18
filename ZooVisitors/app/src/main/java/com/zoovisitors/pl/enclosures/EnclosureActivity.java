@@ -23,6 +23,7 @@ import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.pl.BaseActivity;
 //import com.facebook.*;
 
 
@@ -32,7 +33,7 @@ import com.zoovisitors.bl.GetObjectInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EnclosureActivity extends AppCompatActivity {
+public class EnclosureActivity extends BaseActivity {
 
     private TextView enclosureNameTextView;
     private ImageView enclosureImageView;

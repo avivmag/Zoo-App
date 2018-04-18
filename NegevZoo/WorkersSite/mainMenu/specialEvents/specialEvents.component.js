@@ -1,10 +1,11 @@
-﻿app.controller('zooEventsCtrl', ['$scope', '$mdDialog', 'zooInfoService',
-    function zooSpecialEventsController($scope, $mdDialog, zooInfoService) {
+﻿app.controller('zooEventsCtrl', ['$q', '$scope', '$mdDialog', 'fileUpload', 'utilitiesService', 'zooInfoService',
+    function zooSpecialEventsController($q, $scope, $mdDialog, fileUpload, utilitiesService, zooInfoService) {
         initializeComponent();
 
         function initializeComponent() {
             $scope.languages            = app.languages;
             $scope.language             = $scope.languages[0];
+            $scope.baseURL              = app.baseURL;
 
             $scope.updateSpecialEvents          = function (language) {
                 $scope.language                 = language;
@@ -34,30 +35,39 @@
                 var successContent      = event.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = event.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
 
-                zooInfoService.specialEvents.updateSpecialEvent(event).then(
-                    function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(successContent)
-                                .ok('סגור')
-                        );
+                event.isPushMessage     = event.isPushMessage || false;
 
-                        $scope.isLoading = false;
+                var pictureUploadQuery  = uploadPicture(event.specialEventPic, event);
 
-                        $scope.updateSpecialEvents($scope.language);
-                    },
-                    function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(failContent)
-                                .ok('סגור')
-                        );
+                var promises            = [pictureUploadQuery];
 
-                        $scope.isLoading = false;
-                    });
-            }
+                $q.all(promises).then(
+                    () => {
+                        zooInfoService.specialEvents.updateSpecialEvent(event, event.isPushMessage).then(
+                            function () {
+                                $mdDialog.show(
+                                    $mdDialog.alert()
+                                        .clickOutsideToClose(true)
+                                        .textContent(successContent)
+                                        .ok('סגור')
+                                );
+        
+                                $scope.isLoading = false;
+        
+                                $scope.updateSpecialEvents($scope.language);
+                            },
+                            function () {
+                                $mdDialog.show(
+                                    $mdDialog.alert()
+                                        .clickOutsideToClose(true)
+                                        .textContent(failContent)
+                                        .ok('סגור')
+                                );
+        
+                                $scope.isLoading = false;
+                            });
+                        });
+            };
 
             $scope.confirmDeleteSpecialEvent    = function (ev, event, events) {
                 var confirm = $mdDialog.confirm()
@@ -103,6 +113,26 @@
 
             specialEvents.push({ isNew: true, language: $scope.language.id, startDate, endDate, id: 0 });
         }
+
+        function uploadPicture (picture, event) {
+            if (!angular.isDefined(picture)) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'specialEvents/upload';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(picture, uploadUrl).then(
+                (success)   => {
+                    event.imageUrl          = success.data[0];
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        };
 }])
 .directive('zooEvents', function () {
     return {

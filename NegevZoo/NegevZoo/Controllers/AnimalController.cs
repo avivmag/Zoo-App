@@ -21,7 +21,7 @@ namespace NegevZoo.Controllers
         /// Gets all animals data in the given langauge.
         /// </summary>
         /// <param name="language">The data language.</param>
-        /// <returns>Animals with that langauge.</returns>
+        /// <returns> All the AnimalsResult with that langauge.</returns>
         [HttpGet]
         [Route("animals/all/{language}")]
         public IEnumerable<AnimalResult> GetAllAnimalsResults(int language = 1)
@@ -44,62 +44,16 @@ namespace NegevZoo.Controllers
         /// Gets all animals that have special story.
         /// </summary>
         /// <param name="language">The data language.</param>
-        /// <returns>Animals with spiceial story in the wanted langauge.</returns>
+        /// <returns>All the AnimalsResults that have a spiceial story in the wanted langauge.</returns>
         [HttpGet]
         [Route("animals/story/{language}")]
-        public IEnumerable<AnimalResult> GetAnimalsWithStoryResults(int language = 1)
+        public IEnumerable<AnimalResult> GetAnimalResultsWithStory(int language = 1)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    return db.GetAnimalsWithStoryResults(language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Gets all animals types.
-        /// </summary>
-        /// <returns>Animals types.</returns>
-        [HttpGet]
-        [Route("animals/types/all")]
-        public IEnumerable<Animal> GetAllAnimals()
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetAllAnimals();
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets all animals details by the given id.
-        /// </summary>
-        /// <returns>Animals detail in all the langauges exists.</returns>
-        [HttpGet]
-        [Route("animals/details/all/{animalId}")]
-        public IEnumerable<AnimalDetail> GetAllAnimalsDetailsById(int animalId)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetAllAnimalsDetailById(animalId);
+                    return db.GetAnimalResultsWithStory(language);
                 }
             }
             catch (Exception Exp)
@@ -134,11 +88,35 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// Gets animal by its name, in the given language.
+        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
+        /// </summary>
+        /// <param name="encId">The enclosure animalId.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>AnimalResults of animals that are in the enclosure.</returns>
+        [HttpGet]
+        [Route("animals/enclosure/{encId}/{language}")]
+        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(int encId, int language)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalsByEnclosure(encId, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets AnimalResult of the animals that conatin the given name, in the given language.
         /// </summary>
         /// <param name="name">The animal's name.</param>
         /// <param name="language">The data language.</param>
-        /// <returns>The animal with the Id with that language.</returns>
+        /// <returns>The AnimalReuslts of the animals that contain the given name with the Id with that language.</returns>
         [HttpGet]
         [Route("animals/name/{name}/{language}")]
         public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
@@ -157,21 +135,22 @@ namespace NegevZoo.Controllers
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
+        /// This method is for the worker site.
+        /// Gets all animals types.
         /// </summary>
-        /// <param name="encId">The enclosure animalId.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The animals that are in the enclosure.</returns>
+        /// <returns>Animals types.</returns>
         [HttpGet]
-        [Route("animals/enclosure/{encId}/{language}")]
-        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(int encId, int language)
+        [Route("animals/types/all")]
+        public IEnumerable<Animal> GetAllAnimals()
         {
             try
             {
-                using (var db = GetContext())
+                using (var db = this.GetContext())
                 {
-                    return db.GetAnimalsByEnclosure(encId, language);
+                    return db.GetAllAnimals();
                 }
             }
             catch (Exception Exp)
@@ -180,14 +159,38 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        #endregion
 
+        /// <summary>
+        /// Gets all the existing AnimalDetails of the animal with the given id.
+        /// </summary>
+        /// <returns>Animaldetails in all the langauges exists.</returns>
+        [HttpGet]
+        [Route("animals/details/all/{animalId}")]
+        public IEnumerable<AnimalDetail> GetAllAnimalsDetailsById(int animalId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllAnimalsDetailById(animalId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+        
+        #endregion
+        
         #region Setters
 
         /// <summary>
+        /// This method is for the Worker site.
         /// Adds or updates an animal.
         /// </summary>
-        /// <param name="animals">The animal to update.</param>
+        /// <param name="animal">The animal to add or update.</param>
         [HttpPost]
         [Route("animals/update")]
         public void UpdateAnimal(Animal animal)
@@ -207,9 +210,10 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// This method is for the Worker site.
         /// Adds or updates an animal details.
         /// </summary>
-        /// <param name="animalsDetails">The animal to update.</param>
+        /// <param name="animalsDetails">The AnimalDetail to update.</param>
         [HttpPost]
         [Route("animals/detail/update")]
         public void UpdateAnimalDetails(AnimalDetail animalsDetails)
@@ -227,7 +231,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
         /// Removes an animal.
         /// </summary>
@@ -250,8 +254,11 @@ namespace NegevZoo.Controllers
             }
         }
 
-        #endregion
-
+        /// <summary>
+        /// Save a file to the data base.
+        /// </summary>
+        /// <param name="path"> the path to save the file</param>
+        /// <returns>action result of the operation. </returns>
         [HttpPost]
         [Route("animals/upload/{path}")]
         public IHttpActionResult AnimalsFileUpload(String path)
@@ -272,7 +279,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/animals/" + path);
+                    db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/');
                     return Ok();
                 }
             }
@@ -282,6 +289,8 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
+        #endregion
 
     }
 }

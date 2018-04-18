@@ -5,7 +5,7 @@
 
     <md-card ng-if="!isLoading">
         <md-card-title layout="row" layout-align="space-between">
-            <md-card-title-text class="md-headline">עדכונים קודמים:</md-card-title-text>
+            <md-card-title-text class="md-headline">קיר העדכונים:</md-card-title-text>
 
             <div layout="column">
                 <md-select ng-change="updateFeed(language)" ng-model="language" placeholder="אנא בחר שפה">
@@ -24,17 +24,22 @@
 
                 <md-card-content layout="row">
                     <md-input-container>
+                        <label ng-show="feed.isNew">הכנס כותרת</label>
+                        <input style="min-width: 200px" ng-model="feed.title" required type="text">
+                    </md-input-container>
+
+                    <md-input-container>
                         <label ng-show="feed.isNew">הכנס עדכון</label>
                         <input style="min-width: 400px" ng-model="feed.info" required type="text">
                     </md-input-container>
 
                 </md-card-content>
-                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed)">שמור עדכון חדש</md-button>
-                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed)">עדכון תוכן</md-button>
+                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed, isPushMessage, isFeedWall)">שמור עדכון חדש</md-button>
+                <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed, isPushMessage, true)">עדכון תוכן</md-button>
                 
-                <div ng-if="feed.isNew" style="margin-right: 15px" layout="row">
+                <div style="margin-right: 15px" layout="row">
                     <md-checkbox ng-model="isPushMessage">שלח כהודעת פוש</md-checkbox>
-                    <md-checkbox ng-model="isFeedWall">הוסף לקיר העדכונים</md-checkbox>
+                    <md-checkbox ng-if="feed.isNew" ng-model="isFeedWall">הוסף לקיר העדכונים</md-checkbox>
                 </div>
             </div>
         </md-card-content>

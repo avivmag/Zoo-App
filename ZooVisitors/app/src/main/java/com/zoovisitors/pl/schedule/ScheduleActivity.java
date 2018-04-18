@@ -13,12 +13,13 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.bl.MyFirebaseMessagingService;
+import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.map.MapActivity;
 
 import java.util.Map;
 
 
-public class ScheduleActivity extends AppCompatActivity {
+public class ScheduleActivity extends BaseActivity {
 
     private RecyclerView recycleView;
     private RecyclerView.LayoutManager layoutManager;

@@ -19,7 +19,7 @@ namespace NegevZoo.Controllers
         #region Price
 
         /// <summary>
-        /// Gets all the Price with data in that language.
+        /// Gets all the Price with data in the given language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All Prices with that language.</returns>
@@ -46,7 +46,6 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the Price element.
         /// </summary>
         /// <param name="price">The element to add or update</param>
-        /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
         [Route("prices/update")]
         public void UpdatePrice(Price price)
@@ -94,13 +93,14 @@ namespace NegevZoo.Controllers
         #region Opening hours
 
         /// <summary>
-        /// Gets all the OpeningGours elements with data in that language.
+        /// This method is for the visitors application
+        /// Gets all the OpeningHoursResults elements with data in the given language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
-        /// <returns>All OpeninngHour elements with that language.</returns>
+        /// <returns>All OpeninngHourResults elements with that language.</returns>
         [HttpGet]
         [Route("OpeningHours/all/{language}")]
-        public IEnumerable<OpeningHourResult> GetAllOpeningHours(int language = 1)
+        public IEnumerable<OpeningHourResult> GetAllOpeningHourResults(int language = 1)
         {
             try
             {
@@ -116,13 +116,14 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
+        /// This method is for the workers site.
         /// Gets all the OpeningHours elements in hebrew and days as int.
         /// </summary>
         /// <returns>All OpeninngHour elements in hebrew.</returns>
         [HttpGet]
-        [Route("OpeningHours/type/all/{language}")]
+        [Route("OpeningHours/type/all")]
         public IEnumerable<OpeningHour> GetAllOpeningHoursType()
         {
             try
@@ -139,7 +140,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
         /// Adds or Updates the OpeningHour element.
         /// </summary>
@@ -162,9 +163,9 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
-        /// Deletes the OpeningHour element.
+        /// Deletes the OpeningHour element from all the languages.
         /// </summary>
         /// <param name="openHourId">The element's openHourId to delete</param>
         [HttpDelete]
@@ -187,6 +188,11 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+
+
+
+
 
         #region Contact Info
 
@@ -320,14 +326,14 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="specialEvent">The element to add or update</param>
         [HttpPost]
-        [Route("SpecialEvents/update")]
-        public void UpdateSpecialEvent(SpecialEvent specialEvent)
+        [Route("SpecialEvents/update/{isPush}")]
+        public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateSpecialEvent(specialEvent);
+                    db.UpdateSpecialEvent(specialEvent, isPush);
                 }
 
             }
@@ -360,7 +366,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         [HttpPost]
         [Route("SpecialEvents/upload")]
         public IHttpActionResult SpecialEventsImagesUpload()
@@ -375,8 +381,8 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/specialEvents/");
-                    return Ok();
+                    var uploadedImages = db.FileUpload(httpRequest, @"~/assets/specialEvents/");
+                    return Ok(uploadedImages);
                 }
             }
             catch (Exception Exp)
@@ -417,16 +423,17 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="feed">The WallFeed to add or update</param>
         /// <param name="isPush">is the feed need to be pushed</param>
+        /// <param name="isWallFeed"> is the feed should be added to the feed wall</param>
         [HttpPost]
-        [Route("Wallfeed/update/{feed}/{isPush}")]
-        public void UpdateWallFeed(WallFeed feed, bool isPush)
+        [Route("Wallfeed/update/{isPush}/{isWallFeed}")]
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed, isPush);
+                    db.UpdateWallFeed(feed, isPush, isWallFeed);
                 }
             }
             catch (Exception Exp)
