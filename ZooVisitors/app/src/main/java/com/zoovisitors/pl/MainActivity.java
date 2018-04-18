@@ -1,5 +1,6 @@
 package com.zoovisitors.pl;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +8,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,13 +37,15 @@ import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
+import com.zoovisitors.pl.customViews.buttonCustomView;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private ScrollView scrollView;
-    private LinearLayout newsFeddLinearLayout;
+    private LinearLayout newsFeedLinearLayout;
     private Menu langMenu;
     private NewsFeed[] feed;
     private Map<String, String> LanguageMap;
@@ -48,15 +53,50 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setIcon(R.mipmap.logo);
+
+
+        //TODO: TESTING LOADING
+        Log.e("TESTENC", GlobalVariables.testEnc[0].getName());
+
+        Log.e("TESTOP", GlobalVariables.testOp[0].getDay());
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GlobalVariables.appCompatActivity = this;
+//        GlobalVariables.appCompatActivity = this;
+//        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//        GlobalVariables.deviceId = telephonyManager.getDeviceId();
         //changeToHebrew();
-        
-        //Initialize business layer (change for testing)
-        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
+
         //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
         GlobalVariables.bl.sendDeviceId();
+
+        //Set design for each button
+        buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);
+        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures);
+
+        buttonCustomView otherInfoButton = (buttonCustomView) findViewById(R.id.otherInfoButton);
+        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info);
+
+        buttonCustomView personalButton= (buttonCustomView) findViewById(R.id.personalStoriesButton);
+        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal);
+
+        buttonCustomView mapButton = (buttonCustomView) findViewById(R.id.mapButton);
+        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map);
+
+        buttonCustomView wazebutton = (buttonCustomView) findViewById(R.id.wazeButton);
+        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav);
+
+        buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
+        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule);
+
+
+
 
         LanguageMap = new HashMap<String, String>();
         //put language in the app according to values/strings/(**)
@@ -75,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 //feed wall initiation
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
-                newsFeddLinearLayout = findViewById(R.id.feedWallLayout);
+                newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
                 for (NewsFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
@@ -83,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
                     tv.setTextSize(18);
                     LinearLayout lineBorder = new LinearLayout(GlobalVariables.appCompatActivity);
                     lineBorder.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 20));
-                    newsFeddLinearLayout.addView(tv);
-                    newsFeddLinearLayout.addView(lineBorder);
+                    newsFeedLinearLayout.addView(tv);
+                    newsFeedLinearLayout.addView(lineBorder);
                 }
 
                 newsFeedList = new String[feed.length];
@@ -123,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //enclosure button
-        findViewById(R.id.enclosureListButton).setOnClickListener(new View.OnClickListener() {
+        encButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent enclosureIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
@@ -168,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //waze image
-        findViewById(R.id.wazeImg).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.wazeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
@@ -212,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startAutoScrolling(){
 
-        int jumpSteps = newsFeddLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
+        int jumpSteps = newsFeedLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
         ObjectAnimator animator[] = new ObjectAnimator[jumpSteps];
 
         for (int i = 0; i < jumpSteps; i++){
@@ -226,25 +266,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickWatchAllButton(View v){
-        //TODO:!!!!!!
-    }
-
-    public void onClickEnclosuresButton(View v){
-        //TODO:!!!!!!
-    }
-
-    public void onClickScheduleButton(View v){
-        //TODO:!!!!!!
-    }
-
-    public void onClickMoreInfoButton(View v){
-        //TODO:!!!!!!
-    }
-
-    public void onClickMapButton(View v){
-        //TODO:!!!!!!
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -331,4 +352,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(refresh);
         finish();
     }
+
+//    private void designButton(int id, int background, int image, int text){
+//        buttonCustomView button = (buttonCustomView) findViewById(id);
+//        button.setBackgroundColor(background);
+//        TextView iconText = (TextView) findViewById(button.getTextId());
+//        ImageView iconImage = (ImageView) findViewById(button.getImageId());
+//
+//        iconText.setTextSize(20);
+//        iconText.setText(text);
+//
+//        iconImage.setImageResource(image);
+//    }
 }

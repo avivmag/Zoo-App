@@ -9,15 +9,24 @@ import com.google.gson.annotations.SerializedName;
 public class Schedule {
     @SerializedName("id")
     private int id;
+    @SerializedName("title")
+    private String title;
     @SerializedName("description")
     private String description;
     @SerializedName("startDate")
     private String startTime;
     @SerializedName("endDate")
     private String endTime;
+    @SerializedName("imageUrl")
+    private String imageUrl;
+
 
     public int getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getDescription() {
@@ -30,16 +39,8 @@ public class Schedule {
 
     public String getEndTime() { return endTime; }
 
-    public void setId(int id) { this.id = id; }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getImageUrl() {
+        return imageUrl;
     }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(String endTime) { this.endTime = endTime; }
 
 }

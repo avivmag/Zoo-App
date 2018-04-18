@@ -16,27 +16,39 @@ import android.widget.VideoView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.OpeningHours;
+import com.zoovisitors.bl.BusinessLayerImpl;
+import com.zoovisitors.bl.FunctionInterface;
+import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.cl.network.ResponseInterface;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends AppCompatActivity{
-    private final int NUMBER_OF_THREAD = 3;
     private boolean endAllThreads = false;
     private CountDownLatch doneSignal;
     private VideoView videoview;
+    private List<FunctionInterface> tasks;
 
-
-    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
+        //Initialize business layer (change for testing)
+        GlobalVariables.appCompatActivity = this;
+        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         //TODO: Delete this when sending device id to the server
         Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
 
-       videoview = (VideoView) findViewById(R.id.loading_video);
+        tasks = new ArrayList<>();
+
+
+        videoview = (VideoView) findViewById(R.id.loading_video);
         videoview.setTranslationX(-525f);
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -46,36 +58,45 @@ public class LoadingScreen extends AppCompatActivity{
         });
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
         videoview.setVideoURI(uri);
+        videoview.start();
 
-        Log.e("ll", "ll");
-
-        doneSignal = new CountDownLatch(NUMBER_OF_THREAD);
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected void onPreExecute() {
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-
-                doStartVideo();
-                doChangeToHebrew();
-                doWait();
-
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                try {
-                    doneSignal.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        tasks.add(() -> {
+            GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    GlobalVariables.testEnc = (Enclosure[]) response;
+                    doneSignal.countDown();
                 }
-                goToMain();
-            }
-        }.execute();
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e("Can't make task", (String) response);
+                }
+            });
+        });
+
+        tasks.add(() -> {
+            GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    GlobalVariables.testOp = (OpeningHours []) response;
+                    doneSignal.countDown();
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e("Can't make task", (String) response);
+                }
+            });
+        });
+
+        tasks.add(() -> {
+            changeToHebrew();
+            doneSignal.countDown();
+        });
+
+        makeTasks();
+
     }
 
 
@@ -98,57 +119,29 @@ public class LoadingScreen extends AppCompatActivity{
     }
 
 
+    private void makeTasks(){
+        doneSignal = new CountDownLatch(tasks.size());
+        for (FunctionInterface f : tasks){
+            Thread task = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    f.whatToDo();
+                }
+            });
+            task.start();
+        }
 
-    private void doChangeToHebrew(){
-        new AsyncTask<Void, Void, Void>() {
-
+        Thread task = new Thread(new Runnable() {
             @Override
-            protected Void doInBackground(Void... voids) {
-                changeToHebrew();
-                doneSignal.countDown();
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void aVoid) {}
-        }.execute();
-    }
-
-
-    private void doWait(){
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
+            public void run() {
                 try {
-                    Thread.sleep(0);
+                    doneSignal.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                doneSignal.countDown();
-                return null;
+                goToMain();
             }
-            @Override
-            protected void onPostExecute(Void aVoid) {}
-        }.execute();
+        });
+        task.start();
     }
-
-
-    private void doStartVideo(){
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                videoview.start();
-                Log.e("VIDEO", "VIDEO");
-                doneSignal.countDown();
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void aVoid) {}
-        }.execute();
-    }
-
-
-
-
 }

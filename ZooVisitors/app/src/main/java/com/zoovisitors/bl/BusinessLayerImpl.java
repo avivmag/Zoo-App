@@ -40,8 +40,8 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public void getAnimals(int id, final GetObjectInterface goi) {
 
-        // TODO: example for how to retrieve data from the network, be aware that you should update your ip in GlobalVariables class.
-        Log.e("ID", "" + id);
+        Log.e("ANIMALS", ""+id+"/" + GlobalVariables.language);
+
         ni.post("/animals/enclosure/" + id + "/" + GlobalVariables.language, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {

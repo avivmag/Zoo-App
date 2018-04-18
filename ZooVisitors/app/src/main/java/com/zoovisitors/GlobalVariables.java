@@ -2,6 +2,8 @@ package com.zoovisitors;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayer;
 
 /**
@@ -9,7 +11,7 @@ import com.zoovisitors.bl.BusinessLayer;
  */
 
 public class GlobalVariables {
-    public static String ServerAddress = "negevzoo.sytes.net:50000/";
+    public static String ServerAddress = "negevzoo.sytes.net:50555/";
     public static String LOG_TAG = "zoovisitors";
     public static int language = 1; //Hebrew
     public static boolean DEBUG = true;
@@ -17,4 +19,10 @@ public class GlobalVariables {
     public static BusinessLayer bl;
     public static int firstEnter = 0;
     public static String firebaseToken;
+    public static String deviceId;
+
+
+    public static OpeningHours[] testOp;
+    public static Enclosure[] testEnc;
+
 }

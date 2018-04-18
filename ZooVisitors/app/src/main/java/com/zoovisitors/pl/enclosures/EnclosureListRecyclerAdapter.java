@@ -1,14 +1,17 @@
 package com.zoovisitors.pl.enclosures;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
@@ -87,6 +90,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.enclosure_card, viewGroup, false);
+
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }

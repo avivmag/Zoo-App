@@ -23,7 +23,7 @@ import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.GetObjectInterface;
-import com.facebook.*;
+//import com.facebook.*;
 
 
 /**
@@ -44,9 +44,6 @@ public class EnclosureActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
 
-    private String json;
-    private BusinessLayer bl;
-    private Gson gson;
     private Animal[] animals;
     private Bundle clickedEnclosure;
     private TextView enclosureStoryText;
@@ -56,10 +53,10 @@ public class EnclosureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
-        bl = new BusinessLayerImpl(this);
+        GlobalVariables.bl = new BusinessLayerImpl(this);
         int id = enclosure.getId();
 
-        bl.getAnimals(id, new GetObjectInterface() {
+        GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 animals = (Animal[]) response;
@@ -72,7 +69,7 @@ public class EnclosureActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Object response) {
-                Log.e("GILI", "Callback failed");
+                Log.e("GetAnimals", (String) response);
             }
         });
 
