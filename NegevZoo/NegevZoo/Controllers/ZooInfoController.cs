@@ -320,7 +320,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="specialEvent">The element to add or update</param>
         [HttpPost]
-        [Route("SpecialEvents/update/{specialEvent}/{isPush}")]
+        [Route("SpecialEvents/update/{isPush}")]
         public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             try
@@ -375,8 +375,8 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/specialEvents/");
-                    return Ok();
+                    var uploadedImages = db.FileUpload(httpRequest, @"~/assets/specialEvents/");
+                    return Ok(uploadedImages);
                 }
             }
             catch (Exception Exp)

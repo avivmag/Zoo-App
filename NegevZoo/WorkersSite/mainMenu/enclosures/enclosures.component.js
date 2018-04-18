@@ -88,9 +88,9 @@
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
 
-                    var pictureUploadQuery  = $scope.uploadPicture($scope.profilePic, enclosure);
+                    var pictureUploadQuery  = uploadPicture($scope.profilePic, enclosure);
 
-                    var iconUploadQuery     = $scope.uploadIcon($scope.iconPic, enclosure);
+                    var iconUploadQuery     = uploadIcon($scope.iconPic, enclosure);
 
                     var uploadPromises      = [pictureUploadQuery, iconUploadQuery];
 
@@ -157,50 +157,6 @@
                         });
             }
 
-            $scope.uploadPicture        = function (picture, enclosure) {
-                if (!angular.isDefined(picture)) {
-                    return;
-                }
-
-                $scope.isLoading        = true;
-
-                var uploadUrl           = 'enclosures/upload/pictures';
-
-                var fileUploadQuery     = fileUpload.uploadFileToUrl(picture, uploadUrl).then(
-                    (success)   => {
-                        enclosure.pictureUrl    = success.data[0];
-
-                        $scope.profilePic = null;
-                    },
-                    ()          => {
-                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
-                    });
-
-                return fileUploadQuery;
-            };
-
-            $scope.uploadIcon           = function (icon, enclosure) {
-                if (!angular.isDefined(icon)) {
-                    return;
-                }
-
-                $scope.isLoading        = true;
-
-                var uploadUrl           = 'enclosures/upload/markers';
-
-                var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
-                    (success)   => {
-                        enclosure.markerIconUrl     = success.data[0];
-
-                        $scope.iconPic = null;
-                    },
-                    ()          => {
-                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
-                    });
-
-                return fileUploadQuery;
-            };
-
             $scope.addEnclosureVideo    = function(selectedEnclosure, videoUrl) {
                 $scope.isLoading        = true;
                 var watchString         = videoUrl.split('watch?v=')[1].split('&')[0];
@@ -222,6 +178,50 @@
                     }
                 )
             };
+        };
+
+        function uploadPicture (picture, enclosure) {
+            if (!angular.isDefined(picture)) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'enclosures/upload/pictures';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(picture, uploadUrl).then(
+                (success)   => {
+                    enclosure.pictureUrl    = success.data[0];
+
+                    $scope.profilePic       = null;
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        };
+
+        function uploadIcon (icon, enclosure) {
+            if (!angular.isDefined(icon)) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'enclosures/upload/markers';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
+                (success)   => {
+                    enclosure.markerIconUrl     = success.data[0];
+
+                    $scope.iconPic              = null;
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
         };
 
         MapDialogController.$Inject = ['mapService'];
