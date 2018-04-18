@@ -52,16 +52,41 @@ namespace BL
         /// <returns>The enclosures.</returns>
         public IEnumerable<EnclosureResult> GetAllEnclosureResults(int language)
         {
+            //validate the language
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            var enclosures = zooDB.GetAllEnclosures();
-            var enclosureDetails = zooDB.GetAllEnclosureDetails().Where(e => e.language == language);
+            //pull all the data
+            var enclosures          = zooDB.GetAllEnclosures().ToArray();
+            var enclosureDetails    = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
+            var recEvents           = zooDB.GetAllRecuringEvents().ToArray();
+            var encVideos           = zooDB.GetAllEnclosureVideos().ToArray();
+            var encPicture          = zooDB.GetAllEnclosurePictures().ToArray();
 
+            //create RecuringEventResults to the application
+            var recEventsDet = new List<RecurringEventsResult>();
+            foreach(RecurringEvent rec in recEvents)
+            {
+                recEventsDet.Add(new RecurringEventsResult
+                {
+                    Id          = rec.id,
+                    Title       = rec.title,
+                    Description = rec.description,
+                    EnclosureId = rec.enclosureId,
+                    StartTime   = Convert.ToInt64(rec.startTime.TotalMilliseconds * (rec.day%10)),
+                    EndTime     = Convert.ToInt64(rec.endTime.TotalMilliseconds * (rec.day % 10)),
+                    Language    = rec.language
+                });
+            }
+
+            //create EnclosureResults from all the data of the enclosures
             var enclosureResults = from e in enclosures
                                    join ed in enclosureDetails on e.id equals ed.encId
+                                   join vid in encVideos on e.id equals vid.enclosureId into encVid
+                                   join pic in encPicture on e.id equals pic.enclosureId into encPic
+                                   join eve in recEventsDet on e.id equals eve.EnclosureId into recEve
                                    select new EnclosureResult
                                    {
                                        Id                   = e.id,
@@ -71,7 +96,10 @@ namespace BL
                                        MarkerLongtitude     = e.markerLongitude,
                                        PictureUrl           = e.pictureUrl,
                                        Name                 = ed.name,
-                                       Story                = ed.story
+                                       Story                = ed.story,
+                                       Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
+                                       Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
+                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray()
                                    };
 
             return enclosureResults.ToArray();
