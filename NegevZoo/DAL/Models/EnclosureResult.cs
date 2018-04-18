@@ -16,5 +16,8 @@ namespace DAL.Models
         public string MarkerIconUrl { get; set; }
         public string PictureUrl { get; set; }
         public long Language { get; set; }
+        public YoutubeVideoUrl[] Videos { get; set; }
+        public EnclosurePicture[] Pictures { get; set; }
+        public RecurringEventsResult[] RecEvents {get;set;}
     }
 }
