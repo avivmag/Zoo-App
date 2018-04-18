@@ -41,7 +41,7 @@ public class contactInfoFragment extends Fragment {
                 TableLayout contactInfoTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
                 ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.swan);
                 int textSize = 16;
-                //Build the table for the infos
+                //Build the table for the info
                 for (ContactInfo ci : contactInfos) {
                     TableRow tbr = new TableRow(getContext());
                     TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.MATCH_PARENT);

@@ -62,7 +62,7 @@ public class MapActivity extends ProviderBasedActivity
             @Override
             public void onSuccess(Object response) {
                 // TODO: fake recurring events here, need to update the json somehow
-                getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response, new RecurringEvents[]);
+                getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response);
             }
 
             @Override

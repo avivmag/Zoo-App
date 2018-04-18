@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayNegev"
+    android:background="@color/white"
     tools:context="com.zoovisitors.pl.MainActivity"
     tools:layout_editor_absoluteY="56dp">
 
@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grayNegev"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -51,7 +51,6 @@
                 android:layout_gravity="center"
                 android:layout_margin="3dp"
                 android:background="@drawable/button_shape"
-                android:onClick="onClickWatchAllButton"
                 android:text="@string/watch_all_feed" />
 
         </LinearLayout>
@@ -61,35 +60,24 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/otherInfoButton"
-                style="@style/ButtonNegevZooStyle"
+            <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/personalStoriesButton"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_shape"
-                android:onClick="onClickMapButton"
-                android:text="@string/map" />
+                android:gravity="bottom|center"
+                android:text="@string/schedule" />
 
-             <Button
+             <com.zoovisitors.pl.customViews.buttonCustomView
                 android:id="@+id/enclosureListButton"
-                style="@style/ButtonNegevZooStyle"
                 android:layout_width="350dp"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_shape"
                 android:gravity="bottom|center"
-                android:onClick="onClickScheduleButton"
                 android:text="@string/our_enclosures"
                 android:textAllCaps="false" />
-
-           <!-- <com.zoovisitors.pl.customViews.buttonCustomView
-                android:id="@+id/enclosureListButton"
-                android:layout_width="150dp"
-                android:layout_height="100dp" />
--->
 
         </LinearLayout>
 
@@ -99,27 +87,23 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/mapButton"
-                style="@style/ButtonNegevZooStyle"
+            <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/scheduleButton"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_shape"
-                android:onClick="onClickMapButton"
-                android:text="@string/map" />
-
-            <Button
-                android:id="@+id/personalStoriesButton"
-                style="@style/ButtonNegevZooStyle"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_shape"
-                android:onClick="onClickEnclosuresButton"
+                android:gravity="bottom|center"
                 android:text="@string/schedule" />
+
+            <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/mapButton"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="4dp"
+                android:gravity="bottom|center"
+                android:layout_weight="1"
+                android:text="@string/map" />
 
         </LinearLayout>
 
@@ -128,29 +112,26 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/scheduleButton"
-                style="@style/ButtonNegevZooStyle"
+            <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/otherInfoButton"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_shape"
-                android:onClick="onClickEnclosuresButton"
-                android:text="@string/schedule" />
+                android:gravity="bottom|center"
+                android:text="@string/map" />
 
-            <Button
-                android:id="@+id/wazeImg"
-                style="@style/ButtonNegevZooStyle"
+            <com.zoovisitors.pl.customViews.buttonCustomView
+                android:id="@+id/wazeButton"
                 android:layout_width="350dp"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_shape"
-                android:onClick="onClickMapButton"
+                android:gravity="bottom|center"
                 android:text="@string/map" />
 
         </LinearLayout>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
+
