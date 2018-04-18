@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{A462
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkersSite", "WorkersSite\WorkersSite.csproj", "{86D6EF02-6497-41D9-BEC4-A6EA1897D322}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecEventsNotifications", "RecEventsNotifications\RecEventsNotifications.csproj", "{30C8D540-CAE7-4151-8ECE-7446F47D36E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D6EF02-6497-41D9-BEC4-A6EA1897D322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C8D540-CAE7-4151-8ECE-7446F47D36E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C8D540-CAE7-4151-8ECE-7446F47D36E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C8D540-CAE7-4151-8ECE-7446F47D36E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C8D540-CAE7-4151-8ECE-7446F47D36E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
