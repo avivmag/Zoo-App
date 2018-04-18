@@ -19,7 +19,7 @@ namespace NegevZoo.Controllers
         #region Price
 
         /// <summary>
-        /// Gets all the Price with data in that language.
+        /// Gets all the Price with data in the given language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All Prices with that language.</returns>
@@ -46,7 +46,6 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the Price element.
         /// </summary>
         /// <param name="price">The element to add or update</param>
-        /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
         [Route("prices/update")]
         public void UpdatePrice(Price price)
@@ -94,13 +93,14 @@ namespace NegevZoo.Controllers
         #region Opening hours
 
         /// <summary>
-        /// Gets all the OpeningGours elements with data in that language.
+        /// This method is for the visitors application
+        /// Gets all the OpeningHoursResults elements with data in the given language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
-        /// <returns>All OpeninngHour elements with that language.</returns>
+        /// <returns>All OpeninngHourResults elements with that language.</returns>
         [HttpGet]
         [Route("OpeningHours/all/{language}")]
-        public IEnumerable<OpeningHourResult> GetAllOpeningHours(int language = 1)
+        public IEnumerable<OpeningHourResult> GetAllOpeningHourResults(int language = 1)
         {
             try
             {
@@ -116,13 +116,14 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
+        /// This method is for the workers site.
         /// Gets all the OpeningHours elements in hebrew and days as int.
         /// </summary>
         /// <returns>All OpeninngHour elements in hebrew.</returns>
         [HttpGet]
-        [Route("OpeningHours/type/all/{language}")]
+        [Route("OpeningHours/type/all")]
         public IEnumerable<OpeningHour> GetAllOpeningHoursType()
         {
             try
@@ -139,7 +140,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
         /// Adds or Updates the OpeningHour element.
         /// </summary>
@@ -162,9 +163,9 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         /// <summary>
-        /// Deletes the OpeningHour element.
+        /// Deletes the OpeningHour element from all the languages.
         /// </summary>
         /// <param name="openHourId">The element's openHourId to delete</param>
         [HttpDelete]
@@ -187,6 +188,11 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+
+
+
+
 
         #region Contact Info
 

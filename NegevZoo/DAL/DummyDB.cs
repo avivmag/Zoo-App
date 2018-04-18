@@ -447,6 +447,219 @@ namespace DAL
         }
 
         /// <summary>
+        /// Initializes the prices mock.
+        /// </summary>
+        /// <returns>Mock prices list.</returns>
+        private IEnumerable<Price> InitializePrices()
+        {
+            return new List<Price>
+                {
+                    new Price
+                    {
+                        id          = 1,
+                        population  = "Adult",
+                        pricePop    = 40,
+                        language    = (int)DAL.Languages.en
+                    },
+
+                    new Price
+                    {
+                        id          = 2,
+                        population  = "מבוגר",
+                        pricePop    = 40,
+                        language    = (int)DAL.Languages.he
+                    },
+
+                    new Price
+                    {
+                        id          = 3,
+                        population  = "Children under 18",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.en
+                    },
+
+                    new Price
+                    {
+                        id          = 4,
+                        population  = "ילד מתחת לגיל 18",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.he
+                    },
+
+                    new Price
+                    {
+                        id          = 5,
+                        population  = "Soldier",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.en
+                    },
+
+                    new Price
+                    {
+                        id          = 6,
+                        population  = "חייל",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.he
+                    },
+
+                    new Price
+                    {
+                        id          = 7,
+                        population  = "Pensioner",
+                        pricePop    = 10,
+                        language    = (int)DAL.Languages.en
+                    },
+
+                    new Price
+                    {
+                        id          = 8,
+                        population  = "פנסיונר",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.he
+                    },
+
+                    new Price
+                    {
+                        id          = 9,
+                        population  = "Student",
+                        pricePop    = 10,
+                        language    = (int)DAL.Languages.en
+                    },
+
+                    new Price
+                    {
+                        id          = 10,
+                        population  = "סטודנט",
+                        pricePop    = 25,
+                        language    = (int)DAL.Languages.he
+                    }
+            };
+        }
+
+        private IEnumerable<OpeningHour> InitialOpeningHour()
+        {
+            return new List<OpeningHour>
+            {
+                //sunday
+                new OpeningHour
+                {
+                    id          = 1,
+                    day         = 1,
+                    startTime   = new TimeSpan(11, 30, 00),
+                    endTime     = new TimeSpan(12, 0, 0),
+                    language    = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id          = 2,
+                    day         = 11,
+                    startTime   = new TimeSpan(11, 30, 00),
+                    endTime     = new TimeSpan(12, 0, 0),
+                    language    = (int)DAL.Languages.en
+                },
+
+                //monday
+                new OpeningHour
+                {
+                    id = 3,
+                    day = 2,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id = 4,
+                    day = 12,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = (int)DAL.Languages.en
+                },
+
+                //
+                new OpeningHour
+                {
+                    id = 5,
+                    day = 3,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id = 6,
+                    day = 13,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = (int)DAL.Languages.en
+                },
+
+                //
+                new OpeningHour
+                {
+                    id = 7,
+                    day = 4,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id = 8,
+                    day = 14,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = (int)DAL.Languages.en
+                },
+
+                //
+                new OpeningHour
+                {
+                    id = 9,
+                    day = 5,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id = 10,
+                    day = 15,
+                    startTime = new TimeSpan(9, 30, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = (int)DAL.Languages.en
+                },
+
+                new OpeningHour
+                {
+                    id = 11,
+                    day = 7,
+                    startTime = new TimeSpan(10, 45, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
+                },
+
+                new OpeningHour
+                {
+                    id = 12,
+                    day = 17,
+                    startTime = new TimeSpan(9, 45, 0),
+                    endTime     = new TimeSpan(18, 0, 0),
+                    language = (int)DAL.Languages.en
+                },
+            };
+        }
+
+
+
+
+
+        /// <summary>
         /// Initializes the wall feeds mock.
         /// </summary>
         /// <returns>Mock wall feeds list.</returns>
@@ -717,96 +930,7 @@ namespace DAL
                 };
         }
 
-        /// <summary>
-        /// Initializes the prices mock.
-        /// </summary>
-        /// <returns>Mock prices list.</returns>
-        private IEnumerable<Price> InitializePrices()
-        {
-            return new List<Price>
-                {
-                    new Price
-                    {
-                        id          = 1,
-                        population  = "Adult",
-                        pricePop    = 40,
-                        language    = (int)DAL.Languages.en
-                    },
-
-                    new Price
-                    {
-                        id          = 2,
-                        population  = "מבוגר",
-                        pricePop    = 40,
-                        language    = (int)DAL.Languages.he
-                    },
-
-                    new Price
-                    {
-                        id          = 3,
-                        population  = "Children under 18",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.en
-                    },
-
-                    new Price
-                    {
-                        id          = 4,
-                        population  = "ילד מתחת לגיל 18",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.he
-                    },
-
-                    new Price
-                    {
-                        id          = 5,
-                        population  = "Soldier",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.en
-                    },
-
-                    new Price
-                    {
-                        id          = 6,
-                        population  = "חייל",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.he
-                    },
-
-                    new Price
-                    {
-                        id          = 7,
-                        population  = "Pensioner",
-                        pricePop    = 10,
-                        language    = (int)DAL.Languages.en
-                    },
-
-                    new Price
-                    {
-                        id          = 8,
-                        population  = "פנסיונר",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.he
-                    },
-
-                    new Price
-                    {
-                        id          = 9,
-                        population  = "Student",
-                        pricePop    = 10,
-                        language    = (int)DAL.Languages.en
-                    },
-
-                    new Price
-                    {
-                        id          = 10,
-                        population  = "סטודנט",
-                        pricePop    = 25,
-                        language    = (int)DAL.Languages.he
-                    }
-            };
-        }
-
+        
         /// <summary>
         /// Initializes the General Info mock.
         /// </summary>
@@ -880,119 +1004,7 @@ namespace DAL
             };
         }
 
-        private IEnumerable<OpeningHour> InitialOpeningHour()
-        {
-            return new List<OpeningHour>
-            {
-                new OpeningHour
-                {
-                    id          = 1,
-                    day         = 1,
-                    startTime   = new TimeSpan(11, 30, 00),
-                    endTime     = new TimeSpan(12, 0, 0),
-                    language    = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id          = 2,
-                    day         = 11,
-                    startTime   = new TimeSpan(11, 30, 00),
-                    endTime     = new TimeSpan(12, 0, 0),
-                    language    = (int)DAL.Languages.en
-                },
-
-                new OpeningHour
-                {
-                    id = 3,
-                    day = 2,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id = 4,
-                    day = 12,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)DAL.Languages.en
-                },
-
-                new OpeningHour
-                {
-                    id = 5,
-                    day = 3,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id = 6,
-                    day = 13,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)DAL.Languages.en
-                },
-
-                new OpeningHour
-                {
-                    id = 7,
-                    day = 4,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id = 8,
-                    day = 14,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)DAL.Languages.en
-                },
-
-                new OpeningHour
-                {
-                    id = 9,
-                    day = 5,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id = 10,
-                    day = 15,
-                    startTime = new TimeSpan(9, 30, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)DAL.Languages.en
-                },
-
-                new OpeningHour
-                {
-                    id = 11,
-                    day = 7,
-                    startTime = new TimeSpan(10, 45, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id
-                },
-
-                new OpeningHour
-                {
-                    id = 12,
-                    day = 17,
-                    startTime = new TimeSpan(9, 45, 0),
-                    endTime     = new TimeSpan(18, 0, 0),
-                    language = (int)DAL.Languages.en
-                },
-            };
-        }
+        
 
         private IEnumerable<ContactInfo> InitialContactInfos()
         {
