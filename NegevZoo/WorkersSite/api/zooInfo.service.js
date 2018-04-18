@@ -29,12 +29,12 @@
     var specialEvents   = {
         getAllSpecialEvents:    function (language)                         { return httpService.httpGet({ url: [specialEventsBaseUrl, 'all', language] }); },
         getSpecialEventByDate:  function (startDate, endDate, language)     { return httpService.httpGet({ url: [specialEventsBaseUrl, 'date', startDate, endDate, language] }); },
-        updateSpecialEvent:     function (specialEvent)                     { return httpService.httpPost({ url: [specialEventsBaseUrl, 'update'], body: specialEvent }); },
+        updateSpecialEvent:     function (specialEvent, isPush)             { return httpService.httpPost({ url: [specialEventsBaseUrl, 'update', isPush], body: specialEvent }); },
         deleteSpecialEvent:     function (specialEventId)                   { return httpService.httpDelete({ url: [specialEventsBaseUrl, 'delete', specialEventId] }); }
     };
     var feedWall        = {
         getAllFeeds:            function (language)                         { return httpService.httpGet({ url: [wallFeedBaseUrl, 'all', language] }); },
-        updateFeed:             function (wallFeed)                         { return httpService.httpPost({ url: [wallFeedBaseUrl, 'update'], body: wallFeed }); },
+        updateFeed:             function (wallFeed, isPush, isWallFeed)     { return httpService.httpPost({ url: [wallFeedBaseUrl, 'update', isPush, isWallFeed], body: wallFeed }); },
         deleteFeed:             function (wallFeedId)                       { return httpService.httpDelete({ url: [wallFeedBaseUrl, 'delete', wallFeedId] }); }
     };
     var generalInfo     = {
