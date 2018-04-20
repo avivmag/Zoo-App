@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
-    <color name="orangeNegev">#FF7000</color>
+    <color name="orangeNegev">#FF7000</color>7
     <color name="grayNegev">#E1D9CC</color>
     <color name="brownNegev">#5b4a40</color>
+    <color name="blueTitle">#3B45C5</color>
+
+
+    <!-- colors for buttons -->
+    <color name="greenIcon">#88B577</color>
+    <color name="lightGreenIcon">#59A63B</color>
+    <color name="blueIcon">#585DD9</color>
+    <color name="lightBlueIcon">#9EA0DF</color>
+    <color name="brownIcon">#C57550</color>
+    <color name="lightBrownIcon">#DF926F</color>
 </resources>

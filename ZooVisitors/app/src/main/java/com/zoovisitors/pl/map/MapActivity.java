@@ -58,10 +58,11 @@ public class MapActivity extends ProviderBasedActivity
 
     private void setNetworkDataProvider() {
         mapView.addZooMapIcon(0, 0);
-//         TODO: replace the fakes with the reals  when they are ready
+        //  TODO: replace the fakes with the reals when they are ready
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
+                // TODO: fake recurring events here, need to update the json somehow
                 getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response);
             }
 

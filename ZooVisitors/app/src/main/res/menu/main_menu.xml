@@ -15,28 +15,20 @@
         <menu>
             <item
                 android:id="@+id/language_eng"
-                android:checkable="true"
-                android:checked="false"
                 android:onClick="onSelectLanguage"
                 android:title="@string/language_eng"></item>
                 <!--/>-->
             <item
                 android:id="@+id/language_heb"
-                android:checkable="true"
-                android:checked="false"
                 android:onClick="onSelectLanguage"
                 android:title="@string/language_heb"></item>
                 <!--/>-->
             <item
                 android:id="@+id/language_arb"
-                android:checkable="true"
-                android:checked="false"
                 android:onClick="onSelectLanguage"
                 android:title="@string/language_arb"></item>
             <item
                 android:id="@+id/language_rus"
-                android:checkable="true"
-                android:checked="false"
                 android:onClick="onSelectLanguage"
                 android:title="@string/language_rus" />
         </menu>
