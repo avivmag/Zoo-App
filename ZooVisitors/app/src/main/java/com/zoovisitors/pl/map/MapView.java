@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -314,7 +315,7 @@ public class MapView extends RelativeLayout {
 
     private class EnclosureIcon extends Icon {
         private Enclosure enclosure;
-        private RecurringEvent recurringEvent;
+        private RecurringEventScheduler recurringEvent;
 
         EnclosureIcon(Drawable resource, Enclosure enclosure, int left, int top) {
             super(new Object[] {resource}, left, top, true);
@@ -347,11 +348,11 @@ public class MapView extends RelativeLayout {
             view.post(new Runnable() {
                 @Override
                 public void run() {
-                    recurringEvent = new RecurringEvent(
-                            left,
-                            top,
+                    recurringEvent = new RecurringEventScheduler(
+                            left + width/2,
+                            (int) (top - height/2 - 20),
                             onTouchListener,
-                            null // TODO: must set the real list
+                            enclosure.getRecurringEvent() // TODO: must set the real list
                             );
                 }
             });
@@ -360,27 +361,26 @@ public class MapView extends RelativeLayout {
         @Override
         void setView() {
             ImageView view = new ImageView(getContext());
-            int resourceId = getResources().getIdentifier((String) additionalData[0], "mipmap", getContext().getPackageName());
-            view.setImageResource(resourceId);
+            view.setImageDrawable((Drawable) additionalData[0]);
             this.view = view;
         }
 
-        private class RecurringEvent {
+        private class RecurringEventScheduler {
             private Timer textTimer, imageTimer;
             private RecurringEventTextViewIcon recurringEventTextViewIcon;
             private RecurringEventImageViewIcon recurringEventImageViewIcon;
             private int left;
             private int top;
             private OnTouchListener onTouchListener;
-            private Queue<Pair<Long, Long>> startEndTimeQueue;
+            private Queue<Enclosure.RecurringEvent> recurringEvents;
 
-            public RecurringEvent(int left, int top, OnTouchListener onTouchListener, Queue<Pair<Long, Long>> startEndTimeQueue) {
+            public RecurringEventScheduler(int left, int top, OnTouchListener onTouchListener, Queue<Enclosure.RecurringEvent> recurringEvents) {
                 textTimer = new Timer();
                 imageTimer = new Timer();
                 this.left = left;
                 this.top = top;
                 this.onTouchListener = onTouchListener;
-                this.startEndTimeQueue = startEndTimeQueue;
+                this.recurringEvents = recurringEvents;
                 recurringEventTextViewIcon = new RecurringEventTextViewIcon(
                         onTouchListener,
                         left,
@@ -394,26 +394,24 @@ public class MapView extends RelativeLayout {
 
             public void startTimers() {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
-                Pair<Long, Long> startEndTime = startEndTimeQueue.remove();
-                startEndTimeQueue.add(new Pair<>(
-                        startEndTime.first + SEVEN_DAYS,
-                        startEndTime.second + SEVEN_DAYS
-                ));
+                if(recurringEvents.isEmpty())
+                    return;
+                Enclosure.RecurringEvent recurringEvent = recurringEvents.remove();
 
                 // means the text should not be shown yet
-                if (startEndTime.first - RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
-                    scheduleTextTimer(startEndTime.first, startEndTime.first - RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
-                } else if (startEndTime.first > currentTime) { // means we are at the middle of the text timer ticking
-                    scheduleTextTimer(startEndTime.first, 0);
+                if (recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
+                    scheduleTextTimer(recurringEvent.getStartTime(), recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
+                } else if (recurringEvent.getStartTime() > currentTime) { // means we are at the middle of the text timer ticking
+                    scheduleTextTimer(recurringEvent.getStartTime(), 0);
                 }
 
                 // means that we shouldn't show the image yet
-                if (startEndTime.first > currentTime) {
-                    scheduleImageTimerStart(currentTime, startEndTime.first);
-                    scheduleImageTimerEnd(currentTime, startEndTime.second);
-                } else if (startEndTime.second > currentTime && currentTime >= startEndTime.first) { // means the event is on
+                if (recurringEvent.getStartTime() > currentTime) {
+                    scheduleImageTimerStart(currentTime, recurringEvent.getStartTime());
+                    scheduleImageTimerEnd(currentTime, recurringEvent.getEndTime());
+                } else if (recurringEvent.getEndTime() > currentTime && currentTime >= recurringEvent.getStartTime()) { // means the event is on
                     recurringEventImageViewIcon.show();
-                    scheduleImageTimerEnd(currentTime, startEndTime.second);
+                    scheduleImageTimerEnd(currentTime, recurringEvent.getEndTime());
                 } else { // there is a low chance this will happen.. only if the event is on when this function was called and until we got here it got ended
                     startTimers();
                 }

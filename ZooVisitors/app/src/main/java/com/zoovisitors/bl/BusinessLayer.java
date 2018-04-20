@@ -10,7 +10,7 @@ public interface BusinessLayer {
     void getAllAnimals(final GetObjectInterface goi);
     void getEnclosures(final GetObjectInterface goi);
     void getMisc(final GetObjectInterface goi);
-    void getRecurringEvents(final GetObjectInterface goi);
+//    void getRecurringEvents(final GetObjectInterface goi);
     void getNewsFeed(final GetObjectInterface goi);
     void getSchedule(final GetObjectInterface goi);
     void getPrices(final GetObjectInterface goi);
