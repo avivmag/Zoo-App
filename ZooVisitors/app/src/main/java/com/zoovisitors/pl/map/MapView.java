@@ -4,16 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.Enclosure;
@@ -21,7 +21,11 @@ import com.zoovisitors.backend.Misc;
 import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by aviv on 12-Jan-18.
@@ -29,8 +33,28 @@ import java.util.List;
 
 public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
+    public static final int SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    private static long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30*60*1000;
+    private static long RECURRING_EVENT_TIMER_BETWEEN_CALLS_TIME = 250;
+    private static enum RecurringEventTimerElapseTimeTextLengthEnum {HOURS, MINUTES, SECONDS};
+    private static RecurringEventTimerElapseTimeTextLengthEnum
+            RECURRING_EVENT_TIMER_ELAPSE_TIME_TEXT =
+            RECURRING_EVENT_TIMER_ELAPSE_TIME < 60 * 1000 ? RecurringEventTimerElapseTimeTextLengthEnum.SECONDS :
+                    RECURRING_EVENT_TIMER_ELAPSE_TIME < 60 * 60 * 1000 ? RecurringEventTimerElapseTimeTextLengthEnum.MINUTES :
+                            RecurringEventTimerElapseTimeTextLengthEnum.HOURS;
+
+    private static int getSeconds(long time) {
+        return (int) (time*0.001%60);
+    }
+    private static int getMinutes(long time) {
+        return (int) (time*0.001/60%60);
+    }
+    private static int getHours(long time) {
+        return (int) Math.min(time*0.001/60/60, 99);
+    }
     public static final String ZOO_MAP = "zoo_map";
     public static final String VISITOR_ICON = "visitor_icon";
+    public static final String RECURRING_EVENT_STARTED_ICON = "recurring_event_started_icon";
     private float mPosX;
     private float mPosY;
 
@@ -93,13 +117,15 @@ public class MapView extends RelativeLayout {
                 mLastScaleFactor = mScaleFactor;
 
                 updateIconPositionWithoutSize(zooMapIcon);
-                for (ImageIcon icon :
+                for (EnclosureIcon enclosureIcon :
                         enclosureIcons) {
-                    updateIconPositionWithSize(icon);
+                    updateIconPositionWithSize(enclosureIcon);
+                    updateIconPositionWithSize(enclosureIcon.recurringEvent.recurringEventImageViewIcon);
+                    updateIconPositionWithSize(enclosureIcon.recurringEvent.recurringEventTextViewIcon);
                 }
-                for(ImageIcon icon:
+                for(MiscIcon miscIcon:
                         miscIcons) {
-                    updateIconPositionWithSize(icon);
+                    updateIconPositionWithSize(miscIcon);
                 }
                 if(visitorIcon.view.getVisibility() == VISIBLE)
                     updateIconPositionWithSize(visitorIcon);
@@ -131,7 +157,11 @@ public class MapView extends RelativeLayout {
         return true;
     }
 
-    private void updateIconPositionWithSize(ImageIcon icon) {
+    /**
+     * Updates the icon position so the middle of the image will be at the point
+     * @param icon
+     */
+    private void updateIconPositionWithSize(Icon icon) {
         if(icon.width != 0 && icon.height != 0) {
             LayoutParams params =
                     new LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height * mScaleFactor));
@@ -146,7 +176,12 @@ public class MapView extends RelativeLayout {
             icon.view.setVisibility(VISIBLE);
         }
     }
-    private void updateIconPositionWithoutSize(ImageIcon icon) {
+
+    /**
+     * Updates the icon position so the left top of the image will be at the point
+     * @param icon
+     */
+    private void updateIconPositionWithoutSize(Icon icon) {
         if(icon.width != 0 && icon.height != 0) {
             LayoutParams params =
                     new LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height * mScaleFactor));
@@ -171,8 +206,8 @@ public class MapView extends RelativeLayout {
 
     private List<EnclosureIcon> enclosureIcons;
     private List<MiscIcon> miscIcons;
-    private ImageIcon visitorIcon;
-    private ImageIcon zooMapIcon;
+    private Icon visitorIcon;
+    private Icon zooMapIcon;
     public void addEnclosureIcon(Drawable resource, Enclosure enclosure, int left, int top)
     {
         enclosureIcons.add(new EnclosureIcon(resource, enclosure, left, top));
@@ -183,8 +218,16 @@ public class MapView extends RelativeLayout {
     }
     public void AddVisitorIcon()
     {
-        visitorIcon = new ImageIcon(VISITOR_ICON, 0, 0, true);
-        HideVisitorIcon();
+        visitorIcon = new Icon(null, 0, 0, true) {
+            @Override
+            void setView() {
+                ImageView view = new ImageView(getContext());
+                int resourceId = getResources().getIdentifier(VISITOR_ICON, "mipmap", getContext().getPackageName());
+                view.setImageResource(resourceId);
+                view.setVisibility(INVISIBLE);
+                this.view = view;
+            }
+        };
     }
     public void UpdateVisitorLocation(int left, int top)
     {
@@ -202,26 +245,32 @@ public class MapView extends RelativeLayout {
     }
     public void addZooMapIcon(int left, int top)
     {
-        zooMapIcon = new ImageIcon(ZOO_MAP, left, top, false);
+        zooMapIcon = new Icon(null, left, top, false) {
+            @Override
+            void setView() {
+                ImageView view = new ImageView(getContext());
+                int resourceId = getResources().getIdentifier(ZOO_MAP, "mipmap", getContext().getPackageName());
+                view.setImageResource(resourceId);
+                this.view = view;
+            }
+        };
     }
 
-    private class ImageIcon {
-        protected ImageView view;
+    private abstract class Icon {
+        protected View view;
+        protected Object[] additionalData;
         protected int left;
         protected int top;
         protected int width;
         protected int height;
 
-        ImageIcon(int left, int top) {
+        abstract void setView();
+
+        Icon(Object[] additionalData, int left, int top, boolean shouldBeCentered) {
+            this.additionalData = additionalData;
             this.left = left;
             this.top = top;
-        }
-
-        ImageIcon(String resource, int left, int top, boolean shouldBeCentered) {
-            this(left, top);
-            int resourceId = getResources().getIdentifier(resource, "mipmap", getContext().getPackageName());
-            view = new ImageView(getContext());
-            view.setImageResource(resourceId);
+            setView();
             UpdateView(shouldBeCentered);
         }
 
@@ -240,7 +289,7 @@ public class MapView extends RelativeLayout {
                     width =  view.getMeasuredWidth();
                     height = view.getMeasuredHeight();
                     if(shouldBeCentered)
-                        updateIconPositionWithSize(ImageIcon.this);
+                        updateIconPositionWithSize(Icon.this);
                 }
             });
             view.setVisibility(shouldBeCentered ? INVISIBLE : VISIBLE);
@@ -248,34 +297,30 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    private class MiscIcon extends ImageIcon {
+    private class MiscIcon extends Icon {
         private Misc misc;
         MiscIcon(Drawable resource, Misc misc, int left, int top) {
-            super(left, top);
+            super(new Object[]{resource}, left, top, true);
             this.misc = misc;
+        }
 
-            this.left = left;
-            this.top = top;
-            view = new ImageView(getContext());
-            view.setImageDrawable(resource);
-
-            UpdateView(true);
+        @Override
+        void setView() {
+            ImageView view = new ImageView(getContext());
+            view.setImageDrawable((Drawable) additionalData[0]);
+            this.view = view;
         }
     }
 
-    private class EnclosureIcon extends ImageIcon {
+    private class EnclosureIcon extends Icon {
         private Enclosure enclosure;
+        private RecurringEvent recurringEvent;
 
         EnclosureIcon(Drawable resource, Enclosure enclosure, int left, int top) {
-            super(left, top);
+            super(new Object[] {resource}, left, top, true);
             this.enclosure = enclosure;
 
-            this.left = left;
-            this.top = top;
-            view = new ImageView(getContext());
-            view.setImageDrawable(resource);
-
-            view.setOnTouchListener(new OnTouchListener() {
+            OnTouchListener onTouchListener = new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction())
@@ -290,15 +335,203 @@ public class MapView extends RelativeLayout {
 
                             break;
                         case MotionEvent.ACTION_CANCEL:
-//                            Log.e("AVIV", resource + " Not a click");
                             break;
                     }
 
                     return true;
                 }
-            });
+            };
 
-            UpdateView(true);
+            view.setOnTouchListener(onTouchListener);
+            // should be ran after the view was added to front and the sizes are known, cool trick..
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    recurringEvent = new RecurringEvent(
+                            left,
+                            top,
+                            onTouchListener,
+                            null // TODO: must set the real list
+                            );
+                }
+            });
+        }
+
+        @Override
+        void setView() {
+            ImageView view = new ImageView(getContext());
+            int resourceId = getResources().getIdentifier((String) additionalData[0], "mipmap", getContext().getPackageName());
+            view.setImageResource(resourceId);
+            this.view = view;
+        }
+
+        private class RecurringEvent {
+            private Timer textTimer, imageTimer;
+            private RecurringEventTextViewIcon recurringEventTextViewIcon;
+            private RecurringEventImageViewIcon recurringEventImageViewIcon;
+            private int left;
+            private int top;
+            private OnTouchListener onTouchListener;
+            private Queue<Pair<Long, Long>> startEndTimeQueue;
+
+            public RecurringEvent(int left, int top, OnTouchListener onTouchListener, Queue<Pair<Long, Long>> startEndTimeQueue) {
+                textTimer = new Timer();
+                imageTimer = new Timer();
+                this.left = left;
+                this.top = top;
+                this.onTouchListener = onTouchListener;
+                this.startEndTimeQueue = startEndTimeQueue;
+                recurringEventTextViewIcon = new RecurringEventTextViewIcon(
+                        onTouchListener,
+                        left,
+                        top);
+                recurringEventImageViewIcon = new RecurringEventImageViewIcon(
+                        onTouchListener,
+                        left,
+                        top);
+                startTimers();
+            }
+
+            public void startTimers() {
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                Pair<Long, Long> startEndTime = startEndTimeQueue.remove();
+                startEndTimeQueue.add(new Pair<>(
+                        startEndTime.first + SEVEN_DAYS,
+                        startEndTime.second + SEVEN_DAYS
+                ));
+
+                // means the text should not be shown yet
+                if (startEndTime.first - RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
+                    scheduleTextTimer(startEndTime.first, startEndTime.first - RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
+                } else if (startEndTime.first > currentTime) { // means we are at the middle of the text timer ticking
+                    scheduleTextTimer(startEndTime.first, 0);
+                }
+
+                // means that we shouldn't show the image yet
+                if (startEndTime.first > currentTime) {
+                    scheduleImageTimerStart(currentTime, startEndTime.first);
+                    scheduleImageTimerEnd(currentTime, startEndTime.second);
+                } else if (startEndTime.second > currentTime && currentTime >= startEndTime.first) { // means the event is on
+                    recurringEventImageViewIcon.show();
+                    scheduleImageTimerEnd(currentTime, startEndTime.second);
+                } else { // there is a low chance this will happen.. only if the event is on when this function was called and until we got here it got ended
+                    startTimers();
+                }
+            }
+
+            private void scheduleImageTimerEnd(long currentTime, long endTime) {
+                imageTimer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            recurringEventImageViewIcon.hide();
+                                            startTimers();
+                                        }
+                                    },
+                        endTime - currentTime);
+            }
+
+            private void scheduleImageTimerStart(long currentTime, long startTime) {
+                imageTimer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            recurringEventImageViewIcon.show();
+                                        }
+                                    },
+                        startTime - currentTime);
+            }
+
+            private void scheduleTextTimer(long startTime, long delayTime) {
+                textTimer.scheduleAtFixedRate(
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                                long currentTime = Calendar.getInstance().getTimeInMillis();
+                                if(currentTime < startTime){
+                                    recurringEventTextViewIcon.setTime(currentTime);
+                                } else {
+                                    recurringEventTextViewIcon.hide();
+                                    textTimer.cancel();
+                                }
+                            }
+                        },
+                        delayTime,
+                        RECURRING_EVENT_TIMER_BETWEEN_CALLS_TIME);
+            }
+
+            private class RecurringEventTextViewIcon extends Icon {
+                private TextView tv;
+                RecurringEventTextViewIcon(OnTouchListener onTouchListener, int left, int top) {
+                    super(new Object[] {onTouchListener}, left, top, true);
+                }
+
+                @Override
+                void setView() {
+                    tv = new TextView(getContext());
+                    switch(RECURRING_EVENT_TIMER_ELAPSE_TIME_TEXT){
+                        case HOURS:
+                            tv.setEms(2);
+                            break;
+                        case MINUTES:
+                            tv.setEms(5);
+                            break;
+                        case SECONDS:
+                            tv.setEms(8);
+                            break;
+                    }
+                    tv.setVisibility(INVISIBLE);
+                    tv.setOnTouchListener((OnTouchListener) additionalData[0]);
+                    this.view = tv;
+                }
+
+                /**
+                 *
+                 * @param time The time that needs to be shown (after all calculations except dividing to hours, minutes and seconds)
+                 */
+                public void setTime(long time) {
+                    tv.setVisibility(VISIBLE);
+                    StringBuilder text = new StringBuilder();
+                    switch(RECURRING_EVENT_TIMER_ELAPSE_TIME_TEXT) {
+                        case HOURS:
+                            text.append(getHours(time));
+                            text.append(":");
+                        case MINUTES:
+                            text.append(getMinutes(time));
+                            text.append(":");
+                        case SECONDS:
+                            text.append(getSeconds(time));
+                            break;
+                    }
+                    tv.setText(text.toString());
+                }
+                public void hide()
+                {
+                    tv.setVisibility(INVISIBLE);
+                }
+            }
+
+            private class RecurringEventImageViewIcon extends Icon {
+                RecurringEventImageViewIcon(OnTouchListener onTouchListener, int left, int top) {
+                    super(new Object[] {onTouchListener}, left, top, true);
+                }
+
+                @Override
+                void setView() {
+                    ImageView view = new ImageView(getContext());
+                    int resourceId = getResources().getIdentifier(RECURRING_EVENT_STARTED_ICON, "mipmap", getContext().getPackageName());
+                    view.setImageResource(resourceId);
+                    view.setOnTouchListener((OnTouchListener) additionalData[0]);
+                    view.setVisibility(INVISIBLE);
+                    this.view = view;
+                }
+
+                public void show() {
+                    view.setVisibility(VISIBLE);
+                }
+
+                public void hide() {
+                    view.setVisibility(INVISIBLE);
+                }
+            }
         }
     }
 }

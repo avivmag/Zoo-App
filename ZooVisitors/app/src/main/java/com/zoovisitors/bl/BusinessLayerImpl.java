@@ -14,7 +14,7 @@ import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
-import com.zoovisitors.backend.RecurringEvents;
+import com.zoovisitors.backend.RecurringEvent;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
@@ -131,7 +131,7 @@ public class BusinessLayerImpl implements BusinessLayer {
         ni.post("recurringEvents/all/" + GlobalVariables.language, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
-                RecurringEvents[] re = gson.fromJson(response, RecurringEvents[].class);
+                RecurringEvent[] re = gson.fromJson(response, RecurringEvent[].class);
 
                 if (re.length <= 0)
                     goi.onFailure("No Data in the server");
