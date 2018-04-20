@@ -14,19 +14,20 @@ import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
-import com.zoovisitors.backend.RecurringEvents;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
 import com.zoovisitors.dal.data_handler.InternalStorage;
 
+import java.util.Arrays;
+import java.util.Calendar;
+
 /**
  * Created by Gili on 13/01/2018.
  */
 
 public class BusinessLayerImpl implements BusinessLayer {
-
     private NetworkInterface ni;
     private InternalStorage is;
     private Gson gson;
@@ -92,6 +93,14 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                for (int i = 0; i < enc.length; i++) {
+                    // TODO: fake recurring events here, need to update the json somehow
+                    enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
+                            Enclosure.RecurringEvent.createRecurringEvent(1, "", currentTime + 10
+                                    * 60 * 1000, currentTime + 40 * 60 * 1000, "")
+                    });
+                }
 
                 if (enc.length <= 0)
                     goi.onFailure("No Data in the server");
@@ -126,25 +135,25 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-    @Override
-    public void getRecurringEvents(final GetObjectInterface goi) {
-        ni.post("recurringEvents/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                RecurringEvents[] re = gson.fromJson(response, RecurringEvents[].class);
-
-                if (re.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(re);
-            }
-
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get misc from server");
-            }
-        });
-    }
+//    @Override
+//    public void getRecurringEvents(final GetObjectInterface goi) {
+//        ni.post("recurringEvents/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+//            @Override
+//            public void onSuccess(String response) {
+//                RecurringEvent[] re = gson.fromJson(response, RecurringEvent[].class);
+//
+//                if (re.length <= 0)
+//                    goi.onFailure("No Data in the server");
+//                else
+//                    goi.onSuccess(re);
+//            }
+//
+//            @Override
+//            public void onFailure(String response) {
+//                goi.onFailure("Can't get misc from server");
+//            }
+//        });
+//    }
 
     public void getImage(String url, GetObjectInterface goi) {
             ni.postImage(url, new ResponseInterface<Bitmap>() {

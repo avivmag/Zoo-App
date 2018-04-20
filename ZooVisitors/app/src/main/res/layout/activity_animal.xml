@@ -42,8 +42,7 @@
             android:id="@+id/olive"
             android:layout_width="match_parent"
             android:layout_height="218dp"
-            android:baselineAligned="false"
-            app:srcCompat="@drawable/olive" />
+            android:baselineAligned="false" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/animal_viewpager"
