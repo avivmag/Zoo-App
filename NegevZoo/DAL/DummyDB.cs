@@ -39,6 +39,8 @@ namespace DAL
             EnclosurePictures   = new TestDbSet<EnclosurePicture>();
             YoutubeVideoUrls    = new TestDbSet<YoutubeVideoUrl>();
             Devices             = new TestDbSet<Device>();
+            MapInfo             = new TestDbSet<MapInfo>();
+            Routes              = new TestDbSet<Route>();
 
             Languages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
@@ -56,8 +58,10 @@ namespace DAL
             YoutubeVideoUrls.AddRange(InitializeYouTubeVidoes());
             AnimalsDetails.AddRange(InitializeAnimalsDetails());
             Devices.AddRange(InitializeDevices());
+            MapInfo.AddRange(InitalizeMapInfo());
+            Routes.AddRange(InitalizeRoutes());
         }
-        
+
         private IZooDB CreateInstance()
         {
             throw new NotImplementedException();
@@ -98,6 +102,8 @@ namespace DAL
         protected DbSet<EnclosurePicture> EnclosurePictures { get; set; }
         protected DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
         protected DbSet<Device> Devices { get; set; }
+        protected DbSet<MapInfo> MapInfo { get; set; }
+        protected DbSet<Route> Routes { get; set; }
 
         #endregion 
 
@@ -1142,6 +1148,22 @@ namespace DAL
                 }
             };
         }
+
+        private IEnumerable<MapInfo> InitalizeMapInfo()
+        {
+            return new List<MapInfo>
+            {
+
+            };
+        }
+
+        private IEnumerable<Route> InitalizeRoutes()
+        {
+            return new List<Route>
+            {
+
+            };
+        }
         #endregion
 
         #region Getters
@@ -1221,9 +1243,19 @@ namespace DAL
             return YoutubeVideoUrls;
         }
 
-        public override DbSet<Device> getAllDevices()
+        public override DbSet<Device> GetAllDevices()
         {
             return Devices;
+        }
+
+        public override DbSet<MapInfo> GetAllMapInfos()
+        {
+            return MapInfo;
+        }
+
+        public override DbSet<Route> GetAllRoutes()
+        {
+            return Routes;
         }
         #endregion
     }
