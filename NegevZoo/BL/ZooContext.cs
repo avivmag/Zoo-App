@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using DAL;
@@ -34,6 +35,7 @@ namespace BL
             }
             catch (Exception exp)
             {
+                Logger.GetInstance().WriteLine(exp.Message);
                 throw new Exception("Could not connect to the database");
             }
         }
@@ -104,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -1789,11 +1791,112 @@ namespace BL
         #endregion
 
         #region Map
+        /// <summary>
+        /// This method intitiates the map with the given parameters. 
+        /// </summary>
+        /// <returns> MapSettingResult with all the attributes</returns>
         public MapSettingsResult GetMapSettings()
         {
-            throw new NotImplementedException();
-        }
+            var allSettings = zooDB.GetAllMapInfos();
 
+            if (allSettings.Count() == 0)
+            {
+                throw new ArgumentException("No settings arein the data base");
+            }
+
+            //should be only 1.
+            var mapSettings = allSettings.First();
+            
+            return new MapSettingsResult
+            {
+                PointsPath = mapSettings.pointspath,
+                Longitude = mapSettings.longitude,
+                Latitude = mapSettings.latitude,
+                ZooPointX = mapSettings.zooPointX,
+                ZooPointY = mapSettings.zooPointY,
+                XLongitudeRatio = mapSettings.xLongitudeRatio,
+                YLatitudeRatio = mapSettings.yLatitudeRatio,
+                SinAlpha = mapSettings.sinAlpha,
+                CosAlpha = mapSettings.cosAlpha,
+                MinLatitude = mapSettings.minLatitude,
+                MaxLatitude = mapSettings.maxLatitude,
+                MinLongitude = mapSettings.minLatitude,
+                MaxLongitude = mapSettings.maxLongitude,
+                Routes = zooDB.GetAllRoutes().ToArray()
+            };
+        }
+        
+        /// <summary>
+        /// This method intitiates the map with the given parameters. 
+        /// </summary>
+        /// <param name="pointsFilePath"> This variables represents the path of the CSV file that contains the points of the map.</param>
+        /// <param name="longitude"> This variable represents the longitude of a point in the map</param>
+        /// <param name="latitude">This variable represents the latitude of a point in the map</param>
+        /// <param name="xLocation"> This variable represents the location of the longitude on the map picture</param>
+        /// <param name="yLocation"> This variable represents the location of the latitude on the map picture</param>
+        public void InitMapSettings(string pointsFilePath, double longitude, double latitude, int xLocation, int yLocation)
+        {
+            List<PointMap> points = ExtractPointsFromCSVFile(pointsFilePath);
+            Dictionary<PointMap, List<PointMap>> routes = new Dictionary<PointMap, List<PointMap>>();
+            double xLongitudeRatio  = 0;
+            double yLatitudeRatio   = 0;
+            double sinAlpha         = 0;
+            double cosAlpha         = 0;
+            double minLatitude      = 0;
+            double maxLatitude      = 0;
+            double minLongitude     = 0;
+            double maxLongitude     = 0;
+
+            ///////////// TODO: Aviv's Impl start/////////////
+            //Example PointMap usage
+            //var point = points.First();
+            //int left = point.Left;
+            //int right = point.Right;
+
+
+
+
+
+
+            ///////////// Aviv's Impl /////////////
+
+            //Add the routes to the db
+            //Note: the key of the routes in the db is id which is auto incresed.
+            var allRoutes = zooDB.GetAllRoutes();
+
+            foreach(PointMap primaryPoint in routes.Keys)
+            {
+                foreach(PointMap secPoint in routes[primaryPoint])
+                {
+                    allRoutes.Add(new Route
+                    {
+                        primaryLeft     = primaryPoint.Left,
+                        primaryRight    = primaryPoint.Right,
+                        secLeft         = secPoint.Left,
+                        secRight        = secPoint.Right
+                    });
+                }
+            }
+
+            //add the map info to the db.
+            zooDB.GetAllMapInfos().Add(new MapInfo
+            {
+                pointspath      = pointsFilePath,
+                longitude       = longitude,
+                latitude        = latitude,
+                zooPointX       = xLocation,
+                zooPointY       = yLocation,
+                xLongitudeRatio = xLongitudeRatio,
+                yLatitudeRatio  = yLatitudeRatio,
+                sinAlpha        = sinAlpha,
+                cosAlpha        = cosAlpha,
+                minLatitude     = minLatitude,
+                maxLatitude     = maxLatitude,
+                minLongitude    = minLongitude,
+                maxLongitude    = maxLongitude
+            });
+        }
+        
         #endregion
 
         #region Users
@@ -1936,7 +2039,7 @@ namespace BL
         /// </summary>
         public IEnumerable<Device> GetAllDevices()
         {
-            return zooDB.getAllDevices();
+            return zooDB.GetAllDevices();
         }
 
         /// <summary>
@@ -1953,7 +2056,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
 
-            var device = zooDB.getAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
 
             //check if the device already exists
             if (device != null)
@@ -1969,7 +2072,7 @@ namespace BL
                     lastPing = DateTime.Now
                 };
 
-                zooDB.getAllDevices().Add(device);
+                zooDB.GetAllDevices().Add(device);
             }
 
         }
@@ -2041,12 +2144,12 @@ namespace BL
 
                 if (toAll) //the notification should be sent to all the users
                 {
-                    devices.AddRange(zooDB.getAllDevices().ToList());
+                    devices.AddRange(zooDB.GetAllDevices().ToList());
                 }
                 else
                 {   //the notification should be sent to the online users.
                     //TODO: check if 30 minuits is the difference between online of offline
-                    devices.AddRange(zooDB.getAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
+                    devices.AddRange(zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
                 }
 
                 // Format the server's key.
@@ -2176,6 +2279,29 @@ namespace BL
             }
         }
 
+        private List<PointMap> ExtractPointsFromCSVFile(string pointsFilePath)
+        {
+            //init variables
+            string line;
+            List<PointMap> points = new List<PointMap>();
+            var pointsFileReader = new StreamReader(pointsFilePath);
+
+            //while there is a line to read
+            while ((line = pointsFileReader.ReadLine()) != null)
+            {
+                //seperate the line
+                string[] values = Regex.Split(line, ",");
+
+                // parse the string to int
+                int left = Int32.Parse(values[0]);
+                int right = Int32.Parse(values[1]);
+
+                //create a new point that represented with a Pair object.
+                points.Add(new PointMap(left, right));
+            }
+
+            return points;
+        }
         #endregion
 
         #region Images

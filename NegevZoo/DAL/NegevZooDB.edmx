@@ -96,6 +96,25 @@
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="mapinfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pointspath" Type="mediumtext" Nullable="false" />
+          <Property Name="longitude" Type="double" Nullable="false" />
+          <Property Name="latitude" Type="double" Nullable="false" />
+          <Property Name="zooPointX" Type="int" Nullable="false" />
+          <Property Name="zooPointY" Type="int" Nullable="false" />
+          <Property Name="xLongitudeRatio" Type="double" Nullable="false" />
+          <Property Name="yLatitudeRatio" Type="double" Nullable="false" />
+          <Property Name="sinAlpha" Type="double" Nullable="false" />
+          <Property Name="cosAlpha" Type="double" Nullable="false" />
+          <Property Name="minLatitude" Type="double" Nullable="false" />
+          <Property Name="maxLatitude" Type="double" Nullable="false" />
+          <Property Name="minLongitude" Type="double" Nullable="false" />
+          <Property Name="maxLongitude" Type="double" Nullable="false" />
+        </EntityType>
         <EntityType Name="miscmarkers">
           <Key>
             <PropertyRef Name="id" />
@@ -148,11 +167,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="fromLangitude" Type="double" Nullable="false" />
-          <Property Name="fromLatitude" Type="double" Nullable="false" />
-          <Property Name="toLangitude" Type="double" Nullable="false" />
-          <Property Name="toLongitude" Type="double" Nullable="false" />
-          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="primaryLeft" Type="int" Nullable="false" />
+          <Property Name="primaryRight" Type="int" Nullable="false" />
+          <Property Name="secLeft" Type="int" Nullable="false" />
+          <Property Name="secRight" Type="int" Nullable="false" />
+          <Property Name="id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="specialevents">
           <Key>
@@ -204,6 +223,7 @@
           <EntitySet Name="enclosuresdetails" EntityType="Self.enclosuresdetails" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="generalinfo" EntityType="Self.generalinfo" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="languages" EntityType="Self.languages" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="mapinfo" EntityType="Self.mapinfo" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="miscmarkers" EntityType="Self.miscmarkers" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="openinghours" EntityType="Self.openinghours" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="prices" EntityType="Self.prices" Schema="negev_zoo" store:Type="Tables" />
@@ -327,11 +347,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="fromLangitude" Type="Double" Nullable="false" />
-          <Property Name="fromLatitude" Type="Double" Nullable="false" />
-          <Property Name="toLangitude" Type="Double" Nullable="false" />
-          <Property Name="toLongitude" Type="Double" Nullable="false" />
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="primaryLeft" Type="Int32" Nullable="false" />
+          <Property Name="primaryRight" Type="Int32" Nullable="false" />
+          <Property Name="secLeft" Type="Int32" Nullable="false" />
+          <Property Name="secRight" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SpecialEvent">
           <Key>
@@ -393,6 +413,7 @@
           <EntitySet Name="AnimalDetails" EntityType="NegevZooModel.AnimalDetail" />
           <EntitySet Name="EnclosureDetails" EntityType="NegevZooModel.EnclosureDetail" />
           <EntitySet Name="Devices" EntityType="NegevZooModel.Device" />
+          <EntitySet Name="mapinfo" EntityType="NegevZooModel.MapInfo" />
         </EntityContainer>
         <EntityType Name="AnimalDetail">
           <Key>
@@ -428,6 +449,25 @@
           <Property Name="deviceId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="lastPing" Type="DateTime" Nullable="false" />
           <Property Name="insidePark" Type="SByte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MapInfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pointspath" Type="String" Nullable="false" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="longitude" Type="Double" Nullable="false" />
+          <Property Name="latitude" Type="Double" Nullable="false" />
+          <Property Name="zooPointX" Type="Int32" Nullable="false" />
+          <Property Name="zooPointY" Type="Int32" Nullable="false" />
+          <Property Name="xLongitudeRatio" Type="Double" Nullable="false" />
+          <Property Name="sinAlpha" Type="Double" Nullable="false" />
+          <Property Name="cosAlpha" Type="Double" Nullable="false" />
+          <Property Name="minLatitude" Type="Double" Nullable="false" />
+          <Property Name="maxLatitude" Type="Double" Nullable="false" />
+          <Property Name="minLongitude" Type="Double" Nullable="false" />
+          <Property Name="maxLongitude" Type="Double" Nullable="false" />
+          <Property Name="yLatitudeRatio" Type="Double" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -553,10 +593,10 @@
           <EntitySetMapping Name="Routes">
             <EntityTypeMapping TypeName="NegevZooModel.Route">
               <MappingFragment StoreEntitySet="routes">
-                <ScalarProperty Name="fromLangitude" ColumnName="fromLangitude" />
-                <ScalarProperty Name="fromLatitude" ColumnName="fromLatitude" />
-                <ScalarProperty Name="toLangitude" ColumnName="toLangitude" />
-                <ScalarProperty Name="toLongitude" ColumnName="toLongitude" />
+                <ScalarProperty Name="secRight" ColumnName="secRight" />
+                <ScalarProperty Name="secLeft" ColumnName="secLeft" />
+                <ScalarProperty Name="primaryRight" ColumnName="primaryRight" />
+                <ScalarProperty Name="primaryLeft" ColumnName="primaryLeft" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -637,6 +677,26 @@
                 <ScalarProperty Name="insidePark" ColumnName="insidePark" />
                 <ScalarProperty Name="lastPing" ColumnName="lastPing" />
                 <ScalarProperty Name="deviceId" ColumnName="deviceId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="mapinfo">
+            <EntityTypeMapping TypeName="NegevZooModel.MapInfo">
+              <MappingFragment StoreEntitySet="mapinfo">
+                <ScalarProperty Name="yLatitudeRatio" ColumnName="yLatitudeRatio" />
+                <ScalarProperty Name="maxLongitude" ColumnName="maxLongitude" />
+                <ScalarProperty Name="minLongitude" ColumnName="minLongitude" />
+                <ScalarProperty Name="maxLatitude" ColumnName="maxLatitude" />
+                <ScalarProperty Name="minLatitude" ColumnName="minLatitude" />
+                <ScalarProperty Name="cosAlpha" ColumnName="cosAlpha" />
+                <ScalarProperty Name="sinAlpha" ColumnName="sinAlpha" />
+                <ScalarProperty Name="xLongitudeRatio" ColumnName="xLongitudeRatio" />
+                <ScalarProperty Name="zooPointY" ColumnName="zooPointY" />
+                <ScalarProperty Name="zooPointX" ColumnName="zooPointX" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="pointspath" ColumnName="pointspath" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

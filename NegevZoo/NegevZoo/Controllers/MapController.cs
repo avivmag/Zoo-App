@@ -35,6 +35,33 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// This method intitiates the map with the given parameters. 
+        /// Note: the values inside the CSV file must be seperated with ","
+        /// </summary>
+        /// <param name="pointsFilePath"> This variables represents the path of the CSV file that contains the points of the map.</param>
+        /// <param name="longitude"> This variable represents the longitude of a point in the map</param>
+        /// <param name="latitude">This variable represents the latitude of a point in the map</param>
+        /// <param name="xLocation"> This variable represents the location of the longitude on the map picture</param>
+        /// <param name="yLocation"> This variable represents the location of the latitude on the map picture</param>
+        [HttpGet]
+        [Route("map/initvars/{pointsFilePath}/{longitude}/{latitude}/{xLocation}/{yLocation}")]
+        public void InitMapSettings(string pointsFilePath, double longitude, double latitude, int xLocation, int yLocation)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.InitMapSettings(pointsFilePath, longitude, latitude, xLocation, yLocation);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
 
         [HttpPost]
         [Route("map/upload")]
@@ -50,8 +77,9 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.FileUpload(httpRequest, @"~/assets/map/misc/");
-                    return Ok();
+                    var responseObject = db.FileUpload(httpRequest, @"~/assets/map/misc/");
+
+                    return Ok(responseObject);
                 }
             }
             catch (Exception Exp)
@@ -61,6 +89,5 @@ namespace NegevZoo.Controllers
             }
         }
         
-        // TODO:: Under construction.
     }
 }
