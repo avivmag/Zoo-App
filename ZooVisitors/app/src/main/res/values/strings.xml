@@ -8,13 +8,15 @@
     <string name="language_heb">עברית</string>
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
+
     //main menu buttons
     <string name="watch_all_feed">הצג הכל</string>
     <string name="our_enclosures">המתחמים שלנו</string>
     <string name="schedule">לוח שנה</string>
     <string name="map">מפה</string>
     <string name="other_info">מידע נוסף</string>
-    <string name="nav">נווט אל נגב זו</string>
+    <string name="nav">נווט אלינו</string>
+    <string name="personal">Personal Stories</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">החיות שלנו</string>
@@ -50,8 +52,6 @@
     <string name="preservation">מצב שימור</string>
     <string name="facebook_app_id">1991264511112012</string>
 
-
-    <string name="personal">Personal Stories</string>
     <!--Gps provider dialog-->
     <string name="gps_no_permission_dialog_title">הרשאת מיקום</string>
     <string name="gps_no_permission_dialog_message">ביטול הרשאה למיקום המכשיר יבטל חלק מתכונות האפליקציה</string>

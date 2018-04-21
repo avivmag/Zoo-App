@@ -2,6 +2,8 @@ package com.zoovisitors;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayer;
 
 /**
@@ -18,4 +20,10 @@ public class GlobalVariables {
     public static int firstEnter = 0;
     public static AppCompatActivity foregroundActivity;
     public static String firebaseToken;
+    public static String deviceId;
+
+
+    public static OpeningHours[] testOp;
+    public static Enclosure[] testEnc;
+
 }

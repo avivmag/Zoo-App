@@ -1,6 +1,6 @@
 package com.zoovisitors.pl.schedule;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
+import com.zoovisitors.bl.GetObjectInterface;
 
 /**
  * Created by Gili on 10/03/2018.
@@ -28,27 +30,47 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView schedule_card_image;
+        public TextView title;
         public TextView event;
         public TextView date;
+        public ImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            title = (TextView) itemView.findViewById(R.id.schedule_card_title);
             event = (TextView) itemView.findViewById(R.id.schedule_card_desc);
             date = (TextView) itemView.findViewById(R.id.schedule_card_date);
+            image = (ImageView) itemView.findViewById(R.id.schedule_card_image);
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        viewHolder.title.setText(schedulers[position].getTitle());
         viewHolder.event.setText(schedulers[position].getDescription());
         
         String startDate = schedulers[position].getStartTime().substring(0, 10);
         String endDate = schedulers[position].getEndTime().substring(0, 10);
         String scheduleDate = startDate + " - " + endDate;
 
-        viewHolder.date.setTextSize(12);
+        //viewHolder.date.setTextSize(12);
         viewHolder.date.setText(scheduleDate);
+
+        GlobalVariables.bl.getImage(schedulers[position].getImageUrl(), new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                viewHolder.image.setImageBitmap((Bitmap) response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("IMAGE", (String) response);
+            }
+        });
+
+//        viewHolder.image.setImageResource(R.mipmap.aligator);
+
+
     }
 
     @Override
