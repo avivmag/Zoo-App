@@ -11,7 +11,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
-import com.zoovisitors.backend.RecurringEvents;
+//import com.zoovisitors.backend.RecurringEvent;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
@@ -21,13 +21,15 @@ import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.dal.data_handler.map.Memory;
 
+import java.util.Calendar;
+
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
 //    private Enclosure[] enclosures;
 //    private Misc[] miscs;
-    private RecurringEvents[] recurringEvents;
+//    private RecurringEvent[] recurringEvents;
     private BusinessLayer bl;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
@@ -58,11 +60,12 @@ public class MapActivity extends ProviderBasedActivity
 
     private void setNetworkDataProvider() {
         mapView.addZooMapIcon(0, 0);
+        //  TODO: replace the fakes with the reals when they are ready
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 // TODO: fake recurring events here, need to update the json somehow
-                getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response, new RecurringEvents[]);
+                getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response);
             }
 
             @Override
@@ -70,6 +73,7 @@ public class MapActivity extends ProviderBasedActivity
                 Log.e(GlobalVariables.LOG_TAG, response.toString());
             }
         });
+
         bl.getMisc(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {

@@ -73,14 +73,14 @@ public class DataStructure {
         this.yLatitudeRatio = yLatitudeRatio;
         routes = new HashMap<>();
 
-//        for (Point point:
-//                points) {
-//            routes.put(point, new HashSet<>());
+        for (Point point:
+                points) {
+            routes.put(point, new HashSet<>());
 //            minX = Math.min(minX, point.getX());
 //            maxX = Math.max(maxX, point.getX());
 //            minY = Math.min(minY, point.getY());
 //            maxY = Math.max(maxY, point.getY());
-//        }
+        }
 
         // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
         for (int curr = 0; curr < points.length; curr++) {
