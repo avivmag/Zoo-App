@@ -371,65 +371,41 @@ namespace BL
             }
         }
         
-        /// <summary>
-        /// Updates or adds The enclosure picture.
-        /// </summary>
-        /// <param name="enclosurePicture">The enclosures to update.</param>
-        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
+        public IEnumerable<EnclosurePicture> AddEnclosurePictures(int enclosureId, JArray uploadedPictures)
         {
-            //validate attributes
-            //0. Exists
-            if (enclosurePicture == default(EnclosurePicture))
+            // Get the enclosure.
+            var enclosure = this.GetAllEnclosures().SingleOrDefault(e => e.id == enclosureId);
+
+            // If no such enclosure exists, throw error.
+            if (enclosure == default(Enclosure))
             {
-                throw new ArgumentException("No EnclosurePicture given");
+                throw new ArgumentException("No enclosure with such enclosure Id exists.");
             }
 
-            //1. check that the enclosure exists
-            if (!GetAllEnclosures().Any(e => e.id == enclosurePicture.enclosureId))
-            {
-                throw new ArgumentException("Wrong input. Enclosure doesn't exists");
-            }
+            var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() });
 
-            if (IsEmptyString(enclosurePicture.pictureUrl) || IsNullOrWhiteSpace(enclosurePicture.pictureUrl))
+            if (pictures.Any(p => IsNullOrWhiteSpace(p.pictureUrl)))
             {
                 throw new ArgumentException("Wrong input. The url is empty or white spaces");
             }
 
-            var allEnclosurePictures = zooDB.GetAllEnclosurePictures();
-
-            if (enclosurePicture.id == default(int)) // add a new enclosure picture
+            if (pictures.Any(up => up.enclosureId != enclosureId))
             {
-                if (allEnclosurePictures.Any(p => p.pictureUrl == enclosurePicture.pictureUrl))
-                {
-                    throw new ArgumentException("Wrong input while adding enclosure picture. The picture url already exists.");
-                }
-
-                allEnclosurePictures.Add(enclosurePicture);
+                throw new InvalidOperationException("Cannot add pictures to more than one enclosure at a time.");
             }
-            else //update an existsing picture
-            {
-                var oldPic = allEnclosurePictures.SingleOrDefault(ep => ep.id == enclosurePicture.id);
 
-                if (oldPic == null)
-                {
-                    throw new ArgumentException("Wrong input. There is no EnclosurePicture doesn't exists");
-                }
+            var enclosurePictures = zooDB.GetAllEnclosurePictures();
 
-                if (oldPic.pictureUrl != enclosurePicture.pictureUrl && allEnclosurePictures.Any(ep => ep.pictureUrl == enclosurePicture.pictureUrl))
-                {
-                    throw new ArgumentException("Wrong input while updating enclosure picture. The picture url is already exists");
-                }
+            enclosurePictures.AddRange(pictures);
 
-                oldPic.pictureUrl = enclosurePicture.pictureUrl;
-                oldPic.enclosureId = enclosurePicture.enclosureId;
-            }
+            return pictures;
         }
 
         /// <summary>
         /// Updates or adds The enclosure video.
         /// </summary>
         /// <param name="enclosureVideo">The enclosures to update.</param>
-        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        public YoutubeVideoUrl UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
         {
             //validate attributes
             //0.Exists
@@ -472,12 +448,16 @@ namespace BL
 
                 if (oldVideo.videoUrl != enclosureVideo.videoUrl && allEnclosureVideos.Any(v => v.videoUrl == enclosureVideo.videoUrl))
                 {
-                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
+                    throw new ArgumentException("Wrong input while updating enclosure video. The enclosure video url already exists");
                 }
 
                 oldVideo.videoUrl = enclosureVideo.videoUrl;
                 oldVideo.enclosureId = enclosureVideo.enclosureId;
             }
+
+            zooDB.SaveChanges();
+
+            return enclosureVideo;
         }
         
         /// <summary>
@@ -596,30 +576,36 @@ namespace BL
         /// Delete The enclosure picture.
         /// </summary>
         /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
-        public void DeleteEnclosurePicture(int enclosurePictureId)
+        public void DeleteEnclosurePicture(int enclosurePictureId, int enclosureId)
         {
+            var allEnclosurePictures = zooDB.GetAllEnclosurePictures();
             //check that the enclosure picture exists
-            var enclosurePicure = zooDB.GetAllEnclosurePictures().SingleOrDefault(e => e.id == enclosurePictureId);
+            var enclosurePicture = allEnclosurePictures.SingleOrDefault(e => e.id == enclosurePictureId);
 
-            if (enclosurePicure == null){
+            if (enclosurePicture == null){
                 throw new ArgumentException("Wrong input. The enclsure doesn't exists");
             }
-            
-            zooDB.GetAllEnclosurePictures().Remove(enclosurePicure);
+
+            if (enclosurePicture.enclosureId != enclosureId)
+            {
+                throw new InvalidOperationException("Cannot delete a picture of another enclosure.");
+            }
+
+            allEnclosurePictures.Remove(enclosurePicture);
         }
 
         /// <summary>
         /// Delete The enclosure video.
         /// </summary>
         /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
-        public void DeleteEnclosureVideo(int enclosureVideoId)
+        public void DeleteEnclosureVideo(int enclosureId, int enclosureVideoId)
         {
             //check that the enclosure exists
-            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.enclosureId == enclosureVideoId);
+            var enclosureVideo = zooDB.GetAllEnclosureVideos().SingleOrDefault(e => e.id == enclosureVideoId && e.enclosureId == enclosureId);
 
             if (enclosureVideo == null)
             {
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+                throw new ArgumentException("Wrong input. The video doesn't exist or does not belong to the enclosure");
             }
 
             zooDB.GetAllEnclosureVideos().Remove(enclosureVideo);
@@ -745,15 +731,9 @@ namespace BL
         /// <param name="encId">The enclosure's Id.</param>
         /// <param name="language">The data's language</param>
         /// <returns>The AnimalResults of animals that are in the enclosure.</returns>
-        public IEnumerable<AnimalResult> GetAnimalsByEnclosure(long encId, long language)
+        public IEnumerable<Animal> GetAnimalsByEnclosure(long encId)
         {
             //validate the attributes
-            //0. check the language
-            if (!ValidLanguage((int)language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
             //1. check if the enclosure exists
             if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
             {
@@ -761,18 +741,9 @@ namespace BL
             }
 
             //get all the animals in the enclosure.
-            IEnumerable<Animal> allanimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
+            IEnumerable<Animal> allAnimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
 
-            //initiates the answer.
-            List<AnimalResult> animalsResult = new List<AnimalResult>();
-
-            foreach (Animal an in allanimals)
-            {
-                //foreaach animal get it's AnimalResult by id (if it doesn't exists returns in hebrew.
-                animalsResult.Add(GetAnimalById((int)an.id, (int)language));
-            }
-
-            return animalsResult;
+            return allAnimals;
         }
 
         /// <summary>
@@ -1118,7 +1089,8 @@ namespace BL
         /// <returns>All the OpeningHour elemtents as days as int.</returns>
         public IEnumerable<OpeningHour> GetAllOpeningHoursType()
         {
-            return zooDB.GetAllOpeningHours().Where(oh => oh.language == GetHebewLanguage()).ToArray();
+            var hebrewLanguage = GetHebewLanguage();
+            return zooDB.GetAllOpeningHours().Where(oh => oh.language == hebrewLanguage).ToArray();
         }
 
         /// <summary>
