@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AnimalControllerTests.cs" />
     <Compile Include="EncloureControllerTests.cs" />
+    <Compile Include="NonFunctional_Tests\LoadTest.cs" />
     <Compile Include="NotificationControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControllerTests.cs" />
@@ -87,6 +88,10 @@
       <Project>{07a0246b-8add-4201-9455-05b83a4f4968}</Project>
       <Name>NegevZoo</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Integration_Tests\" />
+    <Folder Include="Unit_Tests\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2000,7 +2000,7 @@ namespace BL
             //TODO: Add an authorization check.
 
             // 1. Name
-            if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
+            if (String.IsNullOrWhiteSpace(userWorker.name))
             {
                 throw new ArgumentException("Wrong input. The user name is empty or white spaces");
             }
@@ -2022,6 +2022,7 @@ namespace BL
                 }
 
                 userWorker.salt = GenerateSalt();
+                userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
 
                 users.Add(userWorker);
             }
@@ -2041,7 +2042,7 @@ namespace BL
                 }
 
                 oldUser.name = userWorker.name;
-                oldUser.password = userWorker.password;
+                userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
                 userWorker.salt = GenerateSalt();
                 oldUser.isAdmin = userWorker.isAdmin;
             }
