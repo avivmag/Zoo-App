@@ -761,9 +761,15 @@ namespace BL
         /// <param name="encId">The enclosure's Id.</param>
         /// <param name="language">The data's language</param>
         /// <returns>The AnimalResults of animals that are in the enclosure.</returns>
-        public IEnumerable<Animal> GetAnimalsByEnclosure(long encId)
+        public IEnumerable<AnimalResult> GetAnimalResultByEnclosure(long encId, int language)
         {
             //validate the attributes
+            //0. check the language
+            if (!ValidLanguage((int)language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
             //1. check if the enclosure exists
             if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
             {
@@ -771,9 +777,18 @@ namespace BL
             }
 
             //get all the animals in the enclosure.
-            IEnumerable<Animal> allAnimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
+            IEnumerable<Animal> allanimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
 
-            return allAnimals;
+            //initiates the answer.
+            List<AnimalResult> animalsResult = new List<AnimalResult>();
+
+            foreach (Animal an in allanimals)
+            {
+                //foreaach animal get it's AnimalResult by id (if it doesn't exists returns in hebrew.
+                animalsResult.Add(GetAnimalById((int)an.id, (int)language));
+            }
+
+            return animalsResult;
         }
 
         /// <summary>
@@ -832,6 +847,26 @@ namespace BL
             return zooDB.GetAllAnimalsDetails().Where(an => an.animalId == animalId);
         }
         
+        /// <summary>
+        /// Gets animals by enclosure Id.
+        /// </summary>
+        /// <param name="encId">The enclosure's Id.</param>
+        /// <returns>The animals that are in the enclosure.</returns>
+        public IEnumerable<Animal> GetAnimalsByEnclosure(long encId)
+        {
+            //validate the attributes
+            //1. check if the enclosure exists
+            if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
+            {
+                throw new ArgumentException("Wrong input. The enclosure doesn't exists");
+            }
+
+            //get all the animals in the enclosure.
+            IEnumerable<Animal> allAnimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
+
+            return allAnimals;
+        }
+
         /// <summary>
         /// This method adds or updates the animal.
         /// </summary>

@@ -18,6 +18,7 @@ namespace NegevZoo.Controllers
         #region Getters
 
         #region Visitors App
+        
         /// <summary>
         /// Gets all animals data in the given langauge.
         /// </summary>
@@ -79,6 +80,30 @@ namespace NegevZoo.Controllers
                 using (var db = GetContext())
                 {
                     return db.GetAnimalById(animalId, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
+        /// </summary>
+        /// <param name="encId">The enclosure animalId.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>AnimalResults of animals that are in the enclosure.</returns>
+        [HttpGet]
+        [Route("animals/enclosure/{encId}/{language}")]
+        public IEnumerable<AnimalResult> GetAnimalResultByEnclosure(int encId, int language)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalResultByEnclosure(encId, language);
                 }
             }
             catch (Exception Exp)
