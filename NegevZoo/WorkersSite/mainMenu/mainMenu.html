@@ -1,13 +1,9 @@
-﻿<div layout="row" layout-align="center center">
-    <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
-</div>
-
-<md-tabs ng-if="!isLoading" md-stretch-tabs="always" md-dynamic-height>
+﻿<md-tabs md-stretch-tabs="always" md-dynamic-height>
     <md-tab label="קיר עדכונים">
         <zoo-feed-wall></zoo-feed-wall>
     </md-tab>
     <md-tab label="תצוגות">
-        <zoo-enclosures page='enclosureList'></zoo-enclosures>
+        <zoo-enclosures></zoo-enclosures>
     </md-tab>
     <md-tab label="אירועים מיוחדים">
         <zoo-events></zoo-events>

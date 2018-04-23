@@ -635,144 +635,6 @@ namespace ZooTests
 
         #endregion
 
-        #region UpdateEnclosurePicture
-        [TestMethod]
-        public void UpdateEnclosurePictureAddEncPicValidInput()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(1);
-            Assert.AreEqual(1, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url1", pic.pictureUrl);
-            Assert.AreEqual(1, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id          =default(int),
-                enclosureId = 1,
-                pictureUrl  = "url4"
-            };
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-
-            pictures = enclosureController.GetEnclosurePicturesById(1);
-            Assert.AreEqual(2, pictures.Count());
-            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosurePictureEncDoesntExists()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(1);
-            Assert.AreEqual(1, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url1", pic.pictureUrl);
-            Assert.AreEqual(1, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id = default(int),
-                enclosureId = -1,
-                pictureUrl = "url4"
-            };
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosurePicturesEmptyUrl()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(1);
-            Assert.AreEqual(1, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url1", pic.pictureUrl);
-            Assert.AreEqual(1, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id = default(int),
-                enclosureId = 1,
-                pictureUrl = ""
-            };
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosurePictureAddEncPicUrlExists()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(1);
-            Assert.AreEqual(1, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url1", pic.pictureUrl);
-            Assert.AreEqual(1, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id = default(int),
-                enclosureId = 1,
-                pictureUrl = "url3"
-            };
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-        }
-
-        [TestMethod]
-        public void UpdateEnclosurePictureUpdateEncPicValidInput()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(2);
-            Assert.AreEqual(2, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url2", pic.pictureUrl);
-            Assert.AreEqual(2, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id = 2,
-                enclosureId = 2,
-                pictureUrl = "url2"
-            };
-
-            newPic.pictureUrl = "url4";
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-
-            pictures = enclosureController.GetEnclosurePicturesById(2);
-            Assert.AreEqual(2, pictures.Count());
-            Assert.AreEqual("url4", pictures.SingleOrDefault(p => p.pictureUrl == "url4").pictureUrl);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateEnclosurePictureUpdateEncPicUrlExists()
-        {
-            var pictures = enclosureController.GetEnclosurePicturesById(2);
-            Assert.AreEqual(2, pictures.Count());
-
-            var pic = pictures.First();
-            Assert.AreEqual("url2", pic.pictureUrl);
-            Assert.AreEqual(2, pic.enclosureId);
-
-            var newPic = new EnclosurePicture
-            {
-                id = 2,
-                enclosureId = 2,
-                pictureUrl = "url2"
-            };
-
-            newPic.pictureUrl = "url1";
-
-            enclosureController.UpdateEnclosurePicture(newPic);
-        }
-        #endregion
-
         #region UpdateVideoUrl
 
         [TestMethod]
@@ -1263,8 +1125,8 @@ namespace ZooTests
             var details = enclosureController.GetEnclosureDetailsById(4);
             var animalsController = new AnimalController();
 
-            Assert.AreEqual(0, enclosureController.GetRecurringEvents(4, 1).Count());
-            Assert.AreEqual(0, animalsController.GetAnimalsByEnclosure(4, 1).Count());
+            Assert.AreEqual(0, enclosureController.GetRecurringEvents(4, (int)Languages.he).Count());
+            Assert.AreEqual(0, animalsController.GetAnimalResultByEnclosure(4, (int)Languages.he).Count());
             Assert.AreEqual(4, encs.Count());
             Assert.AreEqual(1, details.Count());
 
@@ -1290,7 +1152,7 @@ namespace ZooTests
             enclosureController.DeleteRecurringEvent((int)recurringEvents.First().id);
             Assert.AreEqual(0, enclosureController.GetRecurringEvents(1, 1).Count());
 
-            Assert.AreEqual(2, animalsController.GetAnimalsByEnclosure(1, 1).Count());
+            Assert.AreEqual(2, animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he).Count());
             Assert.AreEqual(4, encs.Count());
             Assert.AreEqual(2, details.Count());
 
@@ -1305,13 +1167,13 @@ namespace ZooTests
             var details = enclosureController.GetEnclosureDetailsById(1);
             var animalsController = new AnimalController();
 
-            var animals = animalsController.GetAnimalsByEnclosure(1, 1).ToList();
+            var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he).ToList();
             Assert.AreEqual(2, animals.Count());
             foreach (AnimalResult a in animals)
             {
                 animalsController.DeleteAnimal((int)a.Id);
             }
-            animals = animalsController.GetAnimalsByEnclosure(1, 1).ToList();
+            animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he).ToList();
             Assert.AreEqual(0, animals.Count());
 
             Assert.AreEqual(4, encs.Count());
@@ -1343,7 +1205,7 @@ namespace ZooTests
             var pic = pictures.First();
             Assert.AreEqual("url2", pic.pictureUrl);
 
-            enclosureController.DeleteEnclosurePicture((int)pic.id);
+            enclosureController.DeleteEnclosurePicture(pic.enclosureId, (int)pic.id);
 
             pictures = enclosureController.GetEnclosurePicturesById(2);
             Assert.AreEqual(1, pictures.Count());
@@ -1351,7 +1213,7 @@ namespace ZooTests
             pic = pictures.First();
             Assert.AreEqual("url3", pic.pictureUrl);
 
-            enclosureController.DeleteEnclosurePicture((int)pic.id);
+            enclosureController.DeleteEnclosurePicture(pic.enclosureId, (int)pic.id);
 
             pictures = enclosureController.GetEnclosurePicturesById(2);
             Assert.AreEqual(0, pictures.Count());
@@ -1361,7 +1223,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void DeleteEnclosurePictureWrongId()
         {
-            enclosureController.DeleteEnclosurePicture(-1);
+            enclosureController.DeleteEnclosurePicture(-1, -1);
         }
         #endregion
 
@@ -1377,7 +1239,7 @@ namespace ZooTests
             var vid = videos.First();
             Assert.AreEqual("video1", vid.videoUrl);
 
-            enclosureController.DeleteEnclosureVideo((int)vid.id);
+            enclosureController.DeleteEnclosureVideo((int)vid.enclosureId, (int)vid.id);
 
             videos = enclosureController.GetEnclosureVideosById(1);
             Assert.AreEqual(0, videos.Count());
@@ -1387,7 +1249,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void DeleteEnclosureVideoWrongId()
         {
-            enclosureController.DeleteEnclosurePicture(-1);
+            enclosureController.DeleteEnclosurePicture(-1, -1);
         }
 
         #endregion

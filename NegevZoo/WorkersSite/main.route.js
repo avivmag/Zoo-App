@@ -17,5 +17,14 @@
         .state('contact', {
             url:            '/contact',
             templateUrl:    'contact.html'
+        })
+        .state('animals', {
+            url:            '/animals',
+            templateUrl:    'mainMenu/enclosures/animals/animals.html',
+            controller:     'zooAnimalsCtrl',
+            params: {
+                animal:         undefined,
+                enclosureId:    undefined
+            }
         });
 });

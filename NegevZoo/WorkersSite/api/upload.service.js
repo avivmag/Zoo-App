@@ -7,7 +7,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
           
             element.bind('change', function() {
                 scope.$apply(function() {
-                    modelSetter(scope, element[0].files[0]);
+                    modelSetter(scope, element[0].files);
                 });
             });
         }
@@ -15,12 +15,14 @@ app.directive('fileModel', ['$parse', function ($parse) {
  }]);
 
  app.service('fileUpload', ['$http', function ($http) {
-    this.uploadFileToUrl = function(file, uploadUrl) {
+    this.uploadFileToUrl = function(files, uploadUrl) {
         uploadUrl   = app.baseURL + uploadUrl;
 
         var fd      = new FormData();
 
-        fd.append('file', file);
+        for (let i = 0; i < files.length; i++) {
+            fd.append('file' + i, files[i]);
+        }
     
        return $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
