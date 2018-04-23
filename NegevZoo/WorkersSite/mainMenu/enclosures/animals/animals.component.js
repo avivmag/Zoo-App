@@ -20,27 +20,30 @@
             $scope.animal           = $stateParams.animal || { enclosureId: $scope.enclosureId };
 
             $scope.updateAnimals    = function () {
-                $scope.isLoading        = true;
+                
+                if ($scope.isEdit) {
+                    $scope.isLoading        = true;
 
-                animalService.getAnimalDetailsById($scope.animal.id).then(
-                    function (data) {
-                        $scope.animalDetails = data.data;
-
-                        for (let i = 1; i <= 4; i++) {
-                            if (!$scope.animalDetails.some(ed => ed.language === i)) {
-                                $scope.animalDetails.push({ animalId: $scope.animal.id, language: i });
+                    animalService.getAnimalDetailsById($scope.animal.id).then(
+                        function (data) {
+                            $scope.animalDetails = data.data;
+    
+                            for (let i = 1; i <= 4; i++) {
+                                if (!$scope.animalDetails.some(ed => ed.language === i)) {
+                                    $scope.animalDetails.push({ animalId: $scope.animal.id, language: i });
+                                }
                             }
-                        }
-
-                        $scope.animalDetails.sort(function(a, b) { return a.language-b.language; });
-
-                        $scope.isLoading    = false;
-                    },
-                    function () {
-                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-
-                        $scope.isLoading    = false;
-                    });
+    
+                            $scope.animalDetails.sort(function(a, b) { return a.language-b.language; });
+    
+                            $scope.isLoading    = false;
+                        },
+                        function () {
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+    
+                            $scope.isLoading    = false;
+                        });
+                }
             };
 
             $scope.addAnimal        = function(animal) {
@@ -54,8 +57,6 @@
 
                     $q.all(uploadPromises).then(
                         () => {
-                            console.log('upload complete');
-
                             animalService.updateAnimal(animal).then(
                                 function () {
                                     utilitiesService.utilities.alert(successContent);
