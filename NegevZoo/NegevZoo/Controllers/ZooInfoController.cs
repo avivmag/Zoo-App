@@ -189,15 +189,10 @@ namespace NegevZoo.Controllers
 
         #endregion
 
-
-
-
-
-
         #region Contact Info
 
         /// <summary>
-        /// Gets all the ContactInfo elements with data in that language.
+        /// Gets all the ContactInfo elements with data in the given language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>All ContactInfo elements with that language.</returns>
@@ -211,7 +206,6 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetAllContactInfos(language);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -234,7 +228,6 @@ namespace NegevZoo.Controllers
                 {
                     db.UpdateContactInfo(contactInfo);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -246,7 +239,7 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the ContactInfo element.
         /// </summary>
-        /// <param name="contactId">The element's contactId to delete</param>
+        /// <param name="contactId">The ContactInfo element's id to delete</param>
         [HttpDelete]
         [Route("ContactInfos/delete/{contactId}")]
         public void DeleteContactInfo(int contactId)
@@ -257,7 +250,6 @@ namespace NegevZoo.Controllers
                 {
                     db.DeleteContactInfo(contactId);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -285,7 +277,6 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetAllSpecialEvents(language);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -293,7 +284,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
+        
         //TODO: should this function return SpecialEvent only if all of it contained in the given dates or only one day is enough
         /// <summary>
         /// Gets SpecialEvent elements between the wanted dates with data in that language.
@@ -312,7 +303,6 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetSpecialEventsByDate(startDate, endDate, language);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -325,6 +315,7 @@ namespace NegevZoo.Controllers
         /// Adds or Updates the SpecialEvent element.
         /// </summary>
         /// <param name="specialEvent">The element to add or update</param>
+        /// <param name="isPush">This parameter states if the operation should send push notification</param>
         [HttpPost]
         [Route("SpecialEvents/update/{isPush}")]
         public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
@@ -347,7 +338,7 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Deletes the SpecialEvent element.
         /// </summary>
-        /// <param name="specialEventId">The element's specialEventId to delete</param>
+        /// <param name="specialEventId">The SpecialEvent element's id to delete</param>
         [HttpDelete]
         [Route("SpecialEvents/delete/{specialEventId}")]
         public void DeleteSpecialEvent(int specialEventId)
@@ -358,7 +349,6 @@ namespace NegevZoo.Controllers
                 {
                     db.DeleteSpecialEvent(specialEventId);
                 }
-
             }
             catch (Exception Exp)
             {
@@ -399,7 +389,7 @@ namespace NegevZoo.Controllers
         /// Gets all the WallFeed with data in that language.
         /// </summary>
         /// <param name="language">The data language. Default is Hebrew</param>
-        /// <returns>All WallFeed with that language.</returns>
+        /// <returns>All WallFeeds with that language.</returns>
         [HttpGet]
         [Route("Wallfeed/all/{language}")]
         public IEnumerable<WallFeed> GetAllFeeds(int language = 1)
@@ -446,7 +436,7 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Removes a WallFeed.
         /// </summary>
-        /// <param name="feedId">The WallFeed's feedId to deletes</param>
+        /// <param name="feedId">The WallFeed's id to deletes</param>
         [HttpDelete]
         [Route("Wallfeed/delete/{feedId}")]
         public void DeleteWallFeed(int feedId)
@@ -466,7 +456,7 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
-
+        
         #region General Info
 
         /// <summary>
@@ -486,7 +476,7 @@ namespace NegevZoo.Controllers
                         .Select(zi =>
                             new AboutUsResult
                             {
-                                aboutUs = zi
+                                AboutUs = zi
                             })
                         .ToArray();
                 }
@@ -538,7 +528,7 @@ namespace NegevZoo.Controllers
                         .Select(zi =>
                             new AboutUsResult
                             {
-                                aboutUs = zi
+                                AboutUs = zi
                             })
                         .ToArray();
                 }
@@ -553,8 +543,8 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Adds or Updates the zoo's openingHourNote.
         /// </summary>
-        /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="note">The note to add or update</param>
+        /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
         [Route("about/updateOpeningHourNote/{note}/{language}")]
         public void UpdateOpeningHourNote(string note, int language = 1)
@@ -590,7 +580,7 @@ namespace NegevZoo.Controllers
                         .Select(zi =>
                             new AboutUsResult
                             {
-                                aboutUs = zi
+                                AboutUs = zi
                             })
                         .ToArray();
                 }
@@ -605,8 +595,8 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Adds or Updates the zoo's ContactInfoNote.
         /// </summary>
-        /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="note">The note to add or update</param>
+        /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
         [Route("about/updateContactInfoNote/{note}/{language}")]
         public void UpdateContactInfoNote(string note, int language = 1)
@@ -628,7 +618,7 @@ namespace NegevZoo.Controllers
         /// <summary>
         /// Gets the zoo's map url.
         /// </summary>
-        /// <returns>The map url.</returns>
+        /// <returns>The map relative path.</returns>
         [HttpGet]
         [Route("map/url")]
         public IEnumerable<MapResult> GetMapUrl()
@@ -653,7 +643,7 @@ namespace NegevZoo.Controllers
             }
         }
         #endregion
-
+        
         #region Languages
         /// <summary>
         /// Gets all the Languages.
@@ -683,7 +673,7 @@ namespace NegevZoo.Controllers
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
         {
-            public String aboutUs { get; set; }
+            public String AboutUs { get; set; }
         }
 
         #endregion

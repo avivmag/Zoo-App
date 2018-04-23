@@ -55,8 +55,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-
+        
         /// <summary>
         /// Gets User by user name and password.
         /// </summary>

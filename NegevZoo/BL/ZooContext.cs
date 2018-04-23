@@ -1286,7 +1286,7 @@ namespace BL
 
         #region ContatInfo
         /// <summary>
-        /// Gets all the ContactInfos elements.
+        /// Gets all the ContactInfos elements in the given language.
         /// </summary>
         /// <param name="language">The ContactInfo's data language.</param>
         /// <returns>All the ContactInfos elemtents.</returns>
@@ -1299,7 +1299,7 @@ namespace BL
 
             return zooDB.GetAllContactInfos().Where(ci => ci.language == language).ToArray();
         }
-
+        
         /// <summary>
         /// Adds or update the ContactInfo element.
         /// </summary>
@@ -1314,15 +1314,15 @@ namespace BL
             } 
 
             //1. check that the address is valid
-            if (String.IsNullOrWhiteSpace(contactInfo.address) || String.IsNullOrEmpty(contactInfo.address))
+            if (String.IsNullOrWhiteSpace(contactInfo.address))
             {
-                throw new ArgumentException("Wrong input. ContactInfo's address is empty or null");
+                throw new ArgumentException("Wrong input. ContactInfo's address is whitespaces or null");
             }
 
             //2. check that the via is valid
-            if (String.IsNullOrWhiteSpace(contactInfo.via) || String.IsNullOrEmpty(contactInfo.via))
+            if (String.IsNullOrWhiteSpace(contactInfo.via))
             {
-                throw new ArgumentException("Wrong input. ContactInfo's via is empty or null");
+                throw new ArgumentException("Wrong input. ContactInfo's via is whitespaces or null");
             }
 
             //3. check the language
@@ -1371,6 +1371,7 @@ namespace BL
         /// <param name="id">The ContactInfo's id to delete.</param>
         public void DeleteContactInfo(int id)
         {
+            //check that the contact info exists.
             ContactInfo contactInfo = zooDB.GetAllContactInfos().SingleOrDefault(ci => ci.id == id);
 
             if (contactInfo == null)
@@ -1382,7 +1383,7 @@ namespace BL
         }
 
         #endregion
-
+        
         #region Special Events
         
         /// <summary>
@@ -1402,18 +1403,22 @@ namespace BL
 
         /// <summary>
         /// Gets SpecialEvent elements between two dates.
+        /// returns an element only if all the event is between the given dates
         /// </summary>
         /// <param name="language">The SpecialEvent's data language.</param>
         /// <param name="startDate">The start date to look for</param>
         /// <param name="endDate">The end date to look for</param>
-        /// <returns>All the SpecialEvent elemtents.</returns>
+        /// <returns>SpecialEvent elemtents that are within the dates.</returns>
         public IEnumerable<SpecialEvent> GetSpecialEventsByDate(DateTime startDate, DateTime endDate, int language)
         {
+            //validate attributes
+            //1. validate language
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
+            //2. validate the dates.
             if (DateTime.Compare(endDate,startDate) <= 0)
             {
                 throw new ArgumentException("Wrong input. the end date is sooner than the start date");
@@ -1428,6 +1433,7 @@ namespace BL
         /// Adds or update the SpecialEvents element.
         /// </summary>
         /// <param name="specialEvent">The SpecialEvent element to add or update.</param>
+        /// <param name="isPush"> states if the operation should be sent as puch notification</param>
         public void UpdateSpecialEvent(SpecialEvent specialEvent, bool isPush)
         {
             //validate SpecialEvent attributs
@@ -1509,12 +1515,14 @@ namespace BL
         /// <param name="id">The SpecialEvent's id to delete.</param>
         public void DeleteSpecialEvent(int id)
         {
+            //check if the SpecialEvent exists
             SpecialEvent specialEvent = zooDB.GetAllSpecialEvents().SingleOrDefault(se => se.id == id);
 
             if (specialEvent == null)
             {
                 throw new ArgumentException("Wrong input. SpecialEvent's id doesn't exists");
             }
+
             zooDB.GetAllSpecialEvents().Remove(specialEvent);
         }
 
@@ -1623,6 +1631,7 @@ namespace BL
         /// <param name="id">The wallfeed's id to delete</param>
         public void DeleteWallFeed(int id)
         {
+            //check that the WallFeed exists
             var wallFeed = zooDB.GetAllWallFeeds().SingleOrDefault(wf => wf.id == id);
 
             if (wallFeed == null)
@@ -1634,7 +1643,7 @@ namespace BL
         }
 
         #endregion
-
+        
         #region General Info
         /// <summary>
         /// Gets the zoo's about info.
@@ -1663,7 +1672,7 @@ namespace BL
         {
             //validate the AboutUs attributs
             //1. validate info
-            if (String.IsNullOrWhiteSpace(info) || String.IsNullOrEmpty(info))
+            if (String.IsNullOrWhiteSpace(info))
             {
                 throw new ArgumentException("Wrong input. The info is empty or null");
             }
@@ -1781,6 +1790,10 @@ namespace BL
         #endregion
 
         #region Languages
+        /// <summary>
+        /// Gets all the existing lanuages
+        /// </summary>
+        /// <returns> All the existing languages.</returns>
         public IEnumerable<Language> GetAllLanguages()
         {
             return zooDB.GetAllLanguages();
