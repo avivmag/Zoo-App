@@ -129,33 +129,27 @@ namespace ZooTests
         [TestMethod]
         public void GetAnimalByEnclosureValidInput()
         {
-            var animals = animalsController.GetAnimalsByEnclosure(1, (int)Languages.he);
+            var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he);
             Assert.AreEqual(2, animals.Count());
         }
 
         [TestMethod]
         public void GetAnimalByEnclosureNoDataInWantedLangauge()
         {
-            var animals = animalsController.GetAnimalsByEnclosure(1, (int)Languages.ar);
+            var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.ar);
             Assert.AreEqual(2, animals.Count());
 
             var an = animals.First();
-            Assert.AreEqual(1, an.Language);
+            Assert.AreEqual((int)Languages.he, an.Language);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void GetAnimalByEnclosureEncIdDoesntExists()
         {
-            animalsController.GetAnimalsByEnclosure(-4, (int)Languages.en);
+            animalsController.GetAnimalResultByEnclosure(-4, -4);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByEnclosureWrongLanguage()
-        {
-            animalsController.GetAnimalsByEnclosure(2, nonExistantLang);
-        }
         #endregion
 
         #region GetAnimalByName
