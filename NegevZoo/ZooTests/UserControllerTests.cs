@@ -38,6 +38,66 @@ namespace ZooTests
         }
         #endregion
 
+        #region Login
+        [TestMethod]
+        public void LoginValidTest()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsTrue(usersController.Login(orUser.name, "123"));
+        }
+
+        [TestMethod]
+        public void LoginWrongPassword()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(usersController.Login(orUser.name, "123a"));
+        }
+
+        [TestMethod]
+        public void LoginWrongUserName()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(usersController.Login(orUser.name + "k", "123a"));
+        }
+        #endregion
+
+        #region GetUserByNameAndPass
+        [TestMethod]
+        public void GetUserByNameAndPassValidTest()
+        {
+            var orUser= usersController.GetUserByNameAndPass("אור","123");
+
+            Assert.IsNotNull(orUser);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetUserByNameAndPassWrongName()
+        {
+            var orUser = usersController.GetUserByNameAndPass("אור"+"g", "123");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetUserByNameAndPassWrongPass()
+        {
+            var orUser = usersController.GetUserByNameAndPass("אור", "123a");
+        }
+
+        #endregion
+        
         #region UpdateUser
         [TestMethod]
         public void UpdateUserAddAnValidTest()
