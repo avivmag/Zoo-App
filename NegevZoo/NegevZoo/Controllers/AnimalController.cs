@@ -114,30 +114,6 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
-        /// </summary>
-        /// <param name="encId">The enclosure animalId.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>AnimalResults of animals that are in the enclosure.</returns>
-        [HttpGet]
-        [Route("animals/enclosure/{encId}")]
-        public IEnumerable<Animal> GetAnimalsByEnclosure(int encId)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalsByEnclosure(encId);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
         /// Gets AnimalResult of the animals that conatin the given name, in the given language.
         /// </summary>
         /// <param name="name">The animal's name.</param>
@@ -207,9 +183,34 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
+
+        /// <summary>
+        /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
+        /// </summary>
+        /// <param name="encId">The enclosure animalId.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>AnimalResults of animals that are in the enclosure.</returns>
+        [HttpGet]
+        [Route("animals/enclosure/{encId}")]
+        public IEnumerable<Animal> GetAnimalsByEnclosure(int encId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalsByEnclosure(encId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
         #endregion
-        
+
         #region Setters
 
         /// <summary>
