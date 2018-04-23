@@ -2215,7 +2215,7 @@ namespace BL
 
         private bool ValidLanguage(int language)
         {
-            return Enum.IsDefined(typeof(Languages), language);
+            return zooDB.GetAllLanguages().SingleOrDefault(l => l.id == language) != null;
         }
 
         private bool ValidHour(int hour, int min)
