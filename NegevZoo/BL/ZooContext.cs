@@ -33,9 +33,9 @@ namespace BL
                     zooDB = new NegevZooDBEntities();
                 }
             }
-            catch (Exception exp)
+            catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new Exception("Could not connect to the database");
             }
         }
@@ -427,6 +427,8 @@ namespace BL
             var enclosurePictures = zooDB.GetAllEnclosurePictures();
 
             enclosurePictures.AddRange(pictures);
+
+            zooDB.SaveChanges();
 
             return pictures;
         }
@@ -1937,6 +1939,7 @@ namespace BL
         /// <returns>a boolean that indicates if the proccess succeded.</returns>
         public bool Login(string userName, string password)
         {
+            //check that the user exsits
             User user = GetAllUsers().SingleOrDefault(u => u.name == userName);
 
             if (user == null)
@@ -1960,9 +1963,20 @@ namespace BL
         /// <returns>The user.</returns>
         public User GetUserByNameAndPass(string userName, string password)
         {
-            var user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.password == password && wu.name == userName);
+            //check if the user exists
+            var allUsers = zooDB.GetAllUsers().Where(wu => wu.name == userName);
 
-            if (user == null)
+            var user = default(User);
+
+            foreach(User u in allUsers)
+            {
+                if (VerifyMd5Hash(password + u.salt, u.password))
+                {
+                    user = u;
+                }
+            }
+
+            if (user == default(User))
             {
                 throw new ArgumentException("Can't find a user with this name and password");
             }
@@ -1983,7 +1997,7 @@ namespace BL
                 throw new ArgumentException("No UserWorker given");
             }
 
-            //TODO: Add an authorization test.
+            //TODO: Add an authorization check.
 
             // 1. Name
             if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
@@ -1992,7 +2006,7 @@ namespace BL
             }
 
             // 2. password
-            if (String.IsNullOrEmpty(userWorker.password) || String.IsNullOrWhiteSpace(userWorker.password))
+            if (String.IsNullOrWhiteSpace(userWorker.password))
             {
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
@@ -2071,7 +2085,7 @@ namespace BL
         {
             //validate the attribues
             //1. check the device id.
-            if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
+            if (IsNullOrWhiteSpace(deviceId))
             {
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
@@ -2094,7 +2108,6 @@ namespace BL
 
                 zooDB.GetAllDevices().Add(device);
             }
-
         }
 
         /// <summary>
