@@ -197,7 +197,7 @@
     
                 var fileUploadQuery         = fileUpload.uploadFileToUrl(pictures, uploadUrl).then(
                     (success)   => {
-                        utilitiesService.alert("התמונות הועלו בהצלחה.");
+                        utilitiesService.utilities.alert("התמונות הועלו בהצלחה.");
                         enclosure.pictures  = enclosure.pictures.concat(success.data);
 
                         $scope.isLoading    = false;
