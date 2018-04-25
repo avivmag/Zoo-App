@@ -33,9 +33,9 @@ namespace BL
                     zooDB = new NegevZooDBEntities();
                 }
             }
-            catch (Exception exp)
+            catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new Exception("Could not connect to the database");
             }
         }
@@ -106,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -300,9 +300,9 @@ namespace BL
             }
 
             //1. enclosure name
-            if (IsEmptyString(enclosure.name) || IsNullOrWhiteSpace(enclosure.name))
+            if (String.IsNullOrWhiteSpace(enclosure.name))
             {
-                throw new ArgumentException("Wrong input. enclosure name is empty or white space");
+                throw new ArgumentException("Wrong input. enclosure name is null or white space");
             }
 
             //TODO: add a check to latitude or longtitude out of the range of the zoo.
@@ -313,7 +313,7 @@ namespace BL
             {
                 if (enclosures.Any(en => en.name == enclosure.name))
                 {
-                    throw new ArgumentException("Wrong input in adding enclosure. Name already exists");
+                    throw new ArgumentException("Wrong input while adding enclosure. Name already exists");
                 }
                 
                 enclosures.Add(enclosure);
@@ -331,7 +331,7 @@ namespace BL
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosure.name && enclosures.Any(en => en.name == enclosure.name))//The name changed
                 {
-                    throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
+                    throw new ArgumentException("Wrong input while updating enclosure. Name already exsits");
                 }
 
                 //enclosure.id = oldEnc.id;
@@ -363,7 +363,7 @@ namespace BL
             }
 
             //2. enclosure detail name
-            if (IsEmptyString(enclosureDetail.name) || IsNullOrWhiteSpace(enclosureDetail.name))
+            if (String.IsNullOrWhiteSpace(enclosureDetail.name))
             {
                 throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
@@ -371,7 +371,7 @@ namespace BL
             //3. check that the enclosure id exists
             if (!GetAllEnclosures().Any(e => e.id == enclosureDetail.encId))
             {
-                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists..");
+                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists.");
             }
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
@@ -414,7 +414,7 @@ namespace BL
 
             var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() });
 
-            if (pictures.Any(p => IsNullOrWhiteSpace(p.pictureUrl)))
+            if (pictures.Any(p => String.IsNullOrWhiteSpace(p.pictureUrl)))
             {
                 throw new ArgumentException("Wrong input. The url is empty or white spaces");
             }
@@ -427,6 +427,8 @@ namespace BL
             var enclosurePictures = zooDB.GetAllEnclosurePictures();
 
             enclosurePictures.AddRange(pictures);
+
+            zooDB.SaveChanges();
 
             return pictures;
         }
@@ -451,7 +453,7 @@ namespace BL
             }
 
             //2. check the url
-            if (IsEmptyString(enclosureVideo.videoUrl) || IsNullOrWhiteSpace(enclosureVideo.videoUrl))
+            if (String.IsNullOrWhiteSpace(enclosureVideo.videoUrl))
             {
                 throw new ArgumentException("Wrong input. The url is empty or white spaces");
             }
@@ -516,9 +518,9 @@ namespace BL
             }
 
             //3. check the description
-            if (IsEmptyString(recEvent.description) || IsNullOrWhiteSpace(recEvent.description))
+            if (String.IsNullOrWhiteSpace(recEvent.description))
             {
-                throw new ArgumentException("Wrong input. The descrioption is empty or white spaces");
+                throw new ArgumentException("Wrong input. The descrioption is null or white spaces");
             }
 
             //4. check the day
@@ -550,7 +552,7 @@ namespace BL
             {
                 var oldRecEvent = allRecurringEvents.SingleOrDefault(re => re.id == recEvent.id);
 
-                if (recEvent == null)
+                if (oldRecEvent == null)
                 {
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
@@ -606,14 +608,15 @@ namespace BL
         /// Delete The enclosure picture.
         /// </summary>
         /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
-        public void DeleteEnclosurePicture(int enclosurePictureId, int enclosureId)
+        public void DeleteEnclosurePicture(int enclosureId, int enclosurePictureId)
         {
             var allEnclosurePictures = zooDB.GetAllEnclosurePictures();
+            
             //check that the enclosure picture exists
             var enclosurePicture = allEnclosurePictures.SingleOrDefault(e => e.id == enclosurePictureId);
 
             if (enclosurePicture == null){
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+                throw new ArgumentException("Wrong input. The enclsure picture doesn't exists");
             }
 
             if (enclosurePicture.enclosureId != enclosureId)
@@ -881,9 +884,9 @@ namespace BL
             }
 
             //1. aniaml name
-            if (IsEmptyString(animal.name) || IsNullOrWhiteSpace(animal.name)) 
+            if (String.IsNullOrWhiteSpace(animal.name)) 
             {
-                throw new ArgumentException("Wrong input. Animal name is empty or null");
+                throw new ArgumentException("Wrong input. Animal name is null or null");
             }
 
             //2. enclosure exists
@@ -1049,9 +1052,9 @@ namespace BL
             }
 
             //1. check that the population is valid
-            if (String.IsNullOrWhiteSpace(price.population) || String.IsNullOrEmpty(price.population))
+            if (String.IsNullOrWhiteSpace(price.population))
             {
-                throw new ArgumentException("Wrong input. The price population is empty or null");
+                throw new ArgumentException("Wrong input. The price population is null or whitespaces");
             }
             
             //2. check that the price amount is valid
@@ -1937,6 +1940,7 @@ namespace BL
         /// <returns>a boolean that indicates if the proccess succeded.</returns>
         public bool Login(string userName, string password)
         {
+            //check that the user exsits
             User user = GetAllUsers().SingleOrDefault(u => u.name == userName);
 
             if (user == null)
@@ -1960,9 +1964,20 @@ namespace BL
         /// <returns>The user.</returns>
         public User GetUserByNameAndPass(string userName, string password)
         {
-            var user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.password == password && wu.name == userName);
+            //check if the user exists
+            var allUsers = zooDB.GetAllUsers().Where(wu => wu.name == userName);
 
-            if (user == null)
+            var user = default(User);
+
+            foreach(User u in allUsers)
+            {
+                if (VerifyMd5Hash(password + u.salt, u.password))
+                {
+                    user = u;
+                }
+            }
+
+            if (user == default(User))
             {
                 throw new ArgumentException("Can't find a user with this name and password");
             }
@@ -1971,10 +1986,67 @@ namespace BL
         }
 
         /// <summary>
+        /// Updates the User name.
+        /// </summary>
+        /// <param name="id"> Represents the id of the user that changes the name</param>
+        /// <param name="userName"> Represents the new user name that should be saved</param>
+        public void UpdateUserName(int id, string userName)
+        {
+            var allUsers = zooDB.GetAllUsers();
+
+            User user = allUsers.SingleOrDefault(wu => wu.id == id);
+
+            // validate attributes
+            // 1. Check that the User exists
+            if (user == null)
+            {
+                throw new ArgumentException("Wrong input. User ID doesn't exists.");
+            }
+
+            // 2. check the user name
+            if (String.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException("Wrong input. The user name is empty or white spaces");
+            }
+
+            // 3. check if the user name already exists
+            if (allUsers.Any(wu => wu.name == userName))
+            {
+                throw new ArgumentException("Wrong input . The user name already exists");
+            }
+
+            user.name = userName;
+        }
+
+
+        public void UpdateUserPassword(int id, string password)
+        {
+            var allUsers = zooDB.GetAllUsers();
+
+            User user = allUsers.SingleOrDefault(wu => wu.id == id);
+
+            // validate attributes
+            // 1. Check that the User exists
+            if (user == null)
+            {
+                throw new ArgumentException("Wrong input. User ID doesn't exists.");
+            }
+
+            // 2. password
+            if (String.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Wrong input. The password is empty or white spaces");
+            }
+
+            user.salt = GenerateSalt();
+            user.password = GetMd5Hash(password + user.salt);
+        }
+
+        /// <summary>
         /// Updates The User.
         /// </summary>
         /// <param name="userWorker">The UserWorker to add or update.</param>
-        public void UpdateUser(User userWorker)
+        public void AddUser(User userWorker)
         {
             //check the attributes
             // 0.Exists
@@ -1983,54 +2055,39 @@ namespace BL
                 throw new ArgumentException("No UserWorker given");
             }
 
-            //TODO: Add an authorization test.
+            //TODO: Add an authorization check.
 
             // 1. Name
-            if (String.IsNullOrEmpty(userWorker.name) || String.IsNullOrWhiteSpace(userWorker.name))
+            if (String.IsNullOrWhiteSpace(userWorker.name))
             {
                 throw new ArgumentException("Wrong input. The user name is empty or white spaces");
             }
 
             // 2. password
-            if (String.IsNullOrEmpty(userWorker.password) || String.IsNullOrWhiteSpace(userWorker.password))
+            if (String.IsNullOrWhiteSpace(userWorker.password))
             {
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
+            // 3. check the id
+            if (userWorker.id != default(int))
+            {
+                throw new ArgumentException("Wrong input. The user id should set to default");
+            }
+
             var users = zooDB.GetAllUsers();
 
-            if (userWorker.id == default(int)) //add a user
+            //check if the name already exists
+            if (users.Any(wu => wu.name == userWorker.name))
             {
-                //check if the name already exists
-                if (users.Any(wu => wu.name == userWorker.name))
-                {
-                    throw new ArgumentException("Wrong input while adding a User. Name already exists");
-                }
-
-                userWorker.salt = GenerateSalt();
-
-                users.Add(userWorker);
+                throw new ArgumentException("Wrong input while adding a User. Name already exists");
             }
-            else //update a user
-            {
-                var oldUser = users.SingleOrDefault(wu => wu.id == userWorker.id);
 
-                if (oldUser == null)
-                {
-                    throw new ArgumentException("Wrong input. User doesn't exists");
-                }
-
-                //check if the name changed to a name that already exists
-                if (oldUser.name != userWorker.name && users.Any(wu => wu.name == userWorker.name))
-                {
-                    throw new ArgumentException("Wrong input while updating a User. Name already exists");
-                }
-
-                oldUser.name = userWorker.name;
-                oldUser.password = userWorker.password;
-                userWorker.salt = GenerateSalt();
-                oldUser.isAdmin = userWorker.isAdmin;
-            }
+            
+            userWorker.salt = GenerateSalt();
+            userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
+            
+            users.Add(userWorker);
         }
 
         /// <summary>
@@ -2071,7 +2128,7 @@ namespace BL
         {
             //validate the attribues
             //1. check the device id.
-            if (IsEmptyString(deviceId) || IsNullOrWhiteSpace(deviceId))
+            if (String.IsNullOrWhiteSpace(deviceId))
             {
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
@@ -2094,7 +2151,6 @@ namespace BL
 
                 zooDB.GetAllDevices().Add(device);
             }
-
         }
 
         /// <summary>
@@ -2104,7 +2160,9 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsAllDevices(string title, string body)
         {
-            Task.Factory.StartNew(() => NotifyAsync(title, body, true));
+            var devices = zooDB.GetAllDevices().ToList();
+
+            Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
 
         /// <summary>
@@ -2114,7 +2172,9 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsOnlineDevices(string title, string body)
         {
-            Task.Factory.StartNew(() => NotifyAsync(title, body, false));
+            var devices = zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
+
+            Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
 
         /// <summary>
@@ -2140,10 +2200,11 @@ namespace BL
                 //get the current day of week. add 1 because days start from 0 in c#
                 var curDayOfWeek = (long)currentTime.DayOfWeek + 1;
 
-                if (curDayOfWeek == recEve.day &&  timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
+                if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
                     Console.WriteLine("Event found" + recEve.title + ", ", recEve.description);
-                    Task.Factory.StartNew(() => NotifyAsync(recEve.title, recEve.description, false));
+
+                    SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
                 else
                 {
@@ -2152,25 +2213,13 @@ namespace BL
             }
         }
 
-        private async void NotifyAsync(string title, string body, bool toAll)
+        private async void NotifyAsync(string title, string body, List<Device> devices)
         {
             // TODO:: compute whether the users are online or offline and send by that.
             try
             {
                 string key = Properties.Settings.Default.serverKey;
                 string id = Properties.Settings.Default.senderId;
-                
-                var devices = new List<Device>();
-
-                if (toAll) //the notification should be sent to all the users
-                {
-                    devices.AddRange(zooDB.GetAllDevices().ToList());
-                }
-                else
-                {   //the notification should be sent to the online users.
-                    //TODO: check if 30 minuits is the difference between online of offline
-                    devices.AddRange(zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
-                }
 
                 // Format the server's key.
                 var serverKey = string.Format("key={0}", key);
@@ -2217,27 +2266,12 @@ namespace BL
         {
             return zooDB.GetAllLanguages().SingleOrDefault(l => l.id == language) != null;
         }
-
-        private bool ValidHour(int hour, int min)
-        {
-            return hour > 0 && hour < 24 && Enum.IsDefined(typeof(AvailableMinutes), min);
-        }
-
+        
         private long GetHebewLanguage()
         {
             return GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id;
         }
-
-        private bool IsEmptyString(string str)
-        {
-            return String.IsNullOrEmpty(str);
-        }
-
-        private bool IsNullOrWhiteSpace(string str)
-        {
-            return String.IsNullOrWhiteSpace(str);
-        }
-
+        
         private bool ValidateTime(RecurringEvent re, RecurringEvent recEvent)
         {
             return  (re.day == recEvent.day) &&

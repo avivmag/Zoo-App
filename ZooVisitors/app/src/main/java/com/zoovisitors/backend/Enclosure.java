@@ -46,22 +46,7 @@ public class Enclosure implements java.io.Serializable{
         return videos;
     }
 
-    //    public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
-    public Queue<RecurringEvent> getRecurringEvent() {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        for (int j = 0; j < recurringEvents.length; j++) {
-            recurringEvents[j].setStartTime(
-                    (recurringEvents[j].getStartTime() + SEVEN_DAYS - currentTime// + THREE_DAYS
-                    ) % SEVEN_DAYS);
-            recurringEvents[j].setEndTime(
-                    (recurringEvents[j].getEndTime() + SEVEN_DAYS - currentTime// + THREE_DAYS
-                    ) % SEVEN_DAYS);
-//                                (recurringEvents[j].getStartTime() + SEVEN_DAYS - ((currentTime - THREE_DAYS) % SEVEN_DAYS)) % SEVEN_DAYS);
-        }
-        Arrays.sort(recurringEvents, (rec1, rec2) ->
-                (int) (rec1.getStartTime() - rec2.getStartTime()));
-        return new LinkedList<>(Arrays.asList(recurringEvents));
-    }
+     public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
 
     // TODO: remove this when recurring events are completed on the server side
     public void setRecurringEvent(RecurringEvent[] recurringEvents) { this.recurringEvents = recurringEvents; }

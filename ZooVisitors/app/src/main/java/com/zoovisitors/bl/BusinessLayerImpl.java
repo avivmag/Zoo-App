@@ -92,12 +92,17 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
-                long currentTime = Calendar.getInstance().getTimeInMillis();
+                // TODO: fake recurring events here, need to update the json somehow
+                // TODO: I should add three days to the real recurring events
+                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
                 for (int i = 0; i < enc.length; i++) {
-                    // TODO: fake recurring events here, need to update the json somehow
                     enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-                            Enclosure.RecurringEvent.createRecurringEvent(1, "", currentTime + 10
-                                    * 60 * 1000, currentTime + 40 * 60 * 1000, "")
+                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
+                                    (currentTime + 10 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), ""),
+                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
+                                    (currentTime + 30 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 40 * 1000) % (7*24*60*60*1000), "")
                     });
                 }
 

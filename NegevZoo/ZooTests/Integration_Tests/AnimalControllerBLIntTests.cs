@@ -9,7 +9,7 @@ using DAL.Models;
 namespace ZooTests
 {
     [TestClass]
-    public class AnimalControllerTests
+    public class AnimalControllerBLIntegrationTests
     {
         private AnimalController animalsController;
         private int nonExistantLang;
@@ -125,16 +125,16 @@ namespace ZooTests
 
         #endregion
 
-        #region GetAnimalByEnclosure
+        #region GetAnimalResultByEnclosure
         [TestMethod]
-        public void GetAnimalByEnclosureValidInput()
+        public void GetAnimalResultByEnclosureValidInput()
         {
             var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he);
             Assert.AreEqual(2, animals.Count());
         }
 
         [TestMethod]
-        public void GetAnimalByEnclosureNoDataInWantedLangauge()
+        public void GetAnimalResultByEnclosureNoDataInWantedLangauge()
         {
             var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.ar);
             Assert.AreEqual(2, animals.Count());
@@ -145,7 +145,7 @@ namespace ZooTests
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByEnclosureEncIdDoesntExists()
+        public void GetAnimalResultByEnclosureEncIdDoesntExists()
         {
             animalsController.GetAnimalResultByEnclosure(-4, -4);
         }
@@ -238,6 +238,23 @@ namespace ZooTests
         public void GetAllAnimalDetailsByIdWrongId()
         {
             animalsController.GetAllAnimalsDetailsById(-4);
+        }
+
+        #endregion
+
+        #region GetAnimalByEnclosure
+        [TestMethod]
+        public void GetAnimalByEnclosureValidInput()
+        {
+            var animals = animalsController.GetAnimalsByEnclosure(1);
+            Assert.AreEqual(2, animals.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAnimalByEnclosureEncIdDoesntExists()
+        {
+            animalsController.GetAnimalsByEnclosure(-4);
         }
 
         #endregion

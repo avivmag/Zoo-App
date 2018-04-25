@@ -1,14 +1,20 @@
 ﻿app.controller('zooPricesCtrl', ['$scope', '$mdDialog', 'zooInfoService',
     function zooPricesController($scope, $mdDialog, zooInfoService) {
+        $scope.isLoading            = true;
+
         initializeComponent();
 
-        function initializeComponent() {
-            $scope.languages            = app.languages;
-            $scope.language             = $scope.languages[0];
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
 
+                $scope.updatePrices($scope.language);
+            });
+
+        function initializeComponent() {
             $scope.updatePrices         = function (language) {
                 $scope.language             = language;
-                $scope.isLoading            = true;
 
                 pricesQuery = zooInfoService.prices.getAllPrices(language.id).then(
                     function (data) {
@@ -71,8 +77,6 @@
                     deletePrice(price, prices);
                 });
             }
-
-            $scope.updatePrices($scope.language);
         }
 
         function addEmptyPrice(prices) {

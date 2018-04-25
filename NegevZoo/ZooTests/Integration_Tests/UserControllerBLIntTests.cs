@@ -9,7 +9,7 @@ using NegevZoo.Controllers;
 namespace ZooTests
 {
     [TestClass]
-    public class UserControllerTests
+    public class UserControllerBlIntegrationTests
     {
         private UserController usersController;
         
@@ -38,7 +38,67 @@ namespace ZooTests
         }
         #endregion
 
-        #region UpdateUser
+        #region Login
+        [TestMethod]
+        public void LoginValidTest()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsTrue(usersController.Login(orUser.name, "123"));
+        }
+
+        [TestMethod]
+        public void LoginWrongPassword()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(usersController.Login(orUser.name, "123a"));
+        }
+
+        [TestMethod]
+        public void LoginWrongUserName()
+        {
+            var users = usersController.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(usersController.Login(orUser.name + "k", "123a"));
+        }
+        #endregion
+
+        #region GetUserByNameAndPass
+        [TestMethod]
+        public void GetUserByNameAndPassValidTest()
+        {
+            var orUser= usersController.GetUserByNameAndPass("אור","123");
+
+            Assert.IsNotNull(orUser);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetUserByNameAndPassWrongName()
+        {
+            var orUser = usersController.GetUserByNameAndPass("אור"+"g", "123");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetUserByNameAndPassWrongPass()
+        {
+            var orUser = usersController.GetUserByNameAndPass("אור", "123a");
+        }
+
+        #endregion
+        
+        #region AddUser
         [TestMethod]
         public void UpdateUserAddAnValidTest()
         {
@@ -53,7 +113,7 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
 
             users = usersController.GetAllUsers();
             Assert.AreEqual(5, users.Count());
@@ -74,7 +134,7 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -92,7 +152,7 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -110,7 +170,7 @@ namespace ZooTests
                 password = "       "
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -128,7 +188,7 @@ namespace ZooTests
                 password = ""
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -146,26 +206,18 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
+        #endregion
 
+        #region UpdateUserName
         [TestMethod]
-        public void UpdateUserValidInput()
+        public void UpdateUserNameValidInput()
         {
             var users= usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
-
-            user.name  = "גיל המלך";
-
-            usersController.UpdateUser(user);
+            usersController.UpdateUserName(2, "גיל המלך");
 
             users = usersController.GetAllUsers();
             Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
@@ -177,40 +229,51 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateUserNameAlreadyExists()
         {
-            var users = usersController.GetAllUsers();
-            Assert.AreEqual(4, users.Count());
-
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
-
-            user.name = "אור";
-
-            usersController.UpdateUser(user);
+            usersController.UpdateUserName(2, "אור");
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateUserWrongId()
+        public void UpdateUserNameWrongId()
         {
-            var users= usersController.GetAllUsers();
+            usersController.UpdateUserName(-2, "גיל המלך");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserNameEmptyName()
+        {
+            usersController.UpdateUserName(2, "");
+        }
+        #endregion
+
+        #region UpdateUserPassword
+        [TestMethod]
+        public void UpdateUserPasswordValidInput()
+        {
+            var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
+            usersController.UpdateUserPassword(2, "321");
 
-            user.id = -3;
+            users = usersController.GetAllUsers();
+            Assert.IsTrue(usersController.Login("גיל", "321"));
+            Assert.IsFalse(usersController.Login("גיל", "123"));
+            Assert.AreEqual(4, users.Count());
+        }
 
-            usersController.UpdateUser(user);
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserPasswordWrongId()
+        {
+            usersController.UpdateUserName(-2, "321");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserPasswordEmptyName()
+        {
+            usersController.UpdateUserName(2, "     ");
         }
         #endregion
 

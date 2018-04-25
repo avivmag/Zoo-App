@@ -11,7 +11,7 @@ using DAL.Models;
 namespace ZooTests
 {
     [TestClass]
-    public class EncloureControllerTests
+    public class EncloureControllerBlIntegrationTests
     {
         #region tests SetUp and TearDown
 
@@ -819,32 +819,6 @@ namespace ZooTests
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateRecurringEventWrongEnclosure()
-        {
-            var events = enclosureController.GetRecurringEvents(2, 2);
-            Assert.AreEqual(2, events.Count());
-
-            var recEvent = events.First();
-            Assert.AreEqual(4, recEvent.id);
-            Assert.AreEqual(11, recEvent.day);
-            Assert.AreEqual("Playing", recEvent.description);
-
-            var newRecEvent = new RecurringEvent
-            {
-                id = default(int),
-                enclosureId = -2,
-                day = 12,
-                description = "Looking",
-                startTime = new TimeSpan(10, 30, 00),
-                endTime = new TimeSpan(11, 30, 00),
-                language = (int)Languages.en
-            };
-
-            enclosureController.UpdateRecurringEvent(newRecEvent);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateRecurringEventWronEnclosure()
         {
             var events = enclosureController.GetRecurringEvents(2, 2);
             Assert.AreEqual(2, events.Count());
