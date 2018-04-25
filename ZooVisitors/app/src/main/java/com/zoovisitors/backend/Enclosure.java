@@ -1,9 +1,7 @@
 package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -35,8 +33,20 @@ public class Enclosure implements java.io.Serializable{
     private String pictureUrl;
     @SerializedName("recurringEvents")
     private RecurringEvent[] recurringEvents;
+    @SerializedName("pictures")
+    private PictureEnc[] pictures;
+    @SerializedName("videos")
+    private VideoEnc[] videos;
 
-//    public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
+    public PictureEnc[] getPictures() {
+        return pictures;
+    }
+
+    public VideoEnc[] getVideos() {
+        return videos;
+    }
+
+    //    public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
     public Queue<RecurringEvent> getRecurringEvent() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         for (int j = 0; j < recurringEvents.length; j++) {
@@ -164,6 +174,49 @@ public class Enclosure implements java.io.Serializable{
             recurringEvent.endTime = lastsTime;
             recurringEvent.title = title;
             return recurringEvent;
+        }
+    }
+
+    public class PictureEnc implements java.io.Serializable{
+        @SerializedName("id")
+        private int id;
+        @SerializedName("enclosureId")
+        private int enclosureId;
+        @SerializedName("pictureUrl")
+        private String pictureUrl;
+
+        public int getId() {
+            return id;
+        }
+
+        public int getEnclosureId() {
+            return enclosureId;
+        }
+
+        public String getPictureUrl() {
+            return pictureUrl;
+        }
+    }
+
+    public class VideoEnc implements java.io.Serializable{
+        @SerializedName("id")
+        private int id;
+        @SerializedName("enclosureId")
+        private int enclosureId;
+        @SerializedName("videoUrl")
+        private String videoUrl;
+
+
+        public int getId() {
+            return id;
+        }
+
+        public int getEnclosureId() {
+            return enclosureId;
+        }
+
+        public String getVideoUrl() {
+            return videoUrl;
         }
     }
 }

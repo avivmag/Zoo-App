@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static java.lang.System.exit;
+
 public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
     private LinearLayout newsFeedLinearLayout;
@@ -353,6 +355,11 @@ public class MainActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        System.exit(0);
+        super.onBackPressed();
+    }
 //    private void designButton(int id, int background, int image, int text){
 //        buttonCustomView button = (buttonCustomView) findViewById(id);
 //        button.setBackgroundColor(background);

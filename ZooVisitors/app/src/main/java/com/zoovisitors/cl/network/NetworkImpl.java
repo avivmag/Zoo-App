@@ -46,7 +46,7 @@ public class NetworkImpl implements NetworkInterface {
         queue.add(stringRequest);
     }
 
-    public void postImage(String innerURL, final ResponseInterface<Bitmap> responseInterface)
+    public void postImage(String innerURL, int width, int height, final ResponseInterface<Bitmap> responseInterface)
     {
         // Instantiate the RequestQueue.
         String url ="http://" + GlobalVariables.ServerAddress + "/" + innerURL;
@@ -60,8 +60,33 @@ public class NetworkImpl implements NetworkInterface {
                         responseInterface.onSuccess(response);
                     }
                 },
-                120,
-                120,
+                width,
+                height,
+                ImageView.ScaleType.CENTER_CROP,
+                Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        responseInterface.onFailure(error.toString());
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+        queue.add(request);
+    }
+
+    public void postImageWithoutPrefix(String url, int width, int height, final ResponseInterface<Bitmap> responseInterface)
+    {
+        // Retrieves an image specified by the URL, displays it in the UI.
+        ImageRequest request = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        responseInterface.onSuccess(response);
+                    }
+                },
+                width,
+                height,
                 ImageView.ScaleType.CENTER_CROP,
                 Bitmap.Config.RGB_565,
                 new Response.ErrorListener() {
