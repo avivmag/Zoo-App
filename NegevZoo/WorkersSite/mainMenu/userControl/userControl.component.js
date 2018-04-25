@@ -1,5 +1,5 @@
-﻿app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService',
-    function userControlController($scope, $mdDialog, usersService) {
+﻿app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService', 'utilitiesService',
+    function userControlController($scope, $mdDialog, usersService, utilitiesService) {
         initializeComponent();
 
         function initializeComponent() {
@@ -86,6 +86,26 @@
                    resetPassword(ev, user);
                 });
             }
+
+            $scope.resetPassword = function (user) {
+                promptObject = {
+                    title:          'איפוס סיסמא',
+                    content:        'הכנס סיסמא חדשה לאיפוס',
+                    placeholder:    'סיסמא חדשה',
+                    required:       true,
+                    okMsg:          'אפס סיסמא',
+                    cancelMsg:      'ביטול'
+                };
+
+                utilitiesService.utilities.prompt(promptObject).then(
+                    function(newPass) {
+                        user.password = newPass;
+
+                        usersService.updateUser(user).then(
+                            () => utilitiesService.utilities.alert("הסיסמא אופסה בהצלחה"),
+                            () => utilitiesService.utilities.alert("קרתה שגיאה בעת איפוס הסיסמא"));
+                    });
+            };
 
             $scope.updateUsers();
         }

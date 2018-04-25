@@ -1,6 +1,6 @@
 ﻿app.controller('loginCtrl', ['$scope', '$state', 'usersService', 'utilitiesService', 
     function ($scope, $state, usersService, utilitiesService) {
-        $scope.login = function login(username, password) {
+        $scope.login = function (username, password) {
 
             $scope.loginQuery = usersService.login(username, password).then(
                 function (response) {

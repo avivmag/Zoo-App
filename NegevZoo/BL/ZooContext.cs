@@ -2044,7 +2044,7 @@ namespace BL
 
                 oldUser.name        = userWorker.name;
                 oldUser.salt        = GenerateSalt();
-                oldUser.password    = GetMd5Hash(userWorker.password + userWorker.salt);
+                oldUser.password    = GetMd5Hash(userWorker.password + oldUser.salt);
                 oldUser.isAdmin     = userWorker.isAdmin;
             }
         }
