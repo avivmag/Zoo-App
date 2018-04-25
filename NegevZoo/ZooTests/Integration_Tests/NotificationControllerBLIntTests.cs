@@ -11,7 +11,7 @@ using System.Web.Http;
 namespace ZooTests
 {
     [TestClass]
-    public class NotificationControllerTests
+    public class NotificationControllerBlIntegraionTests
     {
         private NotificationController NotificationController;
 
