@@ -97,7 +97,7 @@ namespace ZooTests.Unit_Tests
 
         #endregion
 
-        #region UpdateUser
+        #region AddUser
 
         [TestMethod]
         public void UpdateUserAddAnValidTest()
@@ -113,7 +113,7 @@ namespace ZooTests.Unit_Tests
                 password = "123"
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
 
             users = context.GetAllUsers();
             Assert.AreEqual(5, users.Count());
@@ -134,7 +134,7 @@ namespace ZooTests.Unit_Tests
                 password = "123123"
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -152,7 +152,7 @@ namespace ZooTests.Unit_Tests
                 password = "123123"
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -170,7 +170,7 @@ namespace ZooTests.Unit_Tests
                 password = "       "
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -188,7 +188,7 @@ namespace ZooTests.Unit_Tests
                 password = ""
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace ZooTests.Unit_Tests
                 password = "123"
             };
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -217,7 +217,7 @@ namespace ZooTests.Unit_Tests
 
             var user = new User
             {
-                id = 2,
+                id = default(int),
                 isAdmin = false,
                 name = "גיל",
                 password = "123"
@@ -225,12 +225,12 @@ namespace ZooTests.Unit_Tests
 
             user.name = "גיל המלך";
 
-            context.UpdateUser(user);
+            context.AddUser(user);
 
             users = context.GetAllUsers();
             Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
-            Assert.IsFalse(users.Any(a => a.name == "גיל"));
-            Assert.AreEqual(4, users.Count());
+            Assert.IsTrue(users.Any(a => a.name == "גיל"));
+            Assert.AreEqual(5, users.Count());
         }
 
         [TestMethod]
@@ -250,7 +250,7 @@ namespace ZooTests.Unit_Tests
 
             user.name = "אור";
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
 
         [TestMethod]
@@ -270,7 +270,7 @@ namespace ZooTests.Unit_Tests
 
             user.id = -3;
 
-            context.UpdateUser(user);
+            context.AddUser(user);
         }
         #endregion
 
