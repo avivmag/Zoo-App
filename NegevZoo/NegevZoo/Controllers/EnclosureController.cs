@@ -384,7 +384,7 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosurePicture(pictureId, enclosureId);
+                    db.DeleteEnclosurePicture(enclosureId, pictureId);
                 }
 
             }

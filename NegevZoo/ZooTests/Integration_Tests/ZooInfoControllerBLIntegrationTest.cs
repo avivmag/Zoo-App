@@ -8,7 +8,7 @@ using System.Web.Http;
 namespace ZooTests
 {
     [TestClass]
-    public class ZooInfoControllerTest
+    public class ZooInfoControllerBlIntegrationTest
     {
         private ZooInfoController ZooInfoController;
         private int nonExistantLangauge;
