@@ -85,14 +85,60 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="userWorker">The element to add or update</param>
         [HttpPost]
-        [Route("users/update")]
-        public void UpdateUser(User userWorker)
+        [Route("users/add")]
+        public void AddUser(User userWorker)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateUser(userWorker);
+                    db.AddUser(userWorker);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Updates the User name.
+        /// </summary>
+        /// <param name="id"> Represents the id of the user that changes the name</param>
+        /// <param name="userName"> Represents the new user name that should be saved</param>
+        [HttpPost]
+        [Route("users/update/name/{id}/{userName}")]
+        public void UpdateUserName(int id, String userName)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.UpdateUserName(id, userName);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Updates the User's password.
+        /// </summary>
+        /// <param name="id"> Represents the id of the user that changes the password</param>
+        /// <param name="password"> Represents the new password that should be saved</param>
+        [HttpPost]
+        [Route("users/update/password/{id}/{password}")]
+        public void UpdateUserPassword(int id, String password)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.UpdateUserPassword(id, password);
                 }
             }
             catch (Exception Exp)

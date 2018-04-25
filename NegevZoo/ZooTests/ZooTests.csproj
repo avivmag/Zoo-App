@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="Integration_Tests\AnimalControllerBLIntTests.cs" />
     <Compile Include="Integration_Tests\EncloureControllerBLIntTests.cs" />
-    <Compile Include="NonFunctional_Tests\LoadTest.cs" />
+    <Compile Include="NonFunctional_Tests\LoginTest.cs" />
     <Compile Include="Integration_Tests\NotificationControllerBLIntTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit_Tests\AnimalUnitTests.cs" />
