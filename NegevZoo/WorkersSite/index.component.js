@@ -1,34 +1,44 @@
 ﻿app.controller('indexController', 
-    ['$scope',
+    ['$q',
+     '$scope',
      '$mdDialog',
-     '$state', 
+     '$state',
+     'utilitiesService',
      'enclosureService',
      'animalService',
      'zooInfoService',
 
-    function indexController($scope, $mdDialog, $state, enclosureService, animalService, zooInfoService) 
+    function indexController($q, $scope, $mdDialog, $state, utilitiesService, enclosureService, animalService, zooInfoService) 
     {
-        $scope.isLoading                = true;
+        app.getLanguages = function () {
+            // If languages have already been fetched, return a promise of them.
+            if (angular.isDefined(app.languages)) {
+                return $q((resolve, reject) => {
+                    resolve({ data: app.languages });
+                });
+            }
+            // Otherwise, fetch them and return the promise of the result.
+            else {
+                var langsQuery = zooInfoService.getAllLanguages();
 
-        var languagesQuery = zooInfoService.getAllLanguages().then(
-            function (data) {
-                app.languages           = data.data;
-                app.defaultLanguage     = app.languages.find(lang => lang.name === 'עברית');
-    
-                $scope.isLoading        = false;
-                $state.go('login');
-            },
-            function () {
-                $mdDialog.show(
-                    $mdDialog.alert()
-                        .clickOutsideToClose(true)
-                        .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                        .ok('סגור')
-                );
-    
-                $scope.isLoading        = false;
-            });
+                langsQuery.then(
+                    function (data) {
+                        app.languages           = data.data;
+                        app.defaultLanguage     = app.languages.find(lang => lang.name === 'עברית');
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                        return $q((resolve, reject) => {
+                            reject();
+                        });
+                    });
 
+                return langsQuery;
+            }
+        }
+
+        $state.go('login');
+    }]);
         //var testEnclosure = {
 
         //    Id:             0,
@@ -64,4 +74,3 @@
         //var updateEmptyAnimalQuery          = animalService.updateAnimal().then(function (data) { console.log('updateEmptyAnimal', data); }, function (fail) { console.log('updateEmptyAnimalFail', fail); });
         //var updateAnimalQuery               = animalService.updateAnimal(testAnimal).then(function (data) { console.log('updateAnimal', data); }, function (fail) { console.log('updateAnimalFail', fail); });
         //var deleteAnimalQuery               = animalService.deleteAnimal(2).then(function (data) { console.log('deleteAnimal', data); }, function (fail) { console.log('deleteAnimalFail', fail); });
-    }]);
