@@ -27,18 +27,16 @@ namespace NegevZoo.Controllers
                 {
                     return db.GetAllDevices();
                 }
-
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                Logger.GetInstance().WriteLine(Exp.StackTrace);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
         /// <summary>
-        /// update on a device.
+        /// update the device state.
         /// </summary>
         /// <param name="deviceId">The device id to add</param>
         /// <param name="inPark">a boolean that indicates if the device is in the park</param>
@@ -52,12 +50,10 @@ namespace NegevZoo.Controllers
                 {
                     db.UpdateDevice(deviceId, inPark);
                 }
-
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                Logger.GetInstance().WriteLine(Exp.StackTrace);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -83,8 +79,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                Logger.GetInstance().WriteLine(Exp.StackTrace);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -110,8 +105,7 @@ namespace NegevZoo.Controllers
             }
             catch(Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                Logger.GetInstance().WriteLine(Exp.StackTrace);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -135,8 +129,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                Logger.GetInstance().WriteLine(Exp.StackTrace);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
