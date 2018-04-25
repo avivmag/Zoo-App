@@ -9,7 +9,7 @@ using DAL.Models;
 namespace ZooTests
 {
     [TestClass]
-    public class AnimalControllerTests
+    public class AnimalControllerBLIntegrationTests
     {
         private AnimalController animalsController;
         private int nonExistantLang;

@@ -300,9 +300,9 @@ namespace BL
             }
 
             //1. enclosure name
-            if (IsEmptyString(enclosure.name) || IsNullOrWhiteSpace(enclosure.name))
+            if (String.IsNullOrWhiteSpace(enclosure.name))
             {
-                throw new ArgumentException("Wrong input. enclosure name is empty or white space");
+                throw new ArgumentException("Wrong input. enclosure name is null or white space");
             }
 
             //TODO: add a check to latitude or longtitude out of the range of the zoo.
@@ -313,7 +313,7 @@ namespace BL
             {
                 if (enclosures.Any(en => en.name == enclosure.name))
                 {
-                    throw new ArgumentException("Wrong input in adding enclosure. Name already exists");
+                    throw new ArgumentException("Wrong input while adding enclosure. Name already exists");
                 }
                 
                 enclosures.Add(enclosure);
@@ -331,7 +331,7 @@ namespace BL
                 // check that if the name changed, it doesn't exits
                 if (oldEnc.name != enclosure.name && enclosures.Any(en => en.name == enclosure.name))//The name changed
                 {
-                    throw new ArgumentException("Wrong input in updating enclosure. Name already exsits");
+                    throw new ArgumentException("Wrong input while updating enclosure. Name already exsits");
                 }
 
                 //enclosure.id = oldEnc.id;
@@ -363,7 +363,7 @@ namespace BL
             }
 
             //2. enclosure detail name
-            if (IsEmptyString(enclosureDetail.name) || IsNullOrWhiteSpace(enclosureDetail.name))
+            if (String.IsNullOrWhiteSpace(enclosureDetail.name))
             {
                 throw new ArgumentException("Wrong input. enclosure detail name is empty or white space");
             }
@@ -371,7 +371,7 @@ namespace BL
             //3. check that the enclosure id exists
             if (!GetAllEnclosures().Any(e => e.id == enclosureDetail.encId))
             {
-                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists..");
+                throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists.");
             }
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
@@ -414,7 +414,7 @@ namespace BL
 
             var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() });
 
-            if (pictures.Any(p => IsNullOrWhiteSpace(p.pictureUrl)))
+            if (pictures.Any(p => String.IsNullOrWhiteSpace(p.pictureUrl)))
             {
                 throw new ArgumentException("Wrong input. The url is empty or white spaces");
             }
@@ -453,7 +453,7 @@ namespace BL
             }
 
             //2. check the url
-            if (IsEmptyString(enclosureVideo.videoUrl) || IsNullOrWhiteSpace(enclosureVideo.videoUrl))
+            if (String.IsNullOrWhiteSpace(enclosureVideo.videoUrl))
             {
                 throw new ArgumentException("Wrong input. The url is empty or white spaces");
             }
@@ -518,9 +518,9 @@ namespace BL
             }
 
             //3. check the description
-            if (IsEmptyString(recEvent.description) || IsNullOrWhiteSpace(recEvent.description))
+            if (String.IsNullOrWhiteSpace(recEvent.description))
             {
-                throw new ArgumentException("Wrong input. The descrioption is empty or white spaces");
+                throw new ArgumentException("Wrong input. The descrioption is null or white spaces");
             }
 
             //4. check the day
@@ -552,7 +552,7 @@ namespace BL
             {
                 var oldRecEvent = allRecurringEvents.SingleOrDefault(re => re.id == recEvent.id);
 
-                if (recEvent == null)
+                if (oldRecEvent == null)
                 {
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
@@ -608,14 +608,15 @@ namespace BL
         /// Delete The enclosure picture.
         /// </summary>
         /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
-        public void DeleteEnclosurePicture(int enclosurePictureId, int enclosureId)
+        public void DeleteEnclosurePicture(int enclosureId, int enclosurePictureId)
         {
             var allEnclosurePictures = zooDB.GetAllEnclosurePictures();
+            
             //check that the enclosure picture exists
             var enclosurePicture = allEnclosurePictures.SingleOrDefault(e => e.id == enclosurePictureId);
 
             if (enclosurePicture == null){
-                throw new ArgumentException("Wrong input. The enclsure doesn't exists");
+                throw new ArgumentException("Wrong input. The enclsure picture doesn't exists");
             }
 
             if (enclosurePicture.enclosureId != enclosureId)
@@ -883,9 +884,9 @@ namespace BL
             }
 
             //1. aniaml name
-            if (IsEmptyString(animal.name) || IsNullOrWhiteSpace(animal.name)) 
+            if (String.IsNullOrWhiteSpace(animal.name)) 
             {
-                throw new ArgumentException("Wrong input. Animal name is empty or null");
+                throw new ArgumentException("Wrong input. Animal name is null or null");
             }
 
             //2. enclosure exists
@@ -1051,9 +1052,9 @@ namespace BL
             }
 
             //1. check that the population is valid
-            if (String.IsNullOrWhiteSpace(price.population) || String.IsNullOrEmpty(price.population))
+            if (String.IsNullOrWhiteSpace(price.population))
             {
-                throw new ArgumentException("Wrong input. The price population is empty or null");
+                throw new ArgumentException("Wrong input. The price population is null or whitespaces");
             }
             
             //2. check that the price amount is valid
@@ -2086,7 +2087,7 @@ namespace BL
         {
             //validate the attribues
             //1. check the device id.
-            if (IsNullOrWhiteSpace(deviceId))
+            if (String.IsNullOrWhiteSpace(deviceId))
             {
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
@@ -2231,27 +2232,12 @@ namespace BL
         {
             return zooDB.GetAllLanguages().SingleOrDefault(l => l.id == language) != null;
         }
-
-        private bool ValidHour(int hour, int min)
-        {
-            return hour > 0 && hour < 24 && Enum.IsDefined(typeof(AvailableMinutes), min);
-        }
-
+        
         private long GetHebewLanguage()
         {
             return GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id;
         }
-
-        private bool IsEmptyString(string str)
-        {
-            return String.IsNullOrEmpty(str);
-        }
-
-        private bool IsNullOrWhiteSpace(string str)
-        {
-            return String.IsNullOrWhiteSpace(str);
-        }
-
+        
         private bool ValidateTime(RecurringEvent re, RecurringEvent recEvent)
         {
             return  (re.day == recEvent.day) &&

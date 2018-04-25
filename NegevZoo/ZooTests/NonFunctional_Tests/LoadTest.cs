@@ -17,30 +17,32 @@ namespace ZooTests.NonFunctional_Tests
         //[TestMethod]
         //public void LoadTestMultipleConnections()
         //{
-        //    var numOfRequests = 500;
+        //    var numOfRequests = 10;
+        //    Task[] task = new Task[numOfRequests];
 
-        //    for (int i = 0; i < numOfRequests; i++)
+        //    for (int i = 0; i < task.Count(); i++)
         //    {
-        //        var timer = new Stopwatch();
-
-        //        timer.Start();
-        //        var resp = Task.Factory.StartNew(() => LoadTestMultipleConnectionsHelper());
-        //        timer.Stop();
-
-        //        TimeSpan timeTaken = timer.Elapsed;
-                
-        //        Assert.AreEqual(0, timeTaken.Seconds);
-        //        Assert.IsTrue(timeTaken.Milliseconds < 5);
+        //        task[i] = Task.Factory.StartNew(() => LoadTestMultipleConnectionsHelper());
         //    }
+
+        //    var timer = new Stopwatch();
+
+        //    timer.Start();
+        //    Task.WaitAll(task);
+        //    timer.Stop();
+
+        //    TimeSpan timeTaken = timer.Elapsed;
+
+        //    Assert.IsTrue(timeTaken.TotalMilliseconds < 9 * 1000);
         //}
 
-        //[TestMethod]
         //public void LoadTestMultipleConnectionsHelper()
-        //{   
+        //{
         //    HttpClient client = new HttpClient();
         //    client.BaseAddress = new Uri("http://negevZoo.Sytes.net:50555/");
         //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         //    var resp2 = client.GetAsync("enclosures/all/1").Result;
+        //    Assert.IsTrue(resp2.IsSuccessStatusCode);
         //}
     }
 }
