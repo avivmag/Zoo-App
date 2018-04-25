@@ -2021,8 +2021,8 @@ namespace BL
                     throw new ArgumentException("Wrong input while adding a User. Name already exists");
                 }
 
-                userWorker.salt = GenerateSalt();
-                userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
+                userWorker.salt         = GenerateSalt();
+                userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
 
                 users.Add(userWorker);
             }
@@ -2041,10 +2041,10 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating a User. Name already exists");
                 }
 
-                oldUser.name = userWorker.name;
-                userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
-                userWorker.salt = GenerateSalt();
-                oldUser.isAdmin = userWorker.isAdmin;
+                oldUser.name        = userWorker.name;
+                oldUser.salt        = GenerateSalt();
+                oldUser.password    = GetMd5Hash(userWorker.password + userWorker.salt);
+                oldUser.isAdmin     = userWorker.isAdmin;
             }
         }
 
