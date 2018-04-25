@@ -2119,7 +2119,9 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsAllDevices(string title, string body)
         {
-            Task.Factory.StartNew(() => NotifyAsync(title, body, true));
+            var devices = zooDB.GetAllDevices().ToList();
+
+            Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
 
         /// <summary>
@@ -2129,7 +2131,9 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsOnlineDevices(string title, string body)
         {
-            Task.Factory.StartNew(() => NotifyAsync(title, body, false));
+            var devices = zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
+
+            Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
 
         /// <summary>
@@ -2155,10 +2159,11 @@ namespace BL
                 //get the current day of week. add 1 because days start from 0 in c#
                 var curDayOfWeek = (long)currentTime.DayOfWeek + 1;
 
-                if (curDayOfWeek == recEve.day &&  timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
+                if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
                     Console.WriteLine("Event found" + recEve.title + ", ", recEve.description);
-                    Task.Factory.StartNew(() => NotifyAsync(recEve.title, recEve.description, false));
+
+                    SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
                 else
                 {
@@ -2167,25 +2172,13 @@ namespace BL
             }
         }
 
-        private async void NotifyAsync(string title, string body, bool toAll)
+        private async void NotifyAsync(string title, string body, List<Device> devices)
         {
             // TODO:: compute whether the users are online or offline and send by that.
             try
             {
                 string key = Properties.Settings.Default.serverKey;
                 string id = Properties.Settings.Default.senderId;
-                
-                var devices = new List<Device>();
-
-                if (toAll) //the notification should be sent to all the users
-                {
-                    devices.AddRange(zooDB.GetAllDevices().ToList());
-                }
-                else
-                {   //the notification should be sent to the online users.
-                    //TODO: check if 30 minuits is the difference between online of offline
-                    devices.AddRange(zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30)>DateTime.UtcNow.ToLocalTime()).ToList());
-                }
 
                 // Format the server's key.
                 var serverKey = string.Format("key={0}", key);
