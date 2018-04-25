@@ -1,10 +1,11 @@
 ﻿app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService',
     function userControlController($scope, $mdDialog, usersService) {
+        $scope.isLoading            = true;
+
         initializeComponent();
 
         function initializeComponent() {
             $scope.updateUsers          = function () {
-                $scope.isLoading            = true;
 
                 usersQuery = usersService.getAllUsers().then(
                     function (data) {
