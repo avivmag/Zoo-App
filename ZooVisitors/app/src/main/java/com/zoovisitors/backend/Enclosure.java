@@ -37,20 +37,21 @@ public class Enclosure implements java.io.Serializable{
     private RecurringEvent[] recurringEvents;
 
 //    public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
-    public Queue<RecurringEvent> getRecurringEvent() {
+    public RecurringEvent[] getRecurringEvent() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         for (int j = 0; j < recurringEvents.length; j++) {
+            // TODO: delete this, the servers stores them already as is
             recurringEvents[j].setStartTime(
-                    (recurringEvents[j].getStartTime() + SEVEN_DAYS - currentTime// + THREE_DAYS
+                    (recurringEvents[j].getStartTime()// + SEVEN_DAYS - currentTime + THREE_DAYS
                     ) % SEVEN_DAYS);
             recurringEvents[j].setEndTime(
-                    (recurringEvents[j].getEndTime() + SEVEN_DAYS - currentTime// + THREE_DAYS
+                    (recurringEvents[j].getEndTime()// + SEVEN_DAYS - currentTime + THREE_DAYS
                     ) % SEVEN_DAYS);
 //                                (recurringEvents[j].getStartTime() + SEVEN_DAYS - ((currentTime - THREE_DAYS) % SEVEN_DAYS)) % SEVEN_DAYS);
         }
         Arrays.sort(recurringEvents, (rec1, rec2) ->
                 (int) (rec1.getStartTime() - rec2.getStartTime()));
-        return new LinkedList<>(Arrays.asList(recurringEvents));
+        return recurringEvents;
     }
 
     // TODO: remove this when recurring events are completed on the server side
