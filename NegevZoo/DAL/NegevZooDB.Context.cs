@@ -101,7 +101,7 @@ namespace DAL
 
         public override DbSet<AnimalDetail> GetAllAnimalsDetails()
         {
-            return AnimalsDetails;
+            return AnimalDetails;
         }
 
         public override DbSet<EnclosurePicture> GetAllEnclosurePictures()
@@ -114,9 +114,19 @@ namespace DAL
             return YoutubeVideoUrls;
         }
 
-        public override DbSet<Device> getAllDevices()
+        public override DbSet<Device> GetAllDevices()
         {
             return Devices;
+        }
+
+        public override DbSet<MapInfo> GetAllMapInfos()
+        {
+            return MapInfos;
+        }
+
+        public override DbSet<Route> GetAllRoutes()
+        {
+            return Routes;
         }
 
         public virtual DbSet<Animal> Animals { get; set; }
@@ -130,14 +140,15 @@ namespace DAL
         public virtual DbSet<Price> Prices { get; set; }
         public virtual DbSet<RecommendedRoute> RecommendedRoutes { get; set; }
         public virtual DbSet<RecurringEvent> RecurringEvents { get; set; }
-        public virtual DbSet<Route> Routes { get; set; }
         public virtual DbSet<SpecialEvent> SpecialEvents { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WallFeed> WallFeeds { get; set; }
         public virtual DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
-        public virtual DbSet<AnimalDetail> AnimalsDetails { get; set; }
+        public virtual DbSet<AnimalDetail> AnimalDetails { get; set; }
         public virtual DbSet<EnclosureDetail> EnclosureDetails { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
+        public virtual DbSet<MapInfo> MapInfos { get; set; }
+        public virtual DbSet<Route> Routes { get; set; }
 
     }
 }

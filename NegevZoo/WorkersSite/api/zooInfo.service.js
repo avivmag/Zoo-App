@@ -16,7 +16,7 @@
     var getAllLanguages =       function ()                                 { return httpService.httpGet({ url: [languagesBaseUrl, 'all']}); };
 
     var openingHours    = {
-        getAllOpeningHours:     function (language)                         { return httpService.httpGet({ url: [openingHoursBaseUrl, 'all', language] }); },
+        getAllOpeningHours:     function ()                                 { return httpService.httpGet({ url: [openingHoursBaseUrl, 'type', 'all'] }); },
         updateOpeningHour:      function (openingHour)                      { return httpService.httpPost({ url: [openingHoursBaseUrl, 'update'], body: openingHour }); },
         deleteOpeningHour:      function (openingHourId)                    { return httpService.httpDelete({ url: [openingHoursBaseUrl, 'delete', openingHourId] }); }
     };

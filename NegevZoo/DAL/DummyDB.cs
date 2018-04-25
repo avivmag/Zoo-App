@@ -39,6 +39,8 @@ namespace DAL
             EnclosurePictures   = new TestDbSet<EnclosurePicture>();
             YoutubeVideoUrls    = new TestDbSet<YoutubeVideoUrl>();
             Devices             = new TestDbSet<Device>();
+            MapInfo             = new TestDbSet<MapInfo>();
+            Routes              = new TestDbSet<Route>();
 
             Languages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
@@ -56,8 +58,10 @@ namespace DAL
             YoutubeVideoUrls.AddRange(InitializeYouTubeVidoes());
             AnimalsDetails.AddRange(InitializeAnimalsDetails());
             Devices.AddRange(InitializeDevices());
+            MapInfo.AddRange(InitalizeMapInfo());
+            Routes.AddRange(InitalizeRoutes());
         }
-        
+
         private IZooDB CreateInstance()
         {
             throw new NotImplementedException();
@@ -98,10 +102,13 @@ namespace DAL
         protected DbSet<EnclosurePicture> EnclosurePictures { get; set; }
         protected DbSet<YoutubeVideoUrl> YoutubeVideoUrls { get; set; }
         protected DbSet<Device> Devices { get; set; }
+        protected DbSet<MapInfo> MapInfo { get; set; }
+        protected DbSet<Route> Routes { get; set; }
 
         #endregion 
 
         #region Initializers
+        
         /// <summary>
         /// Initializes the enclosures mock.
         /// </summary>
@@ -136,6 +143,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the enclosure details mock.
+        /// </summary>
+        /// <returns>Mock EnclosureDetails list.</returns>
         private IEnumerable<EnclosureDetail> InitializeEnclosureDetails()
         {
             return new List<EnclosureDetail>
@@ -203,6 +214,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the enclosures pictures mock.
+        /// </summary>
+        /// <returns>Mock EnclosurePictures list.</returns>
         private IEnumerable<EnclosurePicture> InitializeEnclosurePictures()
         {
             return new List<EnclosurePicture>
@@ -229,6 +244,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the enclosure videos mock.
+        /// </summary>
+        /// <returns>Mock EnclosureVideos list.</returns>
         private IEnumerable<YoutubeVideoUrl> InitializeYouTubeVidoes()
         {
             return new List<YoutubeVideoUrl>
@@ -254,6 +273,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the enclosure's RecurringEvents mock.
+        /// </summary>
+        /// <returns>Mock RecurringEvetns list.</returns>
         private IEnumerable<RecurringEvent> InitialRecurringEvents()
         {
             return new List<RecurringEvent>
@@ -536,6 +559,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the opening hour mock.
+        /// </summary>
+        /// <returns>Mock OpeningHour list.</returns>
         private IEnumerable<OpeningHour> InitialOpeningHour()
         {
             return new List<OpeningHour>
@@ -654,11 +681,7 @@ namespace DAL
                 },
             };
         }
-
-
-
-
-
+        
         /// <summary>
         /// Initializes the wall feeds mock.
         /// </summary>
@@ -929,7 +952,6 @@ namespace DAL
                     },
                 };
         }
-
         
         /// <summary>
         /// Initializes the General Info mock.
@@ -960,7 +982,11 @@ namespace DAL
                     }
             };
         }
-        
+
+        /// <summary>
+        /// Initializes the SpecialEvents mock.
+        /// </summary>
+        /// <returns>Mock Special Events list.</returns>
         private IEnumerable<SpecialEvent> InitialSpecialEvents()
         {
             return new List<SpecialEvent>
@@ -1003,9 +1029,11 @@ namespace DAL
                 }
             };
         }
-
         
-
+        /// <summary>
+        /// Initializes the ContactInfo mock.
+        /// </summary>
+        /// <returns>Mock ContactInfo list.</returns>
         private IEnumerable<ContactInfo> InitialContactInfos()
         {
             return new List<ContactInfo>
@@ -1060,6 +1088,10 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the Languages mock.
+        /// </summary>
+        /// <returns>Mock enclosures list.</returns>
         private IEnumerable<Language> InitializeLanguages()
         {
             return new List<Language>
@@ -1087,41 +1119,53 @@ namespace DAL
             };
         }
 
+        /// <summary>
+        /// Initializes the users mock.
+        /// </summary>
+        /// <returns>Mock Users list.</returns>
         private IEnumerable<User> InitializeUsers()
         {
             return new List<User>
             {
                 new User
                 {
-                    id = 1,
-                    isAdmin = true,
-                    name = "אור",
-                    password = "123"
+                    id          = 1,
+                    isAdmin     = true,
+                    name        = "אור",
+                    password    = "6b136e22312515c4e45986a40188ce91", //password is 123
+                    salt        = "kaki"
                 },
                 new User
                 {
-                    id = 2,
-                    isAdmin = false,
-                    name = "גיל",
-                    password = "123"
+                    id          = 2,
+                    isAdmin     = false,
+                    name        = "גיל",
+                    password    = "123",
+                    salt        = "kaki"
                 },
                 new User
                 {
-                    id = 3,
-                    isAdmin = true,
-                    name = "מנהל",
-                    password = "123"
+                    id          = 3,
+                    isAdmin     = true,
+                    name        = "מנהל",
+                    password    = "123",
+                    salt        = "kaki"
                 },
                 new User
                 {
-                    id = 4,
-                    isAdmin = false,
-                    name = "עובד",
-                    password = "123"
+                    id          = 4,
+                    isAdmin     = false,
+                    name        = "עובד",
+                    password    = "123",
+                    salt        = "kaki"
                 }
             };
         }
-        
+
+        /// <summary>
+        /// Initializes the devices mock.
+        /// </summary>
+        /// <returns>Mock devices list.</returns>
         private IEnumerable<Device> InitializeDevices()
         {
             return new List<Device>
@@ -1140,6 +1184,22 @@ namespace DAL
                     insidePark = (sbyte)1,
                     lastPing = DateTime.Now
                 }
+            };
+        }
+
+        private IEnumerable<MapInfo> InitalizeMapInfo()
+        {
+            return new List<MapInfo>
+            {
+
+            };
+        }
+
+        private IEnumerable<Route> InitalizeRoutes()
+        {
+            return new List<Route>
+            {
+
             };
         }
         #endregion
@@ -1221,9 +1281,19 @@ namespace DAL
             return YoutubeVideoUrls;
         }
 
-        public override DbSet<Device> getAllDevices()
+        public override DbSet<Device> GetAllDevices()
         {
             return Devices;
+        }
+
+        public override DbSet<MapInfo> GetAllMapInfos()
+        {
+            return MapInfo;
+        }
+
+        public override DbSet<Route> GetAllRoutes()
+        {
+            return Routes;
         }
         #endregion
     }

@@ -14,10 +14,10 @@ namespace DAL
     
     public partial class Route
     {
-        public double fromLangitude { get; set; }
-        public double fromLatitude { get; set; }
-        public double toLangitude { get; set; }
-        public double toLongitude { get; set; }
         public long id { get; set; }
+        public int primaryLeft { get; set; }
+        public int primaryRight { get; set; }
+        public int secLeft { get; set; }
+        public int secRight { get; set; }
     }
 }

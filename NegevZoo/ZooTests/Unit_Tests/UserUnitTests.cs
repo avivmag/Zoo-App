@@ -1,25 +1,21 @@
-﻿using System;
-using System.Linq;
-using System.Web.Http;
+﻿using BL;
 using DAL;
-using BL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NegevZoo.Controllers;
+using System;
+using System.Linq;
 
-namespace ZooTests
+namespace ZooTests.Unit_Tests
 {
     [TestClass]
-    public class UserControllerTests
+    public class UserUnitTests
     {
-        private UserController usersController;
-        
+        private ZooContext context;
+
         #region SetUp and TearDown
         [TestInitialize]
         public void SetUp()
         {
-            // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
-            ControllerBase.isTesting = true;
-            usersController = new UserController();
+            context = new ZooContext();
         }
 
         [TestCleanup]
@@ -31,18 +27,82 @@ namespace ZooTests
         #endregion
 
         #region GetAllUsers
+
         [TestMethod]
         public void GetAllUsersTest()
         {
-            Assert.AreEqual(4, usersController.GetAllUsers().Count());
+            Assert.AreEqual(4, context.GetAllUsers().Count());
         }
         #endregion
 
+        #region Login
+
+        [TestMethod]
+        public void LoginValidTest()
+        {
+            var users = context.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsTrue(context.Login(orUser.name, "123"));
+        }
+
+        [TestMethod]
+        public void LoginWrongPassword()
+        {
+            var users = context.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(context.Login(orUser.name, "123a"));
+        }
+
+        [TestMethod]
+        public void LoginWrongUserName()
+        {
+            var users = context.GetAllUsers();
+
+            var orUser = users.SingleOrDefault(u => u.name == "אור");
+
+            Assert.IsNotNull(orUser);
+            Assert.IsFalse(context.Login(orUser.name + "k", "123a"));
+        }
+        #endregion
+
+        #region GetUserByNameAndPass
+
+        [TestMethod]
+        public void GetUserByNameAndPassValidTest()
+        {
+            var orUser = context.GetUserByNameAndPass("אור", "123");
+
+            Assert.IsNotNull(orUser);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Can't find a user with this name and password")]
+        public void GetUserByNameAndPassWrongName()
+        {
+            var orUser = context.GetUserByNameAndPass("אור" + "g", "123");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Can't find a user with this name and password")]
+        public void GetUserByNameAndPassWrongPass()
+        {
+            var orUser = context.GetUserByNameAndPass("אור", "123a");
+        }
+
+        #endregion
+
         #region UpdateUser
+
         [TestMethod]
         public void UpdateUserAddAnValidTest()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -53,17 +113,17 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
 
-            users = usersController.GetAllUsers();
+            users = context.GetAllUsers();
             Assert.AreEqual(5, users.Count());
         }
-        
+
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The user name is empty or white spaces")]
         public void UpdateUserWrongNameWhiteSpaces()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -74,14 +134,14 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The user name is empty or white spaces")]
         public void UpdateUserWrongNameEmpty()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -92,14 +152,14 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The password is empty or white spaces")]
         public void UpdateUserWrongPassWhiteSpaces()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -110,14 +170,14 @@ namespace ZooTests
                 password = "       "
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The password is empty or white spaces")]
         public void UpdateUserWrongPassEmpty()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -128,14 +188,14 @@ namespace ZooTests
                 password = ""
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input while adding a User. Name already exists")]
         public void UpdateUserAddNameExists()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -146,13 +206,13 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
         public void UpdateUserValidInput()
         {
-            var users= usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -163,21 +223,21 @@ namespace ZooTests
                 password = "123"
             };
 
-            user.name  = "גיל המלך";
+            user.name = "גיל המלך";
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
 
-            users = usersController.GetAllUsers();
+            users = context.GetAllUsers();
             Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
             Assert.IsFalse(users.Any(a => a.name == "גיל"));
             Assert.AreEqual(4, users.Count());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input while updating a User. Name already exists")]
         public void UpdateUserNameAlreadyExists()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -190,14 +250,14 @@ namespace ZooTests
 
             user.name = "אור";
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. User doesn't exists")]
         public void UpdateUserWrongId()
         {
-            var users= usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = new User
@@ -210,31 +270,32 @@ namespace ZooTests
 
             user.id = -3;
 
-            usersController.UpdateUser(user);
+            context.UpdateUser(user);
         }
         #endregion
 
         #region DeleteUser
+
         [TestMethod]
         public void DeleteUserValidInput()
         {
-            var users = usersController.GetAllUsers();
+            var users = context.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
             var user = users.SingleOrDefault(en => en.name == "עובד");
             Assert.IsNotNull(user);
 
-            usersController.DeleteUser((int)user.id);
-            users = usersController.GetAllUsers();
+            context.DeleteUser((int)user.id);
+            users = context.GetAllUsers();
 
             Assert.AreEqual(3, users.Count());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. User ID doesn't exists.")]
         public void DeleteAnimalIdDoesntExists()
         {
-            usersController.DeleteUser(-4);
+            context.DeleteUser(-4);
         }
 
         #endregion

@@ -9,6 +9,8 @@
     <color name="brownNegev">#5b4a40</color>
     <color name="blueTitle">#3B45C5</color>
 
+    <color name="notificationBorderColor">#55000000</color>
+
 
     <!-- colors for buttons -->
     <color name="greenIcon">#88B577</color>

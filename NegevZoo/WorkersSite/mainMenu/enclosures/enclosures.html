@@ -19,14 +19,14 @@
             </div>
         </md-card-title>
         
-        <ng-content layout="row" layout-align="space-between">
+        <md-card-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
                 <div ng-repeat="enclosure in enclosures | filter:enclosure_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
                     <span class="picture-head">{{ enclosure.name }}</span>
                     <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ng-click="switchPage('edit', enclosure)" />
                 </div>
             </div>
-        </ng-content>
+        </md-card-content>
     </md-card>
 
     <md-card ng-show="(!isLoading && (page === 'create' || page === 'edit'))">
@@ -35,17 +35,9 @@
                 <md-button class="md-raised md-primary" style="width: 150px" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
                 <div layout="row" ng-if="page === 'edit'">
                     <img class="picture_small" ng-src="{{ baseURL + selectedEnclosure.pictureUrl }}" alt="{{ selectedEnclosure.name }}" />
-                    <md-card-title-text style="margin-top: 20px" class="md-headline">מתחם ה{{ selectedEnclosure.name }}:</md-card-title-text>
+                    <md-card-title-text style="margin-top: 20px" class="md-headline">{{ selectedEnclosure.name }}:</md-card-title-text>
                 </div>
                 <md-card-title-text ng-if="page === 'create'" class="md-headline">הוספת מתחם חדש:</md-card-title-text>
-            </div>
-
-            <div layout="column">
-                <md-input-container>
-                    <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
-                    <label>חפש חיה</label>
-                    <input style="width: 200px" ng-model="animal_searchTerm" type="text">
-                </md-input-container>
             </div>
         </md-card-title>
 
@@ -94,29 +86,37 @@
             </div>
         </md-card-title>
         
-        <ng-content layout="row" layout-align="space-between">
+        <md-card-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
                 <div ng-repeat="video in selectedEnclosure.videos" ng-show="$index % 4 === colIndex" layout="column">
                     <youtube-video class="video" video-id="video.videoUrl"></youtube-video>
-                    <md-button class="md-raised md-warn">מחק סרטון</md-button>
+                    <md-button class="md-raised md-warn" ng-click="deleteVideo(selectedEnclosure.id, video, selectedEnclosure.videos)">מחק סרטון</md-button>
                 </div>
             </div>
-        </ng-content>
+        </md-card-content>
     </md-card>
 
-    <md-card ng-if="page==='edit' && !isLoading">
+    <md-card ng-if="page==='edit' && !isLoading" layout="column">
         <md-card-title>
             <md-card-title-text class="md-headline">תמונות של המתחם:</md-card-title-text>
         </md-card-title>
 
-        <ng-content layout="row" layout-align="space-between">
+        <md-card-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
                 <div ng-repeat="picture in selectedEnclosure.pictures" ng-show="$index % 4 === colIndex" layout="column">
                     <img class="picture" ng-src="{{ baseURL + picture.pictureUrl }}" alt="{{ enclosure.name }}" />
-                    <md-button class="md-raised md-warn">מחק תמונה</md-button>
+                    <md-button class="md-raised md-warn" ng-click="deletePicture(selectedEnclosure.id, picture, selectedEnclosure.pictures)">מחק תמונה</md-button>
                 </div>
             </div>
-        </ng-content>
+        </md-card-content>
+
+        <md-card-content layout-align="start start">
+            <div style="margin-top: 7px" layout="row">
+                <div style="width: 200px">בחר תמונות להעלות:</div>
+                <input type="file" multiple file-model="enclosurePictures" accept="image/*"/>
+                <md-button class="md-raised md-primary" ng-click="uploadEnclosurePictures(enclosurePictures, selectedEnclosure)">העלה</md-button>
+            </div>
+        </md-card-content>
     </md-card>
 
     <md-card ng-if="page==='edit' && !isLoading">
@@ -146,18 +146,30 @@
         </md-card-content>
     </md-card>
 
-    <md-card ng-if="page==='edit' && !isLoading">
+    <md-card ng-if="page==='edit' && !isLoading" layout="column">
         <md-card-title>
             <md-card-title-text class="md-headline">חיות המתחם:</md-card-title-text>
+
+            <div layout="column">
+                <md-input-container>
+                    <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
+                    <label>חפש חיה</label>
+                    <input style="width: 200px" ng-model="animal_searchTerm" type="text">
+                </md-input-container>
+            </div>
         </md-card-title>
 
-        <ng-content layout="row" layout-align="space-between">
+        <md-card-content layout="row" layout-align="space-between">
             <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
-                <div ng-repeat="animal in selectedEnclosure.animals" ng-show="$index % 4 === colIndex" layout="column">
-                    <img class="picture" ng-src="{{ baseURL + picture.pictureUrl }}" alt="{{ enclosure.name }}" />
-                    <md-button class="md-raised md-warn">מחק תמונה</md-button>
+                <div ng-repeat="animal in selectedEnclosure.animals | filter:animal_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                    <span class="picture-head">{{ animal.name }}</span>
+                    <img class="picture" ng-src="{{ baseURL + animal.pictureUrl }}" alt="{{ animal.name }}" ui-sref="animals({ enclosureId: selectedEnclosure.id, animal: animal })"/>
                 </div>
             </div>
-        </ng-content>
+        </md-card-content>
+
+        <md-card-content>
+            <md-button class="md-raised md-primary" ui-sref="animals({ enclosureId: selectedEnclosure.id })">הוסף חיה למתחם</md-button>
+        </md-card-content>
     </md-card>
 </div>

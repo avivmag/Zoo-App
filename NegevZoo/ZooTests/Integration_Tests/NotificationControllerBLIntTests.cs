@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace ZooTests
 {
     [TestClass]
-    public class NotificationControllerTests
+    public class NotificationControllerBlIntegraionTests
     {
         private NotificationController NotificationController;
 
@@ -30,6 +31,14 @@ namespace ZooTests
         }
         #endregion
 
+        #region GetAllDevices
+        [TestMethod]
+        public void GetAllDevices()
+        {
+            Assert.AreEqual(2, NotificationController.GetAllDevices().Count());
+        }
+        #endregion
+
         #region updateDevice
         [TestMethod]
         public void UpdateDeviceStatusAddDeviceValidInput()
@@ -41,6 +50,16 @@ namespace ZooTests
 
             devices = NotificationController.GetAllDevices();
             Assert.AreEqual(3, devices.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateDeviceStatusAddDeviceEmptyDeviceId()
+        {
+            var devices = NotificationController.GetAllDevices();
+            Assert.AreEqual(2, devices.Count());
+
+            NotificationController.UpdateDevice("", true);
         }
 
         [TestMethod]
@@ -56,6 +75,8 @@ namespace ZooTests
             Assert.AreEqual(2, devices.Count());
 
         }
+
+
         #endregion
 
         [TestMethod]
@@ -86,7 +107,6 @@ namespace ZooTests
             Assert.AreEqual(1, allRecEvents.Count());
 
             var response = NotificationController.SendNotificationsOnlineRecurringEvents();
-            
         }
     }
 }

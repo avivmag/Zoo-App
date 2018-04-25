@@ -15,6 +15,8 @@
         getAllEnclosures:           function ()                                     { return httpService.httpGet({url: [serviceBaseUrl, 'types', 'all']}) },
         updateEnclosure:            function (enclosure)                            { return httpService.httpPost({ url: [serviceBaseUrl, 'update'], body: enclosure }); },
         deleteEnclosure:            function (encId)                                { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', encId] }); },
+        deleteEnclosurePicture:     function (encId, pictureId)                     { return httpService.httpDelete({ url: [serviceBaseUrl, encId, 'picture', pictureId, 'delete']}); },
+        deleteEnclosureVideo:       function (encId, videoId)                       { return httpService.httpDelete({ url: [serviceBaseUrl, encId, 'video', videoId, 'delete']}); },
         getEnclosureVideosById:     function (encId)                                { return httpService.httpGet({ url: [serviceBaseUrl, 'videos', encId] }); },
         getEnclosurePicturesById:   function (encId)                                { return httpService.httpGet({ url: [serviceBaseUrl, 'pictures', encId] }); },
         updateVideoById:            function (video)                                { return httpService.httpPost({ url: [serviceBaseUrl, 'video', 'update'], body: video }); }

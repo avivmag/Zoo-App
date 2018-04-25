@@ -91,7 +91,7 @@
         }
 
         function addEmptyOpeningHour(openingHours) {
-            openingHours.push({ isNew: true, language: $scope.language.id, id: 0 });
+            openingHours.push({ isNew: true, language: $scope.language.id, day: 0 });
         }
 
         function deleteOpeningHour(openingHour, openingHours) {

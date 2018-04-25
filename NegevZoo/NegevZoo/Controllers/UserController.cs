@@ -27,7 +27,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -51,12 +51,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-
+        
         /// <summary>
         /// Gets User by user name and password.
         /// </summary>
@@ -76,7 +75,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -98,7 +97,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -120,7 +119,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

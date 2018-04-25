@@ -9,7 +9,7 @@ using DAL.Models;
 namespace ZooTests
 {
     [TestClass]
-    public class AnimalControllerTests
+    public class AnimalControllerBLIntegrationTests
     {
         private AnimalController animalsController;
         private int nonExistantLang;
@@ -125,37 +125,31 @@ namespace ZooTests
 
         #endregion
 
-        #region GetAnimalByEnclosure
+        #region GetAnimalResultByEnclosure
         [TestMethod]
-        public void GetAnimalByEnclosureValidInput()
+        public void GetAnimalResultByEnclosureValidInput()
         {
-            var animals = animalsController.GetAnimalsByEnclosure(1, (int)Languages.he);
+            var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he);
             Assert.AreEqual(2, animals.Count());
         }
 
         [TestMethod]
-        public void GetAnimalByEnclosureNoDataInWantedLangauge()
+        public void GetAnimalResultByEnclosureNoDataInWantedLangauge()
         {
-            var animals = animalsController.GetAnimalsByEnclosure(1, (int)Languages.ar);
+            var animals = animalsController.GetAnimalResultByEnclosure(1, (int)Languages.ar);
             Assert.AreEqual(2, animals.Count());
 
             var an = animals.First();
-            Assert.AreEqual(1, an.Language);
+            Assert.AreEqual((int)Languages.he, an.Language);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByEnclosureEncIdDoesntExists()
+        public void GetAnimalResultByEnclosureEncIdDoesntExists()
         {
-            animalsController.GetAnimalsByEnclosure(-4, (int)Languages.en);
+            animalsController.GetAnimalResultByEnclosure(-4, -4);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByEnclosureWrongLanguage()
-        {
-            animalsController.GetAnimalsByEnclosure(2, nonExistantLang);
-        }
         #endregion
 
         #region GetAnimalByName
@@ -244,6 +238,23 @@ namespace ZooTests
         public void GetAllAnimalDetailsByIdWrongId()
         {
             animalsController.GetAllAnimalsDetailsById(-4);
+        }
+
+        #endregion
+
+        #region GetAnimalByEnclosure
+        [TestMethod]
+        public void GetAnimalByEnclosureValidInput()
+        {
+            var animals = animalsController.GetAnimalsByEnclosure(1);
+            Assert.AreEqual(2, animals.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void GetAnimalByEnclosureEncIdDoesntExists()
+        {
+            animalsController.GetAnimalsByEnclosure(-4);
         }
 
         #endregion

@@ -63,12 +63,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimalControllerTests.cs" />
-    <Compile Include="EncloureControllerTests.cs" />
-    <Compile Include="NotificationControllerTests.cs" />
+    <Compile Include="Integration_Tests\AnimalControllerBLIntTests.cs" />
+    <Compile Include="Integration_Tests\EncloureControllerBLIntTests.cs" />
+    <Compile Include="NonFunctional_Tests\LoadTest.cs" />
+    <Compile Include="Integration_Tests\NotificationControllerBLIntTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserControllerTests.cs" />
-    <Compile Include="ZooInfoControllerTest.cs" />
+    <Compile Include="Unit_Tests\AnimalUnitTests.cs" />
+    <Compile Include="Unit_Tests\EnclosureUnitTests.cs" />
+    <Compile Include="Unit_Tests\UserUnitTests.cs" />
+    <Compile Include="Unit_Tests\ZooInfoUnitTests.cs" />
+    <Compile Include="Integration_Tests\UserControllerBLIntTests.cs" />
+    <Compile Include="Integration_Tests\ZooInfoControllerBLIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -88,6 +93,7 @@
       <Name>NegevZoo</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

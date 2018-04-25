@@ -43,7 +43,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -69,7 +69,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -94,7 +94,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -120,7 +120,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -145,7 +145,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -169,7 +169,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -193,7 +193,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -216,7 +216,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -239,7 +239,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -247,6 +247,8 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region Setters
+
+        #region Update
 
         /// <summary>
         /// Adds or updates an enclosure.
@@ -266,7 +268,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -290,55 +292,30 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
         }
 
-        /// <summary>
-        /// Adds or updates an enclosure picture.
-        /// </summary>
-        /// <param name="enclosurePicture">The enclosures to update.</param>
-        [HttpPost]
-        [Route("enclosures/picture/update")]
-        public void UpdateEnclosurePicture(EnclosurePicture enclosurePicture)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    db.UpdateEnclosurePicture(enclosurePicture);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
-            }
-        }
-        
         /// <summary>
         /// Adds or updates an enclosure video.
         /// </summary>
         /// <param name="enclosureVideo">The enclosures to update.</param>
         [HttpPost]
         [Route("enclosures/video/update")]
-        public void UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
+        public YoutubeVideoUrl UpdateEnclosureVideo(YoutubeVideoUrl enclosureVideo)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateEnclosureVideo(enclosureVideo);
+                    return db.UpdateEnclosureVideo(enclosureVideo);
                 }
-
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -362,11 +339,15 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
         }
+
+        #endregion
+
+        #region Deletion
 
         /// <summary>
         /// Deletes an enclosure.
@@ -386,7 +367,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -396,20 +377,20 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="enclosurePictureId">The EnclosurePicture's id to delete.</param>
         [HttpDelete]
-        [Route("enclosures/picture/delete")]
-        public void DeleteEnclosurePicture(int enclosurePictureId)
+        [Route("enclosures/{enclosureId}/picture/{pictureId}/delete")]
+        public void DeleteEnclosurePicture(int enclosureId, int pictureId)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosurePicture(enclosurePictureId);
+                    db.DeleteEnclosurePicture(enclosureId, pictureId);
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -419,20 +400,20 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="enclosureVideoId">The EnclosureVideo's id to delete.</param>
         [HttpDelete]
-        [Route("enclosures/video/delete")]
-        public void DeleteEnclosureVideo(int enclosureVideoId)
+        [Route("enclosures/{enclosureId}/video/{enclosureVideoId}/delete")]
+        public void DeleteEnclosureVideo(int enclosureId, int enclosureVideoId)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosureVideo(enclosureVideoId);
+                    db.DeleteEnclosureVideo(enclosureId, enclosureVideoId);
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -452,17 +433,50 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
-       
         #endregion
+
+        #endregion
+
+        #region File Upload
+
+        [HttpPost]
+        [Route("enclosures/{enclosureId}/upload/bulk")]
+        public IEnumerable<EnclosurePicture> EnclosureBulkPicturesUpload(int enclosureId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    // Get the enclosure.
+                    var enclosure = db.GetAllEnclosures().SingleOrDefault(e => e.id == enclosureId);
+                    
+                    // If no such enclosure exists, throw error.
+                    if (enclosure == default(Enclosure))
+                    {
+                        throw new ArgumentException("No enclosure with such enclosure Id exists.");
+                    }
+
+                    // Complete the upload procedure.
+                    var uploadedPictures    = EnclosureImagesUpload("pictures");
+
+                    return db.AddEnclosurePictures(enclosureId, uploadedPictures);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
 
         [HttpPost]
         [Route("enclosures/upload/{path}")]
-        public IHttpActionResult EnclosureImagesUpload(String path)
+        public JArray EnclosureImagesUpload(String path)
         {
             if (String.IsNullOrWhiteSpace(path))
             {
@@ -473,7 +487,7 @@ namespace NegevZoo.Controllers
 
             if (httpRequest.Files.Count < 1)
             {
-                return BadRequest();
+                throw new ArgumentNullException("No files were selected to upload.");
             }
             
             try
@@ -482,15 +496,16 @@ namespace NegevZoo.Controllers
                 {
                     var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
 
-
-                    return Ok(responseObject);
+                    return responseObject;
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message);
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+
+        #endregion
     }
 }

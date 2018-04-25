@@ -44,7 +44,7 @@ namespace DAL
             }
         }
 
-        public void WriteLine(String message)
+        public void WriteLine(params String[] messages)
         {
             try
             {
@@ -60,7 +60,13 @@ namespace DAL
                 }
 
                 StreamWriter writer = new StreamWriter(stream);
-                writer.WriteLine(message);
+                writer.WriteLine(DateTime.Now);
+                foreach (String message in messages)
+                {
+                    writer.WriteLine(message);
+                }
+                writer.WriteLine();
+                writer.WriteLine();
                 writer.Dispose();
                 stream.Dispose();
             }
