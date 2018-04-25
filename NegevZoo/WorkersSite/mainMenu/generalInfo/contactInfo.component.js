@@ -1,14 +1,20 @@
 ﻿app.controller('zooContactInfoCtrl', ['$scope', '$mdDialog', 'zooInfoService',
     function zooSpecialEventsController($scope, $mdDialog, zooInfoService) {
+        $scope.isLoading            = true;
+
         initializeComponent();
-    
+
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
+
+                $scope.updateContactInfos($scope.language);
+            });
+
         function initializeComponent() {
-            $scope.languages                = app.languages;
-            $scope.language                 = $scope.languages[0];
-        
             $scope.updateContactInfos       = function (language) {
                 $scope.language         = language;
-                $scope.isLoading        = true;
 
                 zooInfoService.contactInfo.getAllContactInfos(language.id).then(
                     function (data) {
@@ -69,8 +75,6 @@
                         $scope.isLoading = false;
                     });
             }
-
-            $scope.updateContactInfos($scope.language);
         }
 
         function addEmptyContactInfo(contactInfos) {

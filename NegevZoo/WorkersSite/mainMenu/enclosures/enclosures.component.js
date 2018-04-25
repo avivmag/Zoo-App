@@ -1,18 +1,24 @@
-﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$rootScope', '$mdDialog', 'utilitiesService', 'enclosureService', 'animalService', 'fileUpload',
+﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'animalService', 'fileUpload',
 
-    function enclosureController($q, $scope, $rootScope, $mdDialog, utilitiesService, enclosureService, animalService, fileUpload) {
+    function enclosureController($q, $scope, $mdDialog, utilitiesService, enclosureService, animalService, fileUpload) {
+        $scope.isLoading            = true;
+
         initializeComponent();
-        
-        $scope.updateEnclosures();
+
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
+
+                $scope.updateEnclosures();
+            });
 
         function initializeComponent() {
             $scope.page             = 'list';
             $scope.baseURL          = app.baseURL;
 
             $scope.updateEnclosures         = function () {
-                $scope.isLoading        = true;
 
-                $scope.languages        = app.languages;
                 enclosureService.enclosures.getAllEnclosures().then(
                     function (data) {
                         $scope.enclosures   = data.data;
@@ -174,7 +180,7 @@
                     function (updatedVideo) {
                         utilitiesService.utilities.alert('הסרטון הועלה בהצלחה!');
 
-                        selectedEnclosure.videos.push(updatedVideo);
+                        selectedEnclosure.videos.push(updatedVideo.data);
 
                         $scope.isLoading    = false;
                     },
@@ -197,7 +203,7 @@
     
                 var fileUploadQuery         = fileUpload.uploadFileToUrl(pictures, uploadUrl).then(
                     (success)   => {
-                        utilitiesService.alert("התמונות הועלו בהצלחה.");
+                        utilitiesService.utilities.alert("התמונות הועלו בהצלחה.");
                         enclosure.pictures  = enclosure.pictures.concat(success.data);
 
                         $scope.isLoading    = false;
@@ -291,9 +297,9 @@
             return fileUploadQuery;
         };
 
-        MapDialogController.$Inject = ['mapService'];
+        MapDialogController.$Inject = ['mapService', '$rootScope'];
 
-        function MapDialogController($scope, $rootScope, $mdDialog, selectedEnclosure, mapService) {
+        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService, $rootScope) {
             $scope.img          = new Image();
 
             $scope.mapStyle     = { };

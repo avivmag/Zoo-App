@@ -4,10 +4,18 @@
         if (!angular.isDefined($stateParams.enclosureId)) {
             $state.go('mainMenu');
         }
-        
+
+        $scope.isLoading            = true;
+
         initializeComponent();
-        
-        $scope.updateAnimals();
+
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
+
+                $scope.updateAnimals();
+            });
 
         function initializeComponent() {
             if (angular.isDefined($stateParams.animal)) {
@@ -15,12 +23,10 @@
             }
 
             $scope.enclosureId      = $stateParams.enclosureId;
-            $scope.languages        = app.languages;
             $scope.baseURL          = app.baseURL;
             $scope.animal           = $stateParams.animal || { enclosureId: $scope.enclosureId };
 
             $scope.updateAnimals    = function () {
-                
                 if ($scope.isEdit) {
                     $scope.isLoading        = true;
 
@@ -62,7 +68,7 @@
                                     utilitiesService.utilities.alert(successContent);
                                     
                                     // TODO:: Think about where to redirect after animal save.
-                                    $scope.isLoading     = false;
+                                    $scope.isLoading = false;
                                 },
                                 function () {
                                     utilitiesService.utilities.alert(failContent);

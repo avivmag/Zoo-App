@@ -1,18 +1,24 @@
 ﻿app.controller('zooOpeningHoursCtrl', ['$scope', '$mdDialog', 'zooInfoService', 'utilitiesService',
     function zooOpeningHoursController($scope, $mdDialog, zooInfoService, utilitiesService) {
+        $scope.isLoading            = true;
+
         initializeComponent();
 
-        function initializeComponent() {
-            $scope.languages            = app.languages;
-            $scope.language             = $scope.languages[0];
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
 
+                $scope.updateOpeningHours($scope.language);
+            });
+
+        function initializeComponent() {
             $scope.hours                = utilitiesService.timeSpan.getHours();
             $scope.minutes              = utilitiesService.timeSpan.getMinutes();
             $scope.days                 = utilitiesService.getDays();
 
             $scope.updateOpeningHours       = function (language) {
                 $scope.language             = language;
-                $scope.isLoading            = true;
 
                 openingHoursQuery = zooInfoService.openingHours.getAllOpeningHours(language.id).then(
                     function (data) {
@@ -86,8 +92,6 @@
                     deleteOpeningHour(openingHour, openingHours);
                 });
             }
-
-            $scope.updateOpeningHours($scope.language);
         }
 
         function addEmptyOpeningHour(openingHours) {
