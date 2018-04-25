@@ -174,7 +174,7 @@
                     function (updatedVideo) {
                         utilitiesService.utilities.alert('הסרטון הועלה בהצלחה!');
 
-                        selectedEnclosure.videos.push(updatedVideo);
+                        selectedEnclosure.videos.push(updatedVideo.data);
 
                         $scope.isLoading    = false;
                     },
