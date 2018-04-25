@@ -22,5 +22,6 @@ public interface BusinessLayer {
     //notification
     void sendDeviceId();
 
-    void getImage(String url, GetObjectInterface goi);
+    void getImage(String url, int width, int height, GetObjectInterface goi);
+    void getImageFullUrl(String url, int width, int height, GetObjectInterface goi);
 }

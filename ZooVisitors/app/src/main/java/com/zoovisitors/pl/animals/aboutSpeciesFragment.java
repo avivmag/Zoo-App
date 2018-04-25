@@ -58,7 +58,7 @@ public class aboutSpeciesFragment extends Fragment {
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.family),
                 animal.getFamily()));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.distribution),
-                animal.getDitribution()));
+                animal.getDistribution()));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.reproduction),
                 animal.getReproduction()));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.food),

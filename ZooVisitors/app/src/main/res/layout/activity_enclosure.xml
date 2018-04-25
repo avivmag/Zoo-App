@@ -23,7 +23,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:gravity="center"
-                    android:text="TextView"
                     android:textColor="@android:color/black"
                     android:textSize="30dp" />
 
@@ -38,7 +37,6 @@
                     android:id="@+id/closesEvent"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
-                    android:text="TextView"
                     android:textColor="@android:color/black"
                     android:textSize="20dp" />
 
@@ -100,13 +98,14 @@
 
                 </android.support.v7.widget.RecyclerView>
 
-                <ImageButton
-                    android:id="@+id/enclosure_video"
+                <GridLayout
+                    android:id="@+id/enc_asset_grid_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/cardview_shadow_end_color"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@android:drawable/btn_star" />
+                    android:layout_height="match_parent"
+                    android:columnCount="3">
+
+                </GridLayout>
+
             </LinearLayout>
         </ScrollView>
 

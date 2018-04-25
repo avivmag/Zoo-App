@@ -1,4 +1,4 @@
-package com.zoovisitors.dal.data_handler.map;
+package com.zoovisitors.dal.data_handler;
 
 import android.support.annotation.NonNull;
 

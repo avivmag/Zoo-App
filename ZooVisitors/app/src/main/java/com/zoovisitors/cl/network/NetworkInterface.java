@@ -13,5 +13,6 @@ public interface NetworkInterface {
      * @param responseInterface
      */
     void post(String innerURL, final ResponseInterface<String> responseInterface);
-    void postImage(String innerURL, final ResponseInterface<Bitmap> responseInterface);
+    void postImage(String innerURL, int width, int height, final ResponseInterface<Bitmap> responseInterface);
+    void postImageWithoutPrefix(String url, int width, int height, final ResponseInterface<Bitmap> responseInterface);
 }
