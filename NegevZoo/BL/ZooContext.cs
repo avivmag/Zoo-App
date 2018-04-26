@@ -650,9 +650,9 @@ namespace BL
         /// Delete The recurringEvent.
         /// </summary>
         /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
+        public void DeleteRecurringEvent(int enclosureId, int recurringEventId)
         {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == recurringEventId && re.enclosureId == enclosureId);
 
             if (recEvent == null)
             {

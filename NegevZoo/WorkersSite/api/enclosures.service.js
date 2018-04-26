@@ -9,7 +9,8 @@
         getRecurringEvents:         function (encId, language)                  { return httpService.httpGet({ url: [serviceBaseUrl, 'recurring', encId, language] }); },
         updateRecurringEvent:       function (recurringEvent)                   { return httpService.httpPost({ url: [serviceBaseUrl, 'recurring', 'update'], body: recurringEvent }); },
         updateEnclosureDetail:      function (enclosureDetail)                  { return httpService.httpPost({ url: [serviceBaseUrl, 'detail', 'update'], body: enclosureDetail }); },
-        deleteEnclosure:            function (encId)                            { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', encId] }); }
+        deleteEnclosure:            function (encId)                            { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', encId] }); },
+        deleteRecurringEvent:       function (encId, recurringEventId)          { return httpService.httpDelete({ url: [serviceBaseUrl, encId, 'recurring', 'delete', recurringEventId] }); }
     };
 
     var enclosures          = {
