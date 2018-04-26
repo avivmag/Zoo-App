@@ -116,8 +116,8 @@
                 })
                 .then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = clickPosition.width;
-                        selectedEnclosure.markerLatitude    = clickPosition.height;
+                        selectedEnclosure.markerLongitude   = clickPosition.width * clickPosition.ratio;
+                        selectedEnclosure.markerLatitude    = clickPosition.height * clickPosition.ratio;
                     }
                 });
             };
@@ -387,41 +387,47 @@
         MapDialogController.$Inject = ['mapService', '$rootScope'];
 
         function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService, $rootScope) {
-            $scope.img          = new Image();
-
-            $scope.mapStyle     = { };
-
-            $scope.img.onload   = function () {
-                $scope.originalPicWidth = document.getElementById('pic').width;
-                
-                $scope.mapStyle.width   = $scope.img.width + 'px';
-                $scope.mapStyle.height  = $scope.img.height + 'px';
-                $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
-                
-                $rootScope.$apply();
-            };
+            $scope.isLoading    = true;
             
-            // Get the map url from the server.
-            mapQuery = mapService.getMap().then(function (data) {
+            initializeMap();
 
-                $scope.img.src = app.baseURL + data.data[0].url;
-            },
-            function () {
-                utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
-            });
+            function initializeMap() {
+                $scope.img          = new Image();
 
-            $scope.clickMap = function(event) {
-                // Get the offset of the adjusted image.
-                var widthOffset     = $scope.img.width - $scope.originalPicWidth;
+                $scope.mapStyle     = { };
 
-                // Adjust the position by the offset.
-                var clickPosition   = {
-                    width:  event.layerX + widthOffset,
-                    height: event.layerY
+                $scope.img.onload   = function () {
+                    $scope.ratio            = (Math.max(picElement.width, picElement.height) / 640.0);
+
+                    $scope.mapStyle.width   = ($scope.img.width / $scope.ratio) + 'px';
+                    $scope.mapStyle.height  = ($scope.img.height / $scope.ratio) + 'px';
+                    $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+
+                    $scope.isLoading = false;
+
+                    $rootScope.$apply();
                 };
 
-                // Return the offset when the dialog closes.
-                $mdDialog.hide(clickPosition);
+                // Get the map url from the server.
+                mapQuery = mapService.getMap().then(
+                    function (data) {
+                        $scope.img.src = app.baseURL + data.data[0].url;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
+                    });
+
+                $scope.clickMap = function(event) {
+                    // Return the click position with the adjustment ratio.
+                    var clickPosition   = {
+                        width:  event.layerX,
+                        height: event.layerY,
+                        ratio:  $scope.ratio
+                    };
+
+                    // Return the offset when the dialog closes.
+                    $mdDialog.hide(clickPosition);
+                }
             }
         }
 }])

@@ -3,7 +3,7 @@
         <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
     </div>
 
-    <md-card ng-if="!isLoading" ng-show="page === 'list'">
+    <md-card ng-show="!isLoading && page === 'list'">
         <md-card-title layout="row" layout-align="space-between">
             <div layout="column">
                 <md-button class="md-raised md-primary" ng-click="switchPage('create')">הוסף מתחם</md-button>
@@ -29,7 +29,7 @@
         </md-card-content>
     </md-card>
 
-    <md-card ng-if="(!isLoading && (page === 'create' || page === 'edit'))">
+    <md-card ng-show="(!isLoading && (page === 'create' || page === 'edit'))">
          <md-card-title layout="row" layout-align="space-between">
             <div layout="column">
                 <md-button class="md-raised md-primary" style="width: 150px" ng-click="switchPage('list')">חזור לרשימת המתחמים</md-button>
