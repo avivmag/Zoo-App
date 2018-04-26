@@ -16,9 +16,11 @@
         function initializeComponent() {
             $scope.page             = 'list';
             $scope.baseURL          = app.baseURL;
+            $scope.hours            = utilitiesService.timeSpan.getHours();
+            $scope.minutes          = utilitiesService.timeSpan.getMinutes();
+            $scope.days             = utilitiesService.getDays();
 
             $scope.updateEnclosures         = function () {
-
                 enclosureService.enclosures.getAllEnclosures().then(
                     function (data) {
                         $scope.enclosures   = data.data;
@@ -36,7 +38,9 @@
                 $scope.selectedEnclosure    = selectedEnclosure || { };
 
                 if (page === 'edit') {
-                    enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
+                    $scope.isLoading            = true;
+
+                    var detailsQuery            = enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.enclosureDetails = data.data;
 
@@ -52,7 +56,7 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
+                    var videosQuery             = enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.selectedEnclosure.videos = data.data;
                         },
@@ -60,7 +64,7 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
+                    var picturesQuery           = enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.selectedEnclosure.pictures = data.data;
                         },
@@ -68,13 +72,34 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    animalService.getAnimalsByEnclosure(selectedEnclosure.id).then(
+                    var animalsQuery            = animalService.getAnimalsByEnclosure(selectedEnclosure.id).then(
                         function (animals) {
                             $scope.selectedEnclosure.animals = animals.data;
                         },
                         function () {
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
+
+                    var recurringEventsQuery    = enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, $scope.language.id).then(
+                        function (data) {
+                            $scope.selectedEnclosure.recurringEvents = data.data;
+
+                            for (let re of $scope.selectedEnclosure.recurringEvents) {
+                                re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
+                                re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
+                            }
+
+                            addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
+                        },
+                        function () {
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                        });
+
+                    var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery];
+
+                    $q.all(promises).then(
+                        () => $scope.isLoading = false,
+                        () => $scope.isLoading = false);
                 }
             };
                 
@@ -251,7 +276,54 @@
                     }
                 )
             }
+
+            $scope.updateRecurringEvents    = function (selectedEnclosure, language) {
+                $scope.language             = language;
+
+                enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, language.id).then(
+                    function (data) {
+                        $scope.selectedEnclosure.recurringEvents = data.data;
+
+                        for (let re of $scope.selectedEnclosure.recurringEvents) {
+                            re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
+                            re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
+                        }
+
+                        addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
+            };
+
+            $scope.addRecurringEvent        = function (recurringEvent) {
+                var successContent      = recurringEvent.isNew ? 'האירוע החוזר נוסף בהצלחה!' : 'האירוע החוזר עודכן בהצלחה!';
+                var failContent         = recurringEvent.isNew ? 'התרחשה שגיאה בעת שמירת האירוע החוזר' : 'התרחשה שגיאה בעת עדכון האירוע החוזר';
+
+                recurringEvent.startTime   = utilitiesService.timeSpan.stringifyTimeSpan(recurringEvent.startTime);
+                recurringEvent.endTime     = utilitiesService.timeSpan.stringifyTimeSpan(recurringEvent.endTime);
+
+                enclosureService.enclosureDetails.updateRecurringEvent(recurringEvent).then(
+                    function () {
+                        utilitiesService.utilities.alert(successContent);
+
+                        $scope.updateRecurringEvents($scope.selectedEnclosure, $scope.language);
+
+                        recurringEvent.startTime   = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.startTime);
+                        recurringEvent.endTime     = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.endTime);
+                    },
+                    function () {
+                        utilitiesService.utilities.alert(failContent);
+
+                        recurringEvent.startTime   = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.startTime);
+                        recurringEvent.endTime     = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.endTime);
+                    });
+            };
         };
+
+        function addEmptyRecurringEvent (recurringEvents) {
+            recurringEvents.push({ isNew: true, language: $scope.language.id, id: 0, enclosureId: $scope.selectedEnclosure.id });
+        }
 
         function uploadProfilePicture (picture, enclosure) {
             if (!angular.isDefined(picture)) {
