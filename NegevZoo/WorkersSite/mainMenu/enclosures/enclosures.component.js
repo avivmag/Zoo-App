@@ -217,7 +217,7 @@
                 )
             };
 
-            $scope.uploadEnclosurePictures  = function (pictures, enclosure) {
+            $scope.uploadEnclosurePictures  = function(pictures, enclosure) {
                 if (!angular.isDefined(pictures)) {
                     return;
                 }
@@ -241,7 +241,7 @@
     
             }
 
-            $scope.deletePicture            = function (selectedEnclosureId, picture, pictures) {
+            $scope.deletePicture            = function(selectedEnclosureId, picture, pictures) {
                 $scope.isLoading = true;
 
                 enclosureService.enclosures.deleteEnclosurePicture(selectedEnclosureId, picture.id).then(
@@ -255,11 +255,10 @@
                         utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת התמונה.");
 
                         $scope.isLoading = false;
-                    }
-                )
+                    });
             }
 
-            $scope.deleteVideo              = function (selectedEnclosureId, video, videos) {
+            $scope.deleteVideo              = function(selectedEnclosureId, video, videos) {
                 $scope.isLoading = true;
 
                 enclosureService.enclosures.deleteEnclosureVideo(selectedEnclosureId, video.id).then(
@@ -277,7 +276,7 @@
                 )
             }
 
-            $scope.updateRecurringEvents    = function (selectedEnclosure, language) {
+            $scope.updateRecurringEvents    = function(selectedEnclosure, language) {
                 $scope.language             = language;
 
                 enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, language.id).then(
@@ -296,7 +295,7 @@
                     });
             };
 
-            $scope.addRecurringEvent        = function (recurringEvent) {
+            $scope.addRecurringEvent        = function(recurringEvent) {
                 var successContent      = recurringEvent.isNew ? 'האירוע החוזר נוסף בהצלחה!' : 'האירוע החוזר עודכן בהצלחה!';
                 var failContent         = recurringEvent.isNew ? 'התרחשה שגיאה בעת שמירת האירוע החוזר' : 'התרחשה שגיאה בעת עדכון האירוע החוזר';
 
@@ -319,10 +318,26 @@
                         recurringEvent.endTime     = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.endTime);
                     });
             };
+
+            $scope.deleteReucrringEvent     = function(selectedEnclosureId, recurringEvents, recurringEvent) {
+                enclosureService.enclosureDetails.deleteRecurringEvent(selectedEnclosureId, recurringEvent.id).then(
+                    () => {
+                        utilitiesService.utilities.alert("האירוע החוזר נמחק בהצלחה.");
+
+                        recurringEvents.splice(recurringEvents.indexOf(recurringEvent), 1);
+                    },
+                    () => {
+                        utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת האירוע החוזר.");
+                    });
+            }
         };
 
         function addEmptyRecurringEvent (recurringEvents) {
             recurringEvents.push({ isNew: true, language: $scope.language.id, id: 0, enclosureId: $scope.selectedEnclosure.id });
+        }
+
+        function confirmDeleteRecurringEvent (recurringEvents, recurringEvent) {
+
         }
 
         function uploadProfilePicture (picture, enclosure) {

@@ -420,14 +420,14 @@ namespace NegevZoo.Controllers
         }
         
         [HttpDelete]
-        [Route("enclosures/recurring/delete/{eventId}")]
-        public void DeleteRecurringEvent(int eventId)
+        [Route("enclosures/{enclosureId}/recurring/delete/{eventId}")]
+        public void DeleteRecurringEvent(int enclosureId, int eventId)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteRecurringEvent(eventId);
+                    db.DeleteRecurringEvent(enclosureId, eventId);
                 }
 
             }
