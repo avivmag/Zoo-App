@@ -6,10 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
-<<<<<<< HEAD
-=======
-import android.util.Log;
->>>>>>> 06ae2c9687ae7aad01744d5f035687b4e22a1fdf
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -349,8 +345,8 @@ public class MapView extends RelativeLayout {
             view.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("AVIV", "left " + left);
-                    Log.e("AVIV", "top " + top);
+//                    Log.e("AVIV", "left " + left);
+//                    Log.e("AVIV", "top " + top);
                     recurringEvent = new RecurringEventScheduler(
                             left,
                             (int) (top - height),

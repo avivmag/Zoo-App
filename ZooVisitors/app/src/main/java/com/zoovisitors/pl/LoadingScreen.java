@@ -16,8 +16,8 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.FunctionInterface;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.FunctionInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 import java.util.ArrayList;
 import java.util.List;

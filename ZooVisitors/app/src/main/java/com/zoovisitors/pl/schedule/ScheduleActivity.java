@@ -1,6 +1,5 @@
 package com.zoovisitors.pl.schedule;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +10,8 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.GetObjectInterface;
-import com.zoovisitors.bl.MyFirebaseMessagingService;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
-import com.zoovisitors.pl.map.MapActivity;
-
-import java.util.Map;
 
 
 public class ScheduleActivity extends BaseActivity {

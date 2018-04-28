@@ -15,9 +15,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.ContactInfo;
-import com.zoovisitors.bl.GetObjectInterface;
-
-import javax.microedition.khronos.opengles.GL;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 /**
  * A simple {@link Fragment} subclass.

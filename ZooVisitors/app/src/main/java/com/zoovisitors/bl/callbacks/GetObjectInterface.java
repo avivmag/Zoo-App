@@ -1,4 +1,4 @@
-package com.zoovisitors.bl;
+package com.zoovisitors.bl.callbacks;
 
 /**
  * Created by Gili on 14/01/2018.
