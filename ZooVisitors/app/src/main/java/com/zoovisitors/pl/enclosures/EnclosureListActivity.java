@@ -13,7 +13,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 import java.util.ArrayList;
 import java.util.List;

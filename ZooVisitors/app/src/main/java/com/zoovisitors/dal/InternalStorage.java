@@ -1,4 +1,4 @@
-package com.zoovisitors.dal.data_handler;
+package com.zoovisitors.dal;
 
 import android.content.Context;
 import android.content.ContextWrapper;

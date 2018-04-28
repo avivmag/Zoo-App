@@ -1,4 +1,4 @@
-package com.zoovisitors.bl;
+package com.zoovisitors.cl.notifications;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

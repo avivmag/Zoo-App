@@ -15,10 +15,11 @@ import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
-import com.zoovisitors.dal.data_handler.InternalStorage;
+import com.zoovisitors.dal.InternalStorage;
 
 import java.util.Calendar;
 
