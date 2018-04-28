@@ -97,19 +97,19 @@ public class Enclosure implements java.io.Serializable{
         return pictureUrl;
     }
 
-
-    public static Enclosure createInstance(int id, String name, String story, String youtubeVideoUrl, String markerIconUrl, int markerLatitude, int markerLongtitude, String pictureUrl) {
-        Enclosure enclosure = new Enclosure();
-        enclosure.id = id;
-        enclosure.name = name;
-        enclosure.story = story;
-        enclosure.youtubeVideoUrl = youtubeVideoUrl;
-        enclosure.markerIconUrl = markerIconUrl;
-        enclosure.markerLatitude = markerLatitude;
-        enclosure.markerLongtitude = markerLongtitude;
-        enclosure.pictureUrl = pictureUrl;
-        return enclosure;
-    }
+//
+//    public static Enclosure createInstance(int id, String name, String story, String youtubeVideoUrl, String markerIconUrl, int markerLatitude, int markerLongtitude, String pictureUrl) {
+//        Enclosure enclosure = new Enclosure();
+//        enclosure.id = id;
+//        enclosure.name = name;
+//        enclosure.story = story;
+//        enclosure.youtubeVideoUrl = youtubeVideoUrl;
+//        enclosure.markerIconUrl = markerIconUrl;
+//        enclosure.markerLatitude = markerLatitude;
+//        enclosure.markerLongtitude = markerLongtitude;
+//        enclosure.pictureUrl = pictureUrl;
+//        return enclosure;
+//    }
 
     public static class RecurringEvent implements Serializable{
         @SerializedName("id")
@@ -151,6 +151,7 @@ public class Enclosure implements java.io.Serializable{
             this.endTime = endTime;
         }
 
+        // TODO: remove this, it is only for testing.
         public static RecurringEvent createRecurringEvent(int id, String description, long startTime, long lastsTime, String title) {
             RecurringEvent recurringEvent = new RecurringEvent();
             recurringEvent.id = id;
