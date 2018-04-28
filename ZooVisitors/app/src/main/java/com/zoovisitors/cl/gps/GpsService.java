@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.dal.data_handler.map.Memory;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 

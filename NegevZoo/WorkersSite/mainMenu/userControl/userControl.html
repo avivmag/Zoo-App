@@ -34,7 +34,7 @@
                 <md-button class="md-raised md-accent" ng-if="!user.isNew" ng-click="resetPassword(user)">אפס סיסמא</md-button>
                 
                 <md-button class="md-primary md-raised" ng-if="user.isNew" ng-click="addUser(user)">שמור משתמש חדש</md-button>
-                <md-button class="md-primary md-raised" ng-if="!user.isNew" ng-click="addUser(user)">עדכן שם משתמש</md-button>
+                <md-button class="md-primary md-raised" ng-if="!user.isNew" ng-click="updateUsername(user)">עדכן שם משתמש</md-button>
             </div>
         </md-card-content>
         <md-card-content ng-if="!isLoading && (!users || users.length === 0)">

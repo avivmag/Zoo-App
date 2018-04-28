@@ -2,8 +2,8 @@ package com.zoovisitors.pl.enclosures;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.bl.GetObjectInterface;
 import com.zoovisitors.pl.animals.AnimalActivity;
 
 import java.util.ArrayList;
@@ -25,12 +26,9 @@ import java.util.List;
 
 public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
 
-    private String[] animalsImages;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private int[] images;
     private Animal[] animals;
 
-    public AnimalsRecyclerAdapter(String[] animalsImages, Animal[] animals){
-        this.animalsImages = animalsImages;
+    public AnimalsRecyclerAdapter(Animal[] animals){
         this.animals = animals;
     }
 
@@ -42,15 +40,9 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
         public ViewHolder(View itemView){
             super(itemView);
             List<Integer> imagesList = new ArrayList<Integer>();
-            for (String image : animalsImages) {
-                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
-            }
+                //imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
 
             int[] ret = new int[imagesList.size()];
-            for(int i = 0;i < ret.length;i++)
-                ret[i] = imagesList.get(i);
-
-            images = ret;
 
             animal_card_image = (ImageView) itemView.findViewById(R.id.animal_card_image);
             animalName = (TextView) itemView.findViewById(R.id.animal_card_text);
@@ -63,8 +55,6 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
                     Intent intent = new Intent(GlobalVariables.appCompatActivity, AnimalActivity.class);
                     Bundle clickedAnimal = new Bundle();
-                    clickedAnimal.putInt("image", images[pos]); //Clicked image
-                    clickedAnimal.putString("name", animals[pos].getName());
                     clickedAnimal.putSerializable("animal", animals[pos]);
 
                     intent.putExtras(clickedAnimal);
@@ -85,7 +75,19 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.animalName.setText(animals[i].getName());
-        viewHolder.animal_card_image.setImageResource(images[i]);
+        int width = 400;
+        int height = 400;
+        GlobalVariables.bl.getImage(animals[i].getPictureUrl(), width, height, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
+            }
+        });
     }
 
     @Override

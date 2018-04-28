@@ -20,7 +20,6 @@ import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
 import com.zoovisitors.dal.data_handler.InternalStorage;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -93,12 +92,17 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
-                long currentTime = Calendar.getInstance().getTimeInMillis();
+                // TODO: fake recurring events here, need to update the json somehow
+                // TODO: I should add three days to the real recurring events
+                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
                 for (int i = 0; i < enc.length; i++) {
-                    // TODO: fake recurring events here, need to update the json somehow
                     enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-                            Enclosure.RecurringEvent.createRecurringEvent(1, "", currentTime + 10
-                                    * 60 * 1000, currentTime + 40 * 60 * 1000, "")
+                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
+                                    (currentTime + 10 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), ""),
+                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
+                                    (currentTime + 30 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 40 * 1000) % (7*24*60*60*1000), "")
                     });
                 }
 
@@ -155,8 +159,8 @@ public class BusinessLayerImpl implements BusinessLayer {
 //        });
 //    }
 
-    public void getImage(String url, GetObjectInterface goi) {
-            ni.postImage(url, new ResponseInterface<Bitmap>() {
+    public void getImage(String url, int width, int height, GetObjectInterface goi) {
+            ni.postImage(url, width, height, new ResponseInterface<Bitmap>() {
                 @Override
                 public void onSuccess(Bitmap response) {
                     goi.onSuccess(response);
@@ -321,6 +325,20 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onFailure(String response) {
                 Log.e("DeviceID","cannot send to server");
+            }
+        });
+    }
+
+    public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
+        ni.postImageWithoutPrefix(url, width, height, new ResponseInterface<Bitmap>() {
+            @Override
+            public void onSuccess(Bitmap response) {
+                goi.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
             }
         });
     }

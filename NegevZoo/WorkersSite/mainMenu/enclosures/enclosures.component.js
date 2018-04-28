@@ -1,18 +1,26 @@
-﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$rootScope', '$mdDialog', 'utilitiesService', 'enclosureService', 'animalService', 'fileUpload',
+﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'animalService', 'fileUpload',
 
-    function enclosureController($q, $scope, $rootScope, $mdDialog, utilitiesService, enclosureService, animalService, fileUpload) {
+    function enclosureController($q, $scope, $mdDialog, utilitiesService, enclosureService, animalService, fileUpload) {
+        $scope.isLoading            = true;
+
         initializeComponent();
-        
-        $scope.updateEnclosures();
+
+        app.getLanguages().then(
+            (data) => {
+                $scope.languages    = data.data;
+                $scope.language     = $scope.languages[0];
+
+                $scope.updateEnclosures();
+            });
 
         function initializeComponent() {
             $scope.page             = 'list';
             $scope.baseURL          = app.baseURL;
+            $scope.hours            = utilitiesService.timeSpan.getHours();
+            $scope.minutes          = utilitiesService.timeSpan.getMinutes();
+            $scope.days             = utilitiesService.getDays();
 
             $scope.updateEnclosures         = function () {
-                $scope.isLoading        = true;
-
-                $scope.languages        = app.languages;
                 enclosureService.enclosures.getAllEnclosures().then(
                     function (data) {
                         $scope.enclosures   = data.data;
@@ -30,7 +38,9 @@
                 $scope.selectedEnclosure    = selectedEnclosure || { };
 
                 if (page === 'edit') {
-                    enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
+                    $scope.isLoading            = true;
+
+                    var detailsQuery            = enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.enclosureDetails = data.data;
 
@@ -46,7 +56,7 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
+                    var videosQuery             = enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.selectedEnclosure.videos = data.data;
                         },
@@ -54,7 +64,7 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
+                    var picturesQuery           = enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
                         function (data) {
                             $scope.selectedEnclosure.pictures = data.data;
                         },
@@ -62,13 +72,34 @@
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
 
-                    animalService.getAnimalsByEnclosure(selectedEnclosure.id).then(
+                    var animalsQuery            = animalService.getAnimalsByEnclosure(selectedEnclosure.id).then(
                         function (animals) {
                             $scope.selectedEnclosure.animals = animals.data;
                         },
                         function () {
                             utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         });
+
+                    var recurringEventsQuery    = enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, $scope.language.id).then(
+                        function (data) {
+                            $scope.selectedEnclosure.recurringEvents = data.data;
+
+                            for (let re of $scope.selectedEnclosure.recurringEvents) {
+                                re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
+                                re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
+                            }
+
+                            addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
+                        },
+                        function () {
+                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                        });
+
+                    var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery];
+
+                    $q.all(promises).then(
+                        () => $scope.isLoading = false,
+                        () => $scope.isLoading = false);
                 }
             };
                 
@@ -85,8 +116,8 @@
                 })
                 .then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = clickPosition.width;
-                        selectedEnclosure.markerLatitude    = clickPosition.height;
+                        selectedEnclosure.markerLongitude   = clickPosition.width * clickPosition.ratio;
+                        selectedEnclosure.markerLatitude    = clickPosition.height * clickPosition.ratio;
                     }
                 });
             };
@@ -174,7 +205,7 @@
                     function (updatedVideo) {
                         utilitiesService.utilities.alert('הסרטון הועלה בהצלחה!');
 
-                        selectedEnclosure.videos.push(updatedVideo);
+                        selectedEnclosure.videos.push(updatedVideo.data);
 
                         $scope.isLoading    = false;
                     },
@@ -186,7 +217,7 @@
                 )
             };
 
-            $scope.uploadEnclosurePictures  = function (pictures, enclosure) {
+            $scope.uploadEnclosurePictures  = function(pictures, enclosure) {
                 if (!angular.isDefined(pictures)) {
                     return;
                 }
@@ -210,7 +241,7 @@
     
             }
 
-            $scope.deletePicture            = function (selectedEnclosureId, picture, pictures) {
+            $scope.deletePicture            = function(selectedEnclosureId, picture, pictures) {
                 $scope.isLoading = true;
 
                 enclosureService.enclosures.deleteEnclosurePicture(selectedEnclosureId, picture.id).then(
@@ -224,11 +255,10 @@
                         utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת התמונה.");
 
                         $scope.isLoading = false;
-                    }
-                )
+                    });
             }
 
-            $scope.deleteVideo              = function (selectedEnclosureId, video, videos) {
+            $scope.deleteVideo              = function(selectedEnclosureId, video, videos) {
                 $scope.isLoading = true;
 
                 enclosureService.enclosures.deleteEnclosureVideo(selectedEnclosureId, video.id).then(
@@ -245,7 +275,70 @@
                     }
                 )
             }
+
+            $scope.updateRecurringEvents    = function(selectedEnclosure, language) {
+                $scope.language             = language;
+
+                enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, language.id).then(
+                    function (data) {
+                        $scope.selectedEnclosure.recurringEvents = data.data;
+
+                        for (let re of $scope.selectedEnclosure.recurringEvents) {
+                            re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
+                            re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
+                        }
+
+                        addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
+            };
+
+            $scope.addRecurringEvent        = function(recurringEvent) {
+                var successContent      = recurringEvent.isNew ? 'האירוע החוזר נוסף בהצלחה!' : 'האירוע החוזר עודכן בהצלחה!';
+                var failContent         = recurringEvent.isNew ? 'התרחשה שגיאה בעת שמירת האירוע החוזר' : 'התרחשה שגיאה בעת עדכון האירוע החוזר';
+
+                recurringEvent.startTime   = utilitiesService.timeSpan.stringifyTimeSpan(recurringEvent.startTime);
+                recurringEvent.endTime     = utilitiesService.timeSpan.stringifyTimeSpan(recurringEvent.endTime);
+
+                enclosureService.enclosureDetails.updateRecurringEvent(recurringEvent).then(
+                    function () {
+                        utilitiesService.utilities.alert(successContent);
+
+                        $scope.updateRecurringEvents($scope.selectedEnclosure, $scope.language);
+
+                        recurringEvent.startTime   = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.startTime);
+                        recurringEvent.endTime     = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.endTime);
+                    },
+                    function () {
+                        utilitiesService.utilities.alert(failContent);
+
+                        recurringEvent.startTime   = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.startTime);
+                        recurringEvent.endTime     = utilitiesService.timeSpan.parseTimeSpan(recurringEvent.endTime);
+                    });
+            };
+
+            $scope.deleteReucrringEvent     = function(selectedEnclosureId, recurringEvents, recurringEvent) {
+                enclosureService.enclosureDetails.deleteRecurringEvent(selectedEnclosureId, recurringEvent.id).then(
+                    () => {
+                        utilitiesService.utilities.alert("האירוע החוזר נמחק בהצלחה.");
+
+                        recurringEvents.splice(recurringEvents.indexOf(recurringEvent), 1);
+                    },
+                    () => {
+                        utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת האירוע החוזר.");
+                    });
+            }
         };
+
+        function addEmptyRecurringEvent (recurringEvents) {
+            recurringEvents.push({ isNew: true, language: $scope.language.id, id: 0, enclosureId: $scope.selectedEnclosure.id });
+        }
+
+        function confirmDeleteRecurringEvent (recurringEvents, recurringEvent) {
+
+        }
 
         function uploadProfilePicture (picture, enclosure) {
             if (!angular.isDefined(picture)) {
@@ -291,44 +384,50 @@
             return fileUploadQuery;
         };
 
-        MapDialogController.$Inject = ['mapService'];
+        MapDialogController.$Inject = ['mapService', '$rootScope'];
 
-        function MapDialogController($scope, $rootScope, $mdDialog, selectedEnclosure, mapService) {
-            $scope.img          = new Image();
-
-            $scope.mapStyle     = { };
-
-            $scope.img.onload   = function () {
-                $scope.originalPicWidth = document.getElementById('pic').width;
-                
-                $scope.mapStyle.width   = $scope.img.width + 'px';
-                $scope.mapStyle.height  = $scope.img.height + 'px';
-                $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
-                
-                $rootScope.$apply();
-            };
+        function MapDialogController($scope, $mdDialog, selectedEnclosure, mapService, $rootScope) {
+            $scope.isLoading    = true;
             
-            // Get the map url from the server.
-            mapQuery = mapService.getMap().then(function (data) {
+            initializeMap();
 
-                $scope.img.src = app.baseURL + data.data[0].url;
-            },
-            function () {
-                utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
-            });
+            function initializeMap() {
+                $scope.img          = new Image();
 
-            $scope.clickMap = function(event) {
-                // Get the offset of the adjusted image.
-                var widthOffset     = $scope.img.width - $scope.originalPicWidth;
+                $scope.mapStyle     = { };
 
-                // Adjust the position by the offset.
-                var clickPosition   = {
-                    width:  event.layerX + widthOffset,
-                    height: event.layerY
+                $scope.img.onload   = function () {
+                    $scope.ratio            = (Math.max(picElement.width, picElement.height) / 640.0);
+
+                    $scope.mapStyle.width   = ($scope.img.width / $scope.ratio) + 'px';
+                    $scope.mapStyle.height  = ($scope.img.height / $scope.ratio) + 'px';
+                    $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+
+                    $scope.isLoading = false;
+
+                    $rootScope.$apply();
                 };
 
-                // Return the offset when the dialog closes.
-                $mdDialog.hide(clickPosition);
+                // Get the map url from the server.
+                mapQuery = mapService.getMap().then(
+                    function (data) {
+                        $scope.img.src = app.baseURL + data.data[0].url;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה בעת שליפת המפה');
+                    });
+
+                $scope.clickMap = function(event) {
+                    // Return the click position with the adjustment ratio.
+                    var clickPosition   = {
+                        width:  event.layerX,
+                        height: event.layerY,
+                        ratio:  $scope.ratio
+                    };
+
+                    // Return the offset when the dialog closes.
+                    $mdDialog.hide(clickPosition);
+                }
             }
         }
 }])

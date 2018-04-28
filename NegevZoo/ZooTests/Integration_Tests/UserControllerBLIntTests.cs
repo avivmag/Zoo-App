@@ -98,7 +98,7 @@ namespace ZooTests
 
         #endregion
         
-        #region UpdateUser
+        #region AddUser
         [TestMethod]
         public void UpdateUserAddAnValidTest()
         {
@@ -113,7 +113,7 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
 
             users = usersController.GetAllUsers();
             Assert.AreEqual(5, users.Count());
@@ -134,7 +134,7 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -152,7 +152,7 @@ namespace ZooTests
                 password = "123123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -170,7 +170,7 @@ namespace ZooTests
                 password = "       "
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -188,7 +188,7 @@ namespace ZooTests
                 password = ""
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
 
         [TestMethod]
@@ -206,26 +206,18 @@ namespace ZooTests
                 password = "123"
             };
 
-            usersController.UpdateUser(user);
+            usersController.AddUser(user);
         }
+        #endregion
 
+        #region UpdateUserName
         [TestMethod]
-        public void UpdateUserValidInput()
+        public void UpdateUserNameValidInput()
         {
             var users= usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
-
-            user.name  = "גיל המלך";
-
-            usersController.UpdateUser(user);
+            usersController.UpdateUserName(2, "גיל המלך");
 
             users = usersController.GetAllUsers();
             Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
@@ -237,40 +229,51 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateUserNameAlreadyExists()
         {
-            var users = usersController.GetAllUsers();
-            Assert.AreEqual(4, users.Count());
-
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
-
-            user.name = "אור";
-
-            usersController.UpdateUser(user);
+            usersController.UpdateUserName(2, "אור");
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateUserWrongId()
+        public void UpdateUserNameWrongId()
         {
-            var users= usersController.GetAllUsers();
+            usersController.UpdateUserName(-2, "גיל המלך");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserNameEmptyName()
+        {
+            usersController.UpdateUserName(2, "");
+        }
+        #endregion
+
+        #region UpdateUserPassword
+        [TestMethod]
+        public void UpdateUserPasswordValidInput()
+        {
+            var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
-            var user = new User
-            {
-                id = 2,
-                isAdmin = false,
-                name = "גיל",
-                password = "123"
-            };
+            usersController.UpdateUserPassword(2, "321");
 
-            user.id = -3;
+            users = usersController.GetAllUsers();
+            Assert.IsTrue(usersController.Login("גיל", "321"));
+            Assert.IsFalse(usersController.Login("גיל", "123"));
+            Assert.AreEqual(4, users.Count());
+        }
 
-            usersController.UpdateUser(user);
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserPasswordWrongId()
+        {
+            usersController.UpdateUserName(-2, "321");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserPasswordEmptyName()
+        {
+            usersController.UpdateUserName(2, "     ");
         }
         #endregion
 

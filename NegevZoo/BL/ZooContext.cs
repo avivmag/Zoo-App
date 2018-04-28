@@ -106,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -537,11 +537,13 @@ namespace BL
 
             var allRecurringEvents = zooDB.GetAllRecuringEvents();
 
+            var enclosureRecurringEvents = allRecurringEvents.Where(re => re.enclosureId == recEvent.enclosureId).ToList();
+
             //TODO: Add Notification!
             if (recEvent.id == default(int)) //add recurring event
             {
                 //check that there isn't other Recurring event to this enclosure in the same time.
-                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (enclosureRecurringEvents.Any(re => ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
                 }
@@ -648,9 +650,9 @@ namespace BL
         /// Delete The recurringEvent.
         /// </summary>
         /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
+        public void DeleteRecurringEvent(int enclosureId, int recurringEventId)
         {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == recurringEventId && re.enclosureId == enclosureId);
 
             if (recEvent == null)
             {
@@ -1986,10 +1988,66 @@ namespace BL
         }
 
         /// <summary>
+        /// Updates the User name.
+        /// </summary>
+        /// <param name="id"> Represents the id of the user that changes the name</param>
+        /// <param name="userName"> Represents the new user name that should be saved</param>
+        public void UpdateUserName(int id, string userName)
+        {
+            var allUsers = zooDB.GetAllUsers();
+
+            User user = allUsers.SingleOrDefault(wu => wu.id == id);
+
+            // validate attributes
+            // 1. Check that the User exists
+            if (user == null)
+            {
+                throw new ArgumentException("Wrong input. User ID doesn't exists.");
+            }
+
+            // 2. check the user name
+            if (String.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException("Wrong input. The user name is empty or white spaces");
+            }
+
+            // 3. check if the user name already exists
+            if (allUsers.Any(wu => wu.name == userName))
+            {
+                throw new ArgumentException("Wrong input . The user name already exists");
+            }
+
+            user.name = userName;
+        }
+
+        public void UpdateUserPassword(int id, string password)
+        {
+            var allUsers = zooDB.GetAllUsers();
+
+            User user = allUsers.SingleOrDefault(wu => wu.id == id);
+
+            // validate attributes
+            // 1. Check that the User exists
+            if (user == null)
+            {
+                throw new ArgumentException("Wrong input. User ID doesn't exists.");
+            }
+
+            // 2. password
+            if (String.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Wrong input. The password is empty or white spaces");
+            }
+
+            user.salt       = GenerateSalt();
+            user.password   = GetMd5Hash(password + user.salt);
+        }
+
+        /// <summary>
         /// Updates The User.
         /// </summary>
         /// <param name="userWorker">The UserWorker to add or update.</param>
-        public void UpdateUser(User userWorker)
+        public void AddUser(User userWorker)
         {
             //check the attributes
             // 0.Exists
@@ -2012,41 +2070,24 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
+            // 3. check the id
+            if (userWorker.id != default(int))
+            {
+                throw new ArgumentException("Wrong input. The user id should set to default");
+            }
+
             var users = zooDB.GetAllUsers();
 
-            if (userWorker.id == default(int)) //add a user
+            //check if the name already exists
+            if (users.Any(wu => wu.name == userWorker.name))
             {
-                //check if the name already exists
-                if (users.Any(wu => wu.name == userWorker.name))
-                {
-                    throw new ArgumentException("Wrong input while adding a User. Name already exists");
-                }
-
-                userWorker.salt         = GenerateSalt();
-                userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
-
-                users.Add(userWorker);
+                throw new ArgumentException("Wrong input while adding a User. Name already exists");
             }
-            else //update a user
-            {
-                var oldUser = users.SingleOrDefault(wu => wu.id == userWorker.id);
 
-                if (oldUser == null)
-                {
-                    throw new ArgumentException("Wrong input. User doesn't exists");
-                }
-
-                //check if the name changed to a name that already exists
-                if (oldUser.name != userWorker.name && users.Any(wu => wu.name == userWorker.name))
-                {
-                    throw new ArgumentException("Wrong input while updating a User. Name already exists");
-                }
-
-                oldUser.name        = userWorker.name;
-                oldUser.salt        = GenerateSalt();
-                oldUser.password    = GetMd5Hash(userWorker.password + oldUser.salt);
-                oldUser.isAdmin     = userWorker.isAdmin;
-            }
+            userWorker.salt         = GenerateSalt();
+            userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
+            
+            users.Add(userWorker);
         }
 
         /// <summary>
