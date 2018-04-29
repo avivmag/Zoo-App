@@ -50,6 +50,9 @@
                             $scope.isLoading    = false;
                         });
                 }
+                else {
+                    $scope.isLoading            = false;
+                }
             };
 
             $scope.addAnimal        = function(animal) {
