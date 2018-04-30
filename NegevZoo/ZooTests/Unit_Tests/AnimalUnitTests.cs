@@ -278,22 +278,22 @@ namespace ZooTests.Unit_Tests
             Assert.AreEqual(4, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input in adding animal. Animal name already exists")]
-        public void UpdateAnimalAddAnimalNameExists()
-        {
-            var animals = context.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(ArgumentException), "Wrong input in adding animal. Animal name already exists")]
+        //public void UpdateAnimalAddAnimalNameExists()
+        //{
+        //    var animals = context.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = default(int),
-                name = "קוף",
-                enclosureId = 3,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = default(int),
+        //        name = "קוף",
+        //        enclosureId = 3,
+        //    };
 
-            context.UpdateAnimal(an);
-        }
+        //    context.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Animal name is null or null")]
@@ -364,24 +364,24 @@ namespace ZooTests.Unit_Tests
             Assert.AreEqual(3, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input in updating animal. Animal name already exitst")]
-        public void UpdateAnimalNameAlreadyExists()
-        {
-            var animals = context.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(ArgumentException), "Wrong input in updating animal. Animal name already exitst")]
+        //public void UpdateAnimalNameAlreadyExists()
+        //{
+        //    var animals = context.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = 2,
-                name = "גורילה",
-                enclosureId = 1,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = 2,
+        //        name = "גורילה",
+        //        enclosureId = 1,
+        //    };
 
-            an.name = "קוף";
+        //    an.name = "קוף";
 
-            context.UpdateAnimal(an);
-        }
+        //    context.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Animal id does'nt exits")]

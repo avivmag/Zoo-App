@@ -279,22 +279,22 @@ namespace ZooTests
             Assert.AreEqual(4, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalAddAnimalNameExists()
-        {
-            var animals = animalsController.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(HttpResponseException))]
+        //public void UpdateAnimalAddAnimalNameExists()
+        //{
+        //    var animals = animalsController.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = default(int),
-                name = "קוף",
-                enclosureId = 3,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = default(int),
+        //        name = "קוף",
+        //        enclosureId = 3,
+        //    };
 
-            animalsController.UpdateAnimal(an);
-        }
+        //    animalsController.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
@@ -365,24 +365,24 @@ namespace ZooTests
             Assert.AreEqual(3, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalNameAlreadyExists()
-        {
-            var animals = animalsController.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(HttpResponseException))]
+        //public void UpdateAnimalNameAlreadyExists()
+        //{
+        //    var animals = animalsController.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = 2,
-                name = "גורילה",
-                enclosureId = 1,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = 2,
+        //        name = "גורילה",
+        //        enclosureId = 1,
+        //    };
 
-            an.name = "קוף";
+        //    an.name = "קוף";
 
-            animalsController.UpdateAnimal(an);
-        }
+        //    animalsController.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
