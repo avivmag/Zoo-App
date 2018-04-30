@@ -427,26 +427,6 @@ namespace ZooTests.Unit_Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input in adding animal. Animal name already exists")]
-        public void UpdateAnimalDetailsAddAnimalNameExists()
-        {
-            var details = context.GetAllAnimalsDetailById(1);
-            Assert.AreEqual(2, details.Count());
-
-            var an = new AnimalDetail
-            {
-                animalId = 1,
-                name = "בבון הזית",
-                category = "חרבון",
-                story = "זה סיפור על קקי יפה",
-                language = (long)Languages.ar
-            };
-
-            context.UpdateAnimalDetails(an);
-
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. The name is null or whitespace.")]
         public void UpdateAnimaDetailsWrongName()
         {
@@ -548,32 +528,7 @@ namespace ZooTests.Unit_Tests
             Assert.AreEqual("", an.category);
             Assert.AreEqual("", an.series);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input in updating animal. Animal name already exitst")]
-        public void UpdateAnimalDetailNameAlreadyExists()
-        {
-            var details = context.GetAllAnimalsDetailById(1);
-            Assert.AreEqual(2, details.Count());
-
-            var an = new AnimalDetail
-            {
-                animalId = 1,
-                language = (long)Languages.he,
-                name = "בבון הזית",
-                category = "קופים",
-                series = "קוף",
-                distribution = "",
-                family = "",
-                food = "",
-                reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
-            };
-            an.name = "גורילה";
-
-            context.UpdateAnimalDetails(an);
-        }
-
+        
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language.")]
         public void UpdateAnimalDetailsWrongLangauge()
