@@ -135,7 +135,8 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == hebrewLang);
             }
 
             var enclosureResult = new EnclosureResult
@@ -735,7 +736,8 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == hebrewLang);
             }
 
             var animalResult = new AnimalResult
@@ -900,10 +902,10 @@ namespace BL
             if (animal.id == default(int)) //add a new aniaml
             {
                 // check that the name doesn't exists
-                if (animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
+                //if (animals.Any(an => an.name == animal.name))
+                //{
+                //    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
+                //}
 
                 animals.Add(animal);
             }
@@ -918,10 +920,10 @@ namespace BL
                 }
 
                 // check that id the name changed, it doesn't exists.
-                if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
-                }
+                //if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
+                //{
+                //    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
+                //}
 
                 oldAnimal.name = animal.name;
                 oldAnimal.pictureUrl = animal.pictureUrl;
