@@ -1,13 +1,10 @@
 package com.zoovisitors.pl;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,9 +16,8 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.FunctionInterface;
-import com.zoovisitors.bl.GetObjectInterface;
-import com.zoovisitors.cl.network.ResponseInterface;
+import com.zoovisitors.bl.callbacks.FunctionInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 import java.util.ArrayList;
 import java.util.List;

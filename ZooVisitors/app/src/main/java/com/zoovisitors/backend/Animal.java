@@ -20,8 +20,8 @@ public class Animal implements java.io.Serializable{
     private String series;
     @SerializedName("family")
     private String family;
-    @SerializedName("ditribution")
-    private String ditribution;
+    @SerializedName("distribution")
+    private String distribution;
     @SerializedName("reproduction")
     private String reproduction;
     @SerializedName("food")
@@ -61,8 +61,8 @@ public class Animal implements java.io.Serializable{
         return family;
     }
 
-    public String getDitribution() {
-        return ditribution;
+    public String getDistribution() {
+        return distribution;
     }
 
     public String getReproduction() {

@@ -1,5 +1,7 @@
 package com.zoovisitors.bl;
 
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
+
 /**
  * Created by Gili on 13/01/2018.
  */
@@ -22,5 +24,6 @@ public interface BusinessLayer {
     //notification
     void sendDeviceId();
 
-    void getImage(String url, GetObjectInterface goi);
+    void getImage(String url, int width, int height, GetObjectInterface goi);
+    void getImageFullUrl(String url, int width, int height, GetObjectInterface goi);
 }

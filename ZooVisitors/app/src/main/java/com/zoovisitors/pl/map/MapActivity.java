@@ -16,12 +16,10 @@ import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
-import com.zoovisitors.dal.data_handler.map.Memory;
-
-import java.util.Calendar;
+import com.zoovisitors.dal.Memory;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -90,7 +88,10 @@ public class MapActivity extends ProviderBasedActivity
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
         for (int i = 0; i < miscs.length; i++) {
             final int finalI = i;
-            bl.getImage(miscs[i].getMarkerIconUrl(), new GetObjectInterface() {
+            //TODO: Added width and height, look at this
+            int width = 120;
+            int height = 120;
+            bl.getImage(miscs[i].getMarkerIconUrl(), width, height, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
@@ -110,7 +111,10 @@ public class MapActivity extends ProviderBasedActivity
     private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
         for (int i = 0; i < enclosures.length; i++) {
             final int finalI = i;
-            bl.getImage(enclosures[i].getMarkerIconUrl(), new GetObjectInterface() {
+            //TODO: Added width and height, look at this
+            int width = 120;
+            int height = 120;
+            bl.getImage(enclosures[i].getMarkerIconUrl(), width, height, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addEnclosureIcon(new BitmapDrawable(getResources(), (Bitmap) response),

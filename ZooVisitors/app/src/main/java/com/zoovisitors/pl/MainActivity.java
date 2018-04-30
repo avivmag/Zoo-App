@@ -1,6 +1,5 @@
 package com.zoovisitors.pl;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -19,17 +15,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
-import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
@@ -353,6 +346,11 @@ public class MainActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        System.exit(0);
+        super.onBackPressed();
+    }
 //    private void designButton(int id, int background, int image, int text){
 //        buttonCustomView button = (buttonCustomView) findViewById(id);
 //        button.setBackgroundColor(background);

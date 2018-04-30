@@ -1,25 +1,20 @@
 package com.zoovisitors.pl.enclosures;
 
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -28,17 +23,11 @@ import java.util.List;
 public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<EnclosureListRecyclerAdapter.ViewHolder> {
 
     //TODO: When we can upload images delete the initialization
-    private String[] enclosuresImages = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private String[] enclosuresNames; //= {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
     private Enclosure[] enclosures;
     private int[] images;
 
     public EnclosureListRecyclerAdapter(Enclosure[] enclosures){
         this.enclosures = enclosures;
-
-        enclosuresNames = new String[enclosures.length];
-        for (int i = 0; i<enclosures.length; i++)
-            enclosuresNames[i] = enclosures[i].getName();
 
         //TODO: When we can upload images insert this lines
 //        enclosuresImages = new String[enclosures.length];
@@ -53,18 +42,18 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
         public ViewHolder(View itemView){
             super(itemView);
-            List<Integer> imagesList = new ArrayList<Integer>();
-            for (String image : enclosuresImages) {
-//                AppCompatActivity tempActivity = new AppCompatActivity();
-                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
-
-            }
-
-            int[] ret = new int[imagesList.size()];
-            for(int i = 0;i < ret.length;i++)
-                ret[i] = imagesList.get(i);
-
-            images = ret;
+//            List<Integer> imagesList = new ArrayList<Integer>();
+//            for (String image : enclosuresImages) {
+////                AppCompatActivity tempActivity = new AppCompatActivity();
+//                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
+//
+//            }
+//
+//            int[] ret = new int[imagesList.size()];
+//            for(int i = 0;i < ret.length;i++)
+//                ret[i] = imagesList.get(i);
+//
+//            images = ret;
 
             enclosure_card_image = (ImageView) itemView.findViewById(R.id.schedule_card_image);
             enclosureName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
@@ -97,12 +86,25 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        viewHolder.enclosureName.setText(enclosuresNames[i]);
-        viewHolder.enclosure_card_image.setImageResource(images[i]);
+        GlobalVariables.bl.getImage(enclosures[i].getPictureUrl(), 500, 500, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                viewHolder.enclosureName.setText(enclosures[i].getName());
+//                GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(GlobalVariables.appCompatActivity, null);
+//                layoutParams.setMargins(0,0,0,5);
+//                viewHolder.enclosure_card_image.setLayoutParams(layoutParams);
+                viewHolder.enclosure_card_image.setImageBitmap((Bitmap) response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return enclosuresNames.length;
+        return enclosures.length;
     }
 }

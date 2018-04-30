@@ -1113,7 +1113,7 @@ namespace ZooTests.Unit_Tests
 
             var recurringEvents = context.GetRecurringEvents(1, 1);
             Assert.AreEqual(1, recurringEvents.Count());
-            context.DeleteRecurringEvent((int)recurringEvents.First().id);
+            context.DeleteRecurringEvent(1, (int)recurringEvents.First().id);
             Assert.AreEqual(0, context.GetRecurringEvents(1, 1).Count());
 
             Assert.AreEqual(2, context.GetAnimalResultByEnclosure(1, (int)Languages.he).Count());
@@ -1245,7 +1245,7 @@ namespace ZooTests.Unit_Tests
             Assert.AreEqual(eve.day, 1);
             Assert.AreEqual(eve.description, "משחק");
 
-            context.DeleteRecurringEvent((int)eve.id);
+            context.DeleteRecurringEvent((int)enc.id, (int)eve.id);
 
             allRecEve = context.GetRecurringEvents((int)enc.id, (int)Languages.he);
             Assert.AreEqual(1, allRecEve.Count());
@@ -1255,7 +1255,7 @@ namespace ZooTests.Unit_Tests
         [ExpectedException(typeof(ArgumentException), "Wrong input. RecurringEvent's id doesn't exists.")]
         public void DeleteRecuringEventIdDoesntExists()
         {
-            context.DeleteRecurringEvent(1000);
+            context.DeleteRecurringEvent(1, 1000);
         }
         #endregion
     }

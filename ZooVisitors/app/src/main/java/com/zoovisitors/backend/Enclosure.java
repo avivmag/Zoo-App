@@ -1,9 +1,7 @@
 package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -35,24 +33,20 @@ public class Enclosure implements java.io.Serializable{
     private String pictureUrl;
     @SerializedName("recurringEvents")
     private RecurringEvent[] recurringEvents;
+    @SerializedName("pictures")
+    private PictureEnc[] pictures;
+    @SerializedName("videos")
+    private VideoEnc[] videos;
 
-//    public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
-    public RecurringEvent[] getRecurringEvent() {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        for (int j = 0; j < recurringEvents.length; j++) {
-            // TODO: delete this, the servers stores them already as is
-            recurringEvents[j].setStartTime(
-                    (recurringEvents[j].getStartTime()// + SEVEN_DAYS - currentTime + THREE_DAYS
-                    ) % SEVEN_DAYS);
-            recurringEvents[j].setEndTime(
-                    (recurringEvents[j].getEndTime()// + SEVEN_DAYS - currentTime + THREE_DAYS
-                    ) % SEVEN_DAYS);
-//                                (recurringEvents[j].getStartTime() + SEVEN_DAYS - ((currentTime - THREE_DAYS) % SEVEN_DAYS)) % SEVEN_DAYS);
-        }
-        Arrays.sort(recurringEvents, (rec1, rec2) ->
-                (int) (rec1.getStartTime() - rec2.getStartTime()));
-        return recurringEvents;
+    public PictureEnc[] getPictures() {
+        return pictures;
     }
+
+    public VideoEnc[] getVideos() {
+        return videos;
+    }
+
+     public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
 
     // TODO: remove this when recurring events are completed on the server side
     public void setRecurringEvent(RecurringEvent[] recurringEvents) { this.recurringEvents = recurringEvents; }
@@ -103,19 +97,19 @@ public class Enclosure implements java.io.Serializable{
         return pictureUrl;
     }
 
-
-    public static Enclosure createInstance(int id, String name, String story, String youtubeVideoUrl, String markerIconUrl, int markerLatitude, int markerLongtitude, String pictureUrl) {
-        Enclosure enclosure = new Enclosure();
-        enclosure.id = id;
-        enclosure.name = name;
-        enclosure.story = story;
-        enclosure.youtubeVideoUrl = youtubeVideoUrl;
-        enclosure.markerIconUrl = markerIconUrl;
-        enclosure.markerLatitude = markerLatitude;
-        enclosure.markerLongtitude = markerLongtitude;
-        enclosure.pictureUrl = pictureUrl;
-        return enclosure;
-    }
+//
+//    public static Enclosure createInstance(int id, String name, String story, String youtubeVideoUrl, String markerIconUrl, int markerLatitude, int markerLongtitude, String pictureUrl) {
+//        Enclosure enclosure = new Enclosure();
+//        enclosure.id = id;
+//        enclosure.name = name;
+//        enclosure.story = story;
+//        enclosure.youtubeVideoUrl = youtubeVideoUrl;
+//        enclosure.markerIconUrl = markerIconUrl;
+//        enclosure.markerLatitude = markerLatitude;
+//        enclosure.markerLongtitude = markerLongtitude;
+//        enclosure.pictureUrl = pictureUrl;
+//        return enclosure;
+//    }
 
     public static class RecurringEvent implements Serializable{
         @SerializedName("id")
@@ -157,6 +151,7 @@ public class Enclosure implements java.io.Serializable{
             this.endTime = endTime;
         }
 
+        // TODO: remove this, it is only for testing.
         public static RecurringEvent createRecurringEvent(int id, String description, long startTime, long lastsTime, String title) {
             RecurringEvent recurringEvent = new RecurringEvent();
             recurringEvent.id = id;
@@ -165,6 +160,49 @@ public class Enclosure implements java.io.Serializable{
             recurringEvent.endTime = lastsTime;
             recurringEvent.title = title;
             return recurringEvent;
+        }
+    }
+
+    public class PictureEnc implements java.io.Serializable{
+        @SerializedName("id")
+        private int id;
+        @SerializedName("enclosureId")
+        private int enclosureId;
+        @SerializedName("pictureUrl")
+        private String pictureUrl;
+
+        public int getId() {
+            return id;
+        }
+
+        public int getEnclosureId() {
+            return enclosureId;
+        }
+
+        public String getPictureUrl() {
+            return pictureUrl;
+        }
+    }
+
+    public class VideoEnc implements java.io.Serializable{
+        @SerializedName("id")
+        private int id;
+        @SerializedName("enclosureId")
+        private int enclosureId;
+        @SerializedName("videoUrl")
+        private String videoUrl;
+
+
+        public int getId() {
+            return id;
+        }
+
+        public int getEnclosureId() {
+            return enclosureId;
+        }
+
+        public String getVideoUrl() {
+            return videoUrl;
         }
     }
 }

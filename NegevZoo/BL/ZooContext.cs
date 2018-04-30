@@ -538,11 +538,13 @@ namespace BL
 
             var allRecurringEvents = zooDB.GetAllRecuringEvents();
 
+            var enclosureRecurringEvents = allRecurringEvents.Where(re => re.enclosureId == recEvent.enclosureId).ToList();
+
             //TODO: Add Notification!
             if (recEvent.id == default(int)) //add recurring event
             {
                 //check that there isn't other Recurring event to this enclosure in the same time.
-                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (enclosureRecurringEvents.Any(re => ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
                 }
@@ -649,9 +651,9 @@ namespace BL
         /// Delete The recurringEvent.
         /// </summary>
         /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
+        public void DeleteRecurringEvent(int enclosureId, int recurringEventId)
         {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == recurringEventId && re.enclosureId == enclosureId);
 
             if (recEvent == null)
             {

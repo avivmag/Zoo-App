@@ -15,12 +15,12 @@ import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
-import com.zoovisitors.dal.data_handler.InternalStorage;
+import com.zoovisitors.dal.InternalStorage;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -160,8 +160,8 @@ public class BusinessLayerImpl implements BusinessLayer {
 //        });
 //    }
 
-    public void getImage(String url, GetObjectInterface goi) {
-            ni.postImage(url, new ResponseInterface<Bitmap>() {
+    public void getImage(String url, int width, int height, GetObjectInterface goi) {
+            ni.postImage(url, width, height, new ResponseInterface<Bitmap>() {
                 @Override
                 public void onSuccess(Bitmap response) {
                     goi.onSuccess(response);
@@ -326,6 +326,20 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onFailure(String response) {
                 Log.e("DeviceID","cannot send to server");
+            }
+        });
+    }
+
+    public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
+        ni.postImageWithoutPrefix(url, width, height, new ResponseInterface<Bitmap>() {
+            @Override
+            public void onSuccess(Bitmap response) {
+                goi.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
             }
         });
     }

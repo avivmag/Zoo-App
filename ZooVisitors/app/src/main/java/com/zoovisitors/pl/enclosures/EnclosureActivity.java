@@ -10,19 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.BusinessLayer;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 //import com.facebook.*;
 
@@ -38,33 +37,30 @@ public class EnclosureActivity extends BaseActivity {
     private TextView enclosureNameTextView;
     private ImageView enclosureImageView;
     private Map<String, String> closesEventMap;
-    private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
-    private String[] animalsNames;// = {"chimpanse", "gorilla", "olive_baboon"};
     private AppCompatActivity tempActivity = this;
-    private RecyclerView recycleView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private RecyclerView recycleViewAnim;
+    private RecyclerView.LayoutManager layoutManagerAnim;
+    private RecyclerView.Adapter adapterAnim;
+    private RecyclerView recycleViewAsset;
+    private RecyclerView.LayoutManager layoutManagerAsset;
+    private RecyclerView.Adapter adapterAsset;
 
     private Animal[] animals;
     private Bundle clickedEnclosure;
     private TextView enclosureStoryText;
     private Enclosure enclosure;
+    private GridLayout assetsLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
-        GlobalVariables.bl = new BusinessLayerImpl(this);
         int id = enclosure.getId();
 
         GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 animals = (Animal[]) response;
-
-                animalsNames = new String[animals.length];
-                for (int i = 0; i < animals.length; i++)
-                    animalsNames[i] = animals[i].getName();
                 draw();
             }
 
@@ -88,45 +84,15 @@ public class EnclosureActivity extends BaseActivity {
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
         enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
 
-
-//        int enclosureImageNumber = -1;
-//        String enclosureName = "";
-//        String enclosureStory = "";
         if(clickedEnclosure != null) {
 
-//            enclosureImageNumber = clickedEnclosure.getInt("image");
-//            enclosureName = clickedEnclosure.getString("name");
-//            enclosureStory = clickedEnclosure.getString("story");
         }
 
-        GlobalVariables.bl.getImage(enclosure.getPictureUrl(), new GetObjectInterface() {
+        GlobalVariables.bl.getImage(enclosure.getPictureUrl(), 500, 500, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 enclosureImageView.setImageBitmap((Bitmap) response);
                // enclosureImageView.setImageResource(R.mipmap.african_enclosure);
-
-                enclosureNameTextView.setText(enclosure.getName());
-                enclosureStoryText.setText(enclosure.getStory());
-
-                ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
-
-                //Cards and Recycle
-                recycleView = (RecyclerView) findViewById(R.id.animal_recycle);
-                layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
-                recycleView.setLayoutManager(layoutManager);
-
-                adapter = new AnimalsRecyclerAdapter(animalsImages, animals);
-                recycleView.setAdapter(adapter);
-                ImageButton imageButton = (ImageButton) findViewById(R.id.enclosure_video);
-                imageButton.setImageResource(getResources().getIdentifier("monkey_video", "mipmap", tempActivity.getPackageName()));
-                imageButton.setOnClickListener(
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=xOI0PSaIfVA")));
-                            }
-                        });
-
 
 
             }
@@ -137,8 +103,27 @@ public class EnclosureActivity extends BaseActivity {
             }
         });
 
+        enclosureNameTextView.setText(enclosure.getName());
+        enclosureStoryText.setText(enclosure.getStory());
+
+        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
+
+        //Cards and Recycle of the animals
+        recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle);
+        layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
+        recycleViewAnim.setLayoutManager(layoutManagerAnim);
+
+        adapterAnim = new AnimalsRecyclerAdapter(animals);
+        recycleViewAnim.setAdapter(adapterAnim);
 
         //ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+
+        assetsLayout = (GridLayout) findViewById(R.id.enc_asset_grid_layout);
+        int assetWidth = 250;
+        int assetHeight = 250;
+        addImagesToAssets(assetWidth, assetHeight);
+        addVideosToAssets(assetWidth, assetHeight);
+
 
     }
 
@@ -152,4 +137,56 @@ public class EnclosureActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void addImagesToAssets(int width, int height){
+        for (Enclosure.PictureEnc pe : enclosure.getPictures()){
+            GlobalVariables.bl.getImage(pe.getPictureUrl(), width, height, new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    ImageView imageView = new ImageView(GlobalVariables.appCompatActivity);
+                    imageView.setImageBitmap((Bitmap) response);
+                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+                    layoutParams.setMargins(3,0,0,3);
+                    imageView.setLayoutParams(layoutParams);
+                    assetsLayout.addView(imageView);
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e("ASSET","PICTURE FAILED");
+                }
+            });
+        }
+    }
+
+    private void addVideosToAssets(int width, int height) {
+        String youtubeVideoPrefix = "https://www.youtube.com/watch?v=";
+        for (Enclosure.VideoEnc ve : enclosure.getVideos()) {
+            ImageButton imageButton = new ImageButton(GlobalVariables.appCompatActivity);
+            String imageUrl = "https://img.youtube.com/vi/" + ve.getVideoUrl() + "/0.jpg";
+            GlobalVariables.bl.getImageFullUrl(imageUrl, 210, 210, new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    imageButton.setImageBitmap((Bitmap) response);
+                    imageButton.setOnClickListener(
+                            v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoPrefix + ve.getVideoUrl()))));
+                    FrameLayout frameLayout = new FrameLayout(GlobalVariables.appCompatActivity);
+                    ImageView youtubeImageView = new ImageView(GlobalVariables.appCompatActivity);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+                    youtubeImageView.setLayoutParams(layoutParams);
+                    youtubeImageView.setImageResource(R.mipmap.youtube_play);
+                    youtubeImageView.setX(140);
+                    youtubeImageView.setY(80);
+                    frameLayout.addView(imageButton);
+                    frameLayout.addView(youtubeImageView);
+                    assetsLayout.addView(frameLayout);
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Log.e("ASSET","VIDEO FAILED " + imageUrl);
+                }
+            });
+        }
+    }
 }

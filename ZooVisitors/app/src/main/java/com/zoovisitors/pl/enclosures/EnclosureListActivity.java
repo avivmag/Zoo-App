@@ -13,9 +13,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.BusinessLayer;
-import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +26,7 @@ public class EnclosureListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManagerAnim;
     private RecyclerView.Adapter adapterAnim;
     private SearchView searchEncAnimal;
-    private String[] enclosuresImages = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
-    private String[] enclosuresNames;// = {"monkeys_enclosure", "african_enclosure", "reptiles_enclosure", "birds_enclosure"};
     private Animal[] animals;
-    //TODO: Delete this line when we have get images
-    private String[] animalsImages = {"chimpanse", "gorilla", "olive_baboon"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +36,6 @@ public class EnclosureListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Object response) {
                 final Enclosure[] enclosures = (Enclosure[]) response;
-                enclosuresNames = new String[enclosures.length];
-                for (int i = 0; i<enclosures.length; i++)
-                    enclosuresNames[i] = enclosures[i].getName();
 
                 //Adapt the recycle to view the card
                 recycleViewEnc = (RecyclerView) findViewById(R.id.enclosure_recycle);
@@ -60,18 +51,11 @@ public class EnclosureListActivity extends AppCompatActivity {
 
                         animals = (Animal[]) response;
 
-//                        animalsNames = new String[animals.length];
-//                        for (int i = 0; i<animals.length; i++)
-//                            animalsNames[i] = animals[i].getName();
-
-
                         //Adapt the recycle to view the card
                         recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle_enc_list);
                         layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity);
                         recycleViewAnim.setLayoutManager(layoutManagerAnim);
 
-                        //adapterAnim = new AnimalsRecyclerAdapter(tempActivity, animalsImages, animals);
-                        //recycleViewAnim.setAdapter(adapterAnim);
                     }
 
                     @Override
@@ -118,7 +102,7 @@ public class EnclosureListActivity extends AppCompatActivity {
                             animalsToAdapt[i] = matchedSearchAnimals.get(i);
                         }
 
-                        adapterAnim = new AnimalsRecyclerAdapter(animalsImages, animalsToAdapt);
+                        adapterAnim = new AnimalsRecyclerAdapter(animalsToAdapt);
                         recycleViewAnim.setAdapter(adapterAnim);
 
 

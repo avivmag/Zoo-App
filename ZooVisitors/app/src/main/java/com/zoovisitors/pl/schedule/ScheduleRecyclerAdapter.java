@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.GetObjectInterface;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 /**
  * Created by Gili on 10/03/2018.
@@ -55,8 +55,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
         //viewHolder.date.setTextSize(12);
         viewHolder.date.setText(scheduleDate);
-
-        GlobalVariables.bl.getImage(schedulers[position].getImageUrl(), new GetObjectInterface() {
+        int width = 200;
+        int height = 200;
+        GlobalVariables.bl.getImage(schedulers[position].getImageUrl(), width, height, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 viewHolder.image.setImageBitmap((Bitmap) response);

@@ -1123,7 +1123,7 @@ namespace ZooTests
 
             var recurringEvents = enclosureController.GetRecurringEvents(1, 1);
             Assert.AreEqual(1, recurringEvents.Count());
-            enclosureController.DeleteRecurringEvent((int)recurringEvents.First().id);
+            enclosureController.DeleteRecurringEvent(1, (int)recurringEvents.First().id);
             Assert.AreEqual(0, enclosureController.GetRecurringEvents(1, 1).Count());
 
             Assert.AreEqual(2, animalsController.GetAnimalResultByEnclosure(1, (int)Languages.he).Count());
@@ -1242,7 +1242,7 @@ namespace ZooTests
             Assert.AreEqual(eve.day, 1);
             Assert.AreEqual(eve.description, "משחק");
 
-            enclosureController.DeleteRecurringEvent((int)eve.id);
+            enclosureController.DeleteRecurringEvent(eve.enclosureId, (int)eve.id);
 
             allRecEve = enclosureController.GetRecurringEvents((int)enc.id);
             Assert.AreEqual(1, allRecEve.Count());
@@ -1252,7 +1252,7 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void DeleteRecuringEventIdDoesntExists()
         {
-            enclosureController.DeleteRecurringEvent(1000);
+            enclosureController.DeleteRecurringEvent(1, 1000);
         }
         #endregion
     }
