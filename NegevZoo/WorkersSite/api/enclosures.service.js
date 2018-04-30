@@ -23,6 +23,7 @@
         getEnclosurePicturesById:   function (encId)                                { return httpService.httpGet({ url: [serviceBaseUrl, 'pictures', encId] }); },
         updateVideoById:            function (video)                                { return httpService.httpPost({ url: [serviceBaseUrl, 'video', 'update'], body: video }); }
     };
+
     var enclosureService = {
         enclosures,
         enclosureDetails
