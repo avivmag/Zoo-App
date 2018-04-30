@@ -142,13 +142,13 @@ namespace BL
             var enclosureResult = new EnclosureResult
             {
                 Id = enc.id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 MarkerLatitude = enc.markerLatitude,
                 MarkerLongtitude = enc.markerLongitude,
                 MarkerIconUrl = enc.markerIconUrl,
                 PictureUrl = enc.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language 
             };
 
             return enclosureResult; 
@@ -745,18 +745,18 @@ namespace BL
             var animalResult = new AnimalResult
             {
                 Id = id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 EncId = an.enclosureId,
-                Category = details.category,
-                Distribution = details.distribution,
-                Family = details.family,
-                Food = details.food,
+                Category = details?.category,
+                Distribution = details?.distribution,
+                Family = details?.family,
+                Food = details?.food,
                 Preservation = an.preservation,
-                Reproduction = details.reproduction,
-                Series = details.series,
+                Reproduction = details?.reproduction,
+                Series = details?.series,
                 PictureUrl = an.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language
             };
 
             return animalResult;
@@ -822,7 +822,6 @@ namespace BL
                 {
                     animalResult.Add(GetAnimalById((int)details.animalId, language));
                 }
-
             }
 
             return animalResult;
@@ -903,12 +902,6 @@ namespace BL
 
             if (animal.id == default(int)) //add a new aniaml
             {
-                // check that the name doesn't exists
-                //if (animals.Any(an => an.name == animal.name))
-                //{
-                //    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                //}
-
                 animals.Add(animal);
             }
             else // update existing animal.
@@ -920,12 +913,6 @@ namespace BL
                 {
                     throw new ArgumentException("Wrong input. Animal id does'nt exits");
                 }
-
-                // check that id the name changed, it doesn't exists.
-                //if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
-                //{
-                //    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
-                //}
 
                 oldAnimal.name = animal.name;
                 oldAnimal.pictureUrl = animal.pictureUrl;
@@ -970,22 +957,10 @@ namespace BL
             
             if (oldDetails == null) //add a new aniamlDetails
             {
-                //TODO: check if this assertion is a must.
-                // check that the name doesn't exists
-                if (allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
-
                 allAnimalDetails.Add(animalDetails);
             }
             else // update existing animal.
             {
-                // check that id the name changed, it doesn't exists.
-                if (oldDetails.name != animalDetails.name && allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
-                }
 
                 oldDetails.name = animalDetails.name;
                 oldDetails.story = animalDetails.story;
@@ -2263,6 +2238,7 @@ namespace BL
         }
 
         #endregion
+
 
         #region private functions
 
