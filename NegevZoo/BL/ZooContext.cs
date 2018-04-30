@@ -894,7 +894,7 @@ namespace BL
             }
 
             //2. enclosure exists
-            if (GetEnclosureById((int)animal.enclosureId, (int)GetHebewLanguage() ) == null)
+            if (!GetAllEnclosures().ToList().Any(e => e.id == animal.enclosureId))
             {
                 throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
             }
