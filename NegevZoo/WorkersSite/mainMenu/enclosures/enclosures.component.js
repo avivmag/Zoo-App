@@ -397,11 +397,12 @@
                 $scope.mapStyle     = { };
 
                 $scope.img.onload   = function () {
-                    $scope.ratio            = (Math.max(picElement.width, picElement.height) / 640.0);
+                    $scope.ratio                = (Math.max($scope.img.width, $scope.img.height) / 640.0);
 
-                    $scope.mapStyle.width   = ($scope.img.width / $scope.ratio) + 'px';
-                    $scope.mapStyle.height  = ($scope.img.height / $scope.ratio) + 'px';
-                    $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+                    $scope.mapStyle.width       = ($scope.img.width / $scope.ratio) + 'px';
+                    $scope.mapStyle.height      = ($scope.img.height / $scope.ratio) + 'px';
+                    $scope.mapStyle.cursor      = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+                    $scope.mapStyle.overflow    = 'hidden';
 
                     $scope.isLoading = false;
 
