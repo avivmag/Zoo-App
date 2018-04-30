@@ -23,27 +23,23 @@ import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
+import com.zoovisitors.pl.customViews.ImageViewEncAsset;
+import com.zoovisitors.pl.map.MapActivity;
 //import com.facebook.*;
 
 
 /**
  * Created by Gili on 28/12/2017.
  */
-import java.util.HashMap;
-import java.util.Map;
 
 public class EnclosureActivity extends BaseActivity {
 
     private TextView enclosureNameTextView;
     private ImageView enclosureImageView;
-    private Map<String, String> closesEventMap;
     private AppCompatActivity tempActivity = this;
     private RecyclerView recycleViewAnim;
     private RecyclerView.LayoutManager layoutManagerAnim;
     private RecyclerView.Adapter adapterAnim;
-    private RecyclerView recycleViewAsset;
-    private RecyclerView.LayoutManager layoutManagerAsset;
-    private RecyclerView.Adapter adapterAsset;
 
     private Animal[] animals;
     private Bundle clickedEnclosure;
@@ -74,12 +70,21 @@ public class EnclosureActivity extends BaseActivity {
 
     private void draw(){
         setContentView(R.layout.activity_enclosure);
-        closesEventMap = new HashMap<String, String>();
-        closesEventMap.put("african_enclosure_closesEvent", "Closes event: 10:00-11:00 Feeding");
-        closesEventMap.put("monkeys_enclosure_closesEvent", "Closes event: 14:00-15:00 Dancing");
-        closesEventMap.put("birds_enclosure_closesEvent", "Closes event: 12:00-12:30 Swimming");
-        closesEventMap.put("reptiles_enclosure_closesEvent", "Closes event: 08:00-17:00 Doing nothing");
+        ((ImageView) findViewById(R.id.mapIconImage)).setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                    startActivity(intent);
 
+                }
+        );
+
+        ((TextView) findViewById(R.id.showOnMap)).setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                    startActivity(intent);
+
+                }
+        );
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
         enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
@@ -106,7 +111,7 @@ public class EnclosureActivity extends BaseActivity {
         enclosureNameTextView.setText(enclosure.getName());
         enclosureStoryText.setText(enclosure.getStory());
 
-        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
+//        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
 
         //Cards and Recycle of the animals
         recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle);
@@ -143,11 +148,12 @@ public class EnclosureActivity extends BaseActivity {
             GlobalVariables.bl.getImage(pe.getPictureUrl(), width, height, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
-                    ImageView imageView = new ImageView(GlobalVariables.appCompatActivity);
+                    ImageViewEncAsset imageView = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
                     imageView.setImageBitmap((Bitmap) response);
                     GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                    layoutParams.setMargins(3,0,0,3);
+                    layoutParams.setMargins(4,0,0,4);
                     imageView.setLayoutParams(layoutParams);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     assetsLayout.addView(imageView);
                 }
 
@@ -162,7 +168,7 @@ public class EnclosureActivity extends BaseActivity {
     private void addVideosToAssets(int width, int height) {
         String youtubeVideoPrefix = "https://www.youtube.com/watch?v=";
         for (Enclosure.VideoEnc ve : enclosure.getVideos()) {
-            ImageButton imageButton = new ImageButton(GlobalVariables.appCompatActivity);
+            ImageViewEncAsset imageButton = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
             String imageUrl = "https://img.youtube.com/vi/" + ve.getVideoUrl() + "/0.jpg";
             GlobalVariables.bl.getImageFullUrl(imageUrl, 210, 210, new GetObjectInterface() {
                 @Override
@@ -176,7 +182,7 @@ public class EnclosureActivity extends BaseActivity {
                     youtubeImageView.setLayoutParams(layoutParams);
                     youtubeImageView.setImageResource(R.mipmap.youtube_play);
                     youtubeImageView.setX(140);
-                    youtubeImageView.setY(80);
+                    youtubeImageView.setY(110);
                     frameLayout.addView(imageButton);
                     frameLayout.addView(youtubeImageView);
                     assetsLayout.addView(frameLayout);

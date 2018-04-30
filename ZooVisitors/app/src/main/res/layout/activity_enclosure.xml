@@ -30,7 +30,7 @@
                     android:id="@+id/enclosureImage"
                     android:layout_width="match_parent"
                     android:layout_height="123dp"
-                    android:scaleType="fitCenter"
+                    android:scaleType="fitXY"
                     app:srcCompat="@color/cardview_light_background" />
 
                 <TextView
@@ -85,9 +85,21 @@
                     android:id="@+id/enc_story_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:textSize="20sp" />
+
+                <com.zoovisitors.pl.customViews.TextViewOutline
+                    android:id="@+id/enc_who_lives_here"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whoLives"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/animal_recycle"
@@ -97,6 +109,15 @@
                     android:orientation="vertical">
 
                 </android.support.v7.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/enc_assets_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/assets"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <GridLayout
                     android:id="@+id/enc_asset_grid_layout"
