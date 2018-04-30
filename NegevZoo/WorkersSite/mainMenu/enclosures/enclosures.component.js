@@ -399,9 +399,12 @@
                 $scope.img.onload   = function () {
                     $scope.ratio                = (Math.max($scope.img.width, $scope.img.height) / 480.0);
 
+                    var urlExtension = selectedEnclosure.markerIconUrl.substring(selectedEnclosure.markerIconUrl.indexOf('.'));
+                    var webServerFilePath = selectedEnclosure.markerIconUrl.substring(0, selectedEnclosure.markerIconUrl.indexOf('.')) + "_webServer" + urlExtension;
+
                     $scope.mapStyle.width       = ($scope.img.width / $scope.ratio) + 'px';
                     $scope.mapStyle.height      = ($scope.img.height / $scope.ratio) + 'px';
-                    $scope.mapStyle.cursor      = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+                    $scope.mapStyle.cursor      = 'url(' + app.baseURL + webServerFilePath + '), auto';
                     $scope.mapStyle.overflow    = 'hidden';
 
                     $scope.isLoading = false;

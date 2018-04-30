@@ -2412,13 +2412,22 @@ namespace BL
             SetOrientationToDefault(image);
 
             // Resize the image.
-            var resizedImage = ResizeImage(image, 48, 48);
+            var resizedImage = ResizeImage(image, 84, 84);
+
+            var resizedImageWebServer = ResizeImage(image, 24, 24);
 
             // Dispose the original image file desc.
             image.Dispose();
 
             // Save the new resized image.
             resizedImage.Save(filePath);
+
+            var filePathExtension = filePath.Substring(filePath.IndexOf('.'));
+            var webServerFilePath = filePath.Substring(0, filePath.IndexOf('.')) + "_webServer" + filePathExtension;
+
+            resizedImageWebServer.Save(webServerFilePath);
+
+            resizedImageWebServer.Dispose();
 
             // Dispose the resized image file desc.
             resizedImage.Dispose();
