@@ -116,8 +116,8 @@
                 })
                 .then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = clickPosition.width * clickPosition.ratio;
-                        selectedEnclosure.markerLatitude    = clickPosition.height * clickPosition.ratio;
+                        selectedEnclosure.markerLongitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 24)
+                        selectedEnclosure.markerLatitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 24);
                     }
                 });
             };
@@ -341,7 +341,7 @@
         }
 
         function uploadProfilePicture (picture, enclosure) {
-            if (!angular.isDefined(picture)) {
+            if (!angular.isDefined(picture) || picture === null) {
                 return;
             }
 
@@ -363,7 +363,7 @@
         };
 
         function uploadIcon (icon, enclosure) {
-            if (!angular.isDefined(icon)) {
+            if (!angular.isDefined(icon) || icon === null) {
                 return;
             }
 
@@ -397,7 +397,7 @@
                 $scope.mapStyle     = { };
 
                 $scope.img.onload   = function () {
-                    $scope.ratio                = (Math.max($scope.img.width, $scope.img.height) / 640.0);
+                    $scope.ratio                = (Math.max($scope.img.width, $scope.img.height) / 480.0);
 
                     $scope.mapStyle.width       = ($scope.img.width / $scope.ratio) + 'px';
                     $scope.mapStyle.height      = ($scope.img.height / $scope.ratio) + 'px';
