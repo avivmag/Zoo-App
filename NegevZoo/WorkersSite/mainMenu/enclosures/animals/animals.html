@@ -17,8 +17,8 @@
     <md-card-content layout="row" style="margin-right: 4%">
             <md-card-content layout="column" flex>
                 <md-input-container layout="row">
-                    <label ng-show="!isEdit">הכנס שם מזהה למתחם</label>
-                    <label ng-show="isEdit">שם המתחם</label>
+                    <label ng-show="!isEdit">הכנס שם מזהה לחיה</label>
+                    <label ng-show="isEdit">שם החיה</label>
                     <input style="width: 200px" ng-model="animal.name" required type="text">
                 </md-input-container>
 
@@ -28,6 +28,15 @@
                         <input type="file" file-model="profilePic" accept="image/*"/>
                     </div>
                 </ng-card-content>
+
+                <md-input-container>
+                        <label>בחר רמת שימור</label>
+                        <md-select style="width: 250px" ng-model="animal.preservation">
+                            <md-option ng-repeat="p in preservation" ng-value="p.value">
+                                {{ p.format }}
+                            </md-option>
+                        </md-select>
+                </md-input-container>
 
                 <div layout="column" layout-align="end end">
                     <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimal(animal)">שמור פרטי חיה</md-button>
@@ -51,39 +60,39 @@
                         <input style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
                     </md-input-container>
                     
-                    <md-input-container>
+                    <!-- <md-input-container>
                         <label>הכנס סיפור לחיה</label>
                         <textarea rows="3" ng-model="animalDetails[selectedTab].story" required type="text"></textarea>
-                    </md-input-container>
+                    </md-input-container> -->
 
                     <md-input-container>
-                        <label>בחר קטגוריה לחיה</label>
-                        <input ng-model="animalDetails[selectedTab].category" required type="text">
+                        <label>בחר מחלקה</label>
+                        <input ng-model="animalDetails[selectedTab].category" type="text">
                     </md-input-container>
                     
                     <md-input-container>
-                        <label>בחר סדרה לחיה</label>
-                        <input ng-model="animalDetails[selectedTab].series" required type="text">
+                        <label>בחר סדרה</label>
+                        <input ng-model="animalDetails[selectedTab].series" type="text">
                     </md-input-container>
 
                     <md-input-container>
-                        <label>בחר משפחה לחיה</label>
-                        <input rows="3" ng-model="animalDetails[selectedTab].family" required type="text">
+                        <label>בחר משפחה</label>
+                        <input rows="3" ng-model="animalDetails[selectedTab].family" type="text">
                     </md-input-container>
 
                     <md-input-container>
-                        <label>הכנס תפוצה לחיה</label>
-                        <textarea rows="3" ng-model="animalDetails[selectedTab].distribution" required type="text"></textarea>
+                        <label>הכנס תפוצה</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].distribution" type="text"></textarea>
                     </md-input-container>
 
                     <md-input-container>
-                        <label>הכנס הרגלי רבייה לחיה</label>
-                        <textarea rows="3" ng-model="animalDetails[selectedTab].reproduction" required type="text"></textarea>
+                        <label>הכנס מזון</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].food" type="text"></textarea>
                     </md-input-container>
 
                     <md-input-container>
-                        <label>הכנס הרגלי אכילה לחיה</label>
-                        <textarea rows="3" ng-model="animalDetails[selectedTab].food" required type="text"></textarea>
+                        <label>הכנס רבייה</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].reproduction" type="text"></textarea>
                     </md-input-container>
 
                     <md-input-container>
