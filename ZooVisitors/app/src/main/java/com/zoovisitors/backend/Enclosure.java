@@ -22,7 +22,6 @@ public class Enclosure implements java.io.Serializable{
     private String name;
     @SerializedName("story")
     private String story;
-    private String youtubeVideoUrl;
     @SerializedName("markerIconUrl")
     private String markerIconUrl;
     @SerializedName("markerLatitude")
@@ -81,34 +80,12 @@ public class Enclosure implements java.io.Serializable{
         this.name = name;
     }
 
-    public String getYoutubeVideoUrl() {
-        return youtubeVideoUrl;
-    }
-
-    public void setYoutubeVideoUrl(String youtubeVideoUrl) {
-        this.youtubeVideoUrl = youtubeVideoUrl;
-    }
-
     public String getStory() {
         return story;
     }
 
     public String getPictureUrl() {
         return pictureUrl;
-    }
-
-
-    public static Enclosure createInstance(int id, String name, String story, String youtubeVideoUrl, String markerIconUrl, int markerLatitude, int markerLongtitude, String pictureUrl) {
-        Enclosure enclosure = new Enclosure();
-        enclosure.id = id;
-        enclosure.name = name;
-        enclosure.story = story;
-        enclosure.youtubeVideoUrl = youtubeVideoUrl;
-        enclosure.markerIconUrl = markerIconUrl;
-        enclosure.markerLatitude = markerLatitude;
-        enclosure.markerLongtitude = markerLongtitude;
-        enclosure.pictureUrl = pictureUrl;
-        return enclosure;
     }
 
     public static class RecurringEvent implements Serializable{

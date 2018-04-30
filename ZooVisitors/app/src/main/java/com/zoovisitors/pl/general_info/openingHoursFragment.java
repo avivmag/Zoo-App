@@ -29,7 +29,7 @@ public class openingHoursFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup                  container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.info_table_layout, container, false);
         GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
             @Override
@@ -39,38 +39,47 @@ public class openingHoursFragment extends Fragment {
                 int textSize = 14;
                 ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.aligator);
 
-                //Build the table for the opening hours
-                for (OpeningHours oh : openingHours){
-                    TableRow tbr = new TableRow(getContext());
-                    TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,TableLayout.LayoutParams.MATCH_PARENT);
-                    lp.setMargins(0,0,0,40);
-                    tbr.setLayoutParams(lp);
-                    TextView dayColumn = new TextView(getContext()); //column of the day
-                    TextView startTimeColumn = new TextView(getContext()); //column of the start time
-                    TextView endTimeColumn = new TextView(getContext()); //column of the end time
-                    dayColumn.setText(oh.getDay());
-                    startTimeColumn.setText("" + oh.getStartTime());//fixTime(oh.getStartHour()) + ":" + fixTime(oh.getStartMin()));
-                    endTimeColumn.setText("" + oh.getEndTime());
+                TextView tv1 = (TextView) rootView.findViewById(
+                        R.id.firstColInfoTbl);
 
-                    TableRow.LayoutParams clp = new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
-                    lp.setMargins(0,0,0,10);
-                    dayColumn.setLayoutParams(clp);
-                    startTimeColumn.setLayoutParams(clp);
-                    endTimeColumn.setLayoutParams(clp);
-                    dayColumn.setWidth(150);
-                    startTimeColumn.setWidth(2);
-                    endTimeColumn.setWidth(70);
-                    startTimeColumn.setGravity(Gravity.CENTER);
-                    endTimeColumn.setGravity(Gravity.LEFT);
-                    dayColumn.setGravity(Gravity.CENTER);
-                    dayColumn.setTextSize(textSize);
-                    startTimeColumn.setTextSize(textSize);
-                    endTimeColumn.setTextSize(textSize);
-                    tbr.addView(dayColumn);
-                    tbr.addView(startTimeColumn);
-                    tbr.addView(endTimeColumn);
-                    openingHoursTable.addView(tbr);
-                }
+                TextView tv2 = (TextView) rootView.findViewById(
+                        R.id.secColInfoTbl);
+
+                tv1.setText("Day");
+                tv2.setText("Hours");
+
+                //Build the table for the opening hours
+//                for (OpeningHours oh : openingHours){
+//                    TableRow tbr = new TableRow(getContext());
+//                    TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
+//                    //lp.setMargins(0,0,0,40);
+//                    //tbr.setLayoutParams(lp);
+//                    TextView dayColumn = new TextView(getContext()); //column of the day
+//                    TextView startTimeColumn = new TextView(getContext()); //column of the start time
+//                    TextView endTimeColumn = new TextView(getContext()); //column of the end time
+//                    dayColumn.setText(oh.getDay());
+//                    startTimeColumn.setText(oh.getStartTime());
+//                    endTimeColumn.setText(oh.getEndTime());
+//
+//                    //TableRow.LayoutParams clp = new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
+//                    lp.setMargins(0,0,0,10);
+//                    //dayColumn.setLayoutParams(clp);
+//                    //startTimeColumn.setLayoutParams(clp);
+//                    //endTimeColumn.setLayoutParams(clp);
+//                    //dayColumn.setWidth(150);
+//                    //startTimeColumn.setWidth(2);
+//                    //endTimeColumn.setWidth(70);
+//                    //startTimeColumn.setGravity(Gravity.CENTER);
+//                    //endTimeColumn.setGravity(Gravity.LEFT);
+//                    //dayColumn.setGravity(Gravity.CENTER);
+//                    dayColumn.setTextSize(textSize);
+//                    startTimeColumn.setTextSize(textSize);
+//                    endTimeColumn.setTextSize(textSize);
+//                    tbr.addView(dayColumn);
+//                    tbr.addView(startTimeColumn);
+//                    tbr.addView(endTimeColumn);
+//                    openingHoursTable.addView(tbr);
+//                }
             }
 
             @Override
