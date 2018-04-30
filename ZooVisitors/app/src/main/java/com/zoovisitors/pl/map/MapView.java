@@ -346,8 +346,8 @@ public class MapView extends RelativeLayout {
             view.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("AVIV", "left " + left);
-                    Log.e("AVIV", "top " + top);
+//                    Log.e("AVIV", "left " + left);
+//                    Log.e("AVIV", "top " + top);
                     recurringEvent = new RecurringEventScheduler(
                             left,
                             (int) (top - height),

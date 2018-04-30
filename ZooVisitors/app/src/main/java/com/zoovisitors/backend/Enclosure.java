@@ -128,6 +128,7 @@ public class Enclosure implements java.io.Serializable{
             this.endTime = endTime;
         }
 
+        // TODO: remove this, it is only for testing.
         public static RecurringEvent createRecurringEvent(int id, String description, long startTime, long lastsTime, String title) {
             RecurringEvent recurringEvent = new RecurringEvent();
             recurringEvent.id = id;

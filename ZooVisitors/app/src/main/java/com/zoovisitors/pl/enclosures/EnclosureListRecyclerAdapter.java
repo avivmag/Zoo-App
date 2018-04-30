@@ -8,18 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.GetObjectInterface;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 /**
  * Created by Gili on 28/12/2017.

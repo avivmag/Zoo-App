@@ -135,19 +135,20 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == hebrewLang);
             }
 
             var enclosureResult = new EnclosureResult
             {
                 Id = enc.id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 MarkerLatitude = enc.markerLatitude,
                 MarkerLongtitude = enc.markerLongitude,
                 MarkerIconUrl = enc.markerIconUrl,
                 PictureUrl = enc.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language 
             };
 
             return enclosureResult; 
@@ -537,11 +538,13 @@ namespace BL
 
             var allRecurringEvents = zooDB.GetAllRecuringEvents();
 
+            var enclosureRecurringEvents = allRecurringEvents.Where(re => re.enclosureId == recEvent.enclosureId).ToList();
+
             //TODO: Add Notification!
             if (recEvent.id == default(int)) //add recurring event
             {
                 //check that there isn't other Recurring event to this enclosure in the same time.
-                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (enclosureRecurringEvents.Any(re => ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
                 }
@@ -648,9 +651,9 @@ namespace BL
         /// Delete The recurringEvent.
         /// </summary>
         /// <param name="id">The RecurringEvent's id to delete.</param>
-        public void DeleteRecurringEvent(int id)
+        public void DeleteRecurringEvent(int enclosureId, int recurringEventId)
         {
-            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == id);
+            RecurringEvent recEvent = zooDB.GetAllRecuringEvents().SingleOrDefault(re => re.id == recurringEventId && re.enclosureId == enclosureId);
 
             if (recEvent == null)
             {
@@ -735,24 +738,25 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == hebrewLang);
             }
 
             var animalResult = new AnimalResult
             {
                 Id = id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 EncId = an.enclosureId,
-                Category = details.category,
-                Distribution = details.distribution,
-                Family = details.family,
-                Food = details.food,
+                Category = details?.category,
+                Distribution = details?.distribution,
+                Family = details?.family,
+                Food = details?.food,
                 Preservation = an.preservation,
-                Reproduction = details.reproduction,
-                Series = details.series,
+                Reproduction = details?.reproduction,
+                Series = details?.series,
                 PictureUrl = an.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language
             };
 
             return animalResult;
@@ -818,7 +822,6 @@ namespace BL
                 {
                     animalResult.Add(GetAnimalById((int)details.animalId, language));
                 }
-
             }
 
             return animalResult;
@@ -890,7 +893,7 @@ namespace BL
             }
 
             //2. enclosure exists
-            if (GetEnclosureById((int)animal.enclosureId, (int)GetHebewLanguage() ) == null)
+            if (!GetAllEnclosures().ToList().Any(e => e.id == animal.enclosureId))
             {
                 throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
             }
@@ -899,12 +902,6 @@ namespace BL
 
             if (animal.id == default(int)) //add a new aniaml
             {
-                // check that the name doesn't exists
-                if (animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
-
                 animals.Add(animal);
             }
             else // update existing animal.
@@ -915,12 +912,6 @@ namespace BL
                 if (oldAnimal == null)
                 {
                     throw new ArgumentException("Wrong input. Animal id does'nt exits");
-                }
-
-                // check that id the name changed, it doesn't exists.
-                if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
                 }
 
                 oldAnimal.name = animal.name;
@@ -966,22 +957,10 @@ namespace BL
             
             if (oldDetails == null) //add a new aniamlDetails
             {
-                //TODO: check if this assertion is a must.
-                // check that the name doesn't exists
-                if (allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
-
                 allAnimalDetails.Add(animalDetails);
             }
             else // update existing animal.
             {
-                // check that id the name changed, it doesn't exists.
-                if (oldDetails.name != animalDetails.name && allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
-                }
 
                 oldDetails.name = animalDetails.name;
                 oldDetails.story = animalDetails.story;
@@ -2260,6 +2239,7 @@ namespace BL
 
         #endregion
 
+
         #region private functions
 
         private bool ValidLanguage(int language)
@@ -2432,13 +2412,22 @@ namespace BL
             SetOrientationToDefault(image);
 
             // Resize the image.
-            var resizedImage = ResizeImage(image, 48, 48);
+            var resizedImage = ResizeImage(image, 84, 84);
+
+            var resizedImageWebServer = ResizeImage(image, 24, 24);
 
             // Dispose the original image file desc.
             image.Dispose();
 
             // Save the new resized image.
             resizedImage.Save(filePath);
+
+            var filePathExtension = filePath.Substring(filePath.IndexOf('.'));
+            var webServerFilePath = filePath.Substring(0, filePath.IndexOf('.')) + "_webServer" + filePathExtension;
+
+            resizedImageWebServer.Save(webServerFilePath);
+
+            resizedImageWebServer.Dispose();
 
             // Dispose the resized image file desc.
             resizedImage.Dispose();

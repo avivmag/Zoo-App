@@ -1,5 +1,7 @@
 package com.zoovisitors.bl;
 
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
+
 /**
  * Created by Gili on 13/01/2018.
  */
