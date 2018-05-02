@@ -30,6 +30,8 @@ namespace DAL
 
         public abstract DbSet<GeneralInfo> GetGeneralInfo();
 
+        public abstract DbSet<MiscMarker> GetAllMiscMarkers();
+
         public abstract DbSet<OpeningHour> GetAllOpeningHours();
 
         public abstract DbSet<ContactInfo> GetAllContactInfos();

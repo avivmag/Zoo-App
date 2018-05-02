@@ -41,6 +41,7 @@ namespace DAL
             Devices             = new TestDbSet<Device>();
             MapInfo             = new TestDbSet<MapInfo>();
             Routes              = new TestDbSet<Route>();
+            MiscMarkers         = new TestDbSet<MiscMarker>();
 
             Languages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
@@ -60,6 +61,7 @@ namespace DAL
             Devices.AddRange(InitializeDevices());
             MapInfo.AddRange(InitalizeMapInfo());
             Routes.AddRange(InitalizeRoutes());
+            MiscMarkers.AddRange(InitializeMiscMarkers());
         }
 
         private IZooDB CreateInstance()
@@ -93,6 +95,7 @@ namespace DAL
         protected DbSet<Price> Prices { get; set; }
         protected DbSet<GeneralInfo> GeneralInfo { get; set; }
         protected DbSet<OpeningHour> OpeningHours { get; set; }
+        protected DbSet<MiscMarker> MiscMarkers { get; set; }
         protected DbSet<ContactInfo> ContactInfos { get; set; }
         protected DbSet<SpecialEvent> SpecialEvents { get; set; }
         protected DbSet<User> Users { get; set; }
@@ -1202,6 +1205,28 @@ namespace DAL
 
             };
         }
+
+        private IEnumerable<MiscMarker> InitializeMiscMarkers()
+        {
+            return new List<MiscMarker>
+            {
+                new MiscMarker
+                {
+                    id          = 0,
+                    longitude   = 100,
+                    latitude    = 200,
+                    iconUrl     = "someUrl"
+                },
+                new MiscMarker
+                {
+                    id          = 1,
+                    longitude   = 300,
+                    latitude    = 500,
+                    iconUrl     = "someUrl2"
+                }
+            };
+        }
+
         #endregion
 
         #region Getters
@@ -1209,6 +1234,11 @@ namespace DAL
         public override DbSet<Animal> GetAllAnimals()
         {
             return Animals;
+        }
+
+        public override DbSet<MiscMarker> GetAllMiscMarkers()
+        {
+            return MiscMarkers;
         }
 
         public override DbSet<Enclosure> GetAllEnclosures()
