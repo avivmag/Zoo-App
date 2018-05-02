@@ -62,4 +62,7 @@
 
     <string name="whoLives">מי גר כאן:</string>
     <string name="assets">תמונות וסרטונים:</string>
+
+    <string name="days">ימים</string>
+    <string name="hours">שעות</string>
 </resources>

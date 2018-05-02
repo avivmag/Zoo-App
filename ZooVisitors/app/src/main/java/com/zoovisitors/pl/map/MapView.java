@@ -2,6 +2,7 @@ package com.zoovisitors.pl.map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -21,6 +22,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.enclosures.EnclosureActivity;
 
 import java.util.ArrayList;
@@ -270,6 +272,21 @@ public class MapView extends RelativeLayout {
                 int resourceId = getResources().getIdentifier(ZOO_MAP, "mipmap", getContext().getPackageName());
                 view.setImageResource(resourceId);
                 this.view = view;
+
+
+    //TODO: get image from server
+//                GlobalVariables.bl.getImage("assets/map/zoo_map.jpg", 5000, 5000, new GetObjectInterface() {
+//                    @Override
+//                    public void onSuccess(Object response) {
+//                        view.setImageBitmap((Bitmap) response);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Object response) {
+//
+//                    }
+//                });
+
             }
         };
     }

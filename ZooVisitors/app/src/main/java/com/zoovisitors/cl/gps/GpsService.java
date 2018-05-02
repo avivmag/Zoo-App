@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -28,14 +30,23 @@ public abstract class GpsService extends Service {
 
     public void startProviderActivity() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        GetObjectInterface goi = new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                Log.e("Notification Success", (String) response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Log.e("Notification Failed", (String) response);
+            }
+        };
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-//                if (isInPark()) {
-                    // TODO: send in park
-//                } else {
-                    // TODO: send not in park
-//                }
+                GlobalVariables.bl.updateIfInPark(isInPark(location), goi);
             }
 
             @Override

@@ -19,6 +19,7 @@ public interface BusinessLayer {
     void getOpeningHours(final GetObjectInterface goi);
     void getAboutUs(final GetObjectInterface goi);
     void getContactInfo(final GetObjectInterface goi);
+    void updateIfInPark(boolean isInPark, final GetObjectInterface goi);
     void getPersonalStories(final GetObjectInterface goi);
 
     //notification

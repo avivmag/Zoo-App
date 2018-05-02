@@ -27,9 +27,11 @@ import java.util.List;
 public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecyclerAdapter.ViewHolder> {
 
     private Animal[] animals;
+    private int layout;
 
-    public AnimalsRecyclerAdapter(Animal[] animals){
+    public AnimalsRecyclerAdapter(Animal[] animals, int layout){
         this.animals = animals;
+        this.layout = layout;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -43,9 +45,15 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
                 //imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
 
             int[] ret = new int[imagesList.size()];
+            if (layout == R.layout.enclosure_card) {
+                animal_card_image = (ImageView) itemView.findViewById(R.id.enc_card_image);
+                animalName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
+            }
+            else{
+                animal_card_image = (ImageView) itemView.findViewById(R.id.animal_card_image);
+                animalName = (TextView) itemView.findViewById(R.id.animal_card_text);
 
-            animal_card_image = (ImageView) itemView.findViewById(R.id.animal_card_image);
-            animalName = (TextView) itemView.findViewById(R.id.animal_card_text);
+            }
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +75,7 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.animal_card, viewGroup, false);
+                .inflate(layout, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }

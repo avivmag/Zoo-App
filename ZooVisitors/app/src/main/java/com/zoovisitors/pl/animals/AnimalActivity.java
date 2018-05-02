@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.widget.ImageView;
 
 import com.zoovisitors.GlobalVariables;
@@ -19,6 +20,14 @@ public class AnimalActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        ActionBar ab = getSupportActionBar();
+//
+//        ab.setDisplayUseLogoEnabled(true);
+//        ab.setDisplayShowHomeEnabled(true);
+//        ab.setDisplayShowTitleEnabled(false);
+//        ab.setIcon(R.mipmap.logo);
+
+
         super.onCreate(savedInstanceState);
         clickedAnimal = getIntent().getExtras();
         setContentView(R.layout.activity_animal);

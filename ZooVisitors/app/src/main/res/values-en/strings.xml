@@ -67,4 +67,7 @@
 
     <string name="whoLives">Who lives here:</string>
     <string name="assets">Pictures and Videos:</string>
+
+    <string name="days">Days</string>
+    <string name="hours">Hours</string>
 </resources>

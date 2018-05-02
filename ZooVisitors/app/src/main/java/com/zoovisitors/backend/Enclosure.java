@@ -96,6 +96,12 @@ public class Enclosure implements java.io.Serializable{
         @SerializedName("title")
         private String title;
 
+        public RecurringEvent(String title) {
+            this.title = title;
+        }
+
+        public RecurringEvent() {}
+
         public int getId() {
             return id;
         }

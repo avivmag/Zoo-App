@@ -45,9 +45,37 @@ public class openingHoursFragment extends Fragment {
                 TextView tv2 = (TextView) rootView.findViewById(
                         R.id.secColInfoTbl);
 
-                tv1.setText("Day");
-                tv2.setText("Hours");
+                if (GlobalVariables.language == 1) {
+                    tv1.setText(getResources().getString(R.string.hours));
+                    tv2.setText(getResources().getString(R.string.days));
+                }
+                else
+                {
+                    tv1.setText(getResources().getString(R.string.days));
+                    tv2.setText(getResources().getString(R.string.hours));
+                }
 
+                //Build the table for the opening hours
+                for (OpeningHours oh : openingHours) {
+                    TableRow tbr = new TableRow(getContext());
+                    TextView dayColumn = new TextView(getContext()); //column of the day
+                    TextView hoursTimeColumn = new TextView(getContext()); //column of the start time
+                    dayColumn.setText(oh.getDay());
+                    hoursTimeColumn.setText(oh.getStartTime() + " - " + oh.getEndTime());
+
+                    if (GlobalVariables.language == 1) {
+                        tbr.addView(hoursTimeColumn);
+                        tbr.addView(dayColumn);
+                    }
+                    else
+                    {
+                        tbr.addView(dayColumn);
+                        tbr.addView(hoursTimeColumn);
+                    }
+
+                    openingHoursTable.addView(tbr);
+
+                }
                 //Build the table for the opening hours
 //                for (OpeningHours oh : openingHours){
 //                    TableRow tbr = new TableRow(getContext());
@@ -90,9 +118,5 @@ public class openingHoursFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    private String fixTime(int time){
-        return time < 10 ? "0" + time : "" + time;
     }
 }

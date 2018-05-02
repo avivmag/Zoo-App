@@ -55,7 +55,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 //
 //            images = ret;
 
-            enclosure_card_image = (ImageView) itemView.findViewById(R.id.schedule_card_image);
+            enclosure_card_image = (ImageView) itemView.findViewById(R.id.enc_card_image);
             enclosureName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
 
 
@@ -98,7 +98,7 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
             @Override
             public void onFailure(Object response) {
-
+                viewHolder.enclosure_card_image.setImageResource(R.mipmap.no_image_available);
             }
         });
     }

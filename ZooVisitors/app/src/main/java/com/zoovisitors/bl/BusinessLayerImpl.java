@@ -347,4 +347,18 @@ public class BusinessLayerImpl implements BusinessLayer {
             }
         });
     }
+
+    public void updateIfInPark(boolean isInPark, final GetObjectInterface goi){
+        ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                goi.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
+            }
+        });
+    }
 }
