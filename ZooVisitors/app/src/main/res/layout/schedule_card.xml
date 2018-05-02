@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/schedule_card_image"
+            android:id="@+id/enc_card_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="210dp"

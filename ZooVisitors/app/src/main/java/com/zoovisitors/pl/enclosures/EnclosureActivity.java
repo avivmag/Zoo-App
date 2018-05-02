@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,10 +21,16 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.bl.RecurringEventsHandler;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
+
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
 //import com.facebook.*;
 
 
@@ -36,7 +42,8 @@ public class EnclosureActivity extends BaseActivity {
 
     private TextView enclosureNameTextView;
     private ImageView enclosureImageView;
-    private AppCompatActivity tempActivity = this;
+    private TextView closestEvent;
+    private TextView closestEventTimer;
     private RecyclerView recycleViewAnim;
     private RecyclerView.LayoutManager layoutManagerAnim;
     private RecyclerView.Adapter adapterAnim;
@@ -46,12 +53,22 @@ public class EnclosureActivity extends BaseActivity {
     private TextView enclosureStoryText;
     private Enclosure enclosure;
     private GridLayout assetsLayout;
+    private RecurringEventsHandler recurringEventsHandler;
+    private boolean blinking;
 
     protected void onCreate(Bundle savedInstanceState) {
+        ActionBar ab = getSupportActionBar();
+
+        ab.setDisplayUseLogoEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setIcon(R.mipmap.logo);
+
         super.onCreate(savedInstanceState);
         clickedEnclosure = getIntent().getExtras();
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
+        recurringEventsHandler = new RecurringEventsHandler();
 
         GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -88,6 +105,8 @@ public class EnclosureActivity extends BaseActivity {
         enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
         enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
         enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
+        closestEvent = (TextView) findViewById(R.id.closesEventText);
+        closestEventTimer = (TextView) findViewById(R.id.closestEventTimer);
 
         if(clickedEnclosure != null) {
 
@@ -97,28 +116,32 @@ public class EnclosureActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 enclosureImageView.setImageBitmap((Bitmap) response);
-               // enclosureImageView.setImageResource(R.mipmap.african_enclosure);
-
-
             }
 
             @Override
             public void onFailure(Object response) {
-                Log.e("PIC", "NOT PIC");
+                enclosureImageView.setImageResource(R.mipmap.no_image_available);
             }
         });
 
         enclosureNameTextView.setText(enclosure.getName());
         enclosureStoryText.setText(enclosure.getStory());
-
-//        ((TextView) findViewById(R.id.closesEvent)).setText(closesEventMap.get(enclosure.getName() + "_closesEvent"));
+        long delay = 6000;
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                long startTime = getTimeAdjustedToWeekTime() + delay;
+                handleClosestEvent(startTime);
+            }
+        }, 0l ,delay*5);
 
         //Cards and Recycle of the animals
         recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle);
         layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
         recycleViewAnim.setLayoutManager(layoutManagerAnim);
 
-        adapterAnim = new AnimalsRecyclerAdapter(animals);
+        adapterAnim = new AnimalsRecyclerAdapter(animals, R.layout.animal_card);
         recycleViewAnim.setAdapter(adapterAnim);
 
         //ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
@@ -128,7 +151,6 @@ public class EnclosureActivity extends BaseActivity {
         int assetHeight = 250;
         addImagesToAssets(assetWidth, assetHeight);
         addVideosToAssets(assetWidth, assetHeight);
-
 
     }
 
@@ -194,5 +216,69 @@ public class EnclosureActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    public static final int SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    public static final int THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+
+    private long getTimeAdjustedToWeekTime() {
+        return (Calendar.getInstance().getTimeInMillis() + SEVEN_DAYS - THREE_DAYS) % SEVEN_DAYS;
+    }
+
+    private void handleClosestEvent(long starTimeArg){
+        final long DELAY_TIME = 0;
+        final long PERIOD = 250;
+        blinking = false;
+        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent(enclosure.getRecurringEvent());
+        final long startTime = starTimeArg;
+        closestEvent.post(() -> closestEvent.setText(recurringEvent.getTitle()));
+//        String time = recurringEventsHandler.transformTime(recurringEvent.getStartTime());
+        Timer timer = new Timer();
+        Timer blinkingTimer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+                                      @Override
+                                      public void run() {
+                                            closestEventTimer.post(() -> {
+                                                long currentTime = getTimeAdjustedToWeekTime();
+                                                if (startTime > currentTime) {
+                                                    if (blinking) {
+                                                        blinkingTimer.cancel();
+                                                        closestEvent.post(() -> closestEvent.setVisibility(View.VISIBLE));
+                                                    }
+                                                    closestEventTimer.setText(recurringEventsHandler.transformTime(startTime - currentTime));
+                                                }
+                                                else{
+                                                    blinkingText(blinkingTimer);
+                                                    blinking = true;
+                                                    timer.cancel();
+                                                }
+                                            });
+                                      }
+                                  },
+                DELAY_TIME,
+                PERIOD);
+
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                blinkingText();
+//            }
+//        },
+//        3000l);
+    }
+
+    private void blinkingText(Timer timer){
+        final long PERIOD = 300;
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                closestEvent.post(() -> {
+                    if (closestEvent.getVisibility() == View.VISIBLE)
+                        closestEvent.setVisibility(View.INVISIBLE);
+                    else
+                        closestEvent.setVisibility(View.VISIBLE);
+                });
+            }
+        }, 0l, PERIOD);
     }
 }

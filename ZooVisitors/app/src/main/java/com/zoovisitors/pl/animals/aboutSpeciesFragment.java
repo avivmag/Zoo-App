@@ -1,8 +1,10 @@
 package com.zoovisitors.pl.animals;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,6 +69,10 @@ public class aboutSpeciesFragment extends Fragment {
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.food),
                 animal.getFood()));
 
+
+        linearLayoutSpecies.addView(createLinearLayout("ניסוי",
+                "ניסוי 2גגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגג"));
+
         return rootView;
     }
 
@@ -76,24 +82,27 @@ public class aboutSpeciesFragment extends Fragment {
         if (headline.equals("null"))
             headline = getResources().getString(R.string.no_data);
         LinearLayout linearLayout = new LinearLayout(GlobalVariables.appCompatActivity);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
         TextView headlineTextView = new TextView(GlobalVariables.appCompatActivity);
         TextView valueTextView = new TextView(GlobalVariables.appCompatActivity);
         headlineTextView.setText(headline);
+        headlineTextView.setTextSize(15);
+        headlineTextView.setTypeface(headlineTextView.getTypeface(), Typeface.BOLD);
         headlineTextView.setTextColor(getResources().getColor(R.color.black));
         valueTextView.setText(" " + value);
         valueTextView.setTextColor(getResources().getColor(R.color.black));
+
         //insert to layout at order of the language
         if (GlobalVariables.language == 1 || GlobalVariables.language == 3){ //headline on the right
             linearLayout.setGravity(Gravity.RIGHT);
-            linearLayout.addView(valueTextView);
-            linearLayout.addView(headlineTextView);
         }
         else //headline on the left
         {
-            linearLayout.addView(headlineTextView);
-            linearLayout.addView(valueTextView);
+            linearLayout.setGravity(Gravity.LEFT);
         }
+        linearLayout.addView(headlineTextView);
+        linearLayout.addView(valueTextView);
+        linearLayout.addView(new TextView(GlobalVariables.appCompatActivity));
         return linearLayout;
     }
 

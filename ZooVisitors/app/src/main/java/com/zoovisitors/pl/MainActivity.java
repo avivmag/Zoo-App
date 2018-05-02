@@ -18,11 +18,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.support.v7.app.ActionBar;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.pl.customViews.TextViewOutline;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
@@ -47,10 +49,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setIcon(R.mipmap.logo);
+        ActionBar ab = getSupportActionBar();
+
+        ab.setDisplayUseLogoEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setIcon(R.mipmap.logo);
+
+
 
 
         //TODO: TESTING LOADING

@@ -29,24 +29,40 @@
                 android:queryHint="@string/searchPlaceHolder" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/enclosure_recycle"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:orientation="horizontal">
+            android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/enclosure_recycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:orientation="horizontal">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/animal_recycle_enc_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+                </android.support.v7.widget.RecyclerView>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/animal_recycle_enc_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    tools:orientation="vertical"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
