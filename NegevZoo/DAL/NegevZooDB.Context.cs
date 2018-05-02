@@ -84,6 +84,11 @@ namespace DAL
             return WallFeeds;
         }
 
+        public override DbSet<MiscMarker> GetAllMiscMarkers()
+        {
+            return MiscMarkers;
+        }
+
         public override DbSet<User> GetAllUsers()
         {
             return Users;

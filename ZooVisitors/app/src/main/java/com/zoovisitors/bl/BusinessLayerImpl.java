@@ -1,5 +1,6 @@
 package com.zoovisitors.bl;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
 import com.zoovisitors.dal.InternalStorage;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -90,9 +92,11 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public void getEnclosures(final GetObjectInterface goi) {
         ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+            @SuppressLint("NewApi")
             @Override
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
+
                 // TODO: fake recurring events here, need to update the json somehow
                 // TODO: I should add three days to the real recurring events
                 long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);

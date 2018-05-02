@@ -106,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -1898,7 +1898,36 @@ namespace BL
                 maxLongitude    = maxLongitude
             });
         }
-        
+
+        /// <summary>
+        /// Returns all map markers.
+        /// </summary>
+        /// <returns>All map markers.s</returns>
+        public IEnumerable<MiscMarker> GetAllMarkers()
+        {
+            // Get all misc markers.
+            var miscMarkers     = zooDB.GetAllMiscMarkers().ToArray();
+
+            // Get all enclosure's markers, if exists.
+            var enclosuresWithMarkers = zooDB.GetAllEnclosures()
+                .Where(enc => enc.markerIconUrl != null && enc.markerLatitude.HasValue && enc.markerLongitude.HasValue)
+                .ToArray();
+
+            var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
+                {
+                    iconUrl     = enc.markerIconUrl,
+                    latitude    = (float)enc.markerLatitude.Value,
+                    longitude   = (float)enc.markerLongitude.Value
+                });
+
+            // Concatenate misc and enclosure markers.
+            var allMarkers      = miscMarkers.Concat(enclosureMarkers);
+
+            var allMarkersArray = allMarkers.ToArray();
+
+            return (allMarkersArray);
+        }
+
         #endregion
 
         #region Users
@@ -1997,7 +2026,6 @@ namespace BL
             user.name = userName;
         }
 
-
         public void UpdateUserPassword(int id, string password)
         {
             var allUsers = zooDB.GetAllUsers();
@@ -2017,8 +2045,8 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            user.salt = GenerateSalt();
-            user.password = GetMd5Hash(password + user.salt);
+            user.salt       = GenerateSalt();
+            user.password   = GetMd5Hash(password + user.salt);
         }
 
         /// <summary>
@@ -2062,9 +2090,8 @@ namespace BL
                 throw new ArgumentException("Wrong input while adding a User. Name already exists");
             }
 
-            
-            userWorker.salt = GenerateSalt();
-            userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
+            userWorker.salt         = GenerateSalt();
+            userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
             
             users.Add(userWorker);
         }

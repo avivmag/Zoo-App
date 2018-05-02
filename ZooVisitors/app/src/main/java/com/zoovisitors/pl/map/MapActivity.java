@@ -58,11 +58,9 @@ public class MapActivity extends ProviderBasedActivity
 
     private void setNetworkDataProvider() {
         mapView.addZooMapIcon(0, 0);
-        //  TODO: replace the fakes with the reals when they are ready
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                // TODO: fake recurring events here, need to update the json somehow
                 getEnclosureIconsAndSetImagesOnMap((Enclosure[]) response);
             }
 
@@ -88,10 +86,7 @@ public class MapActivity extends ProviderBasedActivity
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
         for (int i = 0; i < miscs.length; i++) {
             final int finalI = i;
-            //TODO: Added width and height, look at this
-            int width = 120;
-            int height = 120;
-            bl.getImage(miscs[i].getMarkerIconUrl(), width, height, new GetObjectInterface() {
+            bl.getImage(miscs[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
@@ -111,10 +106,7 @@ public class MapActivity extends ProviderBasedActivity
     private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
         for (int i = 0; i < enclosures.length; i++) {
             final int finalI = i;
-            //TODO: Added width and height, look at this
-            int width = 120;
-            int height = 120;
-            bl.getImage(enclosures[i].getMarkerIconUrl(), width, height, new GetObjectInterface() {
+            bl.getImage(enclosures[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addEnclosureIcon(new BitmapDrawable(getResources(), (Bitmap) response),

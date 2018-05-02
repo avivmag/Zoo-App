@@ -12,10 +12,6 @@ import java.util.Queue;
  */
 
 public class Enclosure implements java.io.Serializable{
-    public static final int SEVEN_DAYS = 7 *
-            24 * 60 * 60 * 1000;
-//    public static final int THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -30,7 +26,7 @@ public class Enclosure implements java.io.Serializable{
     private int markerLongtitude;
     @SerializedName("pictureUrl")
     private String pictureUrl;
-    @SerializedName("recurringEvents")
+    @SerializedName("recEvents")
     private RecurringEvent[] recurringEvents;
     @SerializedName("pictures")
     private PictureEnc[] pictures;
@@ -45,7 +41,7 @@ public class Enclosure implements java.io.Serializable{
         return videos;
     }
 
-     public RecurringEvent[] getRecurringEvent() { return recurringEvents; }
+     public RecurringEvent[] getRecurringEvents() { return recurringEvents; }
 
     // TODO: remove this when recurring events are completed on the server side
     public void setRecurringEvent(RecurringEvent[] recurringEvents) { this.recurringEvents = recurringEvents; }

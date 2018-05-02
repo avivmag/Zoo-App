@@ -1,21 +1,18 @@
-﻿app.controller('loginCtrl', ['$scope', '$state', function ($scope, $state) {
-    $scope.login = function login(username, password) {
+﻿app.controller('loginCtrl', ['$scope', '$state', 'usersService', 'utilitiesService', 
+    function ($scope, $state, usersService, utilitiesService) {
+        $scope.login = function (username, password) {
 
-        // TODO:: Build login service.
-        /*
-        $scope.loginQuery = loginService.login(
-            username,
-            password,
-            function () {
-                console.log('success!');
-            },
-            function () {
-                console.log('fail!');
-            });
-        */
-
-        console.log('loggin in with credentials:', username, password);
-
-        $state.go('mainMenu');
-    }
+            $scope.loginQuery = usersService.login(username, password).then(
+                function (response) {
+                    if (response.data) {
+                        $state.go('mainMenu');
+                    }
+                    else {
+                        utilitiesService.utilities.alert("שם משתמש או סיסמא שגויים");
+                    }
+                },
+                function () {
+                    utilitiesService.utilities.alert("שם משתמש או סיסמא שגויים");
+                });
+        }
 }]);

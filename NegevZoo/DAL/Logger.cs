@@ -11,17 +11,19 @@ namespace DAL
     {
         private static Logger logger;
         private static String filePath;
+        private static DateTime date;
 
         protected Logger()
         {
-            filePath = String.Format(@"c:\Zoo-Logs\{0}.log", DateTime.Now.ToString("yyyy-MM-dd"));
+            date        = DateTime.Today;
+            filePath    = String.Format(@"c:\Zoo-Logs\{0}.log", date.ToString("yyyy-MM-dd"));
         }
 
         public static Logger GetInstance()
         {
-            if (logger == null)
+            if (logger == null || date != DateTime.Today)
             {
-                logger = new Logger();
+                logger      = new Logger();
             }
 
             return logger;
