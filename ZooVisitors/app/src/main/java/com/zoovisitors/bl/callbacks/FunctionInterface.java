@@ -5,6 +5,6 @@ package com.zoovisitors.bl.callbacks;
  */
 
 public interface FunctionInterface {
+    public void whatToDo();
 
-    void whatToDo();
 }

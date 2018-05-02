@@ -106,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -135,19 +135,20 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == hebrewLang);
             }
 
             var enclosureResult = new EnclosureResult
             {
                 Id = enc.id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 MarkerLatitude = enc.markerLatitude,
                 MarkerLongtitude = enc.markerLongitude,
                 MarkerIconUrl = enc.markerIconUrl,
                 PictureUrl = enc.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language 
             };
 
             return enclosureResult; 
@@ -737,24 +738,25 @@ namespace BL
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
-                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == GetHebewLanguage());
+                var hebrewLang = GetHebewLanguage();
+                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == hebrewLang);
             }
 
             var animalResult = new AnimalResult
             {
                 Id = id,
-                Name = details.name,
-                Story = details.story,
+                Name = details?.name,
+                Story = details?.story,
                 EncId = an.enclosureId,
-                Category = details.category,
-                Distribution = details.distribution,
-                Family = details.family,
-                Food = details.food,
+                Category = details?.category,
+                Distribution = details?.distribution,
+                Family = details?.family,
+                Food = details?.food,
                 Preservation = an.preservation,
-                Reproduction = details.reproduction,
-                Series = details.series,
+                Reproduction = details?.reproduction,
+                Series = details?.series,
                 PictureUrl = an.pictureUrl,
-                Language = details.language
+                Language = details == null ? GetHebewLanguage() : details.language
             };
 
             return animalResult;
@@ -820,7 +822,6 @@ namespace BL
                 {
                     animalResult.Add(GetAnimalById((int)details.animalId, language));
                 }
-
             }
 
             return animalResult;
@@ -892,7 +893,7 @@ namespace BL
             }
 
             //2. enclosure exists
-            if (GetEnclosureById((int)animal.enclosureId, (int)GetHebewLanguage() ) == null)
+            if (!GetAllEnclosures().ToList().Any(e => e.id == animal.enclosureId))
             {
                 throw new ArgumentException("Wrong input. Enclosure id doesn't exists");
             }
@@ -901,12 +902,6 @@ namespace BL
 
             if (animal.id == default(int)) //add a new aniaml
             {
-                // check that the name doesn't exists
-                if (animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
-
                 animals.Add(animal);
             }
             else // update existing animal.
@@ -917,12 +912,6 @@ namespace BL
                 if (oldAnimal == null)
                 {
                     throw new ArgumentException("Wrong input. Animal id does'nt exits");
-                }
-
-                // check that id the name changed, it doesn't exists.
-                if (oldAnimal.name != animal.name && animals.Any(an => an.name == animal.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
                 }
 
                 oldAnimal.name = animal.name;
@@ -968,22 +957,10 @@ namespace BL
             
             if (oldDetails == null) //add a new aniamlDetails
             {
-                //TODO: check if this assertion is a must.
-                // check that the name doesn't exists
-                if (allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in adding animal. Animal name already exists");
-                }
-
                 allAnimalDetails.Add(animalDetails);
             }
             else // update existing animal.
             {
-                // check that id the name changed, it doesn't exists.
-                if (oldDetails.name != animalDetails.name && allAnimalDetails.Any(an => an.name == animalDetails.name))
-                {
-                    throw new ArgumentException("Wrong input in updating animal. Animal name already exitst");
-                }
 
                 oldDetails.name = animalDetails.name;
                 oldDetails.story = animalDetails.story;
@@ -1921,7 +1898,36 @@ namespace BL
                 maxLongitude    = maxLongitude
             });
         }
-        
+
+        /// <summary>
+        /// Returns all map markers.
+        /// </summary>
+        /// <returns>All map markers.s</returns>
+        public IEnumerable<MiscMarker> GetAllMarkers()
+        {
+            // Get all misc markers.
+            var miscMarkers     = zooDB.GetAllMiscMarkers().ToArray();
+
+            // Get all enclosure's markers, if exists.
+            var enclosuresWithMarkers = zooDB.GetAllEnclosures()
+                .Where(enc => enc.markerIconUrl != null && enc.markerLatitude.HasValue && enc.markerLongitude.HasValue)
+                .ToArray();
+
+            var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
+                {
+                    iconUrl     = enc.markerIconUrl,
+                    latitude    = (float)enc.markerLatitude.Value,
+                    longitude   = (float)enc.markerLongitude.Value
+                });
+
+            // Concatenate misc and enclosure markers.
+            var allMarkers      = miscMarkers.Concat(enclosureMarkers);
+
+            var allMarkersArray = allMarkers.ToArray();
+
+            return (allMarkersArray);
+        }
+
         #endregion
 
         #region Users
@@ -2020,7 +2026,6 @@ namespace BL
             user.name = userName;
         }
 
-
         public void UpdateUserPassword(int id, string password)
         {
             var allUsers = zooDB.GetAllUsers();
@@ -2040,8 +2045,8 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            user.salt = GenerateSalt();
-            user.password = GetMd5Hash(password + user.salt);
+            user.salt       = GenerateSalt();
+            user.password   = GetMd5Hash(password + user.salt);
         }
 
         /// <summary>
@@ -2085,9 +2090,8 @@ namespace BL
                 throw new ArgumentException("Wrong input while adding a User. Name already exists");
             }
 
-            
-            userWorker.salt = GenerateSalt();
-            userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
+            userWorker.salt         = GenerateSalt();
+            userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
             
             users.Add(userWorker);
         }
@@ -2262,6 +2266,7 @@ namespace BL
 
         #endregion
 
+
         #region private functions
 
         private bool ValidLanguage(int language)
@@ -2434,13 +2439,22 @@ namespace BL
             SetOrientationToDefault(image);
 
             // Resize the image.
-            var resizedImage = ResizeImage(image, 48, 48);
+            var resizedImage = ResizeImage(image, 84, 84);
+
+            var resizedImageWebServer = ResizeImage(image, 24, 24);
 
             // Dispose the original image file desc.
             image.Dispose();
 
             // Save the new resized image.
             resizedImage.Save(filePath);
+
+            var filePathExtension = filePath.Substring(filePath.IndexOf('.'));
+            var webServerFilePath = filePath.Substring(0, filePath.IndexOf('.')) + "_webServer" + filePathExtension;
+
+            resizedImageWebServer.Save(webServerFilePath);
+
+            resizedImageWebServer.Dispose();
 
             // Dispose the resized image file desc.
             resizedImage.Dispose();

@@ -5,3 +5,8 @@
     ng-src="{{ img.src }}"
     alt="map"
     ng-click="clickMap($event)" />
+
+<img ng-repeat="marker in markers"
+    ng-show="!isLoading"
+    ng-style="marker.markerStyle"
+    ng-src="{{ marker.src }}" />

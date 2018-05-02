@@ -3,6 +3,7 @@ package com.zoovisitors.pl.animals;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.pl.LoadingScreen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +51,8 @@ public class aboutSpeciesFragment extends Fragment {
 //        ((ImageView) rootView.findViewById(R.id.conservation_image)).setImageResource(numToPicture.get(animal.getPreservation()));
         linearLayoutSpecies = (LinearLayout) rootView.findViewById(R.id.linear_about_species);
 
-        linearLayoutSpecies.addView(createLinearLayoutPicture(GlobalVariables.appCompatActivity.getString(R.string.preservation),
+        if (animal.getPreservation() >= 1 && animal.getPreservation() <= 7)
+             linearLayoutSpecies.addView(createLinearLayoutPicture(GlobalVariables.appCompatActivity.getString(R.string.preservation),
                                     numToPicture.get(animal.getPreservation())));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.category),
                 animal.getCategory()));
@@ -69,6 +72,9 @@ public class aboutSpeciesFragment extends Fragment {
 
 
     private LinearLayout createLinearLayout(String headline, String value){
+        Log.e("ANIMAL", headline);
+        if (headline.equals("null"))
+            headline = getResources().getString(R.string.no_data);
         LinearLayout linearLayout = new LinearLayout(GlobalVariables.appCompatActivity);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         TextView headlineTextView = new TextView(GlobalVariables.appCompatActivity);

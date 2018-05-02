@@ -1,13 +1,15 @@
 package com.zoovisitors.pl.animals;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.backend.Species;
+import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 
 public class AnimalActivity extends BaseActivity {
@@ -21,6 +23,18 @@ public class AnimalActivity extends BaseActivity {
         clickedAnimal = getIntent().getExtras();
         setContentView(R.layout.activity_animal);
         animal = (Animal) clickedAnimal.getSerializable("animal");
+        ImageView animalImage = (ImageView) findViewById(R.id.animal_image);
+        GlobalVariables.bl.getImage(animal.getPictureUrl(), 400, 400, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                animalImage.setImageBitmap((Bitmap) response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                animalImage.setImageResource(R.mipmap.no_image_available);
+            }
+        });
 
         // Find the view pager that will allow the user to swipe between fragments
         final ViewPager viewPager = (ViewPager) findViewById(R.id.animal_viewpager);

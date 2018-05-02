@@ -279,22 +279,22 @@ namespace ZooTests
             Assert.AreEqual(4, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalAddAnimalNameExists()
-        {
-            var animals = animalsController.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(HttpResponseException))]
+        //public void UpdateAnimalAddAnimalNameExists()
+        //{
+        //    var animals = animalsController.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = default(int),
-                name = "קוף",
-                enclosureId = 3,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = default(int),
+        //        name = "קוף",
+        //        enclosureId = 3,
+        //    };
 
-            animalsController.UpdateAnimal(an);
-        }
+        //    animalsController.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
@@ -365,24 +365,24 @@ namespace ZooTests
             Assert.AreEqual(3, animals.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalNameAlreadyExists()
-        {
-            var animals = animalsController.GetAllAnimals();
-            Assert.AreEqual(3, animals.Count());
+        //[TestMethod]
+        //[ExpectedException(typeof(HttpResponseException))]
+        //public void UpdateAnimalNameAlreadyExists()
+        //{
+        //    var animals = animalsController.GetAllAnimals();
+        //    Assert.AreEqual(3, animals.Count());
 
-            var an = new Animal
-            {
-                id = 2,
-                name = "גורילה",
-                enclosureId = 1,
-            };
+        //    var an = new Animal
+        //    {
+        //        id = 2,
+        //        name = "גורילה",
+        //        enclosureId = 1,
+        //    };
 
-            an.name = "קוף";
+        //    an.name = "קוף";
 
-            animalsController.UpdateAnimal(an);
-        }
+        //    animalsController.UpdateAnimal(an);
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
@@ -426,26 +426,6 @@ namespace ZooTests
             Assert.AreEqual(3, details.Count());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalDetailsAddAnimalNameExists()
-        {
-            var details = animalsController.GetAllAnimalsDetailsById(1);
-            Assert.AreEqual(2, details.Count());
-
-            var an = new AnimalDetail
-            {
-                animalId = 1,
-                name = "בבון הזית",
-                category = "חרבון",
-                story = "זה סיפור על קקי יפה",
-                language = (long)Languages.ar
-            };
-
-            animalsController.UpdateAnimalDetails(an);
-
-        }
-        
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateAnimaDetailsWrongName()
@@ -548,32 +528,7 @@ namespace ZooTests
             Assert.AreEqual("", an.category);
             Assert.AreEqual("", an.series);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateAnimalDetailNameAlreadyExists()
-        {
-            var details = animalsController.GetAllAnimalsDetailsById(1);
-            Assert.AreEqual(2, details.Count());
-
-            var an = new AnimalDetail
-            {
-                animalId = 1,
-                language = (long)Languages.he,
-                name = "בבון הזית",
-                category = "קופים",
-                series = "קוף",
-                distribution = "",
-                family = "",
-                food = "",
-                reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
-            };
-            an.name = "גורילה";
-
-            animalsController.UpdateAnimalDetails(an);
-        }
-
+        
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateAnimalDetailsWrongLangauge()

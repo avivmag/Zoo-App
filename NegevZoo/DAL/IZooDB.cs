@@ -30,6 +30,8 @@ namespace DAL
 
         public abstract DbSet<GeneralInfo> GetGeneralInfo();
 
+        public abstract DbSet<MiscMarker> GetAllMiscMarkers();
+
         public abstract DbSet<OpeningHour> GetAllOpeningHours();
 
         public abstract DbSet<ContactInfo> GetAllContactInfos();
@@ -58,13 +60,7 @@ namespace DAL
         protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
 
         protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
-
-
-
-
-
-
-
+        
         #endregion
     }
 }

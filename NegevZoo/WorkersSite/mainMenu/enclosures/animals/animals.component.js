@@ -25,6 +25,7 @@
             $scope.enclosureId      = $stateParams.enclosureId;
             $scope.baseURL          = app.baseURL;
             $scope.animal           = $stateParams.animal || { enclosureId: $scope.enclosureId };
+            $scope.preservation     = animalService.getPreservation();
 
             $scope.updateAnimals    = function () {
                 if ($scope.isEdit) {
@@ -49,6 +50,9 @@
     
                             $scope.isLoading    = false;
                         });
+                }
+                else {
+                    $scope.isLoading            = false;
                 }
             };
 

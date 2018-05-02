@@ -116,8 +116,8 @@
                 })
                 .then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = clickPosition.width * clickPosition.ratio;
-                        selectedEnclosure.markerLatitude    = clickPosition.height * clickPosition.ratio;
+                        selectedEnclosure.markerLongitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                        selectedEnclosure.markerLatitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
                     }
                 });
             };
@@ -341,7 +341,7 @@
         }
 
         function uploadProfilePicture (picture, enclosure) {
-            if (!angular.isDefined(picture)) {
+            if (!angular.isDefined(picture) || picture === null) {
                 return;
             }
 
@@ -363,7 +363,7 @@
         };
 
         function uploadIcon (icon, enclosure) {
-            if (!angular.isDefined(icon)) {
+            if (!angular.isDefined(icon) || icon === null) {
                 return;
             }
 
@@ -397,15 +397,19 @@
                 $scope.mapStyle     = { };
 
                 $scope.img.onload   = function () {
-                    $scope.ratio            = (Math.max(picElement.width, picElement.height) / 640.0);
+                    $scope.ratio                = (Math.max($scope.img.width, $scope.img.height) / 480.0);
 
-                    $scope.mapStyle.width   = ($scope.img.width / $scope.ratio) + 'px';
-                    $scope.mapStyle.height  = ($scope.img.height / $scope.ratio) + 'px';
-                    $scope.mapStyle.cursor  = 'url(' + app.baseURL + selectedEnclosure.markerIconUrl + '), auto';
+                    var urlExtension            = selectedEnclosure.markerIconUrl.substring(selectedEnclosure.markerIconUrl.indexOf('.'));
+                    var webServerFilePath       = selectedEnclosure.markerIconUrl.substring(0, selectedEnclosure.markerIconUrl.indexOf('.')) + "_webServer" + urlExtension;
+
+                    $scope.mapStyle.width       = ($scope.img.width / $scope.ratio) + 'px';
+                    $scope.mapStyle.height      = ($scope.img.height / $scope.ratio) + 'px';
+                    $scope.mapStyle.cursor      = 'url(' + app.baseURL + webServerFilePath + '), auto';
+                    $scope.mapStyle.overflow    = 'hidden';
 
                     $scope.isLoading = false;
 
-                    $rootScope.$apply();
+                    getIcons()
                 };
 
                 // Get the map url from the server.
@@ -428,6 +432,31 @@
                     // Return the offset when the dialog closes.
                     $mdDialog.hide(clickPosition);
                 }
+            }
+
+            function getIcons() {
+                var iconsQuery = mapService.getAllMarkers().then(
+                    function (data) {
+                        let markers = data.data;
+                        if (angular.isArray(markers)) {
+                            $scope.markers = [];
+                            for (let marker of data.data) {
+                                var urlExtension            = marker.iconUrl.substring(marker.iconUrl.indexOf('.'));
+                                var webServerFilePath       = marker.iconUrl.substring(0, marker.iconUrl.indexOf('.')) + "_webServer" + urlExtension;
+
+                                $scope.markers.push({
+                                    src:            app.baseURL + webServerFilePath,
+                                    markerStyle:    {
+                                        position:   'fixed',
+                                        left:       Math.floor(((marker.longitude -42) / $scope.ratio)) + 'px',
+                                        top:        Math.floor(((marker.latitude - 42) / $scope.ratio)) + 'px'
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                return iconsQuery;
             }
         }
 }])

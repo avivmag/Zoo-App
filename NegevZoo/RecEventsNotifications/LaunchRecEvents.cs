@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RecEventsNotifications
 {
-    public class RecEventsNotifications
+    public class LaunchRecEvents
     {
         public static void Main(string[] args)
         {
