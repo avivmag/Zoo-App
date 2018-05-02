@@ -1,8 +1,10 @@
-﻿app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService',
-    function userControlController($scope, $mdDialog, usersService) {
+app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService', 'utilitiesService',
+    function userControlController($scope, $mdDialog, usersService, utilitiesService) {
         $scope.isLoading            = true;
 
         initializeComponent();
+
+        $scope.updateUsers();
 
         function initializeComponent() {
             $scope.updateUsers          = function () {
@@ -57,7 +59,7 @@
                     });
             };
 
-            $scope.confirmDeleteUser = function (ev, user, users) {
+            $scope.confirmDeleteUser    = function (ev, user, users) {
                 var confirm = $mdDialog.confirm()
                     .title('האם אתה בטוח שברצונך למחוק את משתמש זה?')
                     .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
@@ -88,7 +90,31 @@
                 });
             }
 
-            $scope.updateUsers();
+            $scope.resetPassword        = function (user) {
+                promptObject = {
+                    title:          'איפוס סיסמא',
+                    content:        'הכנס סיסמא חדשה לאיפוס',
+                    placeholder:    'סיסמא חדשה',
+                    required:       true,
+                    okMsg:          'אפס סיסמא',
+                    cancelMsg:      'ביטול'
+                };
+
+                utilitiesService.utilities.prompt(promptObject).then(
+                    function(newPass) {
+                        user.password = newPass;
+
+                        usersService.updatePassword(user.id, user.password).then(
+                            () => utilitiesService.utilities.alert("הסיסמא אופסה בהצלחה"),
+                            () => utilitiesService.utilities.alert("קרתה שגיאה בעת איפוס הסיסמא"));
+                    });
+            };
+
+            $scope.updateUsername       = function (user) {
+                usersService.updateUsername(user.id, user.name).then(
+                    () => utilitiesService.utilities.alert("שם המשתמש עודכן בהצלחה"),
+                    () => utilitiesService.utilities.alert("קרתה שגיאה בעת עדכון שם המשתמש")); 
+            }
         }
 
         function deleteUser(user, users) {

@@ -1997,7 +1997,6 @@ namespace BL
             user.name = userName;
         }
 
-
         public void UpdateUserPassword(int id, string password)
         {
             var allUsers = zooDB.GetAllUsers();
@@ -2017,8 +2016,8 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            user.salt = GenerateSalt();
-            user.password = GetMd5Hash(password + user.salt);
+            user.salt       = GenerateSalt();
+            user.password   = GetMd5Hash(password + user.salt);
         }
 
         /// <summary>
@@ -2062,9 +2061,8 @@ namespace BL
                 throw new ArgumentException("Wrong input while adding a User. Name already exists");
             }
 
-            
-            userWorker.salt = GenerateSalt();
-            userWorker.password = GetMd5Hash(userWorker.password + userWorker.salt);
+            userWorker.salt         = GenerateSalt();
+            userWorker.password     = GetMd5Hash(userWorker.password + userWorker.salt);
             
             users.Add(userWorker);
         }

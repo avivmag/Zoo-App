@@ -61,6 +61,17 @@ app.factory('utilitiesService', ['$mdDialog',
                         .textContent(message)
                         .ok('סגור')
                 );
+            },
+
+            prompt: function(object) {
+                return $mdDialog.show(
+                    $mdDialog.prompt()
+                        .title(object.title || "")
+                        .textContent(object.content || "")
+                        .placeholder(object.placeholder || "")
+                        .required(object.isRequired || false)
+                        .ok(object.okMsg || 'כן')
+                        .cancel(object.cancelMsg || 'לא'));
             }
         }
 
