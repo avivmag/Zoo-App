@@ -106,7 +106,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-
+        
         /// <summary>
         /// Gets the enclosure by id.
         /// </summary>
@@ -544,7 +544,7 @@ namespace BL
             if (recEvent.id == default(int)) //add recurring event
             {
                 //check that there isn't other Recurring event to this enclosure in the same time.
-                if (enclosureRecurringEvents.Any(re => ValidateTime(re, recEvent)))
+                if (enclosureRecurringEvents.ToList().Any(re => ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while adding recurring event. There is another recurring event in the same time");
                 }
@@ -560,7 +560,7 @@ namespace BL
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
 
-                if (allRecurringEvents.Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (allRecurringEvents.ToList().Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
@@ -2157,6 +2157,22 @@ namespace BL
 
                 zooDB.GetAllDevices().Add(device);
             }
+        }
+
+        /// <summary>
+        /// remove the device from the notification list.
+        /// </summary>
+        /// <param name="deviceId">The device to delete.</param>
+        public void UnsubscribeDevice(string deviceId)
+        {
+            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+
+            if (device == null)
+            {
+                throw new ArgumentException("Wrong input. There is no such device with such id");
+            }
+
+            zooDB.GetAllDevices().Remove(device);
         }
 
         /// <summary>
