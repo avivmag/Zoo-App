@@ -59,6 +59,28 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// remove the device from the notification list.
+        /// </summary>
+        /// <param name="deviceId">The device to delete.</param>
+        [HttpPost]
+        [Route("notification/unsubscribe/{deviceId}")]
+        public void UnsubscribeDevice(string deviceId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.UnsubscribeDevice(deviceId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
         /// send notification to all devices.
         /// </summary>
         /// <param name="title">the title of the notification</param>
@@ -133,5 +155,6 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
     }
 }
