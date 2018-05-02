@@ -12,6 +12,8 @@ namespace NegevZoo.Controllers
 {
     public class MapController : ControllerBase
     {
+        #region Map Settings
+
         /// <summary>
         /// Gets the map settings
         /// This method use for the visitore app to get all the settings of the map.
@@ -87,6 +89,34 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
+        #endregion
+
+        #region Markers
+
+        /// <summary>
+        /// Returns all markers of the map.
+        /// </summary>
+        /// <returns>All markers (enclosure and misc).</returns>
+        [HttpGet]
+        [Route("map/markers")]
+        public IEnumerable<MiscMarker> GetAllMarkers()
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    var allMarkers = db.GetAllMarkers();
+
+                    return allMarkers;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }
