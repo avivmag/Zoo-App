@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
+
 //import com.facebook.*;
 
 
@@ -68,7 +70,7 @@ public class EnclosureActivity extends BaseActivity {
         clickedEnclosure = getIntent().getExtras();
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
-        recurringEventsHandler = new RecurringEventsHandler();
+        recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
 
         GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -218,21 +220,14 @@ public class EnclosureActivity extends BaseActivity {
         }
     }
 
-    public static final int SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-    public static final int THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-
-    private long getTimeAdjustedToWeekTime() {
-        return (Calendar.getInstance().getTimeInMillis() + SEVEN_DAYS - THREE_DAYS) % SEVEN_DAYS;
-    }
-
     private void handleClosestEvent(long starTimeArg){
         final long DELAY_TIME = 0;
         final long PERIOD = 250;
         blinking = false;
-        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent(enclosure.getRecurringEvent());
+        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent();
         final long startTime = starTimeArg;
         closestEvent.post(() -> closestEvent.setText(recurringEvent.getTitle()));
-//        String time = recurringEventsHandler.transformTime(recurringEvent.getStartTime());
+//        String time = recurringEventsHandler.getTime(recurringEvent.getStartTime());
         Timer timer = new Timer();
         Timer blinkingTimer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -245,7 +240,7 @@ public class EnclosureActivity extends BaseActivity {
                                                         blinkingTimer.cancel();
                                                         closestEvent.post(() -> closestEvent.setVisibility(View.VISIBLE));
                                                     }
-                                                    closestEventTimer.setText(recurringEventsHandler.transformTime(startTime - currentTime));
+                                                    closestEventTimer.setText(recurringEventsHandler.getTime(startTime - currentTime));
                                                 }
                                                 else{
                                                     blinkingText(blinkingTimer);

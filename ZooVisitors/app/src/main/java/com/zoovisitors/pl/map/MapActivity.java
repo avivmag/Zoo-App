@@ -58,6 +58,7 @@ public class MapActivity extends ProviderBasedActivity
 
     private void setNetworkDataProvider() {
         mapView.addZooMapIcon(0, 0);
+        //  TODO: replace the fakes with the reals when they are ready
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -109,8 +110,8 @@ public class MapActivity extends ProviderBasedActivity
             bl.getImage(enclosures[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
-                    mapView.addEnclosureIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            enclosures[finalI],
+                    mapView.addEnclosure(enclosures[finalI],
+                            new BitmapDrawable(getResources(), (Bitmap) response),
                             enclosures[finalI].getMarkerLongtitude(),
                             enclosures[finalI].getMarkerLatitude());
                 }
