@@ -41,7 +41,7 @@ public class Enclosure implements java.io.Serializable{
         return videos;
     }
 
-     public RecurringEvent[] getRecurringEvents() { return recurringEvents; }
+    public RecurringEvent[] getRecurringEvents() { return recurringEvents; }
 
     // TODO: remove this when recurring events are completed on the server side
     public void setRecurringEvent(RecurringEvent[] recurringEvents) { this.recurringEvents = recurringEvents; }
