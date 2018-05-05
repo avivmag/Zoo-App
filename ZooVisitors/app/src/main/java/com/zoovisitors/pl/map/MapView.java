@@ -3,7 +3,6 @@ package com.zoovisitors.pl.map;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by aviv on 12-Jan-18.
@@ -80,7 +80,6 @@ public class MapView extends RelativeLayout {
                                                   timerFastRunnables) {
                                               runnable.run();
                                           }
-                                          Log.e("AVIV", "fast running: " + timerFastRunnables.size());
                                       }
                                   },
                 0,
@@ -93,7 +92,6 @@ public class MapView extends RelativeLayout {
                                                   timerSlowRunnables) {
                                               runnable.run();
                                           }
-                                          Log.e("AVIV", "slow running: " + timerSlowRunnables.size());
                                       }
                                   },
                 0,
@@ -122,6 +120,7 @@ public class MapView extends RelativeLayout {
         timer.cancel();
     }
 
+    AtomicBoolean movementInProgress = new AtomicBoolean(false);
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Let the ScaleGestureDetector inspect all events.
@@ -130,6 +129,12 @@ public class MapView extends RelativeLayout {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
+                synchronized (movementInProgress) {
+                    if (movementInProgress.get())
+                        break;
+                    movementInProgress.set(true);
+                }
+
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
@@ -150,9 +155,11 @@ public class MapView extends RelativeLayout {
                 }
                 if (visitorIcon.view.getVisibility() == VISIBLE)
                     updateIconPositionWithSize(visitorIcon);
+
                 mLastTouchX = x;
                 mLastTouchY = y;
 
+                movementInProgress.set(false);
                 break;
             }
             case MotionEvent.ACTION_UP:

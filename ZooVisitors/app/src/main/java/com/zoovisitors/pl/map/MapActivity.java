@@ -25,9 +25,6 @@ public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
-//    private Enclosure[] enclosures;
-//    private Misc[] miscs;
-//    private RecurringEvent[] recurringEvents;
     private BusinessLayer bl;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
@@ -37,7 +34,7 @@ public class MapActivity extends ProviderBasedActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        mapView = findViewById(R.id.map_test_frame);
+        mapView = findViewById(R.id.map_view_layout);
         bl = new BusinessLayerImpl(this);
         mapDS = new DataStructure(Memory.getPoints(),
                 Memory.ZOO_ENTRANCE_LOCATION,
