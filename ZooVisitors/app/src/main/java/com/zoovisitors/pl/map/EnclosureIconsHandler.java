@@ -57,8 +57,8 @@ public class EnclosureIconsHandler {
 
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
-            recurringEventTextViewIcon.top = (int) (top - enclosureIcon.height);
-            recurringEventIcon.top = (int) (top - enclosureIcon.height);
+            recurringEventTextViewIcon.top -= enclosureIcon.height / 2 + recurringEventTextViewIcon.textView.getLineHeight();
+            recurringEventIcon.top -= enclosureIcon.height / 2 + recurringEventTextViewIcon.textView.getLineHeight();
 
             mapView.updateIconPositionWithSize(recurringEventTextViewIcon);
             mapView.updateIconPositionWithSize(recurringEventIcon);
@@ -139,6 +139,7 @@ public class EnclosureIconsHandler {
                                                } else {
                                                    recurringEventIcon.hide();
                                                    timerFastRunnables.remove(this);
+                                                   scheduleRecurringTasks();
                                                }
                                            }
                                        }

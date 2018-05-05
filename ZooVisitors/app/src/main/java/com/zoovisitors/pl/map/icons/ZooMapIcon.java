@@ -7,9 +7,8 @@ import com.zoovisitors.pl.map.MapView;
 public class ZooMapIcon extends ImageIcon {
     private final String ZOO_MAP = "zoo_map";
 
-    public ZooMapIcon(MapView mapView, Object[] additionalData, int left, int top, boolean
-            shouldBeCentered, boolean isVisible) {
-        super(mapView, additionalData, left, top, shouldBeCentered, isVisible);
+    public ZooMapIcon(MapView mapView, Object[] additionalData, int left, int top) {
+        super(mapView, additionalData, left, top, true, true);
     }
 
     @Override

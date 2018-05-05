@@ -10,9 +10,8 @@ import static android.view.View.VISIBLE;
 public class VisitorIcon extends ImageIcon {
     private final String VISITOR_ICON = "visitor_icon";
 
-    public VisitorIcon(MapView mapView, Object[] additionalData, int left, int top, boolean
-            shouldBeCentered, boolean isVisible) {
-        super(mapView, additionalData, left, top, shouldBeCentered, isVisible);
+    public VisitorIcon(MapView mapView, Object[] additionalData) {
+        super(mapView, additionalData, 0, 0, false, false);
     }
 
     @Override
@@ -24,8 +23,9 @@ public class VisitorIcon extends ImageIcon {
     }
 
     public void UpdateVisitorLocation(int left, int top) {
-        this.left = left;
-        this.top = top;
+        // TODO: fix this.
+        this.left = mapView.getIconsOffsetLeft(left);
+        this.top = mapView.getIconsOffsetTop(top);
         mapView.updateIconPositionWithSize(this);
     }
 
