@@ -28,7 +28,8 @@ public class TextIcon extends Icon {
 
 
     public TextIcon(MapView mapView, View.OnTouchListener onTouchListener, int left, int top) {
-        super(new Object[] {onTouchListener}, mapView, left, top);
+        super(new Object[] {onTouchListener}, mapView, left, top, false);
+        // Note: be aware that the visibility is handled by the timer scheduling, not here.
     }
 
     @Override
