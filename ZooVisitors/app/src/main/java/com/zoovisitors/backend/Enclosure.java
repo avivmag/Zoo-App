@@ -21,9 +21,9 @@ public class Enclosure implements java.io.Serializable{
     @SerializedName("markerIconUrl")
     private String markerIconUrl;
     @SerializedName("markerLatitude")
-    private int markerLatitude;
+    private int markerY;
     @SerializedName("markerLongtitude")
-    private int markerLongtitude;
+    private int markerX;
     @SerializedName("pictureUrl")
     private String pictureUrl;
     @SerializedName("recEvents")
@@ -41,7 +41,7 @@ public class Enclosure implements java.io.Serializable{
         return videos;
     }
 
-     public RecurringEvent[] getRecurringEvents() { return recurringEvents; }
+    public RecurringEvent[] getRecurringEvents() { return recurringEvents; }
 
     // TODO: remove this when recurring events are completed on the server side
     public void setRecurringEvent(RecurringEvent[] recurringEvents) { this.recurringEvents = recurringEvents; }
@@ -50,14 +50,11 @@ public class Enclosure implements java.io.Serializable{
         return markerIconUrl;
     }
 
-    public int getMarkerLatitude() {
-        return markerLatitude;
+    public int getMarkerY() {
+        return markerY;
     }
 
-    public int getMarkerLongtitude() {
-        return markerLongtitude;
-    }
-
+    public int getMarkerX() { return markerX; }
     //TODO:: Or I need the imageURL of the enclosure and images of the animals
 
     public int getId() {
@@ -96,10 +93,6 @@ public class Enclosure implements java.io.Serializable{
         @SerializedName("title")
         private String title;
 
-        public RecurringEvent(String title) {
-            this.title = title;
-        }
-
         public RecurringEvent() {}
 
         public int getId() {
@@ -122,13 +115,13 @@ public class Enclosure implements java.io.Serializable{
             return title;
         }
 
-        public void setStartTime(long startTime) {
-            this.startTime = startTime;
-        }
+//        public void setStartTime(long startTime) {
+//            this.startTime = startTime;
+//        }
 
-        public void setEndTime(long endTime) {
-            this.endTime = endTime;
-        }
+//        public void setEndTime(long endTime) {
+//            this.endTime = endTime;
+//        }
 
         // TODO: remove this, it is only for testing.
         public static RecurringEvent createRecurringEvent(int id, String description, long startTime, long lastsTime, String title) {
@@ -154,9 +147,9 @@ public class Enclosure implements java.io.Serializable{
             return id;
         }
 
-        public int getEnclosureId() {
-            return enclosureId;
-        }
+//        public int getEnclosureId() {
+//            return enclosureId;
+//        }
 
         public String getPictureUrl() {
             return pictureUrl;

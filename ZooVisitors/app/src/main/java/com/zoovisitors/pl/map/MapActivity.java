@@ -5,6 +5,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
@@ -25,9 +27,6 @@ public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
-//    private Enclosure[] enclosures;
-//    private Misc[] miscs;
-//    private RecurringEvent[] recurringEvents;
     private BusinessLayer bl;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
@@ -37,7 +36,7 @@ public class MapActivity extends ProviderBasedActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        mapView = findViewById(R.id.map_test_frame);
+        mapView = findViewById(R.id.map_view_layout);
         bl = new BusinessLayerImpl(this);
         mapDS = new DataStructure(Memory.getPoints(),
                 Memory.ZOO_ENTRANCE_LOCATION,
@@ -51,13 +50,12 @@ public class MapActivity extends ProviderBasedActivity
                 Memory.minLongitude,
                 Memory.maxLongitude
         );
-
-        mapView.AddVisitorIcon();
+        mapView.SetZooMapIcon();
+        mapView.SetVisitorIcon();
         setNetworkDataProvider();
     }
 
     private void setNetworkDataProvider() {
-        mapView.addZooMapIcon(0, 0);
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -109,10 +107,10 @@ public class MapActivity extends ProviderBasedActivity
             bl.getImage(enclosures[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
-                    mapView.addEnclosureIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            enclosures[finalI],
-                            enclosures[finalI].getMarkerLongtitude(),
-                            enclosures[finalI].getMarkerLatitude());
+                    mapView.addEnclosure(enclosures[finalI],
+                            new BitmapDrawable(getResources(), (Bitmap) response),
+                            enclosures[finalI].getMarkerX(),
+                            enclosures[finalI].getMarkerY());
                 }
 
                 @Override
