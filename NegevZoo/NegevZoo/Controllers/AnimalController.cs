@@ -37,7 +37,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language:" + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -60,35 +60,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language:" + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-        /// <summary>
-        /// Gets animal by its Id, in the given language.
-        /// </summary>
-        /// <param name="id">The animal's Id.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The animal with the Id with that language.</returns>
-        [HttpGet]
-        [Route("animals/animalId/{animalId}/{language}")]
-        public AnimalResult GetAnimalById(int animalId, int language)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalById(animalId, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message ,Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
+        
         /// <summary>
         /// Gets all the animals that corresponds to the eclosure animalId and the give langauge.
         /// </summary>
@@ -108,35 +84,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id:" + encId + ", language" + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-        /// <summary>
-        /// Gets AnimalResult of the animals that conatin the given name, in the given language.
-        /// </summary>
-        /// <param name="name">The animal's name.</param>
-        /// <param name="language">The data language.</param>
-        /// <returns>The AnimalReuslts of the animals that contain the given name with the Id with that language.</returns>
-        [HttpGet]
-        [Route("animals/name/{name}/{language}")]
-        public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAnimalByName(name, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
+        
         #endregion
 
         /// <summary>
@@ -157,7 +109,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -179,7 +131,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Animal Id:" + animalId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -203,7 +155,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id:" + encId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -230,7 +182,9 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                string animalInput = "Id: " + animal.id + ", name: " + animal.name + ", encId: " + animal.enclosureId + ", preservation: " + animal.preservation + ", picutre URL: " + animal.pictureUrl;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Animal: " + animalInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -253,7 +207,9 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                string AnimalDetailInput = "id: " + animalsDetails.animalId + ", name: " + animalsDetails.name + ", category: " + animalsDetails.category + ", distribution: " + animalsDetails.distribution + ", family: " + animalsDetails.family + ", food: " + animalsDetails.food + animalsDetails.reproduction + ", series: " + animalsDetails.series + ", language: " + animalsDetails.language; 
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "AnimalDetails: " + AnimalDetailInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -275,7 +231,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Animal Id: " + animalId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -310,7 +266,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Path: " + path);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
