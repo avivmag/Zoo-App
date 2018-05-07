@@ -13,17 +13,23 @@ namespace DAL
         private static String filePath;
         private static DateTime date;
 
-        protected Logger()
+        protected Logger(string path = null)
         {
             date        = DateTime.Today;
-            filePath    = String.Format(@"c:\Zoo-Logs\{0}.log", date.ToString("yyyy-MM-dd"));
+            filePath    =  path ?? String.Format(Properties.Settings.Default.PathLog+"{0}.log", date.ToString("yyyy-MM-dd"));
         }
 
-        public static Logger GetInstance()
+        public static Logger GetInstance(bool isTesting)
         {
             if (logger == null || date != DateTime.Today)
             {
-                logger      = new Logger();
+                //settig the path to testing if needed
+                string path = null;
+                if (isTesting)
+                {
+                    path = String.Format(Properties.Settings.Default.TestLog+"{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
+                }
+                logger      = new Logger(path);
             }
 
             return logger;

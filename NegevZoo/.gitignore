@@ -8,3 +8,5 @@ NegevZoo/assets/*
 **/Web.Release.config
 WorkersSite/index.local.html
 WorkersSite/app.config.local.js
+DAL/Properties/Settings.settings
+DAL/Properties/Settings.Designer.cs

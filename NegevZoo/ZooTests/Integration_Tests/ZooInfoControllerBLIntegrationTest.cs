@@ -795,36 +795,6 @@ namespace ZooTests
         }
         #endregion
         
-        #region GetSpecialEventsByDates
-        [TestMethod]
-        public void GetSpecialEventsByDates()
-        {
-            var specialEvents = ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018, 03, 01), new DateTime(2018, 03, 31), (int)Languages.en);
-
-            Assert.AreEqual(2, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
-
-            specialEvents = ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018, 03, 02), new DateTime(2018, 03, 31), (int)Languages.en);
-            Assert.AreEqual(1, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
-            Assert.IsFalse(specialEvents.Any(se => se.description == "Purim Events"));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAllSpecialEventsByDatesWrongDates()
-        {
-            ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018, 03, 31), new DateTime(2018, 03, 01), nonExistantLangauge);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAllSpecialEventsByDatesLanguageNotExists()
-        {
-            ZooInfoController.GetAllSpecialEventsByDates(new DateTime(2018, 03, 01), new DateTime(2018, 03, 31), nonExistantLangauge);
-        }
-        #endregion
-
         #region UpdateSpecialEvent
 
         [TestMethod]

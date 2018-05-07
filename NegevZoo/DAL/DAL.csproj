@@ -126,6 +126,11 @@
     <Compile Include="Price.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RecommendedRoute.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
@@ -162,6 +167,10 @@
       <DependentUpon>NegevZooDB.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="NegevZooDB.Context.tt">

@@ -87,44 +87,7 @@ namespace ZooTests
         }
 
         #endregion
-
-        #region GetAnimalById
-        [TestMethod]
-        public void GetAnimalByIdValidInput()
-        {
-            var animal = animalsController.GetAnimalById(1, (int)Languages.en);
-            Assert.IsInstanceOfType(animal, typeof(AnimalResult));
-
-            Assert.AreEqual(1, animal.Id);
-            Assert.AreEqual("Olive Baboon", animal.Name);
-        }
-
-        [TestMethod]
-        public void GetAnimalByIdNoDataInWantedLang()
-        {
-            var animal = animalsController.GetAnimalById(1, (int)Languages.ar);
-            Assert.IsInstanceOfType(animal, typeof(AnimalResult));
-
-            Assert.AreEqual(1, animal.Id);
-            Assert.AreEqual("בבון הזית", animal.Name);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByIdWrongId()
-        {
-            animalsController.GetAnimalById(-4, (int)Languages.he);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByIdLanguageNotExist()
-        {
-            animalsController.GetAnimalById(2, nonExistantLang);
-        }
-
-        #endregion
-
+        
         #region GetAnimalResultByEnclosure
         [TestMethod]
         public void GetAnimalResultByEnclosureValidInput()
@@ -151,56 +114,7 @@ namespace ZooTests
         }
 
         #endregion
-
-        #region GetAnimalByName
-        [TestMethod]
-        public void GetAnimalByNameValidInputFullName()
-        {
-            var animals = animalsController.GetAnimalByName("בבון הזית", (int)Languages.he);
-            Assert.AreEqual(1, animals.Count());
-
-            var olive = animals.SingleOrDefault(a => a.Name == "בבון הזית");
-            Assert.AreEqual(olive.Id, 1);
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameValidInputPartName()
-        {
-            var animals = animalsController.GetAnimalByName("on", (int)Languages.en);
-            Assert.AreEqual(2, animals.Count());
-
-            var olive = animals.SingleOrDefault(a => a.Name == "Olive Baboon");
-            Assert.AreEqual(olive.Id, 1);
-
-            var monkey = animals.SingleOrDefault(a => a.Name == "Monkey");
-            Assert.AreEqual(monkey.Id, 3);
-
-            var gorila = animals.SingleOrDefault(a => a.Name == "Gorilla");
-            Assert.IsNull(gorila);
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameValidNameWrongLang()
-        {
-            var animals = animalsController.GetAnimalByName("on", (int)Languages.he);
-            Assert.AreEqual(0, animals.Count());
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameAnimalNameDoesntexists()
-        {
-            var animals = animalsController.GetAnimalByName("abcdefghijklmnop", (int)Languages.en);
-            Assert.AreEqual(0, animals.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetAnimalByNameLanguageNotExist()
-        {
-            animalsController.GetAnimalByName("Monkey", nonExistantLang);
-        }
-        #endregion
-
+        
         #region GetAllAnimal
         [TestMethod]
         public void GetAllAnimal()
