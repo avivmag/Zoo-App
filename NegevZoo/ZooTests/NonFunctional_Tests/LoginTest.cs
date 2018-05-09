@@ -21,7 +21,7 @@ namespace ZooTests.NonFunctional_Tests
             var resp2 = client.GetAsync("users/login/gil/gil").Result;
             timer.Stop();
             Assert.IsTrue(resp2.IsSuccessStatusCode);
-            Assert.IsTrue(3000 > timer.ElapsedMilliseconds);
+            Assert.IsTrue(8000 > timer.ElapsedMilliseconds);
         }
     }
 }

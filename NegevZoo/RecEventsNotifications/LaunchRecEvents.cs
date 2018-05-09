@@ -35,9 +35,9 @@ namespace RecEventsNotifications
             {
                 using (context = new ZooContext(false))
                 {
-                    Logger.GetInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
+                    Logger.GetInstance(false).WriteLine("Calling Web API to send notifications about RecurringEvents");
                     context.SendNotificationsOnlineDevicesRecurringEvents();
-                    Logger.GetInstance().WriteLine("Package Sent");
+                    Logger.GetInstance(false).WriteLine("Package Sent");
                 }
             }
         }

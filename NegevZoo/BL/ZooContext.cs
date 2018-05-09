@@ -35,7 +35,7 @@ namespace BL
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new Exception("Could not connect to the database");
             }
         }
@@ -107,97 +107,6 @@ namespace BL
             return enclosureResults.ToArray();
         }
         
-        /// <summary>
-        /// Gets the enclosure by id.
-        /// </summary>
-        /// <param name="language">The enclosure's data language.</param>
-        /// <param name="id">The enclosure's id.</param>
-        /// <returns>The enclosure.</returns>
-        /// 
-        public EnclosureResult GetEnclosureById(int id, int language)
-        {
-            //validate atrributes
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            Enclosure enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.id == id);
-            
-            //check that the enclosure exists
-            if (enc == null)
-            {
-                throw new ArgumentException("Wrong input. enclosure id doesn't exists");
-            }
-
-            EnclosureDetail details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == language);
-
-            //in case that there isn't data in the wanted language than taking the hebrew data.
-            if (details == null)
-            {
-                var hebrewLang = GetHebewLanguage();
-                details = zooDB.GetAllEnclosureDetails().SingleOrDefault(e => e.encId == id && e.language == hebrewLang);
-            }
-
-            var enclosureResult = new EnclosureResult
-            {
-                Id = enc.id,
-                Name = details?.name,
-                Story = details?.story,
-                MarkerLatitude = enc.markerLatitude,
-                MarkerLongtitude = enc.markerLongitude,
-                MarkerIconUrl = enc.markerIconUrl,
-                PictureUrl = enc.pictureUrl,
-                Language = details == null ? GetHebewLanguage() : details.language 
-            };
-
-            return enclosureResult; 
-        }
-        
-        /// <summary>
-        /// Gets the enclosure by it's name.
-        /// </summary>
-        /// <param name="language">The enclosure's data language.</param>
-        /// <param name="name">The enclosure's name.</param>
-        /// <returns>The enclosure.</returns>
-        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language)
-        {
-            var enclosureResults = new List<EnclosureResult>();
-
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            var encDetails = zooDB.GetAllEnclosureDetails().Where(e => e.name.Contains(name));
-
-            // it there are details in the name and language
-            if (encDetails != null)
-            {
-                foreach(EnclosureDetail details in encDetails)
-                {
-                    enclosureResults.Add(GetEnclosureById((int)details.encId ,language));
-                }
-
-            }
-
-            return enclosureResults;
-        }
-
-        /// <summary>
-        /// Gets the enclosure by longtitude and latitude.
-        /// </summary>
-        /// <param name="language">The enclosure's data language.</param>
-        /// <param name="longtitud">The enclosure's longtitude.</param>
-        /// <param name="latitude">The enclosure's latitude.</param>
-        /// <returns>The enclosure.</returns>
-        public Enclosure GetEnclosureByPosition(double longtitud, double latitude, int language)
-        {
-            return zooDB.GetAllEnclosures().SingleOrDefault(e => /*e.language == language &&*/
-                                                            (e.markerLongitude <= longtitud + 5 && e.markerLongitude >= longtitud - 5) &&
-                                                            (e.markerLatitude <= latitude + 5 && e.markerLatitude >= latitude - 5) );
-        }
-
         /// <summary>
         /// Gets the enclosures types results.
         /// </summary>
@@ -714,7 +623,7 @@ namespace BL
         }
 
         /// <summary>
-        /// Gets animal by Id and language.
+        /// This mothod is for the server use. Gets animal by Id and language. public for testing purposes
         /// </summary>
         /// <param name="id">The animal's Id.</param>
         /// <param name="language">The data's language</param>
@@ -797,36 +706,7 @@ namespace BL
 
             return animalsResult;
         }
-
-        /// <summary>
-        /// Gets all the animals that their name conatins the given name in the wanted language.
-        /// </summary>
-        /// <param name="language">The data's language</param>
-        /// <param name="name">The animal's name.</param>
-        /// <returns>The AnimalResult.</returns>
-        public IEnumerable<AnimalResult> GetAnimalByName(string name, int language)
-        {
-            var animalResult = new List<AnimalResult>();
-
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            var anDetails = zooDB.GetAllAnimalsDetails().Where(ad => ad.name.Contains(name) && ad.language == language);
-
-            // it there are details in the name and language
-            if (anDetails != null)
-            {
-                foreach (AnimalDetail details in anDetails)
-                {
-                    animalResult.Add(GetAnimalById((int)details.animalId, language));
-                }
-            }
-
-            return animalResult;
-        }
-
+        
         /// <summary>
         /// Gets all the animals types.
         /// </summary>
@@ -1389,35 +1269,7 @@ namespace BL
 
             return zooDB.GetAllSpecialEvents().Where(se => se.language == language).ToArray();
         }
-
-        /// <summary>
-        /// Gets SpecialEvent elements between two dates.
-        /// returns an element only if all the event is between the given dates
-        /// </summary>
-        /// <param name="language">The SpecialEvent's data language.</param>
-        /// <param name="startDate">The start date to look for</param>
-        /// <param name="endDate">The end date to look for</param>
-        /// <returns>SpecialEvent elemtents that are within the dates.</returns>
-        public IEnumerable<SpecialEvent> GetSpecialEventsByDate(DateTime startDate, DateTime endDate, int language)
-        {
-            //validate attributes
-            //1. validate language
-            if (!ValidLanguage(language))
-            {
-                throw new ArgumentException("Wrong input. Wrong language.");
-            }
-
-            //2. validate the dates.
-            if (DateTime.Compare(endDate,startDate) <= 0)
-            {
-                throw new ArgumentException("Wrong input. the end date is sooner than the start date");
-            }
-
-            return zooDB.GetAllSpecialEvents().Where(se => se.language == language && 
-                                                     se.startDate >= startDate &&
-                                                     se.endDate <= endDate).ToArray();
-        }
-
+        
         /// <summary>
         /// Adds or update the SpecialEvents element.
         /// </summary>

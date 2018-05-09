@@ -793,37 +793,7 @@ namespace ZooTests.Unit_Tests
             context.GetAllSpecialEvents(nonExistantLangauge);
         }
         #endregion
-
-        #region GetSpecialEventsByDates
-        [TestMethod]
-        public void GetSpecialEventsByDates()
-        {
-            var specialEvents = context.GetSpecialEventsByDate(new DateTime(2018, 03, 01), new DateTime(2018, 03, 31), (int)Languages.en);
-
-            Assert.AreEqual(2, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
-
-            specialEvents = context.GetSpecialEventsByDate(new DateTime(2018, 03, 02), new DateTime(2018, 03, 31), (int)Languages.en);
-            Assert.AreEqual(1, specialEvents.Count());
-            Assert.IsTrue(specialEvents.Any(se => se.description == "Kaki1"));
-            Assert.IsFalse(specialEvents.Any(se => se.description == "Purim Events"));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input. the end date is sooner than the start date")]
-        public void GetAllSpecialEventsByDatesWrongDates()
-        {
-            context.GetSpecialEventsByDate(new DateTime(2018, 03, 31), new DateTime(2018, 03, 01), nonExistantLangauge);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language.")]
-        public void GetAllSpecialEventsByDatesLanguageNotExists()
-        {
-            context.GetSpecialEventsByDate(new DateTime(2018, 03, 01), new DateTime(2018, 03, 31), nonExistantLangauge);
-        }
-        #endregion
-
+        
         #region UpdateSpecialEvent
 
         [TestMethod]

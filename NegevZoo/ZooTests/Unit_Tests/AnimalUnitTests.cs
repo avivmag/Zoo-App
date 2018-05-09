@@ -150,55 +150,6 @@ namespace ZooTests.Unit_Tests
 
         #endregion
 
-        #region GetAnimalByName
-        [TestMethod]
-        public void GetAnimalByNameValidInputFullName()
-        {
-            var animals = context.GetAnimalByName("בבון הזית", (int)Languages.he);
-            Assert.AreEqual(1, animals.Count());
-
-            var olive = animals.SingleOrDefault(a => a.Name == "בבון הזית");
-            Assert.AreEqual(olive.Id, 1);
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameValidInputPartName()
-        {
-            var animals = context.GetAnimalByName("on", (int)Languages.en);
-            Assert.AreEqual(2, animals.Count());
-
-            var olive = animals.SingleOrDefault(a => a.Name == "Olive Baboon");
-            Assert.AreEqual(olive.Id, 1);
-
-            var monkey = animals.SingleOrDefault(a => a.Name == "Monkey");
-            Assert.AreEqual(monkey.Id, 3);
-
-            var gorila = animals.SingleOrDefault(a => a.Name == "Gorilla");
-            Assert.IsNull(gorila);
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameValidNameWrongLang()
-        {
-            var animals = context.GetAnimalByName("on", (int)Languages.he);
-            Assert.AreEqual(0, animals.Count());
-        }
-
-        [TestMethod]
-        public void GetAnimalByNameAnimalNameDoesntexists()
-        {
-            var animals = context.GetAnimalByName("abcdefghijklmnop", (int)Languages.en);
-            Assert.AreEqual(0, animals.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language.")]
-        public void GetAnimalByNameLanguageNotExist()
-        {
-            context.GetAnimalByName("Monkey", nonExistantLang);
-        }
-        #endregion
-
         #region GetAllAnimal
         [TestMethod]
         public void GetAllAnimal()

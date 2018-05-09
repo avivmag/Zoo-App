@@ -37,7 +37,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -60,7 +60,10 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var priceInput = "Id: " + price.id + ", population: " + price.population +
+                    ", price: " + price.pricePop + ", language: " + price.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Price: " + priceInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -83,7 +86,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + priceId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -112,7 +115,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -136,7 +139,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -159,7 +162,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var openingInput = "Id: " + openingHour.id + ", day: " + openingHour.day +
+                    ", start time: "+ openingHour.startTime + ", end time: "+ openingHour.endTime +
+                    ", language: "+ openingHour.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour: " + openingInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -182,7 +189,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + openHourId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -209,7 +216,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -231,7 +238,10 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var contactInput = "Id: " + contactInfo.id + ", via: " + contactInfo.via + 
+                    ", address: " + contactInfo.address +", lanaguage: "+ contactInfo.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info: " + contactInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -253,7 +263,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + contactId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -280,37 +290,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         
-        //TODO: should this function return SpecialEvent only if all of it contained in the given dates or only one day is enough
-        /// <summary>
-        /// Gets SpecialEvent elements between the wanted dates with data in that language.
-        /// </summary>
-        /// <param name="language">The data language. Default is Hebrew</param>
-        /// <param name="startDate">The start date to look for</param>
-        /// <param name="endDate">The end date to look for</param>
-        /// <returns>All SpecialEvent elements with that language.</returns>
-        [HttpGet]
-        [Route("SpecialEvents/date/{startDate}/{endDate}/{language}")]
-        public IEnumerable<SpecialEvent> GetAllSpecialEventsByDates(DateTime startDate, DateTime endDate, int language = 1)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetSpecialEventsByDate(startDate, endDate, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
         /// <summary>
         /// Adds or Updates the SpecialEvent element.
         /// </summary>
@@ -330,7 +314,12 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var specialInput = "Id: " + specialEvent.id + ", title: " + specialEvent.title + 
+                    ", description: " + specialEvent.description + ", start date: " + specialEvent.startDate + 
+                    ", end date: " + specialEvent.endDate + ", image Url: " + specialEvent.imageUrl + 
+                    ", language: " + specialEvent.language + ", is push: " +isPush;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Special Event:" + specialInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -352,7 +341,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + specialEventId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -377,7 +366,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -403,7 +392,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Langauge: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -428,7 +417,10 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var feedInput = "Id: " + feed.id + ", title: " + feed.title + ", info: " + feed.info + 
+                    ", created: " + feed.created + ", langauge: " + feed.language + ", is push "+ isPush + 
+                    ", is wall feed: " + isWallFeed;
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -450,7 +442,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + feedId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -483,7 +475,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -506,7 +498,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "About info: " + info + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -535,7 +527,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -558,7 +550,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour note: " + note + ", langauge: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -587,7 +579,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -610,7 +602,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info note: " + note + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -638,7 +630,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -663,7 +655,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
