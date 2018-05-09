@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.map.icons;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.zoovisitors.pl.map.MapView;
@@ -24,8 +25,10 @@ public class VisitorIcon extends ImageIcon {
 
     public void UpdateVisitorLocation(int left, int top) {
         // TODO: fix this.
+        Log.e("AVIV", "left, top " + left + ":" + top);
         this.left = mapView.getIconsOffsetLeft(left);
         this.top = mapView.getIconsOffsetTop(top);
+
         mapView.updateIconPositionWithSize(this);
     }
 
