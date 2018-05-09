@@ -37,7 +37,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -164,7 +164,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -188,7 +188,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -210,7 +210,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -228,7 +228,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
