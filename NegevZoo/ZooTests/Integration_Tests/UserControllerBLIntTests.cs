@@ -292,7 +292,46 @@ namespace ZooTests
 
         #region UpdateUserPassword
         [TestMethod]
-        public void UpdateUserPasswordValidInput()
+        public void UpdateUserPasswordValidInputAdmin()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            var user = users.Single(u => u.id == 2);
+            var userName = user.name;
+            var oldPass = user.password;
+            
+            usersController.UpdateUserPassword(2, "321");
+
+            users = usersController.GetAllUsers();
+            Assert.IsFalse(users.Any(u => u.password == oldPass && u.name == userName));
+            Assert.IsNotNull(usersController.Login(userName, "321"));
+            Assert.AreEqual(4, users.Count());
+        }
+
+        [TestMethod]
+        public void UpdateUserPasswordValidInputUser()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            var user = users.Single(u => u.id == 1);
+            var userName = user.name;
+            var oldPass = user.password;
+
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
+            usersController.UpdateUserPassword(1, "321");
+
+            users = usersController.GetAllUsers();
+            Assert.IsFalse(users.Any(u => u.password == oldPass && u.name == userName));
+            Assert.IsNotNull(usersController.Login(userName, "321"));
+            Assert.AreEqual(4, users.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserPasswordValidUnathorized()
         {
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
@@ -301,6 +340,8 @@ namespace ZooTests
             var userName = user.name;
             var oldPass = user.password;
 
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
             usersController.UpdateUserPassword(2, "321");
 
             users = usersController.GetAllUsers();
