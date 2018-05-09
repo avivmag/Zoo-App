@@ -25,6 +25,7 @@
         <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.625" PointY="7.875" />
         <EntityTypeShape EntityType="NegevZooModel.Device" Width="1.5" PointX="11.375" PointY="3.75" />
         <EntityTypeShape EntityType="NegevZooModel.MapInfo" Width="1.5" PointX="4.75" PointY="7.75" />
+        <EntityTypeShape EntityType="NegevZooModel.UserSession" Width="1.5" PointX="7.5" PointY="9.375" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -11,6 +11,8 @@ using BL;
 using System.Web;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
 
 namespace NegevZoo.Controllers
 {
@@ -143,6 +145,7 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
 
         /// <summary>
         /// Gets the enclosure's videos urls by it's encId.
@@ -185,7 +188,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateEnclosure(enclosure);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateEnclosure(enclosure);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }                    
+
                 }
 
             }
@@ -213,7 +224,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateEnclosureDetails(enclosureDetail);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateEnclosureDetails(enclosureDetail);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -239,7 +257,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    return db.UpdateEnclosureVideo(enclosureVideo);
+                    if (ValidateSessionId(db))
+                    {
+                        return db.UpdateEnclosureVideo(enclosureVideo);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -264,7 +289,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateRecurringEvent(recEvent);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateRecurringEvent(recEvent);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -293,7 +325,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosure(encId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosure(encId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -316,7 +355,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosurePicture(enclosureId, pictureId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosurePicture(enclosureId, pictureId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -339,7 +385,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosureVideo(enclosureId, enclosureVideoId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosureVideo(enclosureId, enclosureVideoId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -358,7 +411,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteRecurringEvent(enclosureId, eventId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteRecurringEvent(enclosureId, eventId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -383,6 +443,12 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
+                    // check that the session is leagal
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+                    
                     // Get the enclosure.
                     var enclosure = db.GetAllEnclosures().SingleOrDefault(e => e.id == enclosureId);
                     
@@ -425,6 +491,11 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
                     var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
 
                     return responseObject;
@@ -438,5 +509,6 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+        
     }
 }

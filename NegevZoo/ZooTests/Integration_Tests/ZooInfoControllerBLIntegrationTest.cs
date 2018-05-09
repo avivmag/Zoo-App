@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace ZooTests
@@ -10,16 +11,20 @@ namespace ZooTests
     [TestClass]
     public class ZooInfoControllerBlIntegrationTest
     {
+        #region SetUp and TearDown
+
         private ZooInfoController ZooInfoController;
         private int nonExistantLangauge;
 
-        #region SetUp and TearDown
         [TestInitialize]
         public void SetUp()
         {
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             ZooInfoController = new ZooInfoController();
+            ZooInfoController.Request = new HttpRequestMessage();
+            ZooInfoController.Request.Headers.Add("Cookie", "session-id=123");
+            ZooInfoController.Request.RequestUri = new Uri("http://localhost:50000");
             nonExistantLangauge = 100;
         }
 

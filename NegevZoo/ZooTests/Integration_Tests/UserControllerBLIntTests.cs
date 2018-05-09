@@ -5,25 +5,31 @@ using DAL;
 using BL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NegevZoo.Controllers;
+using System.Net.Http;
 
 namespace ZooTests
 {
     [TestClass]
     public class UserControllerBlIntegrationTests
     {
-        private UserController usersController;
-        
+
         #region SetUp and TearDown
+
+        private UserController usersController;
+
         [TestInitialize]
         public void SetUp()
         {
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             usersController = new UserController();
+            usersController.Request = new HttpRequestMessage();
+            usersController.Request.Headers.Add("Cookie","session-id=123");
+            usersController.Request.RequestUri = new Uri("http://localhost:50000");
         }
 
         [TestCleanup]
-        public void EnclosureCleanUp()
+        public void UserCleanUp()
         {
             DummyDB.CleanDb();
         }
@@ -43,14 +49,15 @@ namespace ZooTests
         public void LoginValidTest()
         {
             var users = usersController.GetAllUsers();
+            
+            var gilUser = users.SingleOrDefault(u => u.name == "גיל");
 
-            var orUser = users.SingleOrDefault(u => u.name == "אור");
-
-            Assert.IsNotNull(orUser);
-            Assert.IsTrue(usersController.Login(orUser.name, "123"));
+            Assert.IsNotNull(gilUser);
+            Assert.IsNotNull(usersController.Login(gilUser.name, "123"));
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void LoginWrongPassword()
         {
             var users = usersController.GetAllUsers();
@@ -58,10 +65,11 @@ namespace ZooTests
             var orUser = users.SingleOrDefault(u => u.name == "אור");
 
             Assert.IsNotNull(orUser);
-            Assert.IsFalse(usersController.Login(orUser.name, "123a"));
+            usersController.Login(orUser.name, "123a");
         }
 
         [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
         public void LoginWrongUserName()
         {
             var users = usersController.GetAllUsers();
@@ -69,38 +77,13 @@ namespace ZooTests
             var orUser = users.SingleOrDefault(u => u.name == "אור");
 
             Assert.IsNotNull(orUser);
-            Assert.IsFalse(usersController.Login(orUser.name + "k", "123a"));
+            usersController.Login(orUser.name + "k", "123a");
         }
-        #endregion
-
-        #region GetUserByNameAndPass
-        [TestMethod]
-        public void GetUserByNameAndPassValidTest()
-        {
-            var orUser= usersController.GetUserByNameAndPass("אור","123");
-
-            Assert.IsNotNull(orUser);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetUserByNameAndPassWrongName()
-        {
-            var orUser = usersController.GetUserByNameAndPass("אור"+"g", "123");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetUserByNameAndPassWrongPass()
-        {
-            var orUser = usersController.GetUserByNameAndPass("אור", "123a");
-        }
-
         #endregion
         
         #region AddUser
         [TestMethod]
-        public void UpdateUserAddAnValidTest()
+        public void AddUserValidTest()
         {
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
@@ -116,9 +99,34 @@ namespace ZooTests
             usersController.AddUser(user);
 
             users = usersController.GetAllUsers();
+            Assert.IsNotNull(usersController.Login("gili", "123"));
             Assert.AreEqual(5, users.Count());
         }
-        
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void AddUserUnauthorized()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            var user = new User
+            {
+                id = default(int),
+                isAdmin = false,
+                name = "gili",
+                password = "123"
+            };
+
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
+            usersController.AddUser(user);
+
+            users = usersController.GetAllUsers();
+            Assert.IsNotNull(usersController.Login("gili", "123"));
+            Assert.AreEqual(5, users.Count());
+        }
+
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateUserWrongNameWhiteSpaces()
@@ -212,7 +220,7 @@ namespace ZooTests
 
         #region UpdateUserName
         [TestMethod]
-        public void UpdateUserNameValidInput()
+        public void UpdateUserNameValidInputAdmin()
         {
             var users= usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
@@ -220,9 +228,44 @@ namespace ZooTests
             usersController.UpdateUserName(2, "גיל המלך");
 
             users = usersController.GetAllUsers();
-            Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
             Assert.IsFalse(users.Any(a => a.name == "גיל"));
+
+            var gilUser = users.SingleOrDefault(a => a.name == "גיל המלך");
+            Assert.IsNotNull(gilUser);
+            Assert.IsNotNull(usersController.Login("גיל המלך", "123"));
             Assert.AreEqual(4, users.Count());
+        }
+
+        [TestMethod]
+        public void UpdateUserNameValidInputUser()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
+            usersController.UpdateUserName(1, "אור המלך");
+            
+            users = usersController.GetAllUsers();
+            Assert.IsFalse(users.Any(a => a.name == "אור"));
+
+            var orUser = users.SingleOrDefault(a => a.name == "אור המלך");
+            Assert.IsNotNull(orUser);
+            Assert.IsNotNull(usersController.Login("אור המלך", "123"));
+            Assert.AreEqual(4, users.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void UpdateUserNameUnahtorized()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
+            usersController.UpdateUserName(2, "אור המלך");
+            
         }
 
         [TestMethod]
@@ -254,11 +297,15 @@ namespace ZooTests
             var users = usersController.GetAllUsers();
             Assert.AreEqual(4, users.Count());
 
+            var user = users.Single(u => u.id == 2);
+            var userName = user.name;
+            var oldPass = user.password;
+
             usersController.UpdateUserPassword(2, "321");
 
             users = usersController.GetAllUsers();
-            Assert.IsTrue(usersController.Login("גיל", "321"));
-            Assert.IsFalse(usersController.Login("גיל", "123"));
+            Assert.IsFalse(users.Any(u => u.password == oldPass && u.name == userName));
+            Assert.IsNotNull(usersController.Login(userName, "321"));
             Assert.AreEqual(4, users.Count());
         }
 
@@ -287,6 +334,24 @@ namespace ZooTests
             var user = users.SingleOrDefault(en => en.name == "עובד");
             Assert.IsNotNull(user);
 
+            usersController.DeleteUser((int)user.id);
+            users = usersController.GetAllUsers();
+
+            Assert.AreEqual(3, users.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpResponseException))]
+        public void DeleteUserUnauthorized()
+        {
+            var users = usersController.GetAllUsers();
+            Assert.AreEqual(4, users.Count());
+
+            var user = users.SingleOrDefault(en => en.name == "עובד");
+            Assert.IsNotNull(user);
+
+            usersController.Request.Headers.Remove("Cookie");
+            usersController.Request.Headers.Add("Cookie", "session-id=1234");
             usersController.DeleteUser((int)user.id);
             users = usersController.GetAllUsers();
 

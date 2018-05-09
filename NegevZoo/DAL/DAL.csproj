@@ -148,6 +148,9 @@
     <Compile Include="User.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserSession.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="WallFeed.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>

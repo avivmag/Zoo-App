@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Web;
 using System.Web.Http;
 using DAL;
@@ -177,7 +178,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateAnimal(animal);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateAnimal(animal);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -202,7 +210,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateAnimalDetails(animalsDetails);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateAnimalDetails(animalsDetails);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -226,7 +241,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteAnimal(animalId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteAnimal(animalId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -261,7 +283,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    return db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/');
+                    if (ValidateSessionId(db))
+                    {
+                        return db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/');
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)

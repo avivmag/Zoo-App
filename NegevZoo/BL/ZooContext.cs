@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +14,7 @@ using DAL;
 using DAL.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 namespace BL
 {
@@ -148,7 +150,7 @@ namespace BL
 
             return zooDB.GetAllRecuringEvents().Where(re => re.language == language && re.enclosureId == encId).ToList();
         }
-   
+
         /// <summary>
         /// Gets the enclosure's pictures by it's id.
         /// </summary>
@@ -1798,22 +1800,30 @@ namespace BL
         /// <param name="userName">The wanted user name</param>
         /// <param name="password">The user's password</param>
         /// <returns>a boolean that indicates if the proccess succeded.</returns>
-        public bool Login(string userName, string password)
+        public string Login(string userName, string password)
         {
             //check that the user exsits
             User user = GetAllUsers().SingleOrDefault(u => u.name == userName);
 
             if (user == null)
             {
-                return false;
+                return null;
             }
 
             if (VerifyMd5Hash(password + user.salt, user.password))
             {
-                return true;
+                var session = new UserSession
+                {
+                    userId      = (int)user.id,
+                    sessionId   = Guid.NewGuid().ToString()
+                };
+
+                zooDB.GetAllUserSessions().Add(session);
+
+                return session.sessionId;
             }
 
-            return false;
+            return null;
         }
 
         /// <summary>
@@ -1850,7 +1860,7 @@ namespace BL
         /// </summary>
         /// <param name="id"> Represents the id of the user that changes the name</param>
         /// <param name="userName"> Represents the new user name that should be saved</param>
-        public void UpdateUserName(int id, string userName)
+        public void UpdateUserName(int id, string userName, string sessionId)
         {
             var allUsers = zooDB.GetAllUsers();
 
@@ -1875,10 +1885,34 @@ namespace BL
                 throw new ArgumentException("Wrong input . The user name already exists");
             }
 
+            //4. check that the sessino exsits
+            if (sessionId == null)
+            {
+                throw new AuthenticationException("Couldn't validate the session");
+            }
+
+            //5. check that the connected user can edit this user.
+            var session = zooDB.GetAllUserSessions().SingleOrDefault(us => us.sessionId == sessionId);
+            if (session == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            var connectedUser = allUsers.SingleOrDefault(u => u.id == session.userId);
+            if (connectedUser == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            if (connectedUser.id != user.id && !connectedUser.isAdmin)
+            {
+                throw new InvalidOperationException("The connected user is not allowed to edit this user");
+            }
+
             user.name = userName;
         }
 
-        public void UpdateUserPassword(int id, string password)
+        public void UpdateUserPassword(int id, string password, string sessionId)
         {
             var allUsers = zooDB.GetAllUsers();
 
@@ -1897,6 +1931,30 @@ namespace BL
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
+            //3. check that the sessino exsits
+            if (sessionId == null)
+            {
+                throw new AuthenticationException("Couldn't validate the session");
+            }
+
+            //5. check that the connected user can edit this user.
+            var session = zooDB.GetAllUserSessions().SingleOrDefault(us => us.sessionId == sessionId);
+            if (session == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            var connectedUser = allUsers.SingleOrDefault(u => u.id == session.userId);
+            if (connectedUser == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            if (connectedUser.id != user.id && !connectedUser.isAdmin)
+            {
+                throw new InvalidOperationException("The connected user is not allowed to edit this user");
+            }
+            
             user.salt       = GenerateSalt();
             user.password   = GetMd5Hash(password + user.salt);
         }
@@ -1905,7 +1963,7 @@ namespace BL
         /// Updates The User.
         /// </summary>
         /// <param name="userWorker">The UserWorker to add or update.</param>
-        public void AddUser(User userWorker)
+        public void AddUser(User userWorker, string sessionId)
         {
             //check the attributes
             // 0.Exists
@@ -1913,29 +1971,51 @@ namespace BL
             {
                 throw new ArgumentException("No UserWorker given");
             }
+            
+            //1. check that the session exsits
+            if (sessionId == null)
+            {
+                throw new AuthenticationException("Couldn't validate the session");
+            }
 
-            //TODO: Add an authorization check.
+            var users = zooDB.GetAllUsers();
 
-            // 1. Name
+            //2. check that the connected user can add a user.
+            var session = zooDB.GetAllUserSessions().SingleOrDefault(us => us.sessionId == sessionId);
+            if (session == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            var connectedUser = users.SingleOrDefault(u => u.id == session.userId);
+            if (connectedUser == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            if (!connectedUser.isAdmin)
+            {
+                throw new InvalidOperationException("The connected user is not allowed to add a user");
+            }
+            
+            // 3. Name
             if (String.IsNullOrWhiteSpace(userWorker.name))
             {
                 throw new ArgumentException("Wrong input. The user name is empty or white spaces");
             }
 
-            // 2. password
+            // 4. password
             if (String.IsNullOrWhiteSpace(userWorker.password))
             {
                 throw new ArgumentException("Wrong input. The password is empty or white spaces");
             }
 
-            // 3. check the id
+            // 5. check the id
             if (userWorker.id != default(int))
             {
                 throw new ArgumentException("Wrong input. The user id should set to default");
             }
-
-            var users = zooDB.GetAllUsers();
-
+            
             //check if the name already exists
             if (users.Any(wu => wu.name == userWorker.name))
             {
@@ -1952,9 +2032,37 @@ namespace BL
         /// Delete The User.
         /// </summary>
         /// <param name="id">The User's id to delete.</param>
-        public void DeleteUser(int UserId)
+        public void DeleteUser(int UserId, string sessionId)
         {
-            User user = zooDB.GetAllUsers().SingleOrDefault(wu => wu.id == UserId);
+            var useres = zooDB.GetAllUsers();
+
+            //1. check that the session exsits
+            if (sessionId == null)
+            {
+                throw new AuthenticationException("Couldn't validate the session");
+            }
+
+            var users = zooDB.GetAllUsers();
+
+            //2. check that the connected user can delete a user.
+            var session = zooDB.GetAllUserSessions().SingleOrDefault(us => us.sessionId == sessionId);
+            if (session == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+            
+            var connectedUser = users.SingleOrDefault(u => u.id == session.userId);
+            if (connectedUser == null)
+            {
+                throw new ArgumentException("Wrong input. Couldn't find user session");
+            }
+
+            if (!connectedUser.isAdmin)
+            {
+                throw new InvalidOperationException("The connected user is not allowed to delete a user");
+            }
+
+            User user = users.SingleOrDefault(wu => wu.id == UserId);
 
             //Check that the User exists
             if (user == null)
@@ -2367,6 +2475,16 @@ namespace BL
             }
 
             return responseObject;
+        }
+        
+        public bool ValidateSession(string sessionId)
+        {
+            if (!zooDB.GetAllUserSessions().Any(s => s.sessionId == sessionId))
+            {
+                throw new AuthenticationException("Couldn't validate the cookie token");
+            }
+
+            return true;
         }
 
         public void Dispose()

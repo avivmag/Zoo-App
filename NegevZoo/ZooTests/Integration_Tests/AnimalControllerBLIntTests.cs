@@ -5,6 +5,8 @@ using DAL;
 using System.Web.Http;
 using BL;
 using DAL.Models;
+using System.Net.Http;
+using System;
 
 namespace ZooTests
 {
@@ -21,6 +23,9 @@ namespace ZooTests
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             animalsController = new AnimalController();
+            animalsController.Request = new HttpRequestMessage();
+            animalsController.Request.Headers.Add("Cookie", "session-id=123");
+            animalsController.Request.RequestUri = new Uri("http://localhost:50000");
             nonExistantLang = 10000;
         }
 

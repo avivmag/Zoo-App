@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -54,7 +55,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdatePrice(price);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdatePrice(price);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -80,7 +88,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeletePrice(priceId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeletePrice(priceId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -156,9 +171,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHour(openingHour);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHour(openingHour);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
-
             }
             catch (Exception Exp)
             {
@@ -183,7 +204,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteOpeningHour(openHourId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteOpeningHour(openHourId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -233,7 +261,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfo(contactInfo);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfo(contactInfo);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -258,7 +293,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteContactInfo(contactId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteContactInfo(contactId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -308,7 +350,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateSpecialEvent(specialEvent, isPush);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateSpecialEvent(specialEvent, isPush);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -336,7 +385,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteSpecialEvent(specialEventId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteSpecialEvent(specialEventId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -360,6 +416,10 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                     var uploadedImages = db.FileUpload(httpRequest, @"~/assets/specialEvents/");
                     return Ok(uploadedImages);
                 }
@@ -411,8 +471,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    if (ValidateSessionId(db))
+                    {
+                        feed.created = DateTime.Today;
+                        db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -437,7 +504,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteWallFeed(feedId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteWallFeed(feedId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -493,7 +567,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateZooAboutInfo(info, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateZooAboutInfo(info, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -545,7 +626,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHourNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHourNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -597,7 +685,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfoNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfoNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
