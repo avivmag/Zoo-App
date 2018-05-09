@@ -13,6 +13,37 @@ namespace NegevZoo.Controllers
 {
     public class MapController : ControllerBase
     {
+        #region Map
+
+        /// <summary>
+        /// Uploads a new map image.
+        /// </summary>
+        [HttpPost]
+        [Route("map/upload")]
+        public void UploadMap()
+        {
+            try
+            {
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count < 1)
+                {
+                    throw new ArgumentNullException("No map file was given.");    
+                }
+
+                using (var db = GetContext())
+                {
+                    db.UploadMap(httpRequest);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        #endregion
+
         #region Map Settings
 
         /// <summary>
@@ -75,8 +106,12 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Uploads a new misc image.
+        /// </summary>
+        /// <returns>Whether the upload succeeded.</returns>
         [HttpPost]
-        [Route("map/upload")]
+        [Route("map/misc/upload")]
         public IHttpActionResult MapImagesUpload()
         {
             var httpRequest = HttpContext.Current.Request;
@@ -127,12 +162,77 @@ namespace NegevZoo.Controllers
                     return allMarkers;
                 }
             }
-            catch
+            catch (Exception Exp)
             {
-                return null;
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
+        /// <summary>
+        /// Returns all misc markers of the map.
+        /// </summary>
+        /// <returns>All misc markers of the map.</returns>
+        [HttpGet]
+        [Route("map/markers/misc")]
+        public IEnumerable<MiscMarker> GetMiscMarkers()
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    var miscMarkers = db.GetMiscMarkers();
+
+                    return miscMarkers;
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates a misc marker.
+        /// </summary>
+        /// <param name="marker">The marker to update.</param>
+        [HttpPost]
+        [Route("map/markers/misc/update")]
+        public void UpdateMiscMarker(MiscMarker marker)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.UpdateMiscMarker(marker);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        [HttpDelete]
+        [Route("map/markers/{markerId}/delete")]
+        public void DeleteMiscMarker(int markerId)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    db.DeleteMiscMarker(markerId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+        
         #endregion
     }
 }

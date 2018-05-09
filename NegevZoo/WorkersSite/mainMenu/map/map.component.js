@@ -1,42 +1,112 @@
-﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog',
-    function feedWallController($scope, $mdDialog) {
-        $scope.feedWall = [
-            { title: 'בשבוע הקרוב 50% הנחה על כל השתיה בפארק', date: '28.11.18' },
-            { title: 'קייטנת נגב זו יוצאת לדרך!', date: '28.11.18' },
-        ];
+﻿app.controller('zooMapCtrl', ['$q', '$scope', 'fileUpload', 'utilitiesService', 'mapService', 'mapViewService',
+    function mapCtrl($q, $scope, fileUpload, utilitiesService, mapService, mapViewService) {
 
-        addEmptyFeed($scope.feedWall);
+        initializeComponent();
 
-        $scope.confirmDeleteFeed = function (ev, feed, feedWall) {
-            var confirm = $mdDialog.confirm()
-                .title('האם אתה בטוח שברצונך למחוק את תוכן זה?')
-                .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
-                .targetEvent(ev)
-                .ok('אישור')
-                .cancel('ביטול');
+        $scope.updateMarkers();
 
-            $mdDialog.show(confirm).then(function () {
-                // TODO:: Remove the feed from the wall.
-                feedWall.splice(feedWall.indexOf(feed), 1);
-            }, function () {
-                console.log('the user had canceled deletion');
-            });
+        function initializeComponent() {
+            $scope.isLoading = true;
+            $scope.baseURL   = app.baseURL;
+
+            $scope.updateMarkers            = function () {
+                $scope.newMarker = { isNew: true };
+                mapService.getMiscMarkers().then(
+                    function (data) {
+                        $scope.markers      = data.data;
+                        $scope.isLoading    = false;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים')
+                        
+                        $scope.isLoading    = false;
+                    });
+            };
+
+            $scope.addMarker                = function(marker) {
+                $scope.isLoading        = true;
+                
+                var successContent      = marker.isNew ? 'האייקון נוסף בהצלחה!' : 'האייקון עודכן בהצלחה!';
+                var failContent         = marker.isNew === 'create' ? 'התרחשה שגיאה בעת שמירת האייקון' : 'התרחשה שגיאה בעת עדכון האייקון';
+            };
+
+            $scope.addMap                   = function(map) {
+                if (!angular.isDefined(map) || map === null) {
+                    return;
+                }
+    
+                $scope.isLoading        = true;
+    
+                var uploadUrl           = 'map/upload';
+    
+                var fileUploadQuery     = fileUpload.uploadFileToUrl(map, uploadUrl).then(
+                    (success)   => {
+                        $scope.mapPic               = null;
+                        $scope.isLoading            = false;
+                        utilitiesService.utilities.alert('המפה עודכנה בהצלחה');
+                    },
+                    ()          => {
+                        $scope.isLoading            = false;
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                    });    
+            }
+
+            $scope.deleteMarker             = function(markerId) {
+                $scope.isLoading        = true;
+
+                mapService.deleteMiscMarker(markerId).then(
+                    function() {
+                        utilitiesService.utilities.alert("האייקון נמחק בהצלחה!");
+                        
+                        $scope.updateMarkers();
+                    },
+
+                    function () {
+                        utilitiesService.utilities.alert("חלה שגיאה במחיקת האייקון.");
+
+                        $scope.isLoading            = false;
+                    });
+            }
+
+            $scope.openMap                  = function(ev, marker, save) {
+                mapViewService.showMap(ev, marker, 'iconUrl').then(function(clickPosition) {
+                    if (angular.isDefined(clickPosition)) {
+                        marker.longitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                        marker.latitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
+                    
+                        if (save) {
+                            $scope.markerPic = null;
+                            $scope.addMarker(marker);
+                        }
+                    }
+                });
+            }
         }
 
-        $scope.addFeedToWall = function (feed, feedWall) {
-            addEmptyFeed(feedWall);
-        }
+        function uploadIcon(icon, marker) {
+            if (!angular.isDefined(icon) || icon === null) {
+                return;
+            }
 
-        $scope.addFeed = function (feed) {
-            // TODO:: actually add the feed to the wall.
-        }
+            $scope.isLoading        = true;
 
-        function addEmptyFeed(feedWall) {
-            feedWall.push({ title: 'הקלד עדכון', isNew: true });
-        }
+            var uploadUrl           = 'map/misc/upload';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
+                (success)   => {
+                    marker.iconUrl              = success.data[0];
+
+                    $scope.iconPic              = null;
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        };
     }])
 .directive('zooMap', function () {
     return {
-        templateUrl: 'mainMenu/feedWall/feedWall.html'
+        templateUrl: 'mainMenu/map/map.html'
     };
 });

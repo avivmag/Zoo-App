@@ -122,7 +122,7 @@
           <Property Name="longitude" Type="float" Nullable="false" />
           <Property Name="latitude" Type="float" Nullable="false" />
           <Property Name="iconUrl" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="openinghours">
           <Key>
