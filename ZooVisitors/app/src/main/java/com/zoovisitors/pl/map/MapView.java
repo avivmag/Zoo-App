@@ -73,8 +73,8 @@ public class MapView extends RelativeLayout {
         mScaleFactor = mLastScaleFactor =
                 ((float) screenWidth / primaryImageWidth + (float) screenHeight /
                         primaryImageHeight) / 2;
-        maxScaleFactor = mScaleFactor + 2;
-        minScaleFactor = mScaleFactor - 2;
+        maxScaleFactor = mScaleFactor / 2;
+        minScaleFactor = mScaleFactor * 2;
     }
 
     public float getCurrentScaleFactor() {
@@ -250,13 +250,14 @@ public class MapView extends RelativeLayout {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            mScaleFactor = Math.min(
-                    Math.max(
-                            mScaleFactor * detector.getScaleFactor(),
-                            minScaleFactor),
-                    maxScaleFactor
-            );
-            Log.e("AVIV", "mScaleFactor " + mScaleFactor);
+//            mScaleFactor = Math.min(
+//                    Math.max(
+//                            mScaleFactor * detector.getScaleFactor(),
+//                            minScaleFactor),
+//                    maxScaleFactor
+//            );
+//            Log.e("AVIV", "mScaleFactor " + mScaleFactor);
+            mScaleFactor = mScaleFactor * detector.getScaleFactor();
             return true;
         }
     }

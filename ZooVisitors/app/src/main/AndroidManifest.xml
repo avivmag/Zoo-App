@@ -36,7 +36,8 @@
         <!-- <meta-data android:name="com.facebook.share" -->
 
         <activity android:name=".pl.map.MapActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
         <activity
             android:name=".pl.general_info.GeneralInfoActivity"
             android:label="@string/title_activity_general_info"
