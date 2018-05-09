@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Web;
 using System.Web.Http;
 
@@ -54,7 +55,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (ValidateSessionId(db))
+                    {
                     db.InitMapSettings(pointsFilePath, longitude, latitude, xLocation, yLocation);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -81,6 +89,11 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
                     var responseObject = db.FileUpload(httpRequest, @"~/assets/map/misc/");
 
                     return Ok(responseObject);

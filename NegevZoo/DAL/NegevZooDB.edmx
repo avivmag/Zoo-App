@@ -195,6 +195,14 @@
           <Property Name="salt" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="isAdmin" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="usersession">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="sessionId" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="wallfeeds">
           <Key>
             <PropertyRef Name="id" />
@@ -232,6 +240,7 @@
           <EntitySet Name="routes" EntityType="Self.routes" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="specialevents" EntityType="Self.specialevents" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="usersession" EntityType="Self.usersession" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="wallfeeds" EntityType="Self.wallfeeds" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="youtubevideourl" EntityType="Self.youtubevideourl" Schema="negev_zoo" store:Type="Tables" />
         </EntityContainer>
@@ -413,7 +422,8 @@
           <EntitySet Name="AnimalDetails" EntityType="NegevZooModel.AnimalDetail" />
           <EntitySet Name="EnclosureDetails" EntityType="NegevZooModel.EnclosureDetail" />
           <EntitySet Name="Devices" EntityType="NegevZooModel.Device" />
-          <EntitySet Name="mapinfo" EntityType="NegevZooModel.MapInfo" />
+          <EntitySet Name="MapInfos" EntityType="NegevZooModel.MapInfo" />
+          <EntitySet Name="UserSessions" EntityType="NegevZooModel.UserSession" />
         </EntityContainer>
         <EntityType Name="AnimalDetail">
           <Key>
@@ -468,6 +478,14 @@
           <Property Name="minLongitude" Type="Double" Nullable="false" />
           <Property Name="maxLongitude" Type="Double" Nullable="false" />
           <Property Name="yLatitudeRatio" Type="Double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserSession">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="Int32" Nullable="false" />
+          <Property Name="sessionId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -681,7 +699,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="mapinfo">
+          <EntitySetMapping Name="MapInfos">
             <EntityTypeMapping TypeName="NegevZooModel.MapInfo">
               <MappingFragment StoreEntitySet="mapinfo">
                 <ScalarProperty Name="yLatitudeRatio" ColumnName="yLatitudeRatio" />
@@ -697,6 +715,15 @@
                 <ScalarProperty Name="latitude" ColumnName="latitude" />
                 <ScalarProperty Name="longitude" ColumnName="longitude" />
                 <ScalarProperty Name="pointspath" ColumnName="pointspath" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSessions">
+            <EntityTypeMapping TypeName="NegevZooModel.UserSession">
+              <MappingFragment StoreEntitySet="usersession">
+                <ScalarProperty Name="sessionId" ColumnName="sessionId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

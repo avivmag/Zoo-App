@@ -42,6 +42,7 @@ namespace DAL
             MapInfo             = new TestDbSet<MapInfo>();
             Routes              = new TestDbSet<Route>();
             MiscMarkers         = new TestDbSet<MiscMarker>();
+            UserSessions        = new TestDbSet<UserSession>();
 
             Languages.AddRange(InitializeLanguages());
             Animals.AddRange(InitializeAnimals());
@@ -59,9 +60,10 @@ namespace DAL
             YoutubeVideoUrls.AddRange(InitializeYouTubeVidoes());
             AnimalsDetails.AddRange(InitializeAnimalsDetails());
             Devices.AddRange(InitializeDevices());
-            MapInfo.AddRange(InitalizeMapInfo());
-            Routes.AddRange(InitalizeRoutes());
+            MapInfo.AddRange(InitializeMapInfo());
+            Routes.AddRange(InitializeRoutes());
             MiscMarkers.AddRange(InitializeMiscMarkers());
+            UserSessions.AddRange(InitializeUserSessions());
         }
 
         private IZooDB CreateInstance()
@@ -107,6 +109,7 @@ namespace DAL
         protected DbSet<Device> Devices { get; set; }
         protected DbSet<MapInfo> MapInfo { get; set; }
         protected DbSet<Route> Routes { get; set; }
+        protected DbSet<UserSession> UserSessions { get; set; }
 
         #endregion 
 
@@ -1133,7 +1136,7 @@ namespace DAL
                 new User
                 {
                     id          = 1,
-                    isAdmin     = true,
+                    isAdmin     = false,
                     name        = "אור",
                     password    = "6b136e22312515c4e45986a40188ce91", //password is 123
                     salt        = "kaki"
@@ -1141,9 +1144,9 @@ namespace DAL
                 new User
                 {
                     id          = 2,
-                    isAdmin     = false,
+                    isAdmin     = true,
                     name        = "גיל",
-                    password    = "123",
+                    password    = "6b136e22312515c4e45986a40188ce91", //password 123
                     salt        = "kaki"
                 },
                 new User
@@ -1190,7 +1193,7 @@ namespace DAL
             };
         }
 
-        private IEnumerable<MapInfo> InitalizeMapInfo()
+        private IEnumerable<MapInfo> InitializeMapInfo()
         {
             return new List<MapInfo>
             {
@@ -1198,7 +1201,7 @@ namespace DAL
             };
         }
 
-        private IEnumerable<Route> InitalizeRoutes()
+        private IEnumerable<Route> InitializeRoutes()
         {
             return new List<Route>
             {
@@ -1227,6 +1230,24 @@ namespace DAL
             };
         }
 
+        private IEnumerable<UserSession> InitializeUserSessions()
+        {
+            return new List<UserSession>
+            {
+                new UserSession
+                {
+                    id          = 1,
+                    userId      = 2,
+                    sessionId   = "123"
+                },
+                new UserSession
+                {
+                    id          = 1,
+                    userId      = 1,
+                    sessionId   = "1234"
+                }
+            };
+        }
         #endregion
 
         #region Getters
@@ -1324,6 +1345,11 @@ namespace DAL
         public override DbSet<Route> GetAllRoutes()
         {
             return Routes;
+        }
+
+        public override DbSet<UserSession> GetAllUserSessions()
+        {
+            return UserSessions;
         }
         #endregion
     }

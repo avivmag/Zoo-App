@@ -4,6 +4,7 @@ using NegevZoo.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -83,6 +84,9 @@ namespace ZooTests
         public void SendRecEventNotification()
         {
             var enclosureController = new EnclosureController();
+            enclosureController.Request = new HttpRequestMessage();
+            enclosureController.Request.Headers.Add("Cookie", "session-id=123");
+            enclosureController.Request.RequestUri = new Uri("http://localhost:50000");
 
             var allRecEvents = enclosureController.GetRecurringEvents(3, 1);
             Assert.AreEqual(0, allRecEvents.Count());

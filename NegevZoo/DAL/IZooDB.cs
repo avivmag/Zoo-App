@@ -53,6 +53,8 @@ namespace DAL
         public abstract DbSet<MapInfo> GetAllMapInfos();
 
         public abstract DbSet<Route> GetAllRoutes();
+
+        public abstract DbSet<UserSession> GetAllUserSessions();
         #endregion
 
         #region Cache
