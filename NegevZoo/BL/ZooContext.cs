@@ -978,9 +978,11 @@ namespace BL
 
             zooDB.GetAllPrices().Remove(price);
         }
+        
         #endregion
 
         #region OpeningHours
+
         /// <summary>
         /// Gets all the OpeningHourResults elements - days as strings.
         /// </summary>
@@ -1156,6 +1158,7 @@ namespace BL
         #endregion
 
         #region ContatInfo
+
         /// <summary>
         /// Gets all the ContactInfos elements in the given language.
         /// </summary>
@@ -1488,6 +1491,7 @@ namespace BL
         #endregion
         
         #region General Info
+
         /// <summary>
         /// Gets the zoo's about info.
         /// </summary>
@@ -1630,9 +1634,11 @@ namespace BL
                 .Select(ge => ge.mapBackgroundUrl)
                 .ToArray();
         }
+        
         #endregion
 
         #region Languages
+
         /// <summary>
         /// Gets all the existing lanuages
         /// </summary>
@@ -1647,6 +1653,9 @@ namespace BL
         #endregion
 
         #region Map
+
+        private Random random = new Random();
+
         /// <summary>
         /// This method intitiates the map with the given parameters. 
         /// </summary>
@@ -1756,7 +1765,7 @@ namespace BL
         /// <summary>
         /// Returns all map markers.
         /// </summary>
-        /// <returns>All map markers.s</returns>
+        /// <returns>All map markers.</returns>
         public IEnumerable<MiscMarker> GetAllMarkers()
         {
             // Get all misc markers.
@@ -1772,6 +1781,7 @@ namespace BL
                     iconUrl     = enc.markerIconUrl,
                     latitude    = (float)enc.markerLatitude.Value,
                     longitude   = (float)enc.markerLongitude.Value
+                    //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 
             // Concatenate misc and enclosure markers.
@@ -1782,9 +1792,74 @@ namespace BL
             return (allMarkersArray);
         }
 
+        /// <summary>
+        /// Returns all map misc markers.
+        /// </summary>
+        /// <returns>All map misc markers.s</returns>
+        public IEnumerable<MiscMarker> GetMiscMarkers()
+        {
+            // Get all misc markers.
+            var miscMarkers     = zooDB.GetAllMiscMarkers().ToArray();
+            
+            return (miscMarkers);
+        }
+
+        public void UpdateMiscMarker(MiscMarker marker)
+        {
+            // 1. Check coordinates.
+            if (marker.latitude <= 0 || marker.longitude <= 0)
+            {
+                throw new ArgumentException("Marker coordinates are invalid.");
+            }
+
+            // 2. Check icon url.
+            if (String.IsNullOrWhiteSpace(marker.iconUrl))
+            {
+                throw new ArgumentNullException("No icon url was given.");
+            }
+
+            // If the marker has id, update the marker with that id.
+            if (marker.id != default(int))
+            {
+                // Get the existing marker.
+                var existingMarker = zooDB.GetAllMiscMarkers().SingleOrDefault(mm => mm.id == marker.id);
+
+                // If no such marker exists, throw error.
+                if (existingMarker == default(MiscMarker))
+                {
+                    throw new InvalidOperationException("No misc marker exists that matches given id.");
+                }
+
+                // Update the existing marker.
+                existingMarker.longitude    = marker.longitude;
+                existingMarker.latitude     = marker.latitude;
+                existingMarker.iconUrl      = marker.iconUrl;
+            }
+            // Otherwise, add a new marker.
+            else
+            {
+                zooDB.GetAllMiscMarkers().Add(marker);
+            }
+        }
+
+        public void DeleteMiscMarker(int markerId)
+        {
+            var markers = zooDB.GetAllMiscMarkers();
+
+            var markerToDelete = markers.SingleOrDefault(m => m.id == markerId);
+
+            if (markerToDelete == default(MiscMarker))
+            {
+                throw new ArgumentException("Cannot find misc marker with given id.");
+            }
+
+            markers.Remove(markerToDelete);
+        }
+
         #endregion
 
         #region Users
+
         /// <summary>
         /// Gets the users.
         /// </summary>
@@ -2250,7 +2325,6 @@ namespace BL
 
         #endregion
 
-
         #region private functions
 
         private bool ValidLanguage(int language)
@@ -2273,7 +2347,6 @@ namespace BL
                     re.endTime.Subtract(recEvent.endTime) < TimeSpan.Zero));
         }
 
-        private Random random = new Random();
         private String GenerateSalt()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -2347,6 +2420,7 @@ namespace BL
 
             return points;
         }
+        
         #endregion
 
         #region Images
@@ -2423,9 +2497,9 @@ namespace BL
             SetOrientationToDefault(image);
 
             // Resize the image.
-            var resizedImage = ResizeImage(image, 84, 84);
+            var resizedImage            = ResizeImage(image, 84, 84);
 
-            var resizedImageWebServer = ResizeImage(image, 24, 24);
+            var resizedImageWebServer   = ResizeImage(image, 24, 24);
 
             // Dispose the original image file desc.
             image.Dispose();
@@ -2465,7 +2539,7 @@ namespace BL
 
                 postedFile.SaveAs(filePath);
 
-                if (relativePath.Contains("icon") || relativePath.Contains("marker"))
+                if (relativePath.Contains("misc") || relativePath.Contains("marker"))
                 {
                     SaveAsIcon(filePath);
                 }
@@ -2484,6 +2558,26 @@ namespace BL
         }
         
         #endregion
+
+        /// <summary>
+        /// Upload a new map.
+        /// </summary>
+        /// <param name="httpRequest">The request which holds the file.</param>
+        public void UploadMap(HttpRequest httpRequest)
+        {
+            var path        = @"~/assets/map/";
+
+            var postedFile  = httpRequest.Files[0];
+
+            var fileExtension = postedFile.FileName.Split('.').Last();
+            var fileName    = "zoo_map." + fileExtension;
+
+            var filePath    = HttpContext.Current.Server.MapPath(path + fileName);
+
+            postedFile.SaveAs(filePath);
+
+            zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
+        }
 
         public void Dispose()
         {
