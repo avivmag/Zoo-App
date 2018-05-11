@@ -2073,6 +2073,16 @@ namespace BL
             zooDB.GetAllUsers().Remove(user);
         }
 
+        public bool ValidateSession(string sessionId)
+        {
+            if (!zooDB.GetAllUserSessions().Any(s => s.sessionId == sessionId))
+            {
+                throw new AuthenticationException("Couldn't validate the cookie token");
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Notification support
@@ -2154,7 +2164,7 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsOnlineDevices(string title, string body)
         {
-            var devices = zooDB.GetAllDevices().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
+            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
@@ -2165,15 +2175,13 @@ namespace BL
         public void SendNotificationsOnlineDevicesRecurringEvents()
         {
             //get all the recurring events in hebrew
-            //TODO: The notification will be sent only in hebrew at the moment.
-            //      Need to add a method to get all the recurring events.
-            //      But there is a problem with which messeage will be sent to whom
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
-            Console.WriteLine("Package received");
+            Logger.GetInstance(false).WriteLine("Package received");
+            
             //get the current time
-            var currentTime = DateTime.Now;
-
-            Console.WriteLine("Searching for events");
+            var currentTime = DateTime.Now.ToLocalTime();
+            Console.WriteLine(currentTime);
+            Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
                 // get the difference between now and the recEve
@@ -2184,20 +2192,20 @@ namespace BL
 
                 if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
-                    Console.WriteLine("Event found" + recEve.title + ", ", recEve.description);
+                    Logger.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
 
                     SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
                 else
                 {
-                    Console.WriteLine("No events found");
+                    Logger.GetInstance(false).WriteLine("No events found");
                 }
             }
         }
 
         private async void NotifyAsync(string title, string body, List<Device> devices)
         {
-            // TODO:: compute whether the users are online or offline and send by that.
+
             try
             {
                 string key = Properties.Settings.Default.serverKey;
@@ -2233,10 +2241,10 @@ namespace BL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception Exp)
             {
-                // TODO:: LOG.
-                throw ex;
+                Logger.GetInstance(false).WriteLine(Exp.Message, Exp.StackTrace);
+                throw Exp;
             }
         }
 
@@ -2436,8 +2444,6 @@ namespace BL
             resizedImage.Dispose();
         }
         
-        #endregion
-
         /// <summary>
         /// post a file to the db
         /// </summary>
@@ -2477,15 +2483,7 @@ namespace BL
             return responseObject;
         }
         
-        public bool ValidateSession(string sessionId)
-        {
-            if (!zooDB.GetAllUserSessions().Any(s => s.sessionId == sessionId))
-            {
-                throw new AuthenticationException("Couldn't validate the cookie token");
-            }
-
-            return true;
-        }
+        #endregion
 
         public void Dispose()
         {
