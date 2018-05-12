@@ -1,10 +1,15 @@
 ﻿app.controller('loginCtrl', ['$cookies', '$scope', '$state', 'usersService', 'utilitiesService', 
     function ($cookies, $scope, $state, usersService, utilitiesService) {
 
+        $scope.isLoading = true;
+
         var sessionCookie = $cookies.get('session-id');
 
         if (sessionCookie != null && sessionCookie != undefined) {
             $state.go('mainMenu');
+        }
+        else {
+            $scope.isLoading = false;
         }
 
         $scope.login = function (username, password) {
