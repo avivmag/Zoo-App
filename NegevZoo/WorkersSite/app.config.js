@@ -1,4 +1,4 @@
-﻿var app = angular.module('visitors_app', ['ngMaterial', 'ui.router', 'youtube-embed']);
+﻿var app = angular.module('visitors_app', ['ngCookies', 'ngMaterial', 'ui.router', 'youtube-embed']);
 
 app.config(function ($mdDateLocaleProvider, $httpProvider) {
     $mdDateLocaleProvider.formatDate = function (date) {
