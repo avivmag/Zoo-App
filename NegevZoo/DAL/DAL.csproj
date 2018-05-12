@@ -66,6 +66,12 @@
     <Compile Include="AnimalDetail.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="AnimalStory.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AnimalStoryDetail.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="ContactInfo.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
@@ -99,6 +105,7 @@
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AnimalResult.cs" />
+    <Compile Include="Models\AnimalStoryResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
     <Compile Include="Models\MapResult.cs" />
     <Compile Include="Models\MapSettingsResult.cs" />

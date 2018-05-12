@@ -108,7 +108,7 @@ namespace BL
 
             return enclosureResults.ToArray();
         }
-        
+
         /// <summary>
         /// Gets the enclosures types results.
         /// </summary>
@@ -708,7 +708,79 @@ namespace BL
 
             return animalsResult;
         }
-        
+
+        /// <summary>
+        /// Gets all the animals stroies data in the given langauge.
+        /// </summary>
+        /// <param name="language">The data language.</param>
+        /// <returns> All the AnimalStoryResults with that language.</returns>
+        public IEnumerable<AnimalStoryResult> GetAllAnimalStoriesResults(int language)
+        {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            var animalStories = zooDB.GetAllAnimalStories();
+            var animalStoriesDetails = zooDB.GetAllAnimalStoryDetails();
+
+            var animalStoryResults = from ans in animalStories
+                                    join ansd in animalStoriesDetails on new { ans.id, language } equals new { id = ansd.animalStoryId, ansd.language }
+                                    select new AnimalStoryResult
+                                    {
+                                        Id = ans.id,
+                                        EncId = ans.enclosureId,
+                                        Name = ansd.name,
+                                        Story = ansd.story,
+                                        PictureUrl = ans.pictureUrl,
+                                        Language = ansd.language
+                                };
+
+            return animalStoryResults.ToArray();
+        }
+
+        /// <summary>
+        /// Gets a single AnimalStory object in the given langauge.
+        /// </summary>
+        /// <param name="animalStoryId">The wanted AnimalStory id</param>
+        /// <param name="language">The data language.</param>
+        /// <returns> The AnimalStoryResults object that corresponds to the given Id with that language.</returns>
+        public AnimalStoryResult GetAnimalStoryResultById(int animalStoryId, int language = 1)
+        {
+            if (!ValidLanguage(language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            AnimalStory ans = zooDB.GetAllAnimalStories().SingleOrDefault(a => a.id == animalStoryId);
+
+            if (ans == null)
+            {
+                throw new ArgumentException("Wrong input. AnimalStory id doesn't exsits");
+            }
+
+            AnimalStoryDetail storyDetails = zooDB.GetAllAnimalStoryDetails().SingleOrDefault(ansd => ansd.animalStoryId== animalStoryId && ansd.language == language);
+
+            //in case that there isn't data in the wanted language than taking the hebrew data.
+            if (storyDetails == null)
+            {
+                var hebrewLang = GetHebewLanguage();
+                storyDetails = zooDB.GetAllAnimalStoryDetails().SingleOrDefault(ansd => ansd.animalStoryId == animalStoryId && ansd.language == hebrewLang);
+            }
+
+            var animalStoryResult = new AnimalStoryResult
+            {
+                Id = animalStoryId,
+                EncId = ans.enclosureId,
+                Name = storyDetails?.name,
+                Story = storyDetails?.story,
+                PictureUrl = ans.pictureUrl,
+                Language = storyDetails == null ? GetHebewLanguage() : storyDetails.language
+            };
+
+            return animalStoryResult;
+        }
+
         /// <summary>
         /// Gets all the animals types.
         /// </summary>
@@ -753,6 +825,32 @@ namespace BL
             IEnumerable<Animal> allAnimals = GetAllAnimals().Where(a => a.enclosureId == encId).ToArray();
 
             return allAnimals;
+        }
+
+        /// <summary>
+        /// Gets all AnimalStory types exists.
+        /// </summary>
+        /// <returns>All AnimalStory types.</returns>
+        public IEnumerable<AnimalStory> GetAllAnimalStories()
+        {
+            return zooDB.GetAllAnimalStories();
+        }
+
+        /// <summary>
+        /// Gets all the existing AnimalStoryDetails of the AnimalStory with the given id.
+        /// </summary>
+        /// <param name="animalStoryId">The id of the wanted AnimalStory</param>
+        /// <returns>Animaldetails in all the langauges exists.</returns>
+        public IEnumerable<AnimalStoryDetail> GetAllAnimalStoryDetailsById(int animalStoryId)
+        {
+            //validate the attributes
+            //0. check that the AnimalStory id exists.
+            if (!GetAllAnimalStories().Any(ans => ans.id == animalStoryId))
+            {
+                throw new ArgumentException("Wrong input. The AnimalStory id doesn't exists");
+            }
+
+            return zooDB.GetAllAnimalStoryDetails().Where(ansd => ansd.animalStoryId == animalStoryId);
         }
 
         /// <summary>
@@ -831,7 +929,7 @@ namespace BL
             //3. check that the animal id exists
             if (!GetAllAnimals().Any(a => a.id == animalDetails.animalId))
             {
-                throw new ArgumentException("Wrong input. The animal id coesnt exists.");
+                throw new ArgumentException("Wrong input. The animal id doesn't exists.");
             }
             var allAnimalDetails = zooDB.GetAllAnimalsDetails();
 
@@ -857,6 +955,109 @@ namespace BL
         }
 
         /// <summary>
+        /// Adds or updates an AnimalStory object.
+        /// </summary>
+        /// <param name="animalStory">The AnimalStory to add or update.</param>
+        public void UpdateAnimalStory(AnimalStory animalStory)
+        {
+            //Validate attributes
+            //0. Exists
+            if (animalStory == default(AnimalStory))
+            {
+                throw new ArgumentException("No AnimalStory given");
+            }
+
+            //1. Animal Story enclosure Id exists
+            if (!GetAllEnclosures().Any(e => e.id == animalStory.enclosureId))
+            {
+                throw new ArgumentException("Wrong input. The enclosure id doesn't exists");
+            }
+
+            var animalStories = zooDB.GetAllAnimalStories();
+
+            if (animalStory.id == default(int)) //add a new animal story
+            {
+                animalStories.Add(animalStory);
+            }
+            else // update an exising animal story
+            {
+                AnimalStory oldAnimalStory = animalStories.SingleOrDefault(ans => ans.id == animalStory.id);
+
+                if (oldAnimalStory == null)
+                {
+                    throw new ArgumentException("Wrong input while updating animal story. The AnimalStory id doesn't exists");
+                }
+
+                oldAnimalStory.enclosureId  = animalStory.enclosureId;
+                oldAnimalStory.pictureUrl   = animalStory.pictureUrl;
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates a single AnimalStoryDetail object.
+        /// </summary>
+        /// <param name="animalsDetails">The AnimalDetail to update.</param>
+        public void UpdateAnimalStoryDetail(AnimalStoryDetail animalStoryDetail)
+        {
+            //Validate attributes
+            //0. Exists
+            if (animalStoryDetail == default(AnimalStoryDetail))
+            {
+                throw new ArgumentException("No AnimalStoryDetail given.");
+            }
+
+            //1. name
+            if (String.IsNullOrWhiteSpace(animalStoryDetail.name))
+            {
+                throw new ArgumentException("Wrong input. The name is null or white spaces");
+            }
+
+            //2. story
+            if (String.IsNullOrWhiteSpace(animalStoryDetail.story))
+            {
+                throw new ArgumentException("Wrong input. The story is null or white spaces.");
+            }
+
+            //3. language
+            if (!ValidLanguage(animalStoryDetail.language))
+            {
+                throw new ArgumentException("Wrong input. Wrong language.");
+            }
+
+            //4. check that the animal story id exists
+            if (!GetAllAnimalStories().Any(ans => ans.id == animalStoryDetail.animalStoryId))
+            {
+                throw new ArgumentException("Wrong input. The animal story id doesn't exists");
+            }
+
+            var allAnimalStoryDetails = zooDB.GetAllAnimalStoryDetails();
+            var oldDetails = allAnimalStoryDetails.SingleOrDefault(ansd => ansd.language == animalStoryDetail.language && ansd.animalStoryId == animalStoryDetail.animalStoryId);
+
+            if (oldDetails == null) //add a new details
+            {
+                //check if the name already exists
+                if (allAnimalStoryDetails.Any(ansd => ansd.name == animalStoryDetail.name))
+                {
+                    throw new ArgumentException("Wrong input while adding AnimalStoryResult. The name already exits");
+                }
+
+                allAnimalStoryDetails.Add(animalStoryDetail);
+            }
+            else //update an exists animal story detail
+            {
+                //check that if the name changed it doesn't exists
+                if (oldDetails.name != animalStoryDetail.name && allAnimalStoryDetails.Any(ansd => ansd.name == animalStoryDetail.name))
+                {
+                    throw new ArgumentException("Wrong input while updating AnimalStoryResult. The name already exits");
+                }
+
+                oldDetails.name     = animalStoryDetail.name;
+                oldDetails.story    = animalStoryDetail.story;
+                oldDetails.language = animalStoryDetail.language;
+            }
+        }
+
+        /// <summary>
         /// Delete the animal.
         /// </summary>
         /// <param name="id">The animal's id to delete.</param>
@@ -876,12 +1077,31 @@ namespace BL
             zooDB.GetAllAnimals().Remove(animal);
         }
 
+        /// <summary>
+        /// Removes an AnimalStory object and all it's corresponding AnimalStoryDetails.
+        /// </summary>
+        /// <param name="animalStoryId">The AnimalStory id to delete.</param>
+        public void DeleteAnimalStory(int animalStoryId)
+        {
+            AnimalStory animalStory = zooDB.GetAllAnimalStories().SingleOrDefault(ans => ans.id == animalStoryId);
+
+            //check that the AnimalStory exists
+            if (animalStory == null)
+            {
+                throw new ArgumentException("Wrong input. AnimalStory doesn't exists");
+            }
+
+            var detailsToDelete = zooDB.GetAllAnimalStoryDetails().Where(ansd => ansd.animalStoryId == animalStory.id).ToList();
+
+            zooDB.GetAllAnimalStoryDetails().RemoveRange(detailsToDelete);
+            zooDB.GetAllAnimalStories().Remove(animalStory);
+        }
         #endregion
 
         #region Zoo Info
 
         #region Prices
-        
+
         /// <summary>
         /// Gets all the Price elements.
         /// </summary>

@@ -150,6 +150,68 @@ namespace ZooTests.Unit_Tests
 
         #endregion
 
+        #region GetAllAnimalStoryResults
+        [TestMethod]
+        public void GetAllAnimalStoryResultsLangHe()
+        {
+            Assert.AreEqual(1, context.GetAllAnimalStoriesResults((int)Languages.he).Count());
+        }
+
+        [TestMethod]
+        public void GetAllAnimalStoryResultsLangEn()
+        {
+            Assert.AreEqual(2, context.GetAllAnimalStoriesResults((int)Languages.en).Count());
+        }
+
+        [TestMethod]
+        public void GetAllAnimalStoryResultsLangAr()
+        {
+            Assert.AreEqual(0, context.GetAllAnimalStoriesResults((int)Languages.ar).Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language.")]
+        public void GetAllAnimalStoryLanguageNotExist()
+        {
+            context.GetAllAnimalStoriesResults(nonExistantLang);
+        }
+        #endregion
+
+        #region GetAnimalStoryResultById
+        [TestMethod]
+        public void GetAllAnimalStoryByIdValidInput()
+        {
+            var animalStory = context.GetAnimalStoryResultById(1, (int)Languages.he);
+
+            Assert.AreEqual("גילי הבבון", animalStory.Name);
+            Assert.AreEqual("storyUrl1", animalStory.PictureUrl);
+        }
+
+        [TestMethod]
+        public void GetAnimalStoryResultsByIdWrongLangButExisting()
+        {
+            var animalStory = context.GetAnimalStoryResultById(1, (int)Languages.ar);
+
+            Assert.AreEqual("גילי הבבון", animalStory.Name);
+            Assert.AreEqual("storyUrl1", animalStory.PictureUrl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. AnimalStory id doesn't exsits")]
+        public void GetAnimalStoryByIdWrongAnimalStoryId()
+        {
+            context.GetAnimalStoryResultById(-1, (int)Languages.he);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input.Wrong language.")]
+        public void GetAnimalStoryByIdLanguageNotExist()
+        {
+            context.GetAnimalStoryResultById(1, nonExistantLang);
+        }
+
+        #endregion
+        
         #region GetAllAnimal
         [TestMethod]
         public void GetAllAnimal()
@@ -208,6 +270,48 @@ namespace ZooTests.Unit_Tests
 
         #endregion
 
+        #region GetAllAnimalStories
+        [TestMethod]
+        public void GetAllAnimalStories()
+        {
+            var animalStories = context.GetAllAnimalStories();
+            Assert.AreEqual(2, animalStories.Count());
+
+            var story = animalStories.First();
+
+            Assert.AreEqual(1, story.id);
+            Assert.AreEqual("storyUrl1", story.pictureUrl);
+            Assert.AreEqual(1, story.enclosureId);
+        }
+
+        #endregion
+
+        #region GetAllAnimalStoryDetailsById
+        [TestMethod]
+        public void GetAllAnimalStoryDetailsByIdValidInput()
+        {
+            var animalStory = context.GetAllAnimalStoryDetailsById(1);
+            Assert.AreEqual(2, animalStory.Count());
+
+            var story = animalStory.First();
+            Assert.AreEqual(1, story.animalStoryId);
+            Assert.AreEqual("גילי הבבון", story.name);
+            Assert.AreEqual(1, story.language);
+
+            story = animalStory.Last();
+            Assert.AreEqual(1, story.animalStoryId);
+            Assert.AreEqual("Gili the olive baboon", story.name);
+            Assert.AreEqual(2, story.language);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The AnimalStory id doesn't exists")]
+        public void GetAllAnimalStoryDetailsByIdWrongId()
+        {
+            context.GetAllAnimalStoryDetailsById(-4);
+        }
+        #endregion
+        
         #region UpdateAnimal
 
         [TestMethod]
@@ -506,6 +610,194 @@ namespace ZooTests.Unit_Tests
         }
         #endregion
 
+        #region UpdateAnimalStory
+        [TestMethod]
+        public void UpdateAnimalStoryAddAnValidTest()
+        {
+            var animalStory = context.GetAllAnimalStories();
+            Assert.AreEqual(2, animalStory.Count());
+
+            var ans = new AnimalStory
+            {
+                id = default(int),
+                enclosureId = 2,
+                pictureUrl = "storyUrl1000"
+            };
+
+            context.UpdateAnimalStory(ans);
+
+            animalStory = context.GetAllAnimalStories();
+            Assert.AreEqual(3, animalStory.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The enclosure id doesn't exists")]
+        public void UpdateAnimalStoryWrongEnclosureId()
+        {
+            var ans = new AnimalStory
+            {
+                id = default(int),
+                pictureUrl = "pictureUrl1",
+                enclosureId = -2,
+            };
+
+            context.UpdateAnimalStory(ans);
+        }
+
+        [TestMethod]
+        public void UpdateAnimalStoryValidInput()
+        {
+            var animalStories = context.GetAllAnimalStories();
+            Assert.AreEqual(2, animalStories.Count());
+            Assert.IsFalse(animalStories.Any(a => a.enclosureId == 2));
+
+            var ans = animalStories.SingleOrDefault(a => a.id == 1);
+
+            ans.enclosureId = 2;
+
+            context.UpdateAnimalStory(ans);
+
+            animalStories = context.GetAllAnimalStories();
+            Assert.IsTrue(animalStories.Any(a => a.enclosureId == 2));
+            Assert.AreEqual(2, animalStories.Count());
+        }
+        #endregion
+
+        #region UpdateAnimalStoryDetail
+        [TestMethod]
+        public void UpdateAnimalStoryDetailsAddStoryValidTest()
+        {
+            var details = context.GetAllAnimalStoryDetailsById(2);
+            Assert.AreEqual(1, details.Count());
+
+            var det = new AnimalStoryDetail
+            {
+                animalStoryId = 2,
+                name = "שוש הזברה",
+                story = "לשוש הזברה ספור מיוחד מאוד.",
+                language = (int)Languages.he
+            };
+
+            context.UpdateAnimalStoryDetail(det);
+
+            details = context.GetAllAnimalStoryDetailsById(2);
+            Assert.AreEqual(2, details.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The name is null or white spaces")]
+        public void UpdateAnimalStoryDetailsWrongName()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = 1,
+                language = (int)Languages.he,
+                name = "    ",
+                story = "לגילי הבבון סיפור מיוחד ומרגש"
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The story is null or white spaces.")]
+        public void UpdateAnimalStoryDetailsWrongStory()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = 1,
+                language = (int)Languages.he,
+                name = "שם"
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The animal story id doesn't exists")]
+        public void UpdateAnimalStoryDetailsAddAnimalStoryDoesntExists()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = -1,
+                name = "שם",
+                story = "סיפור",
+                language = (int)Languages.ar
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input while adding AnimalStoryResult. The name already exits")]
+        public void UpdateAnimalStoryDetailsAddAnimalNameExists()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = default(int),
+                name = "גילי בבון הזית",
+                story = "סיפור",
+                language = (int)Languages.he
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+
+        [TestMethod]
+        public void UpdateAnimalStoryDetailsValidInput()
+        {
+            var details = context.GetAllAnimalStoryDetailsById(1);
+            Assert.AreEqual(2, details.Count());
+
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = 1,
+                language = (int)Languages.he,
+                name = "גילי הבבון",
+                story = "לגילי הבבון סיפור מיוחד ומרגש"
+            };
+
+            ansd.name = "אביב מאג";
+
+            context.UpdateAnimalStoryDetail(ansd);
+
+            details = context.GetAllAnimalStoryDetailsById(1);
+            Assert.AreEqual(2, details.Count());
+            Assert.IsTrue(details.Any(d => d.name == "אביב מאג"));
+            Assert.IsFalse(details.Any(d => d.name == "גילי הבבון"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input while updating AnimalStoryResult. The name already exits")]
+        public void UpdateAnimalStoryDetailsNameExists()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = 1,
+                language = (int)Languages.en,
+                name = "Shosh the Zebra",
+                story = "Gili the baboon have a very speacial story"
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language.")]
+        public void UpdateAnimalStoryDetailsWrongLangauge()
+        {
+            var ansd = new AnimalStoryDetail
+            {
+                animalStoryId = 1,
+                language = -100,
+                name = "גילי הבבון",
+                story = "לגילי הבבון סיפור מיוחד ומרגש"
+            };
+
+            context.UpdateAnimalStoryDetail(ansd);
+        }
+        #endregion
+        
         #region DeleteAnimal
         [TestMethod]
         public void DeleteAnimalValidInput()
@@ -534,5 +826,30 @@ namespace ZooTests.Unit_Tests
 
         #endregion
 
+        #region DeleteAnimalStory
+        [TestMethod]
+        public void DeleteAnimalStoryValidInput()
+        {
+            var animalStories = context.GetAllAnimalStories();
+            Assert.AreEqual(2, animalStories.Count());
+
+            var giliStory = animalStories.SingleOrDefault(en => en.id == 1);
+            Assert.IsNotNull(giliStory);
+
+            var details = context.GetAllAnimalStoryDetailsById((int)giliStory.id);
+            Assert.AreEqual(2, details.Count());
+
+            context.DeleteAnimalStory((int)giliStory.id);
+            animalStories = context.GetAllAnimalStories();
+            Assert.AreEqual(1, animalStories.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. AnimalStory doesn't exists")]
+        public void DeleteAnimalStoryIdDoesntExists()
+        {
+            context.DeleteAnimal(-4);
+        }
+        #endregion
     }
 }
