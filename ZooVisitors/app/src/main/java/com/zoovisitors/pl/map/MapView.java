@@ -62,19 +62,21 @@ public class MapView extends RelativeLayout {
     private int screenHeight;
 
     public int getIconsOffsetLeft(int left) {
-        return (int) ((left - zooMapIcon.width / 2) + screenWidth / getCurrentScaleFactor() / 2);
+        return (int) (zooMapIcon.left - zooMapIcon.width/2 + left);
+//        return (int) ((left - zooMapIcon.width / 2) + screenWidth / getCurrentScaleFactor() / 2);
     }
 
     public int getIconsOffsetTop(int top) {
-        return (int) ((top - zooMapIcon.height / 2) + screenHeight / getCurrentScaleFactor() / 2);
+        return (int) (zooMapIcon.top - zooMapIcon.height/2 + top);
+//        return (int) ((top - zooMapIcon.height / 2) + screenHeight / getCurrentScaleFactor() / 2);
     }
 
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
         mScaleFactor = mLastScaleFactor =
                 ((float) screenWidth / primaryImageWidth + (float) screenHeight /
                         primaryImageHeight) / 2;
-        maxScaleFactor = mScaleFactor / 2;
-        minScaleFactor = mScaleFactor * 2;
+        maxScaleFactor = mScaleFactor * 2;
+        minScaleFactor = mScaleFactor / 2;
     }
 
     public float getCurrentScaleFactor() {
@@ -168,7 +170,20 @@ public class MapView extends RelativeLayout {
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
-                mPosX = (mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + x;
+                Log.e("AVIV", "left " + zooMapIcon.left);
+//                Log.e("AVIV", "left " + zooMapIcon.left);
+
+                mPosX = //(mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + x;
+//                        Math.min(
+//                                Math.max(
+                        (-screenWidth + zooMapIcon.width)/2 * mScaleFactor;
+                //(mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + x;
+//                                        -zooMapIcon.width / 3
+//                                ),
+//                                zooMapIcon.left +
+//                                        (-screenWidth + zooMapIcon.width) / 2 * mScaleFactor
+//                        );
+
                 mPosY = (mPosY - mLastTouchY) * mScaleFactor / mLastScaleFactor + y;
                 mLastScaleFactor = mScaleFactor;
 
@@ -250,14 +265,14 @@ public class MapView extends RelativeLayout {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-//            mScaleFactor = Math.min(
-//                    Math.max(
-//                            mScaleFactor * detector.getScaleFactor(),
-//                            minScaleFactor),
-//                    maxScaleFactor
-//            );
+            mScaleFactor = Math.min(
+                    Math.max(
+                            mScaleFactor * detector.getScaleFactor(),
+                            minScaleFactor),
+                    maxScaleFactor
+            );
 //            Log.e("AVIV", "mScaleFactor " + mScaleFactor);
-            mScaleFactor = mScaleFactor * detector.getScaleFactor();
+//            mScaleFactor = mScaleFactor * detector.getScaleFactor();
             return true;
         }
     }

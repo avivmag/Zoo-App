@@ -32,7 +32,7 @@ public class DataStructure {
      * max threashold for update, if last update was before that time, then we need to reinitialize the current location
      * currently set to 2 minutes.
      */
-    private final long MAX_UPDATE_THRESHOLD = 120*1000;
+    private final long MAX_UPDATE_THRESHOLD = 10*1000;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
