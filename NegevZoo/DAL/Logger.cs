@@ -54,6 +54,7 @@ namespace DAL
             }
         }
 
+
         public void WriteLine(params String[] messages)
         {
             try
