@@ -89,7 +89,54 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
+        /// <summary>
+        /// Gets all the animals stroies data in the given langauge.
+        /// </summary>
+        /// <param name="language">The data language.</param>
+        /// <returns> All the AnimalStoryResults with that language.</returns>
+        [HttpGet]
+        [Route("animals/story/all/{language}")]
+        public IEnumerable<AnimalStoryResult> GetAllAnimalStoriesResults(int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllAnimalStoriesResults(language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Gets a single AnimalStory object in the given langauge.
+        /// </summary>
+        /// <param name="animalStoryId">The wanted AnimalStory id</param>
+        /// <param name="language">The data language.</param>
+        /// <returns> The AnimalStoryResults object that corresponds to the given Id with that language.</returns>
+        [HttpGet]
+        [Route("animals/story/{animalStoryId}/{language}")]
+        public AnimalStoryResult GetAnimalStoryResultById(int animalStoryId, int language = 1)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalStoryResultById(animalStoryId, language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, 
+                    "Animal story Id: " + animalStoryId + ", language: " + language);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
         #endregion
 
         /// <summary>
@@ -116,8 +163,10 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// This method is for the worker site.
         /// Gets all the existing AnimalDetails of the animal with the given id.
         /// </summary>
+        /// <param name="animalId">The id of the wanted AnimalDetails</param>
         /// <returns>Animaldetails in all the langauges exists.</returns>
         [HttpGet]
         [Route("animals/details/all/{animalId}")]
@@ -161,6 +210,52 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// This method is for the worker site.
+        /// Gets all AnimalStory types exists.
+        /// </summary>
+        /// <returns>All AnimalStory types.</returns>
+        [HttpGet]
+        [Route("animals/story/all")]
+        public IEnumerable<AnimalStory> GetAllAnimalStories()
+        {
+            try
+            {
+                using(var db = GetContext())
+                {
+                    return db.GetAllAnimalStories();
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// This method is for the worker site.
+        /// Gets all the existing AnimalStoryDetails of the AnimalStory with the given id.
+        /// </summary>
+        /// <param name="animalStoryId">The id of the wanted AnimalStory</param>
+        /// <returns>Animaldetails in all the langauges exists.</returns>
+        [HttpGet]
+        [Route("animals/story/details/all/{animalStoryId}")]
+        public IEnumerable<AnimalStoryDetail> GetAllAnimalStoryDetailsById(int animalStoryId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAllAnimalStoryDetailsById(animalStoryId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "animalStoryId: " + animalStoryId);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
         #endregion
 
         #region Setters
@@ -228,11 +323,71 @@ namespace NegevZoo.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-        
+
         /// <summary>
-        /// Removes an animal.
+        /// This method is for the Worker site.
+        /// Adds or updates an AnimalStory object.
         /// </summary>
-        /// <param name="id">The animals to delete.</param>
+        /// <param name="animalStory">The AnimalStory to add or update.</param>
+        [HttpPost]
+        [Route("animals/story/update")]
+        public void UpdateAnimalStory(AnimalStory animalStory)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
+                    db.UpdateAnimalStory(animalStory);
+                }
+            }
+            catch (Exception Exp)
+            {
+                var animalStoryInput = "Id: " + animalStory.id + ", enclosure Id: " + animalStory.enclosureId + 
+                    ", picture Url: " + animalStory.pictureUrl;
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, animalStoryInput);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// This method is for the Worker site.
+        /// Adds or updates a single AnimalStoryDetail object.
+        /// </summary>
+        /// <param name="animalsDetails">The AnimalDetail to update.</param>
+        [HttpPost]
+        [Route("animals/story/detail/update")]
+        public void UpdateAnimalStoryDetail(AnimalStoryDetail animalStoryDetail)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
+                    db.UpdateAnimalStoryDetail(animalStoryDetail);
+                }
+            }
+            catch (Exception Exp)
+            {
+                var animalStoryDetailInput = "Animal Stroy Id: " + animalStoryDetail.animalStoryId + ", name: " + animalStoryDetail.name +
+                    ", story: " + animalStoryDetail.story + ", language: " + animalStoryDetail.language;
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, animalStoryDetailInput);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Removes an Animal object and all of it's corresponding AnimalDetails.
+        /// </summary>
+        /// <param name="animalId">The animals to delete.</param>
         [HttpDelete]
         [Route("animals/delete/{animalId}")]
         public void DeleteAnimal(int animalId)
@@ -254,6 +409,33 @@ namespace NegevZoo.Controllers
             catch (Exception Exp)
             {
                 Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Animal Id: " + animalId);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Removes an AnimalStory objext and all it's corresponding AnimalStoryDetails.
+        /// </summary>
+        /// <param name="animalStoryId">The AnimalStory id to delete.</param>
+        [HttpDelete]
+        [Route("animals/story/delete/{animalStoryId}")]
+        public void DeleteAnimalStory(int animalStoryId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
+                    db.DeleteAnimalStory(animalStoryId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Animal story Id: " + animalStoryId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
