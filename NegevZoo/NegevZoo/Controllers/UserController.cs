@@ -55,10 +55,12 @@ namespace NegevZoo.Controllers
                     if (sessionId != null) {
                         var resp = new HttpResponseMessage();
 
-                        var cookie = new CookieHeaderValue("session-id", sessionId);
-                        cookie.Expires = DateTimeOffset.Now.AddDays(1);
-                        cookie.Domain = Request.RequestUri.Host;
-                        cookie.Path = "/";
+                        var cookie = new CookieHeaderValue("session-id", sessionId)
+                        {
+                            Expires     = DateTimeOffset.Now.AddDays(1),
+                            Domain      = Request.RequestUri.Host,
+                            Path        = "/",
+                        };
 
                         resp.Headers.AddCookies(new CookieHeaderValue[] { cookie });
                         return resp;
