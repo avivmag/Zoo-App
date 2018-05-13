@@ -267,7 +267,7 @@ namespace NegevZoo.Controllers
         /// <param name="animal">The animal to add or update.</param>
         [HttpPost]
         [Route("animals/update")]
-        public void UpdateAnimal(Animal animal)
+        public Animal UpdateAnimal(Animal animal)
         {
             try
             {
@@ -275,7 +275,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateAnimal(animal);
+                        return db.UpdateAnimal(animal);
                     }
                     else
                     {

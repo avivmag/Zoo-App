@@ -3,6 +3,7 @@
 
     var getPreservation = function () {
         return [
+            { value: 7, format: 'לא ידוע' },
             { value: 1, format: 'ללא חשש' },
             { value: 2, format: 'קרוב לאיום' },
             { value: 3, format: 'פגיע' },

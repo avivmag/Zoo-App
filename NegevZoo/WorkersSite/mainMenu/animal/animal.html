@@ -5,6 +5,7 @@
 <md-card ng-show="!isLoading">
         <md-card-title layout="row" layout-align="space-between">
         <div layout="column">
+            <md-button class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
             <div layout="row" ng-if="isEdit">
                 <img class="picture_small" ng-src="{{ baseURL + animal.pictureUrl }}" alt="{{ animal.name }}" />
                 <md-card-title-text style="margin-top: 20px" class="md-headline">{{ animal.name }}:</md-card-title-text>
@@ -59,11 +60,6 @@
                         <label>הכנס שם תצוגה לחיה</label>
                         <input style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
                     </md-input-container>
-                    
-                    <!-- <md-input-container>
-                        <label>הכנס סיפור לחיה</label>
-                        <textarea rows="3" ng-model="animalDetails[selectedTab].story" required type="text"></textarea>
-                    </md-input-container> -->
 
                     <md-input-container>
                         <label>בחר מחלקה</label>

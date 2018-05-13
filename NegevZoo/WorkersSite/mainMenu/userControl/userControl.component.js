@@ -1,4 +1,4 @@
-app.controller('userControlCtrl', ['$scope', '$mdDialog', 'usersService', 'utilitiesService',
+app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'utilitiesService',
     function userControlController($scope, $mdDialog, usersService, utilitiesService) {
         $scope.isLoading            = true;
 

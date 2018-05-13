@@ -1,107 +1,100 @@
-﻿app.controller('zooEnclosureCtrl', ['$q', '$scope', '$mdDialog', 'utilitiesService', 'enclosureService', 'animalService', 'mapViewService', 'fileUpload', 'mapViewService',
+﻿app.controller('zooEnclosureCtrl', [
+    '$q',
+    '$state',
+    '$scope',
+    '$stateParams',
+    '$mdDialog',
+    'utilitiesService',
+    'enclosureService',
+    'animalService',
+    'mapViewService',
+    'fileUpload',
+    'mapViewService',
 
-    function enclosureController($q, $scope, $mdDialog, utilitiesService, enclosureService, animalService, mapViewService, fileUpload) {
-        $scope.isLoading            = true;
-
-        initializeComponent();
-
+    function enclosureController($q, $state, $scope, $stateParams, $mdDialog, utilitiesService, enclosureService, animalService, mapViewService, fileUpload) {
         app.getLanguages().then(
             (data) => {
                 $scope.languages    = data.data;
                 $scope.language     = $scope.languages[0];
-
-                $scope.updateEnclosures();
+                
+                initializeComponent();
             });
+            
 
         function initializeComponent() {
-            $scope.page             = 'list';
-            $scope.baseURL          = app.baseURL;
-            $scope.hours            = utilitiesService.timeSpan.getHours();
-            $scope.minutes          = utilitiesService.timeSpan.getMinutes();
-            $scope.days             = utilitiesService.getDays();
+            $scope.selectedEnclosure    = $stateParams.enclosure;
+            $scope.page                 = 'list';
+            $scope.baseURL              = app.baseURL;
+            $scope.hours                = utilitiesService.timeSpan.getHours();
+            $scope.minutes              = utilitiesService.timeSpan.getMinutes();
+            $scope.days                 = utilitiesService.getDays();
 
-            $scope.updateEnclosures         = function () {
-                enclosureService.enclosures.getAllEnclosures().then(
+            $scope.selectedEnclosure    = $stateParams.enclosure || { };
+            $scope.isEdit               = angular.isDefined($stateParams.enclosure) ? true : false;
+
+            if ($scope.isEdit) {
+                $scope.isLoading            = true;
+                var detailsQuery            = enclosureService.enclosureDetails.getEnclosureDetailsById($scope.selectedEnclosure.id).then(
                     function (data) {
-                        $scope.enclosures   = data.data;
-                        $scope.isLoading    = false;
+                        $scope.enclosureDetails = data.data;
+
+                        for (let i = 1; i <= 4; i++) {
+                            if (!$scope.enclosureDetails.some(ed => ed.language === i)) {
+                                $scope.enclosureDetails.push({ encId: $scope.selectedEnclosure.id, language: i });
+                            }
+                        }
+
+                        $scope.enclosureDetails.sort(function(a, b) { return a.language-b.language; });
                     },
                     function () {
-                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים')
-                        
-                        $scope.isLoading    = false;
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                     });
-            };
-                
-            $scope.switchPage               = function(page, selectedEnclosure) {
-                $scope.page                 = page;
-                $scope.selectedEnclosure    = selectedEnclosure || { };
 
-                if (page === 'edit') {
-                    $scope.isLoading            = true;
+                var videosQuery             = enclosureService.enclosures.getEnclosureVideosById($scope.selectedEnclosure.id).then(
+                    function (data) {
+                        $scope.selectedEnclosure.videos = data.data;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
 
-                    var detailsQuery            = enclosureService.enclosureDetails.getEnclosureDetailsById(selectedEnclosure.id).then(
-                        function (data) {
-                            $scope.enclosureDetails = data.data;
+                var picturesQuery           = enclosureService.enclosures.getEnclosurePicturesById($scope.selectedEnclosure.id).then(
+                    function (data) {
+                        $scope.selectedEnclosure.pictures = data.data;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
 
-                            for (let i = 1; i <= 4; i++) {
-                                if (!$scope.enclosureDetails.some(ed => ed.language === i)) {
-                                    $scope.enclosureDetails.push({ encId: selectedEnclosure.id, language: i });
-                                }
-                            }
+                var animalsQuery            = animalService.getAnimalsByEnclosure($scope.selectedEnclosure.id).then(
+                    function (animals) {
+                        $scope.selectedEnclosure.animals = animals.data;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
 
-                            $scope.enclosureDetails.sort(function(a, b) { return a.language-b.language; });
-                        },
-                        function () {
-                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-                        });
+                var recurringEventsQuery    = enclosureService.enclosureDetails.getRecurringEvents($scope.selectedEnclosure.id, $scope.language.id).then(
+                    function (data) {
+                        $scope.selectedEnclosure.recurringEvents = data.data;
 
-                    var videosQuery             = enclosureService.enclosures.getEnclosureVideosById(selectedEnclosure.id).then(
-                        function (data) {
-                            $scope.selectedEnclosure.videos = data.data;
-                        },
-                        function () {
-                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-                        });
+                        for (let re of $scope.selectedEnclosure.recurringEvents) {
+                            re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
+                            re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
+                        }
 
-                    var picturesQuery           = enclosureService.enclosures.getEnclosurePicturesById(selectedEnclosure.id).then(
-                        function (data) {
-                            $scope.selectedEnclosure.pictures = data.data;
-                        },
-                        function () {
-                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-                        });
+                        addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });
 
-                    var animalsQuery            = animalService.getAnimalsByEnclosure(selectedEnclosure.id).then(
-                        function (animals) {
-                            $scope.selectedEnclosure.animals = animals.data;
-                        },
-                        function () {
-                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-                        });
+                var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery];
 
-                    var recurringEventsQuery    = enclosureService.enclosureDetails.getRecurringEvents(selectedEnclosure.id, $scope.language.id).then(
-                        function (data) {
-                            $scope.selectedEnclosure.recurringEvents = data.data;
-
-                            for (let re of $scope.selectedEnclosure.recurringEvents) {
-                                re.startTime    = utilitiesService.timeSpan.parseTimeSpan(re.startTime);
-                                re.endTime      = utilitiesService.timeSpan.parseTimeSpan(re.endTime);
-                            }
-
-                            addEmptyRecurringEvent($scope.selectedEnclosure.recurringEvents);
-                        },
-                        function () {
-                            utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
-                        });
-
-                    var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery];
-
-                    $q.all(promises).then(
-                        () => $scope.isLoading = false,
-                        () => $scope.isLoading = false);
-                }
-            };
+                $q.all(promises).then(
+                    () => $scope.isLoading = false,
+                    () => $scope.isLoading = false);
+            }
             
             $scope.openMap                  = function(ev, selectedEnclosure) {
                 mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl').then(function(clickPosition) {
@@ -114,8 +107,8 @@
             
             $scope.addEnclosure             = function(enclosure) {
                 $scope.isLoading            = true;
-                    var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
-                    var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
+                    var successContent      = !$scope.isEdit ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
+                    var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
 
                     var pictureUploadQuery  = uploadProfilePicture($scope.profilePic, enclosure);
 
@@ -126,12 +119,11 @@
                     $q.all(uploadPromises).then(
                         () => {
                             enclosureService.enclosures.updateEnclosure(enclosure).then(
-                                function () {
+                                function (response) {
                                     utilitiesService.utilities.alert(successContent);
                                     
-                                    $scope.page     = 'list';
-        
-                                    $scope.updateEnclosures();
+                                    $stateParams.enclosure = response.data;
+                                    initializeComponent();
 
                                 },
                                 function () {
@@ -154,10 +146,7 @@
                     function() {
                         utilitiesService.utilities.alert("המתחם נמחק בהצלחה!");
 
-                        $scope.page                 = 'list';
-                        $scope.selectedEnclosure    = { };
-                        
-                        $scope.updateEnclosures();
+                        $state.go('mainMenu.enclosures.list')
                     },
 
                     function () {
@@ -327,7 +316,7 @@
         }
 
         function confirmDeleteRecurringEvent (recurringEvents, recurringEvent) {
-
+            // TODO:: actually confirm this.
         }
 
         function uploadProfilePicture (picture, enclosure) {
@@ -373,9 +362,4 @@
 
             return fileUploadQuery;
         };
-}])
-.directive('zooEnclosures', function () {
-    return {
-        templateUrl: 'mainMenu/enclosures/enclosures.html'
-    };
-});
+}]);

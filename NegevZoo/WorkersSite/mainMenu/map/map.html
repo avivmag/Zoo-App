@@ -1,62 +1,60 @@
-﻿<div ng-controller="zooMapCtrl as vm">
-    <div layout="row" layout-align="center center">
-        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
-    </div>
+﻿<div layout="row" layout-align="center center">
+    <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+</div>
 
-   <md-card ng-show="!isLoading">
-       <md-card-title>
-           <md-card-title-text class="md-headline">הגדרות מפה</md-card-title-text>
-       </md-card-title>
-        
-       <md-card-content layout="row" style="margin-right: 4%">
+<md-card ng-show="!isLoading">
+    <md-card-title>
+        <md-card-title-text class="md-headline">הגדרות מפה</md-card-title-text>
+    </md-card-title>
+    
+    <md-card-content layout="row" style="margin-right: 4%">
+        <md-card-content layout="column" flex>
+            <ng-card-content layout="column">
+                <div style="margin-top: 7px" layout="row">
+                    <div style="width: 200px">העלה מפה חדשה:</div>
+                    <input type="file" file-model="mapPic" accept="image/*"/>
+                </div>
+            </ng-card-content>
+            
+            <div layout="column" layout-align="end end">
+                <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addMap(mapPic)">החלף מפה</md-button>
+            </div>
+        </md-card-content>
+    </md-card-content>
+    </md-card>
+
+<md-card ng-show="!isLoading">
+    <md-card-content layout="row" style="margin-right: 4%">
             <md-card-content layout="column" flex>
                 <ng-card-content layout="column">
                     <div style="margin-top: 7px" layout="row">
-                        <div style="width: 200px">העלה מפה חדשה:</div>
-                        <input type="file" file-model="mapPic" accept="image/*"/>
+                        <div style="width: 200px">העלה אייקון שונות חדש:</div>
+                        <input type="file" file-model="markerPic" accept="image/*"/>
                     </div>
                 </ng-card-content>
                 
+                <div layout="row">
+                    <md-button class="md-raised md-primary" ng-click="openMap($event, newMarker, false)">מקם את האייקון על המפה</md-button>
+                </div>
                 <div layout="column" layout-align="end end">
-                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addMap(mapPic)">החלף מפה</md-button>
+                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addMarker(newMarker)">הוסף אייקון</md-button>
                 </div>
             </md-card-content>
-        </md-card-content>
-     </md-card>
-
-    <md-card ng-show="!isLoading">
-       <md-card-content layout="row" style="margin-right: 4%">
-                <md-card-content layout="column" flex>
-                    <ng-card-content layout="column">
-                        <div style="margin-top: 7px" layout="row">
-                            <div style="width: 200px">העלה אייקון שונות חדש:</div>
-                            <input type="file" file-model="markerPic" accept="image/*"/>
-                        </div>
-                    </ng-card-content>
-                    
-                    <div layout="row">
-                        <md-button class="md-raised md-primary" ng-click="openMap($event, newMarker, false)">מקם את האייקון על המפה</md-button>
-                    </div>
-                    <div layout="column" layout-align="end end">
-                        <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addMarker(newMarker)">הוסף אייקון</md-button>
-                    </div>
-                </md-card-content>
-        </md-card-content>
-    </md-card>
-    <md-card ng-if="!isLoading && markers && markers.length > 0">
-        <md-card-title>
-            <md-card-title-text class="md-headline">אייקונים קיימים</md-card-title-text>
-        </md-card-title>
-        <md-card-content layout="row" layout-align="space-between">
-            <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3, 4, 5, 6, 7]">
-                <div ng-repeat="marker in markers" ng-show="$index % 8 === colIndex" layout="column" layout-align="center center">
-                    <img class="marker" ng-src="{{ baseURL + marker.iconUrl }}" />
-                    <div layout="column">
-                        <md-button class="md-raised md-accent" ng-click="openMap($event, marker, true)">מקם את האייקון על המפה</md-button>
-                        <md-button class="md-raised md-warn" ng-click="deleteMarker(marker.id)">מחק אייקון</md-button>
-                    </div>
+    </md-card-content>
+</md-card>
+<md-card ng-if="!isLoading && markers && markers.length > 0">
+    <md-card-title>
+        <md-card-title-text class="md-headline">אייקונים קיימים</md-card-title-text>
+    </md-card-title>
+    <md-card-content layout="row" layout-align="space-between">
+        <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3, 4, 5, 6, 7]">
+            <div ng-repeat="marker in markers" ng-show="$index % 8 === colIndex" layout="column" layout-align="center center">
+                <img class="marker" ng-src="{{ baseURL + marker.iconUrl }}" />
+                <div layout="column">
+                    <md-button class="md-raised md-accent" ng-click="openMap($event, marker, true)">מקם את האייקון על המפה</md-button>
+                    <md-button class="md-raised md-warn" ng-click="deleteMarker(marker.id)">מחק אייקון</md-button>
                 </div>
             </div>
-        </md-card-content>
-   </md-card>
-</div>
+        </div>
+    </md-card-content>
+</md-card>
