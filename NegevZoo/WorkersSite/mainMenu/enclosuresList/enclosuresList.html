@@ -1,0 +1,29 @@
+﻿<div layout="row" layout-align="center center">
+    <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+</div>
+
+<md-card ng-show="!isLoading">
+    <md-card-title layout="row" layout-align="space-between">
+        <div layout="column">
+            <md-button class="md-raised md-primary" ui-sref="mainMenu.enclosures.enclosure">הוסף מתחם</md-button>
+            <md-card-title-text class="md-headline">מתחמים קיימים:</md-card-title-text>
+        </div>
+
+        <div layout="column">
+            <md-input-container>
+                <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
+                <label>חפש מתחם</label>
+                <input style="width: 200px" ng-model="enclosure_searchTerm" type="text">
+            </md-input-container>
+        </div>
+    </md-card-title>
+    
+    <md-card-content layout="row" layout-align="space-between">
+        <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+            <div ng-repeat="enclosure in enclosures | filter:enclosure_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                <span class="picture-head">{{ enclosure.name }}</span>
+                <img class="picture" ng-src="{{ baseURL + enclosure.pictureUrl }}" alt="{{ enclosure.name }}" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure})" />
+            </div>
+        </div>
+    </md-card-content>
+</md-card>

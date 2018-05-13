@@ -1,5 +1,5 @@
 ﻿app.controller('zooContactInfoCtrl', ['$scope', '$mdDialog', 'zooInfoService',
-    function zooSpecialEventsController($scope, $mdDialog, zooInfoService) {
+    function zooContactInfoController($scope, $mdDialog, zooInfoService) {
         $scope.isLoading            = true;
 
         initializeComponent();
@@ -102,9 +102,4 @@
                     );
                 });
         }
-}])
-.directive('zooContactInfo', function () {
-    return {
-        templateUrl: 'mainMenu/generalInfo/contactInfo.html'
-    };
-});
+}]);

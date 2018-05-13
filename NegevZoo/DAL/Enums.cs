@@ -28,7 +28,8 @@ namespace DAL
         Vulnerable              = 3,
         Endangered              = 4,
         CriticallyEndangered    = 5,
-        ExtinctWildlife         = 6
+        ExtinctWildlife         = 6,
+        Unknown                 = 7
     }
 
     public enum Days

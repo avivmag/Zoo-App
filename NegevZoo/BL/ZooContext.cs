@@ -202,7 +202,7 @@ namespace BL
         /// Updates The enclosure.
         /// </summary>
         /// <param name="enclosures">The enclosures to update.</param>
-        public void UpdateEnclosure(Enclosure enclosure)
+        public Enclosure UpdateEnclosure(Enclosure enclosure)
         {
             //validate enclosure attributes
             //0. Exists.
@@ -229,6 +229,10 @@ namespace BL
                 }
                 
                 enclosures.Add(enclosure);
+
+                zooDB.SaveChanges();
+
+                return enclosure;
             }
             else //update existing enclosure
             {
@@ -252,6 +256,8 @@ namespace BL
                 oldEnc.markerLongitude = enclosure.markerLongitude;
                 oldEnc.name = enclosure.name;
                 oldEnc.pictureUrl = enclosure.pictureUrl;
+
+                return oldEnc;
             }
         }
 
@@ -759,7 +765,7 @@ namespace BL
         /// This method adds or updates the animal.
         /// </summary>
         /// <param name="animal">The animal to update.</param>
-        public void UpdateAnimal(Animal animal)
+        public Animal UpdateAnimal(Animal animal)
         {
             //validate enclosure attributes
             //0. Exists.
@@ -785,6 +791,10 @@ namespace BL
             if (animal.id == default(int)) //add a new aniaml
             {
                 animals.Add(animal);
+
+                zooDB.SaveChanges();
+
+                return animal;
             }
             else // update existing animal.
             {
@@ -800,6 +810,8 @@ namespace BL
                 oldAnimal.pictureUrl = animal.pictureUrl;
                 oldAnimal.preservation = animal.preservation;
                 oldAnimal.enclosureId = animal.enclosureId;
+
+                return oldAnimal;
             }
         }
 

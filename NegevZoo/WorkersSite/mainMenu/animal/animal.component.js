@@ -1,39 +1,38 @@
-﻿app.controller('zooAnimalsCtrl', ['$q', '$state', '$scope', '$stateParams', 'utilitiesService', 'animalService', 'fileUpload',
+﻿app.controller('zooAnimalCtrl', ['$q', '$state', '$scope', '$stateParams', 'utilitiesService', 'animalService', 'fileUpload',
 
-    function enclosureController($q, $state, $scope, $stateParams, utilitiesService, animalService, fileUpload) {
-        if (!angular.isDefined($stateParams.enclosureId)) {
-            $state.go('mainMenu');
+    function animalController($q, $state, $scope, $stateParams, utilitiesService, animalService, fileUpload) {
+        if (!angular.isDefined($stateParams.enclosure)) {
+            $state.go('mainMenu.enclosures.list');
         }
-
-        $scope.isLoading            = true;
-
-        initializeComponent();
 
         app.getLanguages().then(
             (data) => {
                 $scope.languages    = data.data;
                 $scope.language     = $scope.languages[0];
-
+                
+                initializeComponent();
                 $scope.updateAnimals();
             });
 
         function initializeComponent() {
+            $scope.isLoading        = true;
+
             if (angular.isDefined($stateParams.animal)) {
                 $scope.isEdit       = true;
             }
 
-            $scope.enclosureId      = $stateParams.enclosureId;
+            $scope.enclosure        = $stateParams.enclosure;
             $scope.baseURL          = app.baseURL;
-            $scope.animal           = $stateParams.animal || { enclosureId: $scope.enclosureId };
+            $scope.animal           = $stateParams.animal || { enclosureId: $scope.enclosure.id };
             $scope.preservation     = animalService.getPreservation();
 
             $scope.updateAnimals    = function () {
                 if ($scope.isEdit) {
-                    $scope.isLoading        = true;
+                    $scope.isLoading                = true;
 
                     animalService.getAnimalDetailsById($scope.animal.id).then(
                         function (data) {
-                            $scope.animalDetails = data.data;
+                            $scope.animalDetails    = data.data;
     
                             for (let i = 1; i <= 4; i++) {
                                 if (!$scope.animalDetails.some(ed => ed.language === i)) {
@@ -68,11 +67,16 @@
                     $q.all(uploadPromises).then(
                         () => {
                             animalService.updateAnimal(animal).then(
-                                function () {
+                                function (response) {
                                     utilitiesService.utilities.alert(successContent);
                                     
-                                    // TODO:: Think about where to redirect after animal save.
-                                    $scope.isLoading = false;
+                                    $scope.isLoading        = false;
+
+                                    $stateParams.animal     = response.data;
+                                    $stateParams.enclosure  = $scope.enclosure;
+
+                                    initializeComponent();
+                                    $scope.updateAnimals();
                                 },
                                 function () {
                                     utilitiesService.utilities.alert(failContent);
@@ -94,8 +98,7 @@
                     function() {
                         utilitiesService.utilities.alert("החיה נמחקה בהצלחה!");
 
-                        //TODO:: Re-direct.
-                        $scope.isLoading            = false;
+                        $state.go('mainMenu.enclosures.enclosure', { enclosure: $scope.enclosure });
                     },
 
                     function () {
