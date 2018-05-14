@@ -2664,12 +2664,29 @@ namespace BL
         /// <param name="nWidth">new width.</param>
         /// <param name="nHeight">new height.</param>
         /// <returns>A resized image.</returns>
-        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
+        private Bitmap ResizeImage(Bitmap b, int? nWidth = null, int? nHeight = null, double? size = null, bool? keepResolution = null)
         {
-            Bitmap result = new Bitmap(nWidth, nHeight);
+            if (keepResolution == true && size.HasValue)
+            {
+                var originalWidth   = b.Width;
+                var originalHeight  = b.Height;
+
+                var maxDimension    = Math.Max(originalHeight, originalWidth);
+
+                var ratio           = maxDimension / size.Value;
+
+                nWidth              = (int)Math.Floor(originalWidth / ratio);
+                nHeight             = (int)Math.Floor(originalHeight / ratio);
+            }
+            else if (!nWidth.HasValue || !nHeight.HasValue)
+            {
+                throw new ArgumentNullException("Not all parameters given for image resize.");
+            }
+
+            Bitmap result = new Bitmap(nWidth.Value, nHeight.Value);
 
             using (Graphics g = Graphics.FromImage(result))
-                g.DrawImage(b, 0, 0, nWidth, nHeight);
+                g.DrawImage(b, 0, 0, nWidth.Value, nHeight.Value);
 
             return result;
         }
@@ -2713,6 +2730,35 @@ namespace BL
                 }
                 // This EXIF data is now invalid and should be removed.
                 b.RemovePropertyItem(274);
+            }
+        }
+
+        /// <summary>
+        /// Saves the image.
+        /// </summary>
+        /// <param name="filePath">The file path to save.</param>
+        private void Save(string filePath)
+        {
+            // Get the image from file.
+            var image = new Bitmap(filePath);
+
+            // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
+            if (image.Height > 480 || image.Width > 480)
+            {
+                // Sets the image orientation to default value.
+                SetOrientationToDefault(image);
+
+                // Resize the image.
+                var resizedImage            = ResizeImage(image, size: 480.0, keepResolution: true);
+
+                // Dispose the original image file desc.
+                image.Dispose();
+
+                // Save the new resized image.
+                resizedImage.Save(filePath);
+
+                // Dispose the resized image file desc.
+                resizedImage.Dispose();
             }
         }
 
@@ -2774,6 +2820,10 @@ namespace BL
                 if (relativePath.Contains("misc") || relativePath.Contains("marker"))
                 {
                     SaveAsIcon(filePath);
+                }
+                else
+                {
+                    Save(filePath);
                 }
 
                 fileNames.Add(fileName);
