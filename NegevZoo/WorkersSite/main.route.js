@@ -42,6 +42,15 @@
                 enclosure:    undefined
             }
         })
+        .state('mainMenu.enclosures.animalStory', {
+            url:            '/animalStory',
+            templateUrl:    'mainMenu/animalStory/animalStory.html',
+            controller:     'zooAnimalStoryCtrl',
+            params: {
+                animalStory:  undefined,
+                enclosure:    undefined
+            }
+        })
         .state('mainMenu.specialEvents', {
             url:            '/specialEvents',
             templateUrl:    '/mainMenu/specialEvents/specialEvents.html',

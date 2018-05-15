@@ -834,6 +834,26 @@ namespace BL
         }
 
         /// <summary>
+        /// Gets animals by enclosure Id.
+        /// </summary>
+        /// <param name="encId">The enclosure's Id.</param>
+        /// <returns>The animals that are in the enclosure.</returns>
+        public IEnumerable<AnimalStory> GetAnimalStoriesByEnclosure(long encId)
+        {
+            //validate the attributes
+            //1. check if the enclosure exists
+            if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
+            {
+                throw new ArgumentException("Wrong input. The enclosure doesn't exists");
+            }
+
+            //get all the animals in the enclosure.
+            var allAnimalStories = GetAllAnimalStories().Where(a => a.enclosureId == encId).ToArray();
+
+            return allAnimalStories;
+        }
+
+        /// <summary>
         /// Gets all AnimalStory types exists.
         /// </summary>
         /// <returns>All AnimalStory types.</returns>
@@ -970,7 +990,7 @@ namespace BL
         /// Adds or updates an AnimalStory object.
         /// </summary>
         /// <param name="animalStory">The AnimalStory to add or update.</param>
-        public void UpdateAnimalStory(AnimalStory animalStory)
+        public AnimalStory UpdateAnimalStory(AnimalStory animalStory)
         {
             //Validate attributes
             //0. Exists
@@ -990,6 +1010,10 @@ namespace BL
             if (animalStory.id == default(int)) //add a new animal story
             {
                 animalStories.Add(animalStory);
+
+                zooDB.SaveChanges();
+
+                return animalStory;
             }
             else // update an exising animal story
             {
@@ -1000,8 +1024,11 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating animal story. The AnimalStory id doesn't exists");
                 }
 
+                oldAnimalStory.name         = animalStory.name;
                 oldAnimalStory.enclosureId  = animalStory.enclosureId;
                 oldAnimalStory.pictureUrl   = animalStory.pictureUrl;
+
+                return oldAnimalStory;
             }
         }
 
