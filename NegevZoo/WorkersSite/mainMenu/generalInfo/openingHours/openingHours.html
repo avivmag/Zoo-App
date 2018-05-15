@@ -6,7 +6,23 @@
     <md-card ng-if="!isLoading">
         <md-card-title layout="row" layout-align="space-between">
             <md-card-title-text class="md-headline">שעות פתיחה:</md-card-title-text>
+
+            <div layout="column">
+                <md-select ng-change="updateOpeningHours(language)" ng-model="language" placeholder="אנא בחר שפה">
+                    <md-option ng-repeat="lang in languages" ng-value="lang">{{ lang.name }}</md-option>
+                </md-select>
+            </div>
         </md-card-title>
+
+        <md-card-content layout="column">
+            <label>הכנס הערה לדף "שעות פתיחה"</label>
+            <textarea rows="8" type="text" ng-model="openingHourNote.openingHourNote"></textarea>
+        </md-card-content>
+
+        <md-card-content layout="column" layout-align="start end">
+            <md-button class="md-raised md-primary" ng-click="addOpeningHourNote(openingHourNote.openingHourNote, language.id)">שמור הערה</md-button>
+        </md-card-content>
+
 
         <md-card-content ng-if="openingHours && openingHours.length > 0">
             <div style="margin-right: 10%" ng-repeat="openingHour in openingHours | orderBy:'day'" layout="row" layout-align="start center">

@@ -1,5 +1,5 @@
-﻿app.controller('zooContactInfoCtrl', ['$scope', '$mdDialog', 'zooInfoService',
-    function zooContactInfoController($scope, $mdDialog, zooInfoService) {
+﻿app.controller('zooContactInfoCtrl', ['$q', '$scope', '$mdDialog', 'utilitiesService', 'zooInfoService',
+    function zooContactInfoController($q, $scope, $mdDialog, utilitiesService, zooInfoService) {
         $scope.isLoading            = true;
 
         initializeComponent();
@@ -10,16 +10,15 @@
                 $scope.language     = $scope.languages[0];
 
                 $scope.updateContactInfos($scope.language);
-            });
+        });
 
         function initializeComponent() {
             $scope.updateContactInfos       = function (language) {
-                $scope.language         = language;
+                $scope.language             = language;
 
-                zooInfoService.contactInfo.getAllContactInfos(language.id).then(
+                var contactInfoQuery        = zooInfoService.contactInfo.getAllContactInfos(language.id).then(
                     function (data) {
                         $scope.contactInfos = data.data;
-                        $scope.isLoading    = false;
 
                         addEmptyContactInfo($scope.contactInfos);
                     },
@@ -30,9 +29,21 @@
                                 .textContent('אירעה שגיאה במהלך טעינת הנתונים')
                                 .ok('סגור')
                         );
-
-                        $scope.isLoading    = false;
                     });
+
+                var contactInfoNoteQuery    = zooInfoService.contactInfo.getContactInfoNote(language.id).then(
+                    function (data) {
+                        $scope.contactInfoNote = data.data[0] || { contactInfoNote: '' };
+                    },
+                    function () {
+                        utilitiesService.utilities.alert("אירעה שגיאה במהלך טעינת הנתונים");
+                    });
+
+                var promises = [contactInfoQuery, contactInfoNoteQuery];
+
+                $q.all(promises).then(
+                    () => $scope.isLoading    = false,
+                    () => $scope.isLoading    = false);
             }
 
             $scope.confirmDeleteContactInfo = function (ev, contactInfo, contactInfos) {
@@ -74,6 +85,12 @@
 
                         $scope.isLoading = false;
                     });
+            }
+
+            $scope.addContactInfoNote       = function (contactInfoNote, languageId) {
+                zooInfoService.contactInfo.updateContactInfoNote(contactInfoNote, languageId).then(
+                    () => utilitiesService.utilities.alert('התוכן נשמר בהצלחה'),
+                    () => utilitiesService.utilities.alert('אירעה שגיאה בעת שמירת התוכן'));
             }
         }
 

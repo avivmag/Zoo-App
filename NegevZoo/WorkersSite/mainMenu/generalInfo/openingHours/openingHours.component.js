@@ -1,5 +1,5 @@
-﻿app.controller('zooOpeningHoursCtrl', ['$scope', '$mdDialog', 'zooInfoService', 'utilitiesService',
-    function zooOpeningHoursController($scope, $mdDialog, zooInfoService, utilitiesService) {
+﻿app.controller('zooOpeningHoursCtrl', ['$q', '$scope', '$mdDialog','utilitiesService', 'zooInfoService', 'utilitiesService',
+    function zooOpeningHoursController($q, $scope, $mdDialog, utilitiesService, zooInfoService, utilitiesService) {
         $scope.isLoading            = true;
 
         initializeComponent();
@@ -10,17 +10,17 @@
                 $scope.language     = $scope.languages[0];
 
                 $scope.updateOpeningHours($scope.language);
-            });
+        });
 
         function initializeComponent() {
             $scope.hours                = utilitiesService.timeSpan.getHours();
             $scope.minutes              = utilitiesService.timeSpan.getMinutes();
             $scope.days                 = utilitiesService.getDays();
 
-            $scope.updateOpeningHours       = function (language) {
+            $scope.updateOpeningHours           = function (language) {
                 $scope.language             = language;
 
-                openingHoursQuery = zooInfoService.openingHours.getAllOpeningHours(language.id).then(
+                openingHoursQuery = zooInfoService.openingHours.getAllOpeningHours().then(
                     function (data) {
                         $scope.openingHours         = data.data;
                         $scope.isLoading            = false;
@@ -42,9 +42,23 @@
 
                         $scope.isLoading = false;
                     });
+
+                var openingHourNoteQuery    = zooInfoService.openingHours.getOpeningHourNote(language.id).then(
+                    function (data) {
+                        $scope.openingHourNote = data.data[0] || { openingHourNote: '' };
+                    },
+                    function () {
+                        utilitiesService.utilities.alert("אירעה שגיאה במהלך טעינת הנתונים");
+                    });
+
+                var promises = [openingHourNoteQuery, openingHoursQuery];
+
+                $q.all(promises).then(
+                    () => $scope.isLoading    = false,
+                    () => $scope.isLoading    = false);
             };
 
-            $scope.addOpeningHour       = function (openingHour) {
+            $scope.addOpeningHour               = function (openingHour) {
                 $scope.isLoading        = true;
                 var successContent      = openingHour.isNew ? 'שעת הפתיחה נוספה בהצלחה!' : 'שעת הפתיחה עודכנה בהצלחה!';
                 var failContent         = openingHour.isNew ? 'התרחשה שגיאה בעת שמירת שעת הפתיחה' : 'התרחשה שגיאה בעת עדכון שעת הפתיחה';
@@ -80,7 +94,7 @@
                     });
             };
 
-            $scope.confirmDeleteOpeningHour   = function (ev, openingHour, openingHours) {
+            $scope.confirmDeleteOpeningHour     = function (ev, openingHour, openingHours) {
                 var confirm = $mdDialog.confirm()
                     .title('האם אתה בטוח שברצונך למחוק את שעת פתיחה זו?')
                     .textContent('לאחר המחיקה, לא תוכל להחזירה אלא ליצור אותה מחדש')
@@ -91,6 +105,12 @@
                 $mdDialog.show(confirm).then(function () {
                     deleteOpeningHour(openingHour, openingHours);
                 });
+            }
+
+            $scope.addOpeningHourNote           = function (openingHourNote, languageId) {
+                zooInfoService.openingHours.updateOpeningHourNote(openingHourNote, languageId).then(
+                    () => utilitiesService.utilities.alert('התוכן נשמר בהצלחה'),
+                    () => utilitiesService.utilities.alert('אירעה שגיאה בעת שמירת התוכן'));
             }
         }
 
