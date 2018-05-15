@@ -1353,14 +1353,14 @@ namespace ZooTests
             var ohNote = ZooInfoController.GetOpeningHourNote((int)Languages.en);
             Assert.AreEqual(ohNote.Count(), 1);
 
-            var oldNote = ohNote.SingleOrDefault(ohn => ohn.AboutUs == "The cashier desk will bew closed two hours before the zoo is closing.");
-            var newAboutUs = "This is the new note!";
+            var oldNote = ohNote.SingleOrDefault(ohn => ohn.OpeningHourNote == "The cashier desk will bew closed two hours before the zoo is closing.");
+            var newOpeningHournote = "This is the new note!";
 
-            ZooInfoController.UpdateOpeningHourNote(newAboutUs, (int)Languages.en);
+            ZooInfoController.UpdateOpeningHourNote(newOpeningHournote, (int)Languages.en);
 
             ohNote = ZooInfoController.GetOpeningHourNote((int)Languages.en);
-            Assert.IsTrue(ohNote.Any(ohn => ohn.AboutUs == newAboutUs));
-            Assert.IsFalse(ohNote.Any(ohn => ohn.AboutUs == oldNote.AboutUs));
+            Assert.IsTrue(ohNote.Any(ohn => ohn.OpeningHourNote == newOpeningHournote));
+            Assert.IsFalse(ohNote.Any(ohn => ohn.OpeningHourNote == oldNote.OpeningHourNote));
         }
 
         [TestMethod]
@@ -1410,14 +1410,14 @@ namespace ZooTests
             var ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
             Assert.AreEqual(ciNote.Count(), 1);
 
-            var oldNote = ciNote.SingleOrDefault(cin => cin.AboutUs == "Contact between 08:00 - 22:00");
-            var newAboutUs = "This is the new note!";
+            var oldNote = ciNote.SingleOrDefault(cin => cin.ContactInfoNote == "Contact between 08:00 - 22:00");
+            var newContactInfoNote = "This is the new note!";
 
-            ZooInfoController.UpdateContactInfoNote(newAboutUs, (int)Languages.en);
+            ZooInfoController.UpdateContactInfoNote(newContactInfoNote, (int)Languages.en);
 
             ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
-            Assert.IsTrue(ciNote.Any(cin => cin.AboutUs == newAboutUs));
-            Assert.IsFalse(ciNote.Any(cin => cin.AboutUs == oldNote.AboutUs));
+            Assert.IsTrue(ciNote.Any(cin => cin.ContactInfoNote == newContactInfoNote));
+            Assert.IsFalse(ciNote.Any(cin => cin.ContactInfoNote == oldNote.ContactInfoNote));
         }
 
         [TestMethod]

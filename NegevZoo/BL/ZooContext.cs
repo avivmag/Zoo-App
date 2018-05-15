@@ -1762,9 +1762,24 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.language == language);
+            var zooGeneralInfo = zooDB.GetGeneralInfo();
 
-            generalInfo.aboutUs = info;
+            var generalInfo     = zooGeneralInfo.SingleOrDefault(gi => gi.language == language);
+
+            if (generalInfo == default(GeneralInfo))
+            {
+                generalInfo = new GeneralInfo()
+                {
+                    aboutUs     = info,
+                    language    = language
+                };
+
+                zooGeneralInfo.Add(generalInfo);
+            }
+            else
+            {
+                generalInfo.aboutUs = info;
+            }
         }
 
         /// <summary>
@@ -1848,9 +1863,25 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.language == language);
+            var zooGeneralInfo  = zooDB.GetGeneralInfo();
 
-            generalInfo.contactInfoNote= note;
+            var generalInfo     = zooGeneralInfo.SingleOrDefault(gi => gi.language == language);
+
+            if (generalInfo == default(GeneralInfo))
+            {
+                generalInfo = new GeneralInfo()
+                {
+                    contactInfoNote = note,
+                    language        = language
+                };
+
+                zooGeneralInfo.Add(generalInfo);
+            }
+            else
+            {
+                generalInfo.contactInfoNote = note;
+            }
+
         }
 
         /// <summary>
@@ -2839,13 +2870,11 @@ namespace BL
             return responseObject;
         }
         
-        #endregion
-
         /// <summary>
         /// Upload a new map.
         /// </summary>
         /// <param name="httpRequest">The request which holds the file.</param>
-        public void UploadMap(HttpRequest httpRequest)
+        public void MapUpload(HttpRequest httpRequest)
         {
             var path        = @"~/assets/map/";
 
@@ -2860,6 +2889,8 @@ namespace BL
 
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
         }
+
+        #endregion
 
         public void Dispose()
         {

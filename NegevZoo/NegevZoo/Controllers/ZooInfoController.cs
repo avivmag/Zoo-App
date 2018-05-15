@@ -561,7 +561,7 @@ namespace NegevZoo.Controllers
         /// <param name="info">The info to add or update</param>
         [HttpPost]
         [Route("about/update/{info}/{language}")]
-        public void UpdateZooAboutInfo(string info, int language = 1)
+        public void UpdateZooAboutInfo(String info, int language = 1)
         {
             try
             {
@@ -590,18 +590,18 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's opening hour note.</returns>
         [HttpGet]
-        [Route("about/openHourNote/{language}")]
-        public IEnumerable<AboutUsResult> GetOpeningHourNote(int language = 1)
+        [Route("openingHours/openingHourNote/{language}")]
+        public IEnumerable<OpeningHourNoteResult> GetOpeningHourNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetOpeningHourNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(oen =>
+                            new OpeningHourNoteResult
                             {
-                                AboutUs = zi
+                                OpeningHourNote = oen
                             })
                         .ToArray();
                 }
@@ -619,7 +619,7 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateOpeningHourNote/{note}/{language}")]
+        [Route("openingHours/update/{note}/{language}")]
         public void UpdateOpeningHourNote(string note, int language = 1)
         {
             try
@@ -649,18 +649,18 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's Contact us note.</returns>
         [HttpGet]
-        [Route("about/contactInfoNote/{language}")]
-        public IEnumerable<AboutUsResult> GetContactInfoNote(int language = 1)
+        [Route("contactInfos/contactInfoNote/{language}")]
+        public IEnumerable<ContactInfoNoteResult> GetContactInfoNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetContactInfoNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(cin =>
+                            new ContactInfoNoteResult
                             {
-                                AboutUs = zi
+                                ContactInfoNote = cin
                             })
                         .ToArray();
                 }
@@ -678,7 +678,7 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateContactInfoNote/{note}/{language}")]
+        [Route("contactInfos/update/{note}/{language}")]
         public void UpdateContactInfoNote(string note, int language = 1)
         {
             try
@@ -757,10 +757,21 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region ModelClasses
+        
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
         {
             public String AboutUs { get; set; }
+        }
+
+        public class ContactInfoNoteResult
+        {
+            public String ContactInfoNote { get; set; }
+        }
+
+        public class OpeningHourNoteResult
+        {
+            public String OpeningHourNote { get; set; }
         }
 
         #endregion
