@@ -5,8 +5,6 @@
             $state.go('mainMenu.enclosures.list');
         }
 
-        console.log('init animal story');
-
         app.getLanguages().then(
             (data) => {
                 $scope.languages    = data.data;
