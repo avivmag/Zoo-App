@@ -74,6 +74,14 @@
                         utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                     });
 
+                var animalStoriesQuery      = animalService.getAnimalStoriesByEnclosure($scope.selectedEnclosure.id).then(
+                    function (animalStories) {
+                        $scope.selectedEnclosure.animalStories = animalStories.data;
+                    },
+                    function () {
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
+                    });    
+
                 var recurringEventsQuery    = enclosureService.enclosureDetails.getRecurringEvents($scope.selectedEnclosure.id, $scope.language.id).then(
                     function (data) {
                         $scope.selectedEnclosure.recurringEvents = data.data;
@@ -89,7 +97,7 @@
                         utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                     });
 
-                var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery];
+                var promises = [detailsQuery, videosQuery, picturesQuery, animalsQuery, recurringEventsQuery, animalStoriesQuery];
 
                 $q.all(promises).then(
                     () => $scope.isLoading = false,

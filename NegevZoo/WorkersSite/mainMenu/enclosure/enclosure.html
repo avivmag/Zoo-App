@@ -229,3 +229,30 @@
         <md-button class="md-raised md-primary" ui-sref="mainMenu.enclosures.animal({ enclosure: selectedEnclosure })">הוסף חיה למתחם</md-button>
     </md-card-content>
 </md-card>
+
+<md-card ng-if="isEdit && !isLoading" layout="column">
+    <md-card-title>
+        <md-card-title-text class="md-headline">סיפורים אישיים:</md-card-title-text>
+
+        <div layout="column">
+            <md-input-container>
+                <md-icon md-svg-src="icons/ic_search_black_24px.svg"></md-icon>
+                <label>חפש סיפור אישי</label>
+                <input style="width: 200px" ng-model="animalStory_searchTerm" type="text">
+            </md-input-container>
+        </div>
+    </md-card-title>
+
+    <md-card-content layout="row" layout-align="space-between">
+        <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
+            <div ng-repeat="animalStory in selectedEnclosure.animalStories | filter:animalStory_searchTerm" ng-show="$index % 4 === colIndex" layout="column">
+                <span class="picture-head">{{ animalStory.name }}</span>
+                <img class="picture" ng-src="{{ baseURL + animalStory.pictureUrl }}" alt="{{ animalStory.name }}" ui-sref="mainMenu.enclosures.animalStory({ enclosure: selectedEnclosure, animalStory: animalStory })"/>
+            </div>
+        </div>
+    </md-card-content>
+
+    <md-card-content>
+        <md-button class="md-raised md-primary" ui-sref="mainMenu.enclosures.animalStory({ enclosure: selectedEnclosure })">הוסף סיפור אישי</md-button>
+    </md-card-content>
+</md-card>
