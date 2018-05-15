@@ -26,6 +26,7 @@
         updateAnimalDetail:             function (animalDetail)         { return httpService.httpPost({ url: [serviceBaseUrl, 'detail', 'update'], body: animalDetail }); },
         updateAnimalStoryDetail:        function (animalStoryDetail)    { return httpService.httpPost({ url: [serviceBaseUrl, 'story', 'detail', 'update'], body: animalStoryDetail }); },
         deleteAnimal:                   function (animalId)             { return httpService.httpDelete({ url: [serviceBaseUrl, 'delete', animalId] }); },
+        deleteAnimalStory:              function (animalStoryId)        { return httpService.httpDelete({ url: [serviceBaseUrl, 'story', 'delete', animalStoryId] }); },
         getPreservation
     };
 
