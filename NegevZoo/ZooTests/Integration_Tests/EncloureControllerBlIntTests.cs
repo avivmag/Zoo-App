@@ -7,6 +7,9 @@ using System.Web.Http;
 using BL;
 using System;
 using DAL.Models;
+using System.Net.Http;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace ZooTests
 {
@@ -24,6 +27,9 @@ namespace ZooTests
             // The line below must be in every setup of each test. otherwise it will not be in a testing environment.
             ControllerBase.isTesting = true;
             enclosureController = new EnclosureController();
+            enclosureController.Request = new HttpRequestMessage();
+            enclosureController.Request.Headers.Add("Cookie","session-id=123");
+            enclosureController.Request.RequestUri = new Uri("http://localhost:50000");
             nonExistantLang = 100;
         }
 
@@ -55,125 +61,7 @@ namespace ZooTests
             enclosureController.GetAllEnclosureResults(nonExistantLang);
         }
         #endregion
-
-        #region GetEnclosureById
-        [TestMethod]
-        public void GetEnclosuresByValidId()
-        {
-            var enc = enclosureController.GetEnclosureById(2);
-
-            //default in hebrew
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(2, enc.Id);
-            Assert.AreEqual("קופי אדם", enc.Name);
-
-            //english
-            enc = enclosureController.GetEnclosureById(1, 2);
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(1, enc.Id);
-            Assert.AreEqual("Monkeys", enc.Name);
-        }
-
-        [TestMethod]
-        public void GetEnclosuresByValidIdDataDoesntExists()
-        {
-            var enc = enclosureController.GetEnclosureById(4,2);
-            
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(4, enc.Id);
-            Assert.AreEqual("קרנף לבן", enc.Name);
-            Assert.AreEqual("למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים", enc.Story);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetEnclosuresByIdWrongId()
-        {
-            enclosureController.GetEnclosureById(400);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetEnclosuresByIdWrongLanguage()
-        {
-            enclosureController.GetEnclosureById(1, nonExistantLang);
-        }
-        #endregion
-
-        #region GetEnclosureByName
-        [TestMethod]
-        public void GetEnclosuresByNameValidInput()
-        {
-            IEnumerable<EnclosureResult> encs = enclosureController.GetEnclosureByName("תצוגת הקופים", 1);
-
-            Assert.AreEqual(1, encs.Count());
-
-            EnclosureResult enc = encs.First();
-
-            //default in hebrew
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(1, enc.Id);
-            Assert.AreEqual("תצוגת הקופים", enc.Name);
-
-            //english
-            encs = enclosureController.GetEnclosureByName("Houman Monkeys", 2);
-
-            Assert.AreEqual(1, encs.Count());
-
-            enc = encs.ElementAt(0);
-
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(2, enc.Id);
-            Assert.AreEqual("Houman Monkeys", enc.Name);
-        }
-
-        [TestMethod]
-        public void GetEnclosuresByNameValidInputDataDoesntExistsInWantedLang()
-        {
-            IEnumerable<EnclosureResult> encs = enclosureController.GetEnclosureByName("קרנף לבן", 2);
-
-            Assert.AreEqual(1, encs.Count());
-
-            EnclosureResult enc = encs.First();
-            
-            Assert.IsNotNull(enc);
-            Assert.AreEqual(4, enc.Id);
-            Assert.AreEqual("קרנף לבן", enc.Name);
-            Assert.AreEqual("למרות שכמעט ונכחד בטבע, בשבי עדיין קיימים מספר פריטים", enc.Story);
-        }
-
-        [TestMethod]
-        public void GetEnclosuresByNamePartialyName()
-        {
-            IEnumerable<EnclosureResult> encs = enclosureController.GetEnclosureByName("Monkeys", 2);
-
-            Assert.AreEqual(2, encs.Count());
-            Assert.AreEqual("Monkeys", encs.ElementAt(0).Name);
-            Assert.AreEqual("Houman Monkeys", encs.ElementAt(1).Name);
-        }
-
-        [TestMethod]
-        public void GetEnclosuresByNameWrongName()
-        {
-            var encs = enclosureController.GetEnclosureByName("שימפנזות");
-
-            Assert.IsNotNull(encs);
-            Assert.AreEqual(0, encs.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void GetEnclosuresByNameWrongLanguage()
-        {
-            enclosureController.GetEnclosureByName("Houman Monkeys", nonExistantLang);
-        }
-        #endregion
-
-        //TODO: Add tests after implementaion.
-        #region GetEnclsoureByPosition
-
-        #endregion
-
+        
         #region GetAllEnclosures()
         [TestMethod]
         public void GetAllEnclosures()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,7 +38,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -54,13 +55,23 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdatePrice(price);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdatePrice(price);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var priceInput = "Id: " + price.id + ", population: " + price.population +
+                    ", price: " + price.pricePop + ", language: " + price.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Price: " + priceInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -77,13 +88,20 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeletePrice(priceId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeletePrice(priceId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + priceId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -112,7 +130,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -136,7 +154,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -153,13 +171,23 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHour(openingHour);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHour(openingHour);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
-
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var openingInput = "Id: " + openingHour.id + ", day: " + openingHour.day +
+                    ", start time: "+ openingHour.startTime + ", end time: "+ openingHour.endTime +
+                    ", language: "+ openingHour.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour: " + openingInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -176,13 +204,20 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteOpeningHour(openHourId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteOpeningHour(openHourId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + openHourId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -209,7 +244,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -226,12 +261,22 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfo(contactInfo);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfo(contactInfo);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var contactInput = "Id: " + contactInfo.id + ", via: " + contactInfo.via + 
+                    ", address: " + contactInfo.address +", lanaguage: "+ contactInfo.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info: " + contactInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -248,12 +293,19 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteContactInfo(contactId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteContactInfo(contactId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + contactId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -280,37 +332,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         
-        //TODO: should this function return SpecialEvent only if all of it contained in the given dates or only one day is enough
-        /// <summary>
-        /// Gets SpecialEvent elements between the wanted dates with data in that language.
-        /// </summary>
-        /// <param name="language">The data language. Default is Hebrew</param>
-        /// <param name="startDate">The start date to look for</param>
-        /// <param name="endDate">The end date to look for</param>
-        /// <returns>All SpecialEvent elements with that language.</returns>
-        [HttpGet]
-        [Route("SpecialEvents/date/{startDate}/{endDate}/{language}")]
-        public IEnumerable<SpecialEvent> GetAllSpecialEventsByDates(DateTime startDate, DateTime endDate, int language = 1)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetSpecialEventsByDate(startDate, endDate, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
         /// <summary>
         /// Adds or Updates the SpecialEvent element.
         /// </summary>
@@ -324,13 +350,25 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateSpecialEvent(specialEvent, isPush);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateSpecialEvent(specialEvent, isPush);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var specialInput = "Id: " + specialEvent.id + ", title: " + specialEvent.title + 
+                    ", description: " + specialEvent.description + ", start date: " + specialEvent.startDate + 
+                    ", end date: " + specialEvent.endDate + ", image Url: " + specialEvent.imageUrl + 
+                    ", language: " + specialEvent.language + ", is push: " +isPush;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Special Event:" + specialInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -347,12 +385,19 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteSpecialEvent(specialEventId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteSpecialEvent(specialEventId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + specialEventId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -371,13 +416,17 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                     var uploadedImages = db.FileUpload(httpRequest, @"~/assets/specialEvents/");
                     return Ok(uploadedImages);
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -403,7 +452,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Langauge: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -422,13 +471,23 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    if (ValidateSessionId(db))
+                    {
+                        feed.created = DateTime.Today;
+                        db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                var feedInput = "Id: " + feed.id + ", title: " + feed.title + ", info: " + feed.info + 
+                    ", created: " + feed.created + ", langauge: " + feed.language + ", is push "+ isPush + 
+                    ", is wall feed: " + isWallFeed;
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -445,12 +504,19 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteWallFeed(feedId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteWallFeed(feedId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Id: " + feedId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -483,7 +549,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -495,18 +561,25 @@ namespace NegevZoo.Controllers
         /// <param name="info">The info to add or update</param>
         [HttpPost]
         [Route("about/update/{info}/{language}")]
-        public void UpdateZooAboutInfo(string info, int language = 1)
+        public void UpdateZooAboutInfo(String info, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateZooAboutInfo(info, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateZooAboutInfo(info, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "About info: " + info + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -517,25 +590,25 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's opening hour note.</returns>
         [HttpGet]
-        [Route("about/openHourNote/{language}")]
-        public IEnumerable<AboutUsResult> GetOpeningHourNote(int language = 1)
+        [Route("openingHours/openingHourNote/{language}")]
+        public IEnumerable<OpeningHourNoteResult> GetOpeningHourNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetOpeningHourNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(oen =>
+                            new OpeningHourNoteResult
                             {
-                                AboutUs = zi
+                                OpeningHourNote = oen
                             })
                         .ToArray();
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -546,19 +619,26 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateOpeningHourNote/{note}/{language}")]
+        [Route("openingHours/update/{note}/{language}")]
         public void UpdateOpeningHourNote(string note, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHourNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHourNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour note: " + note + ", langauge: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -569,25 +649,25 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's Contact us note.</returns>
         [HttpGet]
-        [Route("about/contactInfoNote/{language}")]
-        public IEnumerable<AboutUsResult> GetContactInfoNote(int language = 1)
+        [Route("contactInfos/contactInfoNote/{language}")]
+        public IEnumerable<ContactInfoNoteResult> GetContactInfoNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetContactInfoNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(cin =>
+                            new ContactInfoNoteResult
                             {
-                                AboutUs = zi
+                                ContactInfoNote = cin
                             })
                         .ToArray();
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -598,19 +678,26 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateContactInfoNote/{note}/{language}")]
+        [Route("contactInfos/update/{note}/{language}")]
         public void UpdateContactInfoNote(string note, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfoNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfoNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info note: " + note + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -638,7 +725,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -663,17 +750,28 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
         #endregion
 
         #region ModelClasses
+        
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
         {
             public String AboutUs { get; set; }
+        }
+
+        public class ContactInfoNoteResult
+        {
+            public String ContactInfoNote { get; set; }
+        }
+
+        public class OpeningHourNoteResult
+        {
+            public String OpeningHourNote { get; set; }
         }
 
         #endregion

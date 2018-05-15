@@ -9,12 +9,6 @@
     <com.zoovisitors.pl.map.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map_test_frame">
+        android:id="@+id/map_view_layout">
     </com.zoovisitors.pl.map.MapView>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_route" />
 </LinearLayout>

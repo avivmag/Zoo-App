@@ -11,6 +11,8 @@ using BL;
 using System.Web;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
 
 namespace NegevZoo.Controllers
 {
@@ -43,88 +45,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
-
-        /// <summary>
-        /// Gets enclosure by it's encId.
-        /// This function uses the vistore app to get the enclosure data by it's id
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="id">The eclosure's encId</param>
-        /// <returns>The enclosures with this encId and language.</returns>
-        [HttpGet]
-        [Route("enclosures/id/{encId}/{language}")]
-        public EnclosureResult GetEnclosureById(int encId, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureById(encId, language);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets enclosure by it's name.
-        /// This funcion is used by the visitor application.
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="name">The eclosure's name</param>
-        /// <returns>The enclosures with this name and language.</returns>
-        [HttpGet]
-        [Route("enclosures/name/{name}/{language}")]
-        public IEnumerable<EnclosureResult> GetEnclosureByName(string name, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureByName(name, language);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets enclosure by it's position.
-        /// </summary>
-        /// <param name="language">The data language</param>
-        /// <param name="langtitude">The eclosure's langtitude</param>
-        /// <param name="latitude">The eclosure's latitude</param>
-        /// <returns>The enclosures with this aproximate position.</returns>
-        [HttpGet]
-        [Route("enclosures/position/{longtitude}/{latitude}/{language}")]
-        public Enclosure GetEnclosureByPosition(int longtitude, int latitude, int language = 1)
-        {
-            try
-            {
-                using (var db = this.GetContext())
-                {
-                    return db.GetEnclosureByPosition(longtitude, latitude, language);
-                }
-
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
+        
         #endregion
 
         /// <summary>
@@ -145,7 +70,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -169,7 +94,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + encId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -193,7 +118,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + encId + ", langauge" + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -216,10 +141,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + encId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
+        
 
         /// <summary>
         /// Gets the enclosure's videos urls by it's encId.
@@ -239,7 +165,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + encId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -256,19 +182,31 @@ namespace NegevZoo.Controllers
         /// <param name="enclosures">The enclosures to update.</param>
         [HttpPost]
         [Route("enclosures/update")]
-        public void UpdateEnclosure(Enclosure enclosure)
+        public Enclosure UpdateEnclosure(Enclosure enclosure)
         {
             try
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateEnclosure(enclosure);
+                    if (ValidateSessionId(db))
+                    {
+                        return db.UpdateEnclosure(enclosure);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }                    
+
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                string EnclosureInput = "Id: " + enclosure.id + "name: " + enclosure.name + 
+                    "Icon Url: " + enclosure.markerIconUrl + "Marker Longitude: " + enclosure.markerLongitude +
+                    "Marker Latitude: " + enclosure.markerLatitude + "Picture Url: " + enclosure.pictureUrl;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure: " + EnclosureInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -286,13 +224,22 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateEnclosureDetails(enclosureDetail);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateEnclosureDetails(enclosureDetail);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                string enclosureDetailInput = "Enclosure Id: " + enclosureDetail.encId + ", name: " + enclosureDetail.name + ", story: " + enclosureDetail.story + ", language: " + enclosureDetail.language;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Details: " + enclosureDetailInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -310,12 +257,21 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    return db.UpdateEnclosureVideo(enclosureVideo);
+                    if (ValidateSessionId(db))
+                    {
+                        return db.UpdateEnclosureVideo(enclosureVideo);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                string videoInput = "Id: " + enclosureVideo.id + ", enclosure Id: " + enclosureVideo.enclosureId + ", video Url: " + enclosureVideo.videoUrl;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure video: " + videoInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             }
@@ -333,15 +289,23 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.UpdateRecurringEvent(recEvent);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateRecurringEvent(recEvent);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                string recEventInput = "Id: " + recEvent.id + ", title: " + recEvent.title + ", description: " + recEvent.description + ", enclosure Id: " + recEvent.enclosureId + ", day: " + recEvent.day + ", start time: " + recEvent.startTime + ", end time: " + recEvent.endTime + ", language: " + recEvent.language;
 
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Recurring Event: " + recEventInput);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
@@ -361,13 +325,20 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosure(encId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosure(encId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + encId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -384,13 +355,20 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosurePicture(enclosureId, pictureId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosurePicture(enclosureId, pictureId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + enclosureId + ", picture Id: " + pictureId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -407,15 +385,21 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteEnclosureVideo(enclosureId, enclosureVideoId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteEnclosureVideo(enclosureId, enclosureVideoId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + enclosureId + ", video Id: " + enclosureVideoId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
             }
         }
         
@@ -427,13 +411,20 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
-                    db.DeleteRecurringEvent(enclosureId, eventId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteRecurringEvent(enclosureId, eventId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + enclosureId + ", event Id: " + eventId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -452,6 +443,12 @@ namespace NegevZoo.Controllers
             {
                 using (var db = this.GetContext())
                 {
+                    // check that the session is leagal
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+                    
                     // Get the enclosure.
                     var enclosure = db.GetAllEnclosures().SingleOrDefault(e => e.id == enclosureId);
                     
@@ -469,7 +466,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id: " + enclosureId);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -494,6 +491,11 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+
                     var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
 
                     return responseObject;
@@ -501,11 +503,12 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance().WriteLine(Exp.Message, Exp.StackTrace);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Path: " + path);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
 
         #endregion
+        
     }
 }

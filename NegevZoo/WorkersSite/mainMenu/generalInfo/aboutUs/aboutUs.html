@@ -1,0 +1,25 @@
+﻿<div ng-controller="zooContactInfoCtrl as vm">
+    <div layout="row" layout-align="center center">
+        <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+    </div>
+
+    <md-card ng-if="!isLoading">
+        <md-card-title layout="row" layout-align="space-between">
+            <md-card-title-text class="md-headline">על גן החיות:</md-card-title-text>
+        
+            <div layout="column">
+                <md-select ng-change="updateAboutUs(language)" ng-model="language" placeholder="אנא בחר שפה">
+                    <md-option ng-repeat="lang in languages" ng-value="lang">{{ lang.name }}</md-option>
+                </md-select>
+            </div>
+        </md-card-title>
+
+        <md-card-content layout="column">
+            <textarea rows="8" type="text" ng-model="aboutInfo.aboutUs"></textarea>
+        </md-card-content>
+
+        <md-card-content layout="column" layout-align="start end">
+            <md-button class="md-raised md-primary" ng-click="addAboutUs(aboutInfo.aboutUs, language.id)">שמור תוכן</md-button>
+        </md-card-content>
+    </md-card>
+</div>

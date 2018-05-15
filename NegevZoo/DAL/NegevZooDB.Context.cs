@@ -134,6 +134,21 @@ namespace DAL
             return Routes;
         }
 
+        public override DbSet<UserSession> GetAllUserSessions()
+        {
+            return UserSessions;
+        }
+
+        public override DbSet<AnimalStory> GetAllAnimalStories()
+        {
+            return AnimalStories;
+        }
+
+        public override DbSet<AnimalStoryDetail> GetAllAnimalStoryDetails()
+        {
+            return AnimalStoryDetails;
+        }
+
         public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<ContactInfo> ContactInfos { get; set; }
         public virtual DbSet<EnclosurePicture> EnclosurePictures { get; set; }
@@ -154,6 +169,8 @@ namespace DAL
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<MapInfo> MapInfos { get; set; }
         public virtual DbSet<Route> Routes { get; set; }
-
+        public virtual DbSet<UserSession> UserSessions { get; set; }
+        public virtual DbSet<AnimalStory> AnimalStories { get; set; }
+        public virtual DbSet<AnimalStoryDetail> AnimalStoryDetails { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,17 +14,24 @@ namespace DAL
         private static String filePath;
         private static DateTime date;
 
-        protected Logger()
+        protected Logger(string path = null)
         {
             date        = DateTime.Today;
-            filePath    = String.Format(@"c:\Zoo-Logs\{0}.log", date.ToString("yyyy-MM-dd"));
+            filePath    =  path ?? String.Format(Properties.Settings.Default.PathLog+"{0}.log", date.ToString("yyyy-MM-dd"));
         }
 
-        public static Logger GetInstance()
+        public static Logger GetInstance(bool isTesting)
         {
             if (logger == null || date != DateTime.Today)
             {
-                logger      = new Logger();
+                //settig the path to testing if needed
+                string path = null;
+                if (isTesting)
+                {
+                    path = String.Format(Properties.Settings.Default.TestLog+"{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
+                }
+                logger      = new Logger(path);
+
             }
 
             return logger;
@@ -46,6 +54,7 @@ namespace DAL
             }
         }
 
+
         public void WriteLine(params String[] messages)
         {
             try
@@ -55,6 +64,19 @@ namespace DAL
                 if (!File.Exists(filePath))
                 {
                     stream = File.Create(filePath);
+                    
+                    var account = "Users";
+                    var rights = FileSystemRights.Write;
+                    var controlType = AccessControlType.Allow;
+                    // Get a FileSecurity object that represents the
+                    // current security settings.
+                    FileSecurity fSecurity = File.GetAccessControl(filePath);
+
+                    // Add the FileSystemAccessRule to the security settings.
+                    fSecurity.AddAccessRule(new FileSystemAccessRule(account, rights, controlType));
+
+                    // Set the new access settings.
+                    File.SetAccessControl(filePath, fSecurity);
                 }
                 else
                 {

@@ -66,6 +66,12 @@
     <Compile Include="AnimalDetail.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="AnimalStory.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AnimalStoryDetail.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="ContactInfo.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
@@ -99,6 +105,7 @@
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AnimalResult.cs" />
+    <Compile Include="Models\AnimalStoryResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
     <Compile Include="Models\MapResult.cs" />
     <Compile Include="Models\MapSettingsResult.cs" />
@@ -126,6 +133,11 @@
     <Compile Include="Price.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RecommendedRoute.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
@@ -141,6 +153,9 @@
     <Compile Include="TestDbSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs">
+      <DependentUpon>NegevZooDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSession.cs">
       <DependentUpon>NegevZooDB.tt</DependentUpon>
     </Compile>
     <Compile Include="WallFeed.cs">
@@ -162,6 +177,10 @@
       <DependentUpon>NegevZooDB.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="NegevZooDB.Context.tt">

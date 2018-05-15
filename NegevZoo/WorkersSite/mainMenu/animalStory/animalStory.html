@@ -1,0 +1,67 @@
+<div layout="row" layout-align="center center">
+    <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+</div>
+
+<md-card ng-show="!isLoading">
+        <md-card-title layout="row" layout-align="space-between">
+        <div layout="column">
+            <md-button class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
+            <div layout="row" ng-if="isEdit">
+                <img class="picture_small" ng-src="{{ baseURL + animalStory.pictureUrl }}" alt="{{ animalStory.name }}" />
+                <md-card-title-text style="margin-top: 20px" class="md-headline">{{ animalStory.name }}:</md-card-title-text>
+            </div>
+
+            <md-card-title-text ng-if="!isEdit" class="md-headline">הוספת סיפור אישי חדש:</md-card-title-text>
+        </div>
+    </md-card-title>
+
+    <md-card-content layout="row" style="margin-right: 4%">
+            <md-card-content layout="column" flex>
+                <md-input-container layout="row">
+                    <label ng-show="!isEdit">הכנס שם מזהה לסיפור האישי</label>
+                    <label ng-show="isEdit">שם הסיפור האישי</label>
+                    <input style="width: 200px" ng-model="animalStory.name" required type="text">
+                </md-input-container>
+
+                <ng-card-content layout="column">
+                    <div style="margin-top: 7px" layout="row">
+                        <div style="width: 200px">בחר תמונת פרופיל להעלות:</div>
+                        <input type="file" file-model="profilePic" accept="image/*"/>
+                    </div>
+                </ng-card-content>
+
+                <div layout="column" layout-align="end end">
+                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimalStory(animalStory)">שמור פרטי סיפור אישי</md-button>
+                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="deleteAnimalStory(animalStory.id)">מחק סיפור אישי</md-button>
+                </div>
+            </md-card-content>
+    </md-card-content>
+</md-card>
+
+<md-card ng-if="isEdit && !isLoading">
+    <md-card-title>
+        <md-card-title-text class="md-headline">מלל הסיפור האישי בשפות השונות:</md-card-title-text>
+    </md-card-title>
+
+    <md-card-content>
+        <md-tabs md-selected="selectedTab" md-stretch-tabs="always" md-dynamic-height>
+            <md-tab ng-repeat="language in languages" label="{{ language.name }}">
+                <md-card-content style="margin-right: 4%"  layout="column">
+                    <md-input-container layout="row">
+                        <label>הכנס שם תצוגה לסיפור האישי</label>
+                        <input style="width: 200px" ng-model="animalStoryDetails[selectedTab].name" required type="text">
+                    </md-input-container>
+                    
+                    <md-input-container>
+                        <label>הכנס סיפור אישי</label>
+                        <input ng-model="animalStoryDetails[selectedTab].story" type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <md-button class="md-raised md-primary" ng-click="addAnimalStoryDetail(animalStoryDetails[selectedTab])">הוסף תוכן לסיפור האישי בשפה שנבחרה</md-button>
+                    </md-input-container>
+                </md-card-content>
+            </md-tab>
+        </md-tabs>
+    </md-card-content>
+</md-card>
