@@ -229,7 +229,7 @@ public class EnclosureActivity extends BaseActivity {
         final long DELAY_TIME = 0;
         final long PERIOD = 250;
         blinking = false;
-        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent(enclosure.getRecurringEvent());
+        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent(enclosure.getRecurringEvents());
         final long startTime = starTimeArg;
         closestEvent.post(() -> closestEvent.setText(recurringEvent.getTitle()));
 //        String time = recurringEventsHandler.transformTime(recurringEvent.getStartTime());
@@ -269,6 +269,7 @@ public class EnclosureActivity extends BaseActivity {
 
     private void blinkingText(Timer timer){
         final long PERIOD = 300;
+        final long DELAY = 0l;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -279,6 +280,6 @@ public class EnclosureActivity extends BaseActivity {
                         closestEvent.setVisibility(View.VISIBLE);
                 });
             }
-        }, 0l, PERIOD);
+        }, DELAY, PERIOD);
     }
 }

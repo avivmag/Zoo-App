@@ -69,10 +69,6 @@ public class aboutSpeciesFragment extends Fragment {
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.food),
                 animal.getFood()));
 
-
-        linearLayoutSpecies.addView(createLinearLayout("ניסוי",
-                "ניסוי 2גגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגגג"));
-
         return rootView;
     }
 
