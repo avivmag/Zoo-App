@@ -68,9 +68,6 @@ public class aboutSpeciesFragment extends Fragment {
                 animal.getReproduction()));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.food),
                 animal.getFood()));
-
-
-
         return rootView;
     }
 

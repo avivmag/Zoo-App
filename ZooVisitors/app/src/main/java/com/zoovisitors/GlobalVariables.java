@@ -13,7 +13,7 @@ import com.zoovisitors.bl.BusinessLayer;
 public class GlobalVariables {
     public static boolean DEBUG = true;
     public static String ServerAddress = "negevzoo.sytes.net:50" +
-            (DEBUG ? "000/" : "000/");
+            (DEBUG ? "555/" : "000/");
     public static String LOG_TAG = "zoovisitors";
     public static int language = 1; //Hebrew
     public static AppCompatActivity appCompatActivity;

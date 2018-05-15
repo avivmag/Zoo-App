@@ -41,10 +41,6 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
         public ViewHolder(View itemView){
             super(itemView);
-            List<Integer> imagesList = new ArrayList<Integer>();
-                //imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
-
-            int[] ret = new int[imagesList.size()];
             if (layout == R.layout.enclosure_card) {
                 animal_card_image = (ImageView) itemView.findViewById(R.id.enc_card_image);
                 animalName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
