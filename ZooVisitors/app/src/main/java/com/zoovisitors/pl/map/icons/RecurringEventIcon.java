@@ -9,7 +9,7 @@ public class RecurringEventIcon extends ImageIcon {
     private final String RECURRING_EVENT_STARTED_ICON = "recurring_event_started_icon";
 
     public RecurringEventIcon(MapView mapView, View.OnTouchListener onTouchListener, int left, int top) {
-        super(mapView, new Object[] {onTouchListener}, left, top, false, false);
+        super(mapView, new Object[] {onTouchListener}, left, top, false);
     }
 
     @Override

@@ -8,7 +8,16 @@ public class ZooMapIcon extends ImageIcon {
     private final String ZOO_MAP = "zoo_map";
 
     public ZooMapIcon(MapView mapView, Object[] additionalData, int left, int top) {
-        super(mapView, additionalData, left, top, true, true);
+        super(mapView, additionalData, left, top, true);
+    }
+
+    @Override
+    protected void postRun(boolean isVisible) {
+        setSize();
+        left = left + width/2;
+        top = top + height/2;
+        mapView.SetInitialParameters(width, height);
+        setImageOnScreen(isVisible);
     }
 
     @Override

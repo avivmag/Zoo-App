@@ -12,7 +12,7 @@ public class VisitorIcon extends ImageIcon {
     private final String VISITOR_ICON = "visitor_icon";
 
     public VisitorIcon(MapView mapView, Object[] additionalData) {
-        super(mapView, additionalData, 0, 0, false, false);
+        super(mapView, additionalData, 0, 0, false);
     }
 
     @Override
@@ -24,10 +24,8 @@ public class VisitorIcon extends ImageIcon {
     }
 
     public void UpdateVisitorLocation(int left, int top) {
-        // TODO: fix this.
-        Log.e("AVIV", "left, top " + left + ":" + top);
-        this.left = mapView.getIconsOffsetLeft(left);
-        this.top = mapView.getIconsOffsetTop(top);
+        this.left = left;
+        this.top = top;
 
         mapView.updateIconPositionWithSize(this);
     }

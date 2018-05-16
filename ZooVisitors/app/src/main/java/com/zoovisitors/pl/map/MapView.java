@@ -33,9 +33,10 @@ public class MapView extends RelativeLayout {
     public static final float ALPHA_CHANGE = 0.1f;
     public static final float MINIMAL_IMAGE_ALPHA = 0.2f;
     public static final float MAXIMAL_IMAGE_ALPHA = 1f;
-    public static long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30 * 60 * 1000;
-    private static long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
-    private static long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
+    public static final long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30 * 60 * 1000;
+    private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
+    private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
+    private static final int PRIMARY_IMAGE_MARGIN = 50;
 
     public static final int TEXT_VIEW_TEXT_SIZE = 10;
 
@@ -47,6 +48,10 @@ public class MapView extends RelativeLayout {
     private int mTouchSlop = 5;
     private int mActivePointerId = INVALID_POINTER_ID;
 
+    /**
+     * it represents the approximate factor to make all devices show as the same.
+     */
+    private float equatorScaleFactor = 0f;
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 0f, mLastScaleFactor = 0f, maxScaleFactor, minScaleFactor;
 
@@ -61,24 +66,24 @@ public class MapView extends RelativeLayout {
     private int screenWidth;
     private int screenHeight;
 
-    public int getIconsOffsetLeft(int left) {
-        return (int) ((left - zooMapIcon.width / 2) + screenWidth / getCurrentScaleFactor() / 2);
-    }
-
-    public int getIconsOffsetTop(int top) {
-        return (int) ((top - zooMapIcon.height / 2) + screenHeight / getCurrentScaleFactor() / 2);
-    }
-
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
-        mScaleFactor = mLastScaleFactor =
-                ((float) screenWidth / primaryImageWidth + (float) screenHeight /
-                        primaryImageHeight) / 2;
-        maxScaleFactor = mScaleFactor / 2;
-        minScaleFactor = mScaleFactor * 2;
-    }
+        equatorScaleFactor = ((float) screenWidth / primaryImageWidth + (float) screenHeight /
+                primaryImageHeight) / 2;
+        maxScaleFactor = equatorScaleFactor * 3;
+        minScaleFactor =
+                Math.max(
+                        (float) screenWidth / (primaryImageWidth + 2 * PRIMARY_IMAGE_MARGIN),
+                        (float) screenHeight / (primaryImageHeight + 2 * PRIMARY_IMAGE_MARGIN)
+                );
 
-    public float getCurrentScaleFactor() {
-        return mScaleFactor;
+
+        mScaleFactor = mLastScaleFactor =
+                Math.max(
+                        (float) screenWidth / primaryImageWidth,
+                        (float) screenHeight / primaryImageHeight
+                );
+        mPosX = screenWidth / 2 - mScaleFactor*zooMapIcon.width / 2;
+        mPosY = screenHeight / 2 - mScaleFactor*zooMapIcon.height / 2;
     }
 
     public MapView(Context context) {
@@ -168,8 +173,8 @@ public class MapView extends RelativeLayout {
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
-                mPosX = (mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + x;
-                mPosY = (mPosY - mLastTouchY) * mScaleFactor / mLastScaleFactor + y;
+                setMposX(x);
+                setMposY(y);
                 mLastScaleFactor = mScaleFactor;
 
                 //updateIconPositionWithoutSize(zooMapIcon);
@@ -215,6 +220,29 @@ public class MapView extends RelativeLayout {
         return true;
     }
 
+    private void setMposX(float deltaX) {
+        mPosX =
+                Math.max(
+                        Math.min(
+                                (mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + deltaX,
+                                mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + PRIMARY_IMAGE_MARGIN)
+                        ),
+                        screenWidth - mScaleFactor*(zooMapIcon.width + PRIMARY_IMAGE_MARGIN)
+                );
+    }
+
+    private void setMposY(float deltaY) {
+        mPosY =
+                Math.max(
+                        Math.min(
+                                (mPosY - mLastTouchY) * mScaleFactor / mLastScaleFactor + deltaY,
+                                mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 + PRIMARY_IMAGE_MARGIN)
+                        ),
+                        screenHeight - mScaleFactor*(zooMapIcon.height + PRIMARY_IMAGE_MARGIN)
+                );
+
+    }
+
     /**
      * Updates the icon position so the middle of the image will be at the point
      *
@@ -227,8 +255,8 @@ public class MapView extends RelativeLayout {
                             mScaleFactor));
 
             params.setMargins(
-                    (int) ((icon.left - icon.width / 2) * mScaleFactor + mPosX),
-                    (int) ((icon.top - icon.height / 2) * mScaleFactor + mPosY),
+                    (int) ((icon.left - icon.width/2) * mScaleFactor + mPosX),
+                    (int) ((icon.top - icon.height/2) * mScaleFactor + mPosY),
                     Integer.MAX_VALUE,
                     Integer.MAX_VALUE);
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
@@ -250,14 +278,12 @@ public class MapView extends RelativeLayout {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-//            mScaleFactor = Math.min(
-//                    Math.max(
-//                            mScaleFactor * detector.getScaleFactor(),
-//                            minScaleFactor),
-//                    maxScaleFactor
-//            );
-//            Log.e("AVIV", "mScaleFactor " + mScaleFactor);
-            mScaleFactor = mScaleFactor * detector.getScaleFactor();
+            mScaleFactor = Math.min(
+                    Math.max(
+                            mScaleFactor * detector.getScaleFactor(),
+                            minScaleFactor),
+                    maxScaleFactor
+            );
             return true;
         }
     }
@@ -272,7 +298,7 @@ public class MapView extends RelativeLayout {
     }
 
     public void SetZooMapIcon() {
-        zooMapIcon = new ZooMapIcon(this, null, screenWidth / 2, screenHeight / 2);
+        zooMapIcon = new ZooMapIcon(this, null, 0,  0);
     }
 
     public void SetVisitorIcon() {

@@ -8,7 +8,7 @@ import com.zoovisitors.pl.map.MapView;
 
 public class EnclosureIcon extends ImageIcon {
     public EnclosureIcon(MapView mapView, Drawable resource, View.OnTouchListener onTouchListener, int left, int top) {
-        super(mapView, new Object[] {resource}, left, top, true, false);
+        super(mapView, new Object[] {resource}, left, top, true);
         view.setOnTouchListener(onTouchListener);
     }
 
