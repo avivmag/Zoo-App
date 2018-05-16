@@ -10,12 +10,12 @@ import com.zoovisitors.pl.map.MapView;
 public abstract class ImageIcon extends Icon {
     public View view;
 
-    public ImageIcon(MapView mapView, Object[] additionalData, int left, int top, boolean isVisible, boolean isMapView) {
-        super(additionalData, mapView, left, top, isMapView);
-        UpdateView(isVisible, isMapView);
+    public ImageIcon(MapView mapView, Object[] additionalData, int left, int top, boolean isVisible) {
+        super(additionalData, mapView, left, top);
+        UpdateView(isVisible);
     }
 
-    public void UpdateView(boolean isVisible, boolean isMapView) {
+    public void UpdateView(boolean isVisible) {
 
         view.setBackgroundColor(Color.TRANSPARENT);
 
@@ -27,23 +27,22 @@ public abstract class ImageIcon extends Icon {
 
         view.setVisibility(View.INVISIBLE);
         mapView.addView(view);
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                width =  view.getMeasuredWidth();
-                height = view.getMeasuredHeight();
+        view.post(() -> {postRun(isVisible);});
+    }
 
-                // if it is the map view, we need to set the initial scale
-                if(isMapView) {
-                    mapView.SetInitialParameters(width, height);
-                    left /= mapView.getCurrentScaleFactor();
-                    top /= mapView.getCurrentScaleFactor();
-                }
+    protected void postRun(boolean isVisible) {
+        setSize();
+        setImageOnScreen(isVisible);
+    }
 
-                mapView.updateIconPositionWithSize(ImageIcon.this);
-                if(isVisible)
-                    view.setVisibility(View.VISIBLE);
-            }
-        });
+    protected void setSize() {
+        width =  view.getMeasuredWidth();
+        height = view.getMeasuredHeight();
+    }
+
+    protected void setImageOnScreen(boolean isVisible) {
+        mapView.updateIconPositionWithSize(ImageIcon.this);
+        if(isVisible)
+            view.setVisibility(View.VISIBLE);
     }
 }

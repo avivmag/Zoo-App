@@ -9,7 +9,7 @@ import com.zoovisitors.pl.map.MapView;
 public class MiscIcon extends ImageIcon {
     private Misc misc;
     public MiscIcon(MapView mapView, Drawable resource, Misc misc, int left, int top) {
-        super(mapView, new Object[]{resource}, left, top, true, false);
+        super(mapView, new Object[]{resource}, left, top, true);
         this.misc = misc;
     }
 

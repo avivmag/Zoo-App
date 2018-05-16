@@ -9,6 +9,7 @@
     <com.zoovisitors.pl.map.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/mapBackgroundColor"
         android:id="@+id/map_view_layout">
     </com.zoovisitors.pl.map.MapView>
 </LinearLayout>
