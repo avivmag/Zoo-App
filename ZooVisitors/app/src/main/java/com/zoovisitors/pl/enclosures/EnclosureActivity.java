@@ -264,6 +264,7 @@ public class EnclosureActivity extends BaseActivity {
 
     private void blinkingText(Timer timer){
         final long PERIOD = 300;
+        final long DELAY = 0l;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -274,6 +275,6 @@ public class EnclosureActivity extends BaseActivity {
                         closestEvent.setVisibility(View.VISIBLE);
                 });
             }
-        }, 0l, PERIOD);
+        }, DELAY, PERIOD);
     }
 }

@@ -32,7 +32,7 @@ namespace NegevZoo.Controllers
 
                 using (var db = GetContext())
                 {
-                    db.UploadMap(httpRequest);
+                    db.MapUpload(httpRequest);
                 }
             }
             catch (Exception Exp)

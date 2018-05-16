@@ -182,7 +182,7 @@ namespace NegevZoo.Controllers
         /// <param name="enclosures">The enclosures to update.</param>
         [HttpPost]
         [Route("enclosures/update")]
-        public void UpdateEnclosure(Enclosure enclosure)
+        public Enclosure UpdateEnclosure(Enclosure enclosure)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateEnclosure(enclosure);
+                        return db.UpdateEnclosure(enclosure);
                     }
                     else
                     {

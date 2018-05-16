@@ -211,6 +211,30 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// Gets all the animal stories that corresponds to the eclosure animalId and the given langauge.
+        /// </summary>
+        /// <param name="encId">The enclosure animalId.</param>
+        /// <param name="language">The data language.</param>
+        /// <returns>AnimalStoryResults of animals that are in the enclosure.</returns>
+        [HttpGet]
+        [Route("animals/story/enclosure/{encId}")]
+        public IEnumerable<AnimalStory> GetAnimalStoriesByEnclosure(int encId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    return db.GetAnimalStoriesByEnclosure(encId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure Id:" + encId);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
         /// This method is for the worker site.
         /// Gets all AnimalStory types exists.
         /// </summary>
@@ -267,7 +291,7 @@ namespace NegevZoo.Controllers
         /// <param name="animal">The animal to add or update.</param>
         [HttpPost]
         [Route("animals/update")]
-        public void UpdateAnimal(Animal animal)
+        public Animal UpdateAnimal(Animal animal)
         {
             try
             {
@@ -275,7 +299,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateAnimal(animal);
+                        return db.UpdateAnimal(animal);
                     }
                     else
                     {
@@ -331,7 +355,7 @@ namespace NegevZoo.Controllers
         /// <param name="animalStory">The AnimalStory to add or update.</param>
         [HttpPost]
         [Route("animals/story/update")]
-        public void UpdateAnimalStory(AnimalStory animalStory)
+        public AnimalStory UpdateAnimalStory(AnimalStory animalStory)
         {
             try
             {
@@ -342,7 +366,7 @@ namespace NegevZoo.Controllers
                         throw new AuthenticationException("Couldn't validate the session");
                     }
 
-                    db.UpdateAnimalStory(animalStory);
+                    return db.UpdateAnimalStory(animalStory);
                 }
             }
             catch (Exception Exp)

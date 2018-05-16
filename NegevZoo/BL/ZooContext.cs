@@ -202,7 +202,7 @@ namespace BL
         /// Updates The enclosure.
         /// </summary>
         /// <param name="enclosures">The enclosures to update.</param>
-        public void UpdateEnclosure(Enclosure enclosure)
+        public Enclosure UpdateEnclosure(Enclosure enclosure)
         {
             //validate enclosure attributes
             //0. Exists.
@@ -229,6 +229,10 @@ namespace BL
                 }
                 
                 enclosures.Add(enclosure);
+
+                zooDB.SaveChanges();
+
+                return enclosure;
             }
             else //update existing enclosure
             {
@@ -252,6 +256,8 @@ namespace BL
                 oldEnc.markerLongitude = enclosure.markerLongitude;
                 oldEnc.name = enclosure.name;
                 oldEnc.pictureUrl = enclosure.pictureUrl;
+
+                return oldEnc;
             }
         }
 
@@ -828,6 +834,26 @@ namespace BL
         }
 
         /// <summary>
+        /// Gets animals by enclosure Id.
+        /// </summary>
+        /// <param name="encId">The enclosure's Id.</param>
+        /// <returns>The animals that are in the enclosure.</returns>
+        public IEnumerable<AnimalStory> GetAnimalStoriesByEnclosure(long encId)
+        {
+            //validate the attributes
+            //1. check if the enclosure exists
+            if (GetAllEnclosures().SingleOrDefault(en => en.id == encId) == null)
+            {
+                throw new ArgumentException("Wrong input. The enclosure doesn't exists");
+            }
+
+            //get all the animals in the enclosure.
+            var allAnimalStories = GetAllAnimalStories().Where(a => a.enclosureId == encId).ToArray();
+
+            return allAnimalStories;
+        }
+
+        /// <summary>
         /// Gets all AnimalStory types exists.
         /// </summary>
         /// <returns>All AnimalStory types.</returns>
@@ -857,7 +883,7 @@ namespace BL
         /// This method adds or updates the animal.
         /// </summary>
         /// <param name="animal">The animal to update.</param>
-        public void UpdateAnimal(Animal animal)
+        public Animal UpdateAnimal(Animal animal)
         {
             //validate enclosure attributes
             //0. Exists.
@@ -883,6 +909,10 @@ namespace BL
             if (animal.id == default(int)) //add a new aniaml
             {
                 animals.Add(animal);
+
+                zooDB.SaveChanges();
+
+                return animal;
             }
             else // update existing animal.
             {
@@ -898,6 +928,8 @@ namespace BL
                 oldAnimal.pictureUrl = animal.pictureUrl;
                 oldAnimal.preservation = animal.preservation;
                 oldAnimal.enclosureId = animal.enclosureId;
+
+                return oldAnimal;
             }
         }
 
@@ -958,7 +990,7 @@ namespace BL
         /// Adds or updates an AnimalStory object.
         /// </summary>
         /// <param name="animalStory">The AnimalStory to add or update.</param>
-        public void UpdateAnimalStory(AnimalStory animalStory)
+        public AnimalStory UpdateAnimalStory(AnimalStory animalStory)
         {
             //Validate attributes
             //0. Exists
@@ -978,6 +1010,10 @@ namespace BL
             if (animalStory.id == default(int)) //add a new animal story
             {
                 animalStories.Add(animalStory);
+
+                zooDB.SaveChanges();
+
+                return animalStory;
             }
             else // update an exising animal story
             {
@@ -988,8 +1024,11 @@ namespace BL
                     throw new ArgumentException("Wrong input while updating animal story. The AnimalStory id doesn't exists");
                 }
 
+                oldAnimalStory.name         = animalStory.name;
                 oldAnimalStory.enclosureId  = animalStory.enclosureId;
                 oldAnimalStory.pictureUrl   = animalStory.pictureUrl;
+
+                return oldAnimalStory;
             }
         }
 
@@ -1750,9 +1789,24 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.language == language);
+            var zooGeneralInfo = zooDB.GetGeneralInfo();
 
-            generalInfo.aboutUs = info;
+            var generalInfo     = zooGeneralInfo.SingleOrDefault(gi => gi.language == language);
+
+            if (generalInfo == default(GeneralInfo))
+            {
+                generalInfo = new GeneralInfo()
+                {
+                    aboutUs     = info,
+                    language    = language
+                };
+
+                zooGeneralInfo.Add(generalInfo);
+            }
+            else
+            {
+                generalInfo.aboutUs = info;
+            }
         }
 
         /// <summary>
@@ -1836,9 +1890,25 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var generalInfo = zooDB.GetGeneralInfo().SingleOrDefault(gi => gi.language == language);
+            var zooGeneralInfo  = zooDB.GetGeneralInfo();
 
-            generalInfo.contactInfoNote= note;
+            var generalInfo     = zooGeneralInfo.SingleOrDefault(gi => gi.language == language);
+
+            if (generalInfo == default(GeneralInfo))
+            {
+                generalInfo = new GeneralInfo()
+                {
+                    contactInfoNote = note,
+                    language        = language
+                };
+
+                zooGeneralInfo.Add(generalInfo);
+            }
+            else
+            {
+                generalInfo.contactInfoNote = note;
+            }
+
         }
 
         /// <summary>
@@ -2652,12 +2722,29 @@ namespace BL
         /// <param name="nWidth">new width.</param>
         /// <param name="nHeight">new height.</param>
         /// <returns>A resized image.</returns>
-        private Bitmap ResizeImage(Bitmap b, int nWidth, int nHeight)
+        private Bitmap ResizeImage(Bitmap b, int? nWidth = null, int? nHeight = null, double? size = null, bool? keepResolution = null)
         {
-            Bitmap result = new Bitmap(nWidth, nHeight);
+            if (keepResolution == true && size.HasValue)
+            {
+                var originalWidth   = b.Width;
+                var originalHeight  = b.Height;
+
+                var maxDimension    = Math.Max(originalHeight, originalWidth);
+
+                var ratio           = maxDimension / size.Value;
+
+                nWidth              = (int)Math.Floor(originalWidth / ratio);
+                nHeight             = (int)Math.Floor(originalHeight / ratio);
+            }
+            else if (!nWidth.HasValue || !nHeight.HasValue)
+            {
+                throw new ArgumentNullException("Not all parameters given for image resize.");
+            }
+
+            Bitmap result = new Bitmap(nWidth.Value, nHeight.Value);
 
             using (Graphics g = Graphics.FromImage(result))
-                g.DrawImage(b, 0, 0, nWidth, nHeight);
+                g.DrawImage(b, 0, 0, nWidth.Value, nHeight.Value);
 
             return result;
         }
@@ -2701,6 +2788,35 @@ namespace BL
                 }
                 // This EXIF data is now invalid and should be removed.
                 b.RemovePropertyItem(274);
+            }
+        }
+
+        /// <summary>
+        /// Saves the image.
+        /// </summary>
+        /// <param name="filePath">The file path to save.</param>
+        private void Save(string filePath)
+        {
+            // Get the image from file.
+            var image = new Bitmap(filePath);
+
+            // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
+            if (image.Height > 480 || image.Width > 480)
+            {
+                // Sets the image orientation to default value.
+                SetOrientationToDefault(image);
+
+                // Resize the image.
+                var resizedImage            = ResizeImage(image, size: 480.0, keepResolution: true);
+
+                // Dispose the original image file desc.
+                image.Dispose();
+
+                // Save the new resized image.
+                resizedImage.Save(filePath);
+
+                // Dispose the resized image file desc.
+                resizedImage.Dispose();
             }
         }
 
@@ -2763,6 +2879,10 @@ namespace BL
                 {
                     SaveAsIcon(filePath);
                 }
+                else
+                {
+                    Save(filePath);
+                }
 
                 fileNames.Add(fileName);
             }
@@ -2777,13 +2897,11 @@ namespace BL
             return responseObject;
         }
         
-        #endregion
-
         /// <summary>
         /// Upload a new map.
         /// </summary>
         /// <param name="httpRequest">The request which holds the file.</param>
-        public void UploadMap(HttpRequest httpRequest)
+        public void MapUpload(HttpRequest httpRequest)
         {
             var path        = @"~/assets/map/";
 
@@ -2798,6 +2916,8 @@ namespace BL
 
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
         }
+
+        #endregion
 
         public void Dispose()
         {

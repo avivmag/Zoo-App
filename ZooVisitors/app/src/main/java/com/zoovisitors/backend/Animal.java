@@ -84,4 +84,38 @@ public class Animal implements java.io.Serializable{
     public int getLanguage() {
         return language;
     }
+
+
+    public class PersonalStories implements java.io.Serializable{
+        @SerializedName("id")
+        private int id;
+        @SerializedName("name")
+        private String name;
+        @SerializedName("story")
+        private String story;
+        @SerializedName("encId")
+        private int encId;
+        @SerializedName("pictureUrl")
+        private String pictureUrl;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getStory() {
+            return story;
+        }
+
+        public int getEncId() {
+            return encId;
+        }
+
+        public String getPictureUrl() {
+            return pictureUrl;
+        }
+    }
 }

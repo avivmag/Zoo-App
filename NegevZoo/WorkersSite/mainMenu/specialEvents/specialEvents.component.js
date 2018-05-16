@@ -1,19 +1,18 @@
-﻿app.controller('zooEventsCtrl', ['$q', '$scope', '$mdDialog', 'fileUpload', 'utilitiesService', 'zooInfoService',
+﻿app.controller('zooSpecialEventsCtrl', ['$q', '$scope', '$mdDialog', 'fileUpload', 'utilitiesService', 'zooInfoService',
     function zooSpecialEventsController($q, $scope, $mdDialog, fileUpload, utilitiesService, zooInfoService) {
-        $scope.isLoading            = true;
-
         initializeComponent();
-
+        
         app.getLanguages().then(
             (data) => {
                 $scope.languages    = data.data;
                 $scope.language     = $scope.languages[0];
-
+                
                 $scope.updateSpecialEvents($scope.language);
             });
-
-        function initializeComponent() {
-            $scope.baseURL                      = app.baseURL;
+            
+            function initializeComponent() {
+                $scope.isLoading                = true;
+                $scope.baseURL                  = app.baseURL;
 
             $scope.updateSpecialEvents          = function (language) {
                 $scope.language                 = language;

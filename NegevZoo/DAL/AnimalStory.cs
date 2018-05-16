@@ -15,6 +15,7 @@ namespace DAL
     public partial class AnimalStory
     {
         public int id { get; set; }
+        public string name { get; set; }
         public string pictureUrl { get; set; }
         public int enclosureId { get; set; }
     }
