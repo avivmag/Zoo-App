@@ -20,7 +20,7 @@ namespace RecEventsNotifications
             internal void Run()
             {
                 //set the starting time to zero and the time between the operation to 10 minuits
-                var periodTimeSpan = TimeSpan.FromSeconds(45);
+                var periodTimeSpan = TimeSpan.FromMinutes(10);
                 var startTimeSpan = TimeSpan.Zero;
 
                 // Create an IPC wait handle with a unique identifier.
@@ -49,7 +49,7 @@ namespace RecEventsNotifications
                 // Wait if someone tells us to die or do every five seconds something else.
                 do
                 {
-                    signaled = waitHandle.WaitOne(TimeSpan.FromSeconds(30));
+                    signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(5));
                 } while (!signaled);
 
                 // The above loop with an interceptor could also be replaced by an endless waiter
