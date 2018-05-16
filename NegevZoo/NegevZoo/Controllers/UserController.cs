@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Web.Http;
 
 namespace NegevZoo.Controllers
@@ -40,13 +42,33 @@ namespace NegevZoo.Controllers
         /// <returns>a boolean that indicates if the proccess succeded.</returns>
         [HttpGet]
         [Route("users/login/{userName}/{password}")]
-        public bool Login(string userName, string password)
+        public HttpResponseMessage Login(string userName, string password)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.Login(userName, password);
+                    //Generating session id if the user name and password are correct.
+                    var sessionId = db.Login(userName, password);
+
+                    //Generating a cookie to the response if there is a session id.
+                    if (sessionId != null) {
+                        var resp = new HttpResponseMessage();
+
+                        var cookie = new CookieHeaderValue("session-id", sessionId)
+                        {
+                            Expires     = DateTimeOffset.Now.AddDays(1),
+                            Domain      = Request.RequestUri.Host,
+                            Path        = "/",
+                        };
+
+                        resp.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+                        return resp;
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Can't login. Wrong user name or password");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -56,30 +78,6 @@ namespace NegevZoo.Controllers
             }
         }
         
-        /// <summary>
-        /// Gets User by user name and password.
-        /// </summary>
-        /// <param name="userName">The wanted user name</param>
-        /// <param name="password">The user's password</param>
-        /// <returns>The user that correspond to the user name and password.</returns>
-        [HttpGet]
-        [Route("users/nameAndPass/{userName}/{password}")]
-        public User GetUserByNameAndPass(string userName, string password)
-        {
-            try
-            {
-                using(var db = GetContext())
-                {
-                    return db.GetUserByNameAndPass(userName, password);
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "User name: " + userName + ", password: " + password);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
         /// <summary>
         /// Adds or Updates the User element.
         /// </summary>
@@ -92,7 +90,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.AddUser(userWorker);
+                    if (ValidateSessionId(db))
+                    {
+                        var sessionId = GetSessionId();
+                        db.AddUser(userWorker, sessionId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -118,7 +124,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateUserName(id, userName);
+                    if (ValidateSessionId(db))
+                    {
+                        var sessionId = GetSessionId();
+                        db.UpdateUserName(id, userName, sessionId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -141,7 +155,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateUserPassword(id, password);
+                    if (ValidateSessionId(db))
+                    {
+                        var sessionId = GetSessionId();
+                        db.UpdateUserPassword(id, password, sessionId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -163,7 +185,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteUser(UserId);
+                    if (ValidateSessionId(db))
+                    {
+                        var sessionId = GetSessionId();
+                        db.DeleteUser(UserId, sessionId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)

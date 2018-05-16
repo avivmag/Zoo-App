@@ -33,5 +33,11 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+    
+    <style name="AppTheme.PopUp">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 
 </resources>

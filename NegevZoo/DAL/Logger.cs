@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,7 @@ namespace DAL
                     path = String.Format(Properties.Settings.Default.TestLog+"{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
                 }
                 logger      = new Logger(path);
+
             }
 
             return logger;
@@ -52,6 +54,7 @@ namespace DAL
             }
         }
 
+
         public void WriteLine(params String[] messages)
         {
             try
@@ -61,6 +64,19 @@ namespace DAL
                 if (!File.Exists(filePath))
                 {
                     stream = File.Create(filePath);
+                    
+                    var account = "Users";
+                    var rights = FileSystemRights.Write;
+                    var controlType = AccessControlType.Allow;
+                    // Get a FileSecurity object that represents the
+                    // current security settings.
+                    FileSecurity fSecurity = File.GetAccessControl(filePath);
+
+                    // Add the FileSystemAccessRule to the security settings.
+                    fSecurity.AddAccessRule(new FileSystemAccessRule(account, rights, controlType));
+
+                    // Set the new access settings.
+                    File.SetAccessControl(filePath, fSecurity);
                 }
                 else
                 {

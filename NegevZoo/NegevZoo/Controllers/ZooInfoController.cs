@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -54,7 +55,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdatePrice(price);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdatePrice(price);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -80,7 +88,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeletePrice(priceId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeletePrice(priceId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -156,9 +171,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHour(openingHour);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHour(openingHour);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
-
             }
             catch (Exception Exp)
             {
@@ -183,7 +204,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteOpeningHour(openHourId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteOpeningHour(openHourId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -233,7 +261,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfo(contactInfo);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfo(contactInfo);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -258,7 +293,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteContactInfo(contactId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteContactInfo(contactId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -308,7 +350,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateSpecialEvent(specialEvent, isPush);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateSpecialEvent(specialEvent, isPush);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
 
             }
@@ -336,7 +385,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteSpecialEvent(specialEventId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteSpecialEvent(specialEventId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -360,6 +416,10 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
+                    if (!ValidateSessionId(db))
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                     var uploadedImages = db.FileUpload(httpRequest, @"~/assets/specialEvents/");
                     return Ok(uploadedImages);
                 }
@@ -411,8 +471,15 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    feed.created = DateTime.Today;
-                    db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    if (ValidateSessionId(db))
+                    {
+                        feed.created = DateTime.Today;
+                        db.UpdateWallFeed(feed, isPush, isWallFeed);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -437,7 +504,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    db.DeleteWallFeed(feedId);
+                    if (ValidateSessionId(db))
+                    {
+                        db.DeleteWallFeed(feedId);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -487,13 +561,20 @@ namespace NegevZoo.Controllers
         /// <param name="info">The info to add or update</param>
         [HttpPost]
         [Route("about/update/{info}/{language}")]
-        public void UpdateZooAboutInfo(string info, int language = 1)
+        public void UpdateZooAboutInfo(String info, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateZooAboutInfo(info, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateZooAboutInfo(info, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -509,18 +590,18 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's opening hour note.</returns>
         [HttpGet]
-        [Route("about/openHourNote/{language}")]
-        public IEnumerable<AboutUsResult> GetOpeningHourNote(int language = 1)
+        [Route("openingHours/openingHourNote/{language}")]
+        public IEnumerable<OpeningHourNoteResult> GetOpeningHourNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetOpeningHourNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(oen =>
+                            new OpeningHourNoteResult
                             {
-                                AboutUs = zi
+                                OpeningHourNote = oen
                             })
                         .ToArray();
                 }
@@ -538,14 +619,21 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateOpeningHourNote/{note}/{language}")]
+        [Route("openingHours/update/{note}/{language}")]
         public void UpdateOpeningHourNote(string note, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateOpeningHourNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateOpeningHourNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -561,18 +649,18 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <returns>The zoo's Contact us note.</returns>
         [HttpGet]
-        [Route("about/contactInfoNote/{language}")]
-        public IEnumerable<AboutUsResult> GetContactInfoNote(int language = 1)
+        [Route("contactInfos/contactInfoNote/{language}")]
+        public IEnumerable<ContactInfoNoteResult> GetContactInfoNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
                     return db.GetContactInfoNote(language)
-                        .Select(zi =>
-                            new AboutUsResult
+                        .Select(cin =>
+                            new ContactInfoNoteResult
                             {
-                                AboutUs = zi
+                                ContactInfoNote = cin
                             })
                         .ToArray();
                 }
@@ -590,14 +678,21 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("about/updateContactInfoNote/{note}/{language}")]
+        [Route("contactInfos/update/{note}/{language}")]
         public void UpdateContactInfoNote(string note, int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    db.UpdateContactInfoNote(note, language);
+                    if (ValidateSessionId(db))
+                    {
+                        db.UpdateContactInfoNote(note, language);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
@@ -662,10 +757,21 @@ namespace NegevZoo.Controllers
         #endregion
 
         #region ModelClasses
+        
         //This inner class is so we will be able to return a primitive object via http get
         public class AboutUsResult
         {
             public String AboutUs { get; set; }
+        }
+
+        public class ContactInfoNoteResult
+        {
+            public String ContactInfoNote { get; set; }
+        }
+
+        public class OpeningHourNoteResult
+        {
+            public String OpeningHourNote { get; set; }
         }
 
         #endregion

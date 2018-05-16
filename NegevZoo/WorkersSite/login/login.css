@@ -45,6 +45,13 @@ body.md-toast-animating {
     image-orientation:from-image;
 }
 
+.marker {
+    height: 84px;
+    width: 84px;
+    margin: 15px;
+    border: black;
+}
+
 .video {
     height: 320px; 
     width: 320px;

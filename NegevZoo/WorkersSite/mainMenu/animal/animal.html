@@ -1,0 +1,101 @@
+<div layout="row" layout-align="center center">
+    <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
+</div>
+
+<md-card ng-show="!isLoading">
+        <md-card-title layout="row" layout-align="space-between">
+        <div layout="column">
+            <md-button class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
+            <div layout="row" ng-if="isEdit">
+                <img class="picture_small" ng-src="{{ baseURL + animal.pictureUrl }}" alt="{{ animal.name }}" />
+                <md-card-title-text style="margin-top: 20px" class="md-headline">{{ animal.name }}:</md-card-title-text>
+            </div>
+
+            <md-card-title-text ng-if="!isEdit" class="md-headline">הוספת חיה חדשה:</md-card-title-text>
+        </div>
+    </md-card-title>
+
+    <md-card-content layout="row" style="margin-right: 4%">
+            <md-card-content layout="column" flex>
+                <md-input-container layout="row">
+                    <label ng-show="!isEdit">הכנס שם מזהה לחיה</label>
+                    <label ng-show="isEdit">שם החיה</label>
+                    <input style="width: 200px" ng-model="animal.name" required type="text">
+                </md-input-container>
+
+                <ng-card-content layout="column">
+                    <div style="margin-top: 7px" layout="row">
+                        <div style="width: 200px">בחר תמונת פרופיל להעלות:</div>
+                        <input type="file" file-model="profilePic" accept="image/*"/>
+                    </div>
+                </ng-card-content>
+
+                <md-input-container>
+                        <label>בחר רמת שימור</label>
+                        <md-select style="width: 250px" ng-model="animal.preservation">
+                            <md-option ng-repeat="p in preservation" ng-value="p.value">
+                                {{ p.format }}
+                            </md-option>
+                        </md-select>
+                </md-input-container>
+
+                <div layout="column" layout-align="end end">
+                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimal(animal)">שמור פרטי חיה</md-button>
+                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="deleteAnimal(animal.id)">מחק חיה</md-button>
+                </div>
+            </md-card-content>
+    </md-card-content>
+</md-card>
+
+<md-card ng-if="isEdit && !isLoading">
+    <md-card-title>
+        <md-card-title-text class="md-headline">מלל החיה בשפות השונות:</md-card-title-text>
+    </md-card-title>
+
+    <md-card-content>
+        <md-tabs md-selected="selectedTab" md-stretch-tabs="always" md-dynamic-height>
+            <md-tab ng-repeat="language in languages" label="{{ language.name }}">
+                <md-card-content style="margin-right: 4%"  layout="column">
+                    <md-input-container layout="row">
+                        <label>הכנס שם תצוגה לחיה</label>
+                        <input style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>בחר מחלקה</label>
+                        <input ng-model="animalDetails[selectedTab].category" type="text">
+                    </md-input-container>
+                    
+                    <md-input-container>
+                        <label>בחר סדרה</label>
+                        <input ng-model="animalDetails[selectedTab].series" type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>בחר משפחה</label>
+                        <input rows="3" ng-model="animalDetails[selectedTab].family" type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>הכנס תפוצה</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].distribution" type="text"></textarea>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>הכנס מזון</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].food" type="text"></textarea>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>הכנס רבייה</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].reproduction" type="text"></textarea>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <md-button class="md-raised md-primary" ng-click="addAnimalDetail(animalDetails[selectedTab])">הוסף תוכן לחיה בשפה שנבחרה</md-button>
+                    </md-input-container>
+                </md-card-content>
+            </md-tab>
+        </md-tabs>
+    </md-card-content>
+</md-card>

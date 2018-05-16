@@ -1,13 +1,10 @@
 ﻿<md-card layout="row">
     <md-card-content flex="20" layout="column">
-        <md-button class="md-raised" style="background-color: goldenrod" ng-click="selection = 'prices'">מחירון</md-button>
-        <md-button class="md-raised" style="background-color: goldenrod" ng-click="selection = 'openingHours'">שעות פתיחה</md-button>
-        <md-button class="md-raised" style="background-color: goldenrod" ng-click="selection = 'contact'">צור קשר</md-button>
+        <md-button class="md-raised" style="background-color: goldenrod" ng-click="reRoute('mainMenu.generalInfo.prices')">מחירון</md-button>
+        <md-button class="md-raised" style="background-color: goldenrod" ng-click="reRoute('mainMenu.generalInfo.openingHours')">שעות פתיחה</md-button>
+        <md-button class="md-raised" style="background-color: goldenrod" ng-click="reRoute('mainMenu.generalInfo.contactInfo')">צור קשר</md-button>
+        <md-button class="md-raised" style="background-color: goldenrod" ng-click="reRoute('mainMenu.generalInfo.aboutUs')">על גן החיות</md-button>
     </md-card-content>
 
-    <md-card-content flex="80">
-        <zoo-prices ng-if="selection === 'prices'"></zoo-prices>
-        <zoo-opening-hours ng-if="selection === 'openingHours'"></zoo-opening-hours>
-        <zoo-contact-info ng-if="selection === 'contact'"></zoo-contact-info>
-    </md-card-content>
+    <ui-view flex="80"></ui-view>
 </md-card>

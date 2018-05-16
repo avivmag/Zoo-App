@@ -9,9 +9,11 @@ namespace ZooTests.Unit_Tests
     [TestClass]
     public class UserUnitTests
     {
-        private ZooContext context;
 
         #region SetUp and TearDown
+
+        private ZooContext context;
+
         [TestInitialize]
         public void SetUp()
         {
@@ -45,7 +47,7 @@ namespace ZooTests.Unit_Tests
             var orUser = users.SingleOrDefault(u => u.name == "אור");
 
             Assert.IsNotNull(orUser);
-            Assert.IsTrue(context.Login(orUser.name, "123"));
+            Assert.IsNotNull(context.Login(orUser.name, "123"));
         }
 
         [TestMethod]
@@ -56,7 +58,7 @@ namespace ZooTests.Unit_Tests
             var orUser = users.SingleOrDefault(u => u.name == "אור");
 
             Assert.IsNotNull(orUser);
-            Assert.IsFalse(context.Login(orUser.name, "123a"));
+            Assert.IsNull(context.Login(orUser.name, "123a"));
         }
 
         [TestMethod]
@@ -67,7 +69,7 @@ namespace ZooTests.Unit_Tests
             var orUser = users.SingleOrDefault(u => u.name == "אור");
 
             Assert.IsNotNull(orUser);
-            Assert.IsFalse(context.Login(orUser.name + "k", "123a"));
+            Assert.IsNull(context.Login(orUser.name + "k", "123a"));
         }
         #endregion
 
@@ -113,7 +115,7 @@ namespace ZooTests.Unit_Tests
                 password = "123"
             };
 
-            context.AddUser(user);
+            context.AddUser(user,"123");
 
             users = context.GetAllUsers();
             Assert.AreEqual(5, users.Count());
@@ -134,7 +136,7 @@ namespace ZooTests.Unit_Tests
                 password = "123123"
             };
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -152,7 +154,7 @@ namespace ZooTests.Unit_Tests
                 password = "123123"
             };
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -170,7 +172,7 @@ namespace ZooTests.Unit_Tests
                 password = "       "
             };
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -188,7 +190,7 @@ namespace ZooTests.Unit_Tests
                 password = ""
             };
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -206,7 +208,7 @@ namespace ZooTests.Unit_Tests
                 password = "123"
             };
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -225,7 +227,7 @@ namespace ZooTests.Unit_Tests
 
             user.name = "גיל המלך";
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
 
             users = context.GetAllUsers();
             Assert.IsTrue(users.Any(a => a.name == "גיל המלך"));
@@ -250,7 +252,7 @@ namespace ZooTests.Unit_Tests
 
             user.name = "אור";
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
 
         [TestMethod]
@@ -270,7 +272,7 @@ namespace ZooTests.Unit_Tests
 
             user.id = -3;
 
-            context.AddUser(user);
+            context.AddUser(user, "123");
         }
         #endregion
 
@@ -285,7 +287,7 @@ namespace ZooTests.Unit_Tests
             var user = users.SingleOrDefault(en => en.name == "עובד");
             Assert.IsNotNull(user);
 
-            context.DeleteUser((int)user.id);
+            context.DeleteUser((int)user.id, "123");
             users = context.GetAllUsers();
 
             Assert.AreEqual(3, users.Count());
@@ -295,7 +297,7 @@ namespace ZooTests.Unit_Tests
         [ExpectedException(typeof(ArgumentException), "Wrong input. User ID doesn't exists.")]
         public void DeleteAnimalIdDoesntExists()
         {
-            context.DeleteUser(-4);
+            context.DeleteUser(-4, "123");
         }
 
         #endregion

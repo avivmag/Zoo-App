@@ -2,6 +2,7 @@
 using BL;
 using System;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace RecEventsNotifications
 {
@@ -19,16 +20,18 @@ namespace RecEventsNotifications
             internal void Run()
             {
                 //set the starting time to zero and the time between the operation to 10 minuits
-                var startTimeSpan = TimeSpan.Zero;
                 var periodTimeSpan = TimeSpan.FromMinutes(10);
-                    
+                var startTimeSpan = TimeSpan.Zero;
+
                 //starting the timer with the task.
-                var timer = new System.Threading.Timer((e) =>
+                var timer = new Timer((e) =>
                 {
                     //setting the task to be the sending function
                     Task.Factory.StartNew(() => SendRecNotification());
                 }, null, startTimeSpan, periodTimeSpan);
-                
+
+                //keeping the runing alive so the process won't die.
+                while (true) { }
             }
 
             private void SendRecNotification()

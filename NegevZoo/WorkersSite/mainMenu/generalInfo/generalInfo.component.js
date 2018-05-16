@@ -1,5 +1,6 @@
-﻿app.directive('zooGeneralInfo', function () {
-    return {
-        templateUrl: 'mainMenu/generalInfo/generalInfo.html'
-    };
-});
+﻿app.controller('zooGeneralInfoCtrl', ['$scope', '$state',
+    function generalInfoController($scope, $state) {
+        $scope.reRoute = function(to) {
+            $state.go(to);
+        }
+}]);

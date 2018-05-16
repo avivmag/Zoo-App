@@ -1,7 +1,5 @@
 ﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService',
     function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
-        $scope.isLoading            = true;
-
         initializeComponent();
 
         app.getLanguages().then(
@@ -13,6 +11,7 @@
             });
 
         function initializeComponent() {
+            $scope.isLoading            = true;
             $scope.isFeedWall           = true;
             $scope.isPushMessage        = false;
 
@@ -105,9 +104,4 @@
                     );
                 });
         }
-}])
-.directive('zooFeedWall', function () {
-    return {
-        templateUrl: 'mainMenu/feedWall/feedWall.html'
-    };
-});
+}]);

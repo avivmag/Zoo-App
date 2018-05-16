@@ -31,6 +31,25 @@
           <Property Name="reproduction" Type="mediumtext" />
           <Property Name="food" Type="mediumtext" />
         </EntityType>
+        <EntityType Name="animalstory">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="tinytext" Nullable="false" />
+          <Property Name="pictureUrl" Type="mediumtext" />
+          <Property Name="enclosureId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="animalstorydetails">
+          <Key>
+            <PropertyRef Name="animalStoryId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="animalStoryId" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="story" Type="longtext" Nullable="false" />
+          <Property Name="language" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="contactinfo">
           <Key>
             <PropertyRef Name="id" />
@@ -122,7 +141,7 @@
           <Property Name="longitude" Type="float" Nullable="false" />
           <Property Name="latitude" Type="float" Nullable="false" />
           <Property Name="iconUrl" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="openinghours">
           <Key>
@@ -195,6 +214,14 @@
           <Property Name="salt" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="isAdmin" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="usersession">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="sessionId" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="wallfeeds">
           <Key>
             <PropertyRef Name="id" />
@@ -216,6 +243,8 @@
         <EntityContainer Name="NegevZooModelStoreContainer">
           <EntitySet Name="animals" EntityType="Self.animals" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="animalsdetails" EntityType="Self.animalsdetails" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="animalstory" EntityType="Self.animalstory" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="animalstorydetails" EntityType="Self.animalstorydetails" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="contactinfo" EntityType="Self.contactinfo" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="devices" EntityType="Self.devices" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="enclosurepictures" EntityType="Self.enclosurepictures" Schema="negev_zoo" store:Type="Tables" />
@@ -232,6 +261,7 @@
           <EntitySet Name="routes" EntityType="Self.routes" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="specialevents" EntityType="Self.specialevents" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="negev_zoo" store:Type="Tables" />
+          <EntitySet Name="usersession" EntityType="Self.usersession" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="wallfeeds" EntityType="Self.wallfeeds" Schema="negev_zoo" store:Type="Tables" />
           <EntitySet Name="youtubevideourl" EntityType="Self.youtubevideourl" Schema="negev_zoo" store:Type="Tables" />
         </EntityContainer>
@@ -413,7 +443,10 @@
           <EntitySet Name="AnimalDetails" EntityType="NegevZooModel.AnimalDetail" />
           <EntitySet Name="EnclosureDetails" EntityType="NegevZooModel.EnclosureDetail" />
           <EntitySet Name="Devices" EntityType="NegevZooModel.Device" />
-          <EntitySet Name="mapinfo" EntityType="NegevZooModel.MapInfo" />
+          <EntitySet Name="MapInfos" EntityType="NegevZooModel.MapInfo" />
+          <EntitySet Name="UserSessions" EntityType="NegevZooModel.UserSession" />
+          <EntitySet Name="AnimalStories" EntityType="NegevZooModel.AnimalStory" />
+          <EntitySet Name="AnimalStoryDetails" EntityType="NegevZooModel.AnimalStoryDetail" />
         </EntityContainer>
         <EntityType Name="AnimalDetail">
           <Key>
@@ -468,6 +501,33 @@
           <Property Name="minLongitude" Type="Double" Nullable="false" />
           <Property Name="maxLongitude" Type="Double" Nullable="false" />
           <Property Name="yLatitudeRatio" Type="Double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserSession">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="Int32" Nullable="false" />
+          <Property Name="sessionId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="AnimalStory">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="enclosureId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AnimalStoryDetail">
+          <Key>
+            <PropertyRef Name="animalStoryId" />
+            <PropertyRef Name="language" />
+          </Key>
+          <Property Name="animalStoryId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="story" Type="String" Nullable="false" MaxLength="1073741823" FixedLength="false" Unicode="false" />
+          <Property Name="language" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -681,7 +741,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="mapinfo">
+          <EntitySetMapping Name="MapInfos">
             <EntityTypeMapping TypeName="NegevZooModel.MapInfo">
               <MappingFragment StoreEntitySet="mapinfo">
                 <ScalarProperty Name="yLatitudeRatio" ColumnName="yLatitudeRatio" />
@@ -698,6 +758,35 @@
                 <ScalarProperty Name="longitude" ColumnName="longitude" />
                 <ScalarProperty Name="pointspath" ColumnName="pointspath" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSessions">
+            <EntityTypeMapping TypeName="NegevZooModel.UserSession">
+              <MappingFragment StoreEntitySet="usersession">
+                <ScalarProperty Name="sessionId" ColumnName="sessionId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AnimalStories">
+            <EntityTypeMapping TypeName="NegevZooModel.AnimalStory">
+              <MappingFragment StoreEntitySet="animalstory">
+                <ScalarProperty Name="enclosureId" ColumnName="enclosureId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AnimalStoryDetails">
+            <EntityTypeMapping TypeName="NegevZooModel.AnimalStoryDetail">
+              <MappingFragment StoreEntitySet="animalstorydetails">
+                <ScalarProperty Name="language" ColumnName="language" />
+                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="animalStoryId" ColumnName="animalStoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

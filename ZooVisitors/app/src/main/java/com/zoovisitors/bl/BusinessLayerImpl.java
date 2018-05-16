@@ -301,10 +301,10 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     @Override
     public void getPersonalStories(final GetObjectInterface goi){
-        ni.post("animals/story/" + GlobalVariables.language, new ResponseInterface<String>() {
+        ni.post("animals/story/all/" + GlobalVariables.language, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
-                Animal[] animals = gson.fromJson(response, Animal[].class);
+                Animal.PersonalStories[] animals = gson.fromJson(response, Animal.PersonalStories[].class);
 
                 if (animals.length <= 0)
                     goi.onFailure("No Data in the server");
@@ -314,7 +314,7 @@ public class BusinessLayerImpl implements BusinessLayer {
 
             @Override
             public void onFailure(String response) {
-                goi.onFailure("Can't get animals from the server");
+                goi.onFailure("Can't get personal stories from the server");
             }
         });
     }
