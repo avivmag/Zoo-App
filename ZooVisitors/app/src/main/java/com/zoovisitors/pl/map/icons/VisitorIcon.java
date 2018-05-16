@@ -24,8 +24,8 @@ public class VisitorIcon extends ImageIcon {
     }
 
     public void UpdateVisitorLocation(int left, int top) {
-//        this.left = mapView.getIconsOffsetLeft(left);
-//        this.top = mapView.getIconsOffsetTop(top);
+        this.left = left;
+        this.top = top;
 
         mapView.updateIconPositionWithSize(this);
     }
