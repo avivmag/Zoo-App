@@ -8,9 +8,8 @@ namespace DAL.Models
 {
     public class MapSettingsResult
     {
-        public string PointsPath { get; set; }
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
+        public double zooLocationLongitude { get; set; }
+        public double zooLocationLatitude { get; set; }
         public int ZooPointX { get; set; }
         public int ZooPointY { get; set; }
         public double XLongitudeRatio { get; set; }

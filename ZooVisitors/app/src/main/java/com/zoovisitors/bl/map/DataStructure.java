@@ -104,35 +104,35 @@ public class DataStructure {
         }
 
 //        // TODO: only for testing comment this
-        Map.Entry<Point, Set<Point>> lowest = null, biggest = null;
-        int lowest_counter = 0, biggest_counter = 0;
-        int low = 10000,big = 0;
-        for (Map.Entry<Point, Set<Point>> entry:
-             routes.entrySet()) {
-            if(entry.getValue().size() > big)
-            {
-                big = entry.getValue().size();
-                biggest = entry;
-                biggest_counter = 1;
-            } else if(entry.getValue().size() == big) {
-                biggest_counter++;
-            }
-            if(entry.getValue().size() < low)
-            {
-                low = entry.getValue().size();
-                lowest = entry;
-                lowest_counter = 1;
-            } else if(entry.getValue().size() == low) {
-                lowest_counter++;
-            }
-            if(entry.getValue().size() == 2) {
-                Log.e("AVIV", "Point " + entry.getKey());
-            }
-        }
-        Log.e("AVIV", "Biggest: " + biggest);
-        Log.e("AVIV", "Smallest: " + lowest);
-        Log.e("AVIV", "Biggest: " + biggest_counter);
-        Log.e("AVIV", "Lowest_counter: " + lowest_counter);
+//        Map.Entry<Point, Set<Point>> lowest = null, biggest = null;
+//        int lowest_counter = 0, biggest_counter = 0;
+//        int low = 10000,big = 0;
+//        for (Map.Entry<Point, Set<Point>> entry:
+//             routes.entrySet()) {
+//            if(entry.getValue().size() > big)
+//            {
+//                big = entry.getValue().size();
+//                biggest = entry;
+//                biggest_counter = 1;
+//            } else if(entry.getValue().size() == big) {
+//                biggest_counter++;
+//            }
+//            if(entry.getValue().size() < low)
+//            {
+//                low = entry.getValue().size();
+//                lowest = entry;
+//                lowest_counter = 1;
+//            } else if(entry.getValue().size() == low) {
+//                lowest_counter++;
+//            }
+//            if(entry.getValue().size() == 2) {
+//                Log.e("AVIV", "Point " + entry.getKey());
+//            }
+//        }
+//        Log.e("AVIV", "Biggest: " + biggest);
+//        Log.e("AVIV", "Smallest: " + lowest);
+//        Log.e("AVIV", "Biggest: " + biggest_counter);
+//        Log.e("AVIV", "Lowest_counter: " + lowest_counter);
     }
 
     private long lastUpdate = 0;

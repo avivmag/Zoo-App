@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.map.icons;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -17,17 +18,18 @@ public class VisitorIcon extends ImageIcon {
 
     @Override
     void setView() {
-        ImageView view = new ImageView(mapView.getContext());
+        ImageView imageView = new ImageView(mapView.getContext());
+        imageView.setBackgroundColor(Color.TRANSPARENT);
         int resourceId = mapView.getResources().getIdentifier(VISITOR_ICON, "mipmap", mapView.getContext().getPackageName());
-        view.setImageResource(resourceId);
-        this.view = view;
+        imageView.setImageResource(resourceId);
+        this.view = imageView;
     }
 
     public void UpdateVisitorLocation(int left, int top) {
         this.left = left;
         this.top = top;
 
-        mapView.updateIconPositionWithSize(this);
+        updateIconPosition();
     }
 
     public void Show() {

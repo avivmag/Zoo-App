@@ -8,13 +8,13 @@ namespace DAL.Models
 {
     public class PointMap
     {
-        public int Left { get; set; }
-        public int Right { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
 
-        public PointMap(int left, int right)
+        public PointMap(int x, int y)
         {
-            Left    = left;
-            Right   = right;
+            X    = x;
+            Y    = y;
         }
 
         public override bool Equals(object obj)
@@ -25,15 +25,15 @@ namespace DAL.Models
             }
 
             PointMap other = (PointMap)obj;
-            return other.Left == Left && other.Right == Right;
+            return other.X == X && other.Y == Y;
         }
 
         public override int GetHashCode()
         {
             int hash = 17;
 
-            hash = hash * 23 + Left;
-            hash = hash * 23 + Right;
+            hash = hash * 23 + X;
+            hash = hash * 23 + Y;
             return hash;
         }
     }
