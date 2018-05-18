@@ -88,7 +88,6 @@ public class MapActivity extends ProviderBasedActivity
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            miscs[finalI],
                             miscs[finalI].getMarkerLongtitude(),
                             miscs[finalI].getMarkerLatitude());
                 }
