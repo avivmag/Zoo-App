@@ -604,7 +604,7 @@ namespace BL
                                 {
                                     Id              = a.id,
                                     Name            = ad.name,
-                                    Story           = ad.story,
+                                    Interesting     = ad.interesting,
                                     EncId           = a.enclosureId,
                                     Category        = ad.category,
                                     Series          = ad.series,
@@ -627,7 +627,7 @@ namespace BL
         /// <returns>All the AnimalResults that have a special story in the given language.</returns>
         public IEnumerable<AnimalResult> GetAnimalResultsWithStory(int language)
         {
-            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Story));
+            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Interesting));
         }
 
         /// <summary>
@@ -663,7 +663,7 @@ namespace BL
             {
                 Id = id,
                 Name = details?.name,
-                Story = details?.story,
+                Interesting = details?.interesting,
                 EncId = an.enclosureId,
                 Category = details?.category,
                 Distribution = details?.distribution,
@@ -975,7 +975,7 @@ namespace BL
             {
 
                 oldDetails.name = animalDetails.name;
-                oldDetails.story = animalDetails.story;
+                oldDetails.interesting = animalDetails.interesting;
                 oldDetails.series = animalDetails.series;
                 oldDetails.reproduction = animalDetails.reproduction;
                 oldDetails.language = animalDetails.language;
