@@ -17,7 +17,7 @@ namespace DAL
         public long animalId { get; set; }
         public long language { get; set; }
         public string name { get; set; }
-        public string story { get; set; }
+        public string interesting { get; set; }
         public string category { get; set; }
         public string series { get; set; }
         public string family { get; set; }

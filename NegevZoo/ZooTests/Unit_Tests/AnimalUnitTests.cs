@@ -471,7 +471,7 @@ namespace ZooTests.Unit_Tests
                 animalId = 1,
                 name = "הקקי שלי",
                 category = "חרבון",
-                story = "זה סיפור על קקי יפה",
+                interesting = "זה סיפור על קקי יפה",
                 language = (long)Languages.ar
             };
 
@@ -492,7 +492,7 @@ namespace ZooTests.Unit_Tests
             {
                 animalId = 1,
                 category = "חרבון",
-                story = "זה סיפור על קקי יפה",
+                interesting = "זה סיפור על קקי יפה",
                 language = (long)Languages.ar
             };
 
@@ -511,7 +511,7 @@ namespace ZooTests.Unit_Tests
                 animalId = -1,
                 name = "בבון הזית",
                 category = "חרבון",
-                story = "זה סיפור על קקי יפה",
+                interesting = "זה סיפור על קקי יפה",
                 language = (long)Languages.ar
             };
 
@@ -536,7 +536,7 @@ namespace ZooTests.Unit_Tests
                 family = "",
                 food = "",
                 reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                interesting = "גילאור בבון הזית מאוד חמוד"
             };
 
             an.name = "אביב מאג";
@@ -567,7 +567,7 @@ namespace ZooTests.Unit_Tests
                 family = "",
                 food = "",
                 reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                interesting = "גילאור בבון הזית מאוד חמוד"
             };
 
             an.category = "";
@@ -602,7 +602,7 @@ namespace ZooTests.Unit_Tests
                 family = "",
                 food = "",
                 reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                interesting = "גילאור בבון הזית מאוד חמוד"
             };
             an.name = "גורילה";
 

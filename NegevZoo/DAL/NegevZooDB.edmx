@@ -23,7 +23,7 @@
           <Property Name="animalId" Type="uint" Nullable="false" />
           <Property Name="language" Type="uint" Nullable="false" />
           <Property Name="name" Type="tinytext" />
-          <Property Name="story" Type="mediumtext" />
+          <Property Name="interesting" Type="mediumtext" />
           <Property Name="category" Type="tinytext" />
           <Property Name="series" Type="tinytext" />
           <Property Name="family" Type="tinytext" />
@@ -455,7 +455,7 @@
           <Property Name="animalId" Type="Int64" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="story" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="interesting" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="category" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
@@ -712,7 +712,7 @@
                 <ScalarProperty Name="family" ColumnName="family" />
                 <ScalarProperty Name="series" ColumnName="series" />
                 <ScalarProperty Name="category" ColumnName="category" />
-                <ScalarProperty Name="story" ColumnName="story" />
+                <ScalarProperty Name="interesting" ColumnName="interesting" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="language" ColumnName="language" />
                 <ScalarProperty Name="animalId" ColumnName="animalId" />
