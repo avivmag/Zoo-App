@@ -973,16 +973,15 @@ namespace BL
             }
             else // update existing animal.
             {
-
-                oldDetails.name = animalDetails.name;
-                oldDetails.interesting = animalDetails.interesting;
-                oldDetails.series = animalDetails.series;
+                oldDetails.name         = animalDetails.name;
+                oldDetails.interesting  = animalDetails.interesting;
+                oldDetails.series       = animalDetails.series;
                 oldDetails.reproduction = animalDetails.reproduction;
-                oldDetails.language = animalDetails.language;
-                oldDetails.food = animalDetails.food;
-                oldDetails.family = animalDetails.family;
+                oldDetails.language     = animalDetails.language;
+                oldDetails.food         = animalDetails.food;
+                oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
-                oldDetails.category = animalDetails.category;
+                oldDetails.category     = animalDetails.category;
             }
         }
 
