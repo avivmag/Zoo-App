@@ -2,10 +2,6 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Created by Gili on 12/01/2018.
@@ -86,12 +82,21 @@ public class Enclosure implements java.io.Serializable{
         return pictureUrl;
     }
 
-    public int getClosestMapPointX() {
+    public int getClosestPointX() {
         return closestPointX;
     }
 
-    public int getClosestMapPointY() {
+    public int getClosestPointY() {
         return closestPointY;
+    }
+
+    // TODO: delete this dummies
+    public void setClosestPointX(int closestPointX) {
+        this.closestPointX = closestPointX;
+    }
+
+    public void setClosestPointY(int closestPointY) {
+        this.closestPointY = closestPointY;
     }
 
     public static class RecurringEvent implements Serializable{

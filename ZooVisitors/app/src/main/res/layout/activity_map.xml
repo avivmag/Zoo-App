@@ -14,32 +14,40 @@
         android:id="@+id/map_view_layout">
     </com.zoovisitors.pl.map.MapView>
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:orientation="horizontal">-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:background="@drawable/map_get_to_know_me_gradient"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/map_view_layout"
+        app:layout_constraintStart_toEndOf="@+id/map_view_layout"
+        app:layout_constraintTop_toTopOf="parent">
+        <!--android:layout_marginTop="20dp"-->
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/map_get_to_know_me_imagebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/map_get_to_know_me_gradient"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:adjustViewBounds="true" />
 
-            <ImageView
-                android:id="@+id/map_get_to_know_me_imagebutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
-
-            <TextView
-                android:id="@+id/map_get_to_know_me_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test"
-                android:textColor="@color/mapGetToKnowMeText" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/map_get_to_know_me_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textColor="@color/mapGetToKnowMeText" />
     </LinearLayout>
+    <!--</LinearLayout>-->
 
 </android.support.constraint.ConstraintLayout>

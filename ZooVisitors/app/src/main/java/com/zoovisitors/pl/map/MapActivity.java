@@ -27,7 +27,9 @@ import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.personalStories.PersonalStoriesRecyclerAdapter;
 
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -41,6 +43,7 @@ public class MapActivity extends ProviderBasedActivity
     private Animal.PersonalStories[] animalStories;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
+    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +72,20 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private CountDownLatch cdl;
+
     private void setNetworkDataProvider() {
         cdl = new CountDownLatch(2);
         bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 enclosures = (Enclosure[]) response;
+                // TODO: remove dummies
+                enclosures[0].setClosestPointX(866);
+                enclosures[0].setClosestPointY(352);
+//                enclosures[1].setClosestPointX(441);
+//                enclosures[1].setClosestPointY(336);
+                enclosures[1].setClosestPointX(1210);
+                enclosures[1].setClosestPointY(935);
                 getEnclosureIconsAndSetImagesOnMap(enclosures);
                 cdl.countDown();
             }
@@ -101,8 +112,6 @@ public class MapActivity extends ProviderBasedActivity
             @Override
             public void onSuccess(Object response) {
                 animalStories = (Animal.PersonalStories[]) response;
-                // TODO: remove dummies
-
                 cdl.countDown();
             }
 
@@ -112,8 +121,17 @@ public class MapActivity extends ProviderBasedActivity
             }
         });
 
-
-//        mapDS.addAnimalStoriesToPoints(enclosures, animalStories);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    cdl.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mapDS.addAnimalStoriesToPoints(enclosures, animalStories);
+            }
+        }.start();
     }
 
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
@@ -156,36 +174,73 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private boolean needToShowIcon = true;
+    private AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
     @Override
     public void onLocationChanged(android.location.Location location) {
         if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
+            synchronized (movementInProgress) {
+                if (movementInProgress.get())
+                    return;
+                movementInProgress.set(true);
+            }
             Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG)
                     .show();
 
             if (location.getLatitude() < Memory.minLatitude - MAX_MARGIN ||
                     location.getLatitude() > Memory.maxLatitude + MAX_MARGIN ||
                     location.getLongitude() < Memory.minLongitude - MAX_MARGIN ||
-                    location.getLongitude() > Memory.maxLongitude + MAX_MARGIN)
+                    location.getLongitude() > Memory.maxLongitude + MAX_MARGIN) {
+                movementInProgress.set(false);
                 return;
-
-            if (needToShowIcon) {
-                needToShowIcon = false;
-                mapView.ShowVisitorIcon();
             }
 
+            Point calibratedPointAndClosestPointFromPoints;
             Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location
                     .getLongitude()));
-            Point[] calibratedPointAndClosestPointFromPoints = mapDS
-                    .getOnMapPositionAndClosestPoint(p);
-            if (calibratedPointAndClosestPointFromPoints == null)
+            calibratedPointAndClosestPointFromPoints = mapDS
+                    .getOnMapPosition(p);
+            if (calibratedPointAndClosestPointFromPoints == null) {
+                movementInProgress.set(false);
                 return;
-            mapView.UpdateVisitorLocation(calibratedPointAndClosestPointFromPoints[0].getX(),
-                    calibratedPointAndClosestPointFromPoints[0].getY());
+            }
 
-            // the instance of the point taken from the map data structure
-//            calibratedPointAndClosestPointFromPoints[1].getClosestEnclosures()
+            updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
+            updateGetToKnowMe();
+
+            movementInProgress.set(false);
         }
+    }
+
+    private void updateVisitorPosition(Point calibratedPointAndClosestPointFromPoints) {
+        mapView.UpdateVisitorLocation(calibratedPointAndClosestPointFromPoints.getX(),
+                calibratedPointAndClosestPointFromPoints.getY());
+        if (needToShowIcon) {
+            needToShowIcon = false;
+            mapView.ShowVisitorIcon();
+        }
+    }
+
+    private long lastTimeUpdatedGetToKnowMe = 0;
+    private Animal.PersonalStories lastPersonalStoryShowed = null;
+    private void updateGetToKnowMe() {
+        if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
+                MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
+            Set<Animal.PersonalStories> animalPersonalStories = mapDS.getCloseAnimalStories();
+            Log.e("AVIV", "animalPersonalStories " + animalPersonalStories.size());
+            if(animalPersonalStories.isEmpty())
+                return;
+            Animal.PersonalStories nextPersonalStory =
+                    animalPersonalStories.toArray(
+                            new Animal.PersonalStories[animalPersonalStories.size()])
+                            [(int) (Math.random() * animalPersonalStories.size())];
+            if(nextPersonalStory == lastPersonalStoryShowed)
+                return;
+            updateGetToKnowMe(nextPersonalStory);
+        }
+    }
+    private void updateGetToKnowMe(Animal.PersonalStories nextPersonalStory) {
+        Log.e("AVIV", "nextPersonalStory " + nextPersonalStory.toString());
     }
 
     @Override

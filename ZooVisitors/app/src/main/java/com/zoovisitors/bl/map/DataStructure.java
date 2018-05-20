@@ -1,6 +1,7 @@
 package com.zoovisitors.bl.map;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
@@ -39,7 +40,6 @@ public class DataStructure {
     /**
      * max threashold for update, if last update was before that time, then we need to
      * reinitialize the current location
-     * currently set to 2 minutes.
      */
     private final long MAX_UPDATE_THRESHOLD = 7 * 1000;
 
@@ -134,7 +134,7 @@ public class DataStructure {
 
     private long lastUpdate = 0;
 
-    public Point[] getOnMapPositionAndClosestPoint(Point point) {
+    public Point getOnMapPosition(Point point) {
 
         Point ans;
         // new update is needed
@@ -146,7 +146,7 @@ public class DataStructure {
         if (ans == null)
             return null;
         lastUpdate = System.currentTimeMillis();
-        return new Point[]{ans, lastPoint};
+        return ans;
     }
 
     /**
@@ -358,10 +358,17 @@ public class DataStructure {
         }
     }
 
-    public void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
-        Point onMapPoint = getPointByXY(enclosure.getClosestMapPointX(), enclosure
-                .getClosestMapPointY());
-        addAnimalStoryToPointByBFS(onMapPoint, animalStory);
+    public Set<Animal.PersonalStories> getCloseAnimalStories() {
+        return lastPoint.getClosestAnimalStories();
+    }
+
+    private void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
+        Log.e("AVIV", "onMapPoint " + enclosure.getClosestPointX() + "::" + enclosure.getClosestPointY());
+        Point onMapPoint = getPointByXY(enclosure.getClosestPointX(), enclosure
+                .getClosestPointY());
+        if(onMapPoint != null) {
+            addAnimalStoryToPointByBFS(onMapPoint, animalStory);
+        }
     }
 
     /**
