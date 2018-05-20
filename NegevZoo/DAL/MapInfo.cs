@@ -20,12 +20,12 @@ namespace DAL
         public int zooPointX { get; set; }
         public int zooPointY { get; set; }
         public double xLongitudeRatio { get; set; }
+        public double yLatitudeRatio { get; set; }
         public double sinAlpha { get; set; }
         public double cosAlpha { get; set; }
         public double minLatitude { get; set; }
         public double maxLatitude { get; set; }
         public double minLongitude { get; set; }
         public double maxLongitude { get; set; }
-        public double yLatitudeRatio { get; set; }
     }
 }

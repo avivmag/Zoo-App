@@ -10,7 +10,7 @@ namespace DAL.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public string Story { get; set; }
+        public string Interesting { get; set; }
         public long EncId { get; set; }
         public string Category { get; set; }
         public string Series { get; set; }
