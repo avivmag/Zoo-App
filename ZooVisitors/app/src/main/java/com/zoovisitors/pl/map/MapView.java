@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.RelativeLayout;
 
+import com.zoovisitors.backend.AnimalStory;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
 import com.zoovisitors.pl.map.icons.MiscIcon;
@@ -124,6 +125,11 @@ public class MapView extends RelativeLayout {
                 0,
                 RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME
         );
+    }
+
+    public void SetInitialValues() {
+        zooMapIcon = new ZooMapIcon(this, null);
+        visitorIcon = new VisitorIcon(this, null);
     }
 
     @Override
@@ -250,14 +256,6 @@ public class MapView extends RelativeLayout {
         return mScaleFactor;
     }
 
-//    public void updateIconPositionWithSize(Icon icon) {
-//        if(icon instanceof ImageIcon) {
-//            updateIconPositionWithSize((ImageIcon) icon);
-//        } else if(icon instanceof TextIcon) {
-//            updateIconPositionWithSize((TextIcon) icon);
-//        }
-//    }
-
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -278,14 +276,6 @@ public class MapView extends RelativeLayout {
 
     public void addMiscIcon(Drawable resource, int left, int top) {
         miscIcons.add(new MiscIcon(this, resource, left, top));
-    }
-
-    public void SetZooMapIcon() {
-        zooMapIcon = new ZooMapIcon(this, null, 0,  0);
-    }
-
-    public void SetVisitorIcon() {
-        visitorIcon = new VisitorIcon(this, null);
     }
 
     public void ShowVisitorIcon() {

@@ -347,7 +347,7 @@ public class BlMapTests {
 //    @Test
 //    public void getOnMapPositionFirstTime() {
 //        DataStructure mapDS = new DataStructure(Dummy.getLocations(), Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
-//        Location p = mapDS.getOnMapPosition(
+//        Location p = mapDS.getOnMapPositionAndClosestPoint(
 //                new Location(31.25873889, 34.74429022));
 //        assertEquals(31.2587235, p.getLatitude(), 0.0000001);
 //        assertEquals(34.74429978, p.getLongitude(), 0.0000001);

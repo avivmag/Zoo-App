@@ -20,10 +20,14 @@ public class Enclosure implements java.io.Serializable{
     private String story;
     @SerializedName("markerIconUrl")
     private String markerIconUrl;
-    @SerializedName("markerLatitude")
-    private int markerY;
-    @SerializedName("markerLongtitude")
+    @SerializedName("markerX")
     private int markerX;
+    @SerializedName("markerY")
+    private int markerY;
+    @SerializedName("markerClosestPointX")
+    private int closestPointX;
+    @SerializedName("markerClosestPointY")
+    private int closestPointY;
     @SerializedName("pictureUrl")
     private String pictureUrl;
     @SerializedName("recEvents")
@@ -50,11 +54,12 @@ public class Enclosure implements java.io.Serializable{
         return markerIconUrl;
     }
 
+    public int getMarkerX() { return markerX; }
     public int getMarkerY() {
         return markerY;
     }
 
-    public int getMarkerX() { return markerX; }
+
     //TODO:: Or I need the imageURL of the enclosure and images of the animals
 
     public int getId() {
@@ -79,6 +84,14 @@ public class Enclosure implements java.io.Serializable{
 
     public String getPictureUrl() {
         return pictureUrl;
+    }
+
+    public int getClosestMapPointX() {
+        return closestPointX;
+    }
+
+    public int getClosestMapPointY() {
+        return closestPointY;
     }
 
     public static class RecurringEvent implements Serializable{
