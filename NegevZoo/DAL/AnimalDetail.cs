@@ -17,12 +17,12 @@ namespace DAL
         public long animalId { get; set; }
         public long language { get; set; }
         public string name { get; set; }
+        public string interesting { get; set; }
         public string category { get; set; }
         public string series { get; set; }
         public string family { get; set; }
         public string distribution { get; set; }
         public string reproduction { get; set; }
         public string food { get; set; }
-        public string interesting { get; set; }
     }
 }

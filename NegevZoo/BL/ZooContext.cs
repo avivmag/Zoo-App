@@ -973,7 +973,6 @@ namespace BL
             }
             else // update existing animal.
             {
-
                 oldDetails.name         = animalDetails.name;
                 oldDetails.interesting  = animalDetails.interesting;
                 oldDetails.series       = animalDetails.series;
