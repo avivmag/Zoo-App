@@ -1,6 +1,6 @@
 package com.zoovisitors.backend.map;
 
-import com.zoovisitors.backend.AnimalStory;
+import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import java.util.Set;
 public class Point {
     int x;
     int y;
-    private Set<AnimalStory> closestAnimalStories;
+    private Set<Animal.PersonalStories> closestAnimalStories;
 
     public Point(int x, int y) {
         this.x = x;
@@ -29,11 +29,11 @@ public class Point {
         return y;
     }
 
-    public void addCloseAnimalStory(AnimalStory animalStory) {
+    public void addCloseAnimalStory(Animal.PersonalStories animalStory) {
         closestAnimalStories.add(animalStory);
     }
 
-    public Set<AnimalStory> getClosestAnimalStories() {
+    public Set<Animal.PersonalStories> getClosestAnimalStories() {
         return closestAnimalStories;
     }
 

@@ -2,7 +2,7 @@ package com.zoovisitors.bl.map;
 
 import android.support.annotation.NonNull;
 
-import com.zoovisitors.backend.AnimalStory;
+import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
@@ -196,12 +196,12 @@ public class DataStructure {
         if (indexRange == null)
             return null;
 
-        Point nearest = findNearestLocation(point, indexRange);
+        Point nearest = findNearestPoint(point, indexRange);
         if (nearest == null)
             return null;
 
         // find second Nearest point
-        Point secNearest = findSecondNearestLocation(point, nearest);
+        Point secNearest = findSecondNearestPoint(point, nearest);
         if (secNearest == null)
             return null;
 
@@ -210,7 +210,7 @@ public class DataStructure {
         return getPointOnLineThatIsClosestToOutsidePoint(point, nearest, secNearest);
     }
 
-    private Point findNearestLocation(Point point, int[] indexRange) {
+    private Point findNearestPoint(Point point, int[] indexRange) {
         Point nearest = null;
         double distanceToNearest = Double.MAX_VALUE;
         for (int i = indexRange[0]; i <= indexRange[1]; i++) {
@@ -224,7 +224,7 @@ public class DataStructure {
         return nearest;
     }
 
-    private Point findSecondNearestLocation(Point point, Point nearest) {
+    private Point findSecondNearestPoint(Point point, Point nearest) {
         Point secNearest = null;
         double distance = Double.MAX_VALUE;
         for (Point p : routes.get(nearest)) {
@@ -346,19 +346,19 @@ public class DataStructure {
         );
     }
 
-    public void addAnimalStoriesToPoints(Enclosure[] enclosures, AnimalStory[] animalStories) {
+    public void addAnimalStoriesToPoints(Enclosure[] enclosures, Animal.PersonalStories[] animalStories) {
         for (Enclosure enclosure :
                 enclosures) {
-            for (AnimalStory animalStory :
+            for (Animal.PersonalStories animalStory :
                     animalStories) {
-                if(enclosure.getId() == animalStory.getEnclosureId()) {
+                if(enclosure.getId() == animalStory.getEncId()) {
                     addAnimalStoryToPoints(enclosure, animalStory);
                 }
             }
         }
     }
 
-    public void addAnimalStoryToPoints(Enclosure enclosure, AnimalStory animalStory) {
+    public void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
         Point onMapPoint = getPointByXY(enclosure.getClosestMapPointX(), enclosure
                 .getClosestMapPointY());
         addAnimalStoryToPointByBFS(onMapPoint, animalStory);
@@ -402,11 +402,11 @@ public class DataStructure {
 
     private final int NUMBER_OF_POINTS_SHOULD_BE_BFS = 10;
 
-    private final void addAnimalStoryToPointByBFS(Point point, AnimalStory animalStory) {
+    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory) {
         addAnimalStoryToPointByBFS(point, animalStory, new HashSet<>(), NUMBER_OF_POINTS_SHOULD_BE_BFS);
     }
 
-    private final void addAnimalStoryToPointByBFS(Point point, AnimalStory animalStory, Set<Point>
+    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory, Set<Point>
             checkedPoints, int depth) {
         point.addCloseAnimalStory(animalStory);
         checkedPoints.add(point);

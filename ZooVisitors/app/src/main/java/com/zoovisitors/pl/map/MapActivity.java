@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.Task;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.backend.AnimalStory;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
 //import com.zoovisitors.backend.RecurringEvent;
@@ -39,7 +38,7 @@ public class MapActivity extends ProviderBasedActivity
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
     private Enclosure[] enclosures;
-    private AnimalStory[] animalStories;
+    private Animal.PersonalStories[] animalStories;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
 
@@ -101,6 +100,9 @@ public class MapActivity extends ProviderBasedActivity
         GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
+                animalStories = (Animal.PersonalStories[]) response;
+                // TODO: remove dummies
+
                 cdl.countDown();
             }
 
@@ -110,8 +112,8 @@ public class MapActivity extends ProviderBasedActivity
             }
         });
 
-//        new Task
-        mapDS.addAnimalStoriesToPoints(enclosures, animalStories);
+
+//        mapDS.addAnimalStoriesToPoints(enclosures, animalStories);
     }
 
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
@@ -182,7 +184,7 @@ public class MapActivity extends ProviderBasedActivity
                     calibratedPointAndClosestPointFromPoints[0].getY());
 
             // the instance of the point taken from the map data structure
-            calibratedPointAndClosestPointFromPoints[1].getClosestEnclosures()
+//            calibratedPointAndClosestPointFromPoints[1].getClosestEnclosures()
         }
     }
 

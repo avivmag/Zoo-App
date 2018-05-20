@@ -7,9 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.RelativeLayout;
 
-import com.zoovisitors.backend.AnimalStory;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.backend.Misc;
 import com.zoovisitors.pl.map.icons.MiscIcon;
 import com.zoovisitors.pl.map.icons.VisitorIcon;
 import com.zoovisitors.pl.map.icons.ZooMapIcon;
