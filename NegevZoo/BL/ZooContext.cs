@@ -96,8 +96,10 @@ namespace BL
                                        Id                   = e.id,
                                        Language             = ed.language,
                                        MarkerIconUrl        = e.markerIconUrl,
-                                       MarkerLatitude       = e.markerLatitude,
-                                       MarkerLongtitude     = e.markerLongitude,
+                                       MarkerX              = e.markerX,
+                                       MarkerY              = e.markerY,
+                                       MarkerClosestPointX  = e.markerClosestPointX,
+                                       MarkerClosestPointY  = e.markerClosestPointY,
                                        PictureUrl           = e.pictureUrl,
                                        Name                 = ed.name,
                                        Story                = ed.story,
@@ -217,9 +219,16 @@ namespace BL
                 throw new ArgumentException("Wrong input. enclosure name is null or white space");
             }
 
-            //TODO: add a check to latitude or longtitude out of the range of the zoo.
-
             var enclosures = zooDB.GetAllEnclosures();
+
+            var closestPointX = -1;
+            var closestPointY = -1;
+            //////////////////// TODO: AVIV ////////////////////
+
+            ////////////////////////////////////////////////////
+
+            enclosure.markerClosestPointX = closestPointX;
+            enclosure.markerClosestPointY = closestPointY;
 
             if (enclosure.id == default(int)) //add a new enclosure
             {
@@ -252,8 +261,10 @@ namespace BL
 
                 //enclosure.id = oldEnc.id;
                 oldEnc.markerIconUrl = enclosure.markerIconUrl;
-                oldEnc.markerLatitude = enclosure.markerLatitude;
-                oldEnc.markerLongitude = enclosure.markerLongitude;
+                oldEnc.markerX = enclosure.markerX;
+                oldEnc.markerY = enclosure.markerY;
+                oldEnc.markerClosestPointX = enclosure.markerClosestPointX;
+                oldEnc.markerClosestPointY = enclosure.markerClosestPointY;
                 oldEnc.name = enclosure.name;
                 oldEnc.pictureUrl = enclosure.pictureUrl;
 
@@ -2138,14 +2149,14 @@ namespace BL
 
             // Get all enclosure's markers, if exists.
             var enclosuresWithMarkers = zooDB.GetAllEnclosures()
-                .Where(enc => enc.markerIconUrl != null && enc.markerLatitude.HasValue && enc.markerLongitude.HasValue)
+                .Where(enc => enc.markerIconUrl != null && enc.markerX.HasValue && enc.markerY.HasValue)
                 .ToArray();
 
             var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
                 {
                     iconUrl     = enc.markerIconUrl,
-                    latitude    = (float)enc.markerLatitude.Value,
-                    longitude   = (float)enc.markerLongitude.Value
+                    latitude    = (float)enc.markerX.Value,
+                    longitude   = (float)enc.markerY.Value
                     //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 

@@ -82,9 +82,11 @@
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="tinytext" Nullable="false" />
-          <Property Name="markerLongitude" Type="double" />
-          <Property Name="markerLatitude" Type="double" />
+          <Property Name="markerX" Type="int" />
+          <Property Name="markerY" Type="int" />
           <Property Name="markerIconUrl" Type="varchar" MaxLength="255" />
+          <Property Name="markerClosestPointX" Type="int" />
+          <Property Name="markerClosestPointY" Type="int" />
           <Property Name="pictureUrl" Type="mediumtext" />
         </EntityType>
         <EntityType Name="enclosuresdetails">
@@ -301,8 +303,10 @@
           </Key>
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="markerLongitude" Type="Double" />
-          <Property Name="markerLatitude" Type="Double" />
+          <Property Name="markerX" Type="Int32" />
+          <Property Name="markerY" Type="Int32" />
+          <Property Name="markerClosestPointX" Type="Int32" />
+          <Property Name="markerClosestPointY" Type="Int32" />
           <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -566,10 +570,12 @@
           <EntitySetMapping Name="Enclosures">
             <EntityTypeMapping TypeName="NegevZooModel.Enclosure">
               <MappingFragment StoreEntitySet="enclosures">
+                <ScalarProperty Name="markerClosestPointY" ColumnName="markerClosestPointY" />
+                <ScalarProperty Name="markerClosestPointX" ColumnName="markerClosestPointX" />
+                <ScalarProperty Name="markerY" ColumnName="markerY" />
+                <ScalarProperty Name="markerX" ColumnName="markerX" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="markerLongitude" ColumnName="markerLongitude" />
-                <ScalarProperty Name="markerLatitude" ColumnName="markerLatitude" />
                 <ScalarProperty Name="markerIconUrl" ColumnName="markerIconUrl" />
                 <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
               </MappingFragment>

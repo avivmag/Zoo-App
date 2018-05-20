@@ -321,8 +321,8 @@ namespace ZooTests
             Enclosure zebra = new Enclosure
             {
                 id = monkeyEncEn.id,
-                markerLatitude = monkeyEncEn.markerLatitude,
-                markerLongitude = monkeyEncEn.markerLongitude,
+                markerY = monkeyEncEn.markerY,
+                markerX = monkeyEncEn.markerX,
                 name = "זברה"
             };
 
@@ -343,8 +343,8 @@ namespace ZooTests
             Enclosure zebra = new Enclosure
             {
                 id = monkeyEncEn.id,
-                markerLatitude = monkeyEncEn.markerLatitude,
-                markerLongitude = monkeyEncEn.markerLongitude,
+                markerY = monkeyEncEn.markerY,
+                markerX = monkeyEncEn.markerX,
                 name = ""
             };
 
@@ -365,8 +365,8 @@ namespace ZooTests
             Enclosure zebra = new Enclosure
             {
                 id = -4,
-                markerLatitude = monkeyEncEn.markerLatitude,
-                markerLongitude = monkeyEncEn.markerLongitude,
+                markerY = monkeyEncEn.markerY,
+                markerX = monkeyEncEn.markerX,
                 name = "זברה"
             };
 
