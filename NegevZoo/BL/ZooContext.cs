@@ -221,12 +221,20 @@ namespace BL
 
             var enclosures = zooDB.GetAllEnclosures();
 
+            // set the closest point on the road to the enclosure.
             var closestPointX = -1;
             var closestPointY = -1;
-            //////////////////// TODO: AVIV ////////////////////
+            if (enclosure.markerX != null &&
+                enclosure.markerY != null)
+            {
+                var routes = zooDB.GetAllRoutes();
+                PointMap[] points = getPointMaps(routes);
+                int[] indexRange = getIndexRangeInPoints(points, (int) enclosure.markerX);
+                PointMap nearest = findNearestPoint(points, new PointMap((int)enclosure.markerX, (int)enclosure.markerY), indexRange);
 
-            ////////////////////////////////////////////////////
-
+                closestPointX = nearest.X;
+                closestPointY = nearest.Y;
+            }
             enclosure.markerClosestPointX = closestPointX;
             enclosure.markerClosestPointY = closestPointY;
 
@@ -270,6 +278,75 @@ namespace BL
 
                 return oldEnc;
             }
+        }
+
+        private PointMap[] getPointMaps(System.Data.Entity.DbSet<Route> routes)
+        {
+            List<PointMap> points = new List<PointMap>();
+            foreach(Route route in routes)
+            {
+                if (points.Count == 0 || points.Last().X != route.primaryLeft || points.Last().Y != route.primaryRight)
+                    points.Add(new PointMap(route.primaryLeft, route.primaryRight));
+            }
+            return points.ToArray();
+        }
+
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * 50 * 50;
+        private int[] getIndexRangeInPoints(PointMap[] points, int x)
+        {
+            int[] range = new int[2];
+            int bottom = 0, top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[0] = (bottom + top) / 2;
+                if (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT < points[range[0]].X)
+                {
+                    top = range[0];
+                }
+                else
+                {
+                    bottom = range[0];
+                }
+            }
+            range[0] = points[bottom].X >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom
+                    : top;
+
+            bottom = 0;
+            top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[1] = (bottom + top) / 2;
+                if (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT > points[range[1]].X)
+                {
+                    bottom = range[1];
+                }
+                else
+                {
+                    top = range[1];
+                }
+            }
+            range[1] = points[top].X <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top :
+                    bottom;
+
+            return range;
+        }
+
+        private PointMap findNearestPoint(PointMap[] points, PointMap point, int[] indexRange)
+        {
+            PointMap nearest = null;
+            double distanceToNearest = Double.MaxValue;
+            for (int i = indexRange[0]; i <= indexRange[1]; i++)
+            {
+                int curDistance = squaredDistance(point, points[i]);
+                if (curDistance < distanceToNearest && curDistance <=
+                        MAX_APPROXIMATE_DISTANCE_FROM_POINT)
+                {
+                    distanceToNearest = curDistance;
+                    nearest = points[i];
+                }
+            }
+            return nearest;
         }
 
         /// <summary>

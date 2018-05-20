@@ -3,6 +3,8 @@ package com.zoovisitors.bl.map;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 
@@ -29,22 +31,21 @@ public class DataStructure {
     // maximum len on x is around 50, the 30 is estimation for the other road. I better change
     // one day so it will support different latlng/xy ratio
     private final int MAX_DISTANCE_OF_ROUTE_FLAT = 50 * 50;// + 30 * 30; // 0.0000000032
-    private final int MAX_DISTANCE_OF_ROUTE = 50*50+30*30;
-    private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2*MAX_DISTANCE_OF_ROUTE_FLAT;
-    private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2*50;
+    private final int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
+    private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * MAX_DISTANCE_OF_ROUTE_FLAT;
+    private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
 //    // taking in account the measurement of gps errors (3 times further).
 //    private final int MAX_DISTANCE_FROM_POINT = MAX_DISTANCE_OF_ROUTE * MAX_DISTANCE_OF_ROUTE *
 //            3;//7 * 0.0111111;
     /**
      * max threashold for update, if last update was before that time, then we need to
      * reinitialize the current location
-     * currently set to 2 minutes.
      */
     private final long MAX_UPDATE_THRESHOLD = 7 * 1000;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
-    private Point lastLocation;
+    private Point lastPoint;
     double xLongitudeRatio;
     double yLatitudeRatio;
     private double sinAlpha;
@@ -84,16 +85,12 @@ public class DataStructure {
         for (Point point :
                 points) {
             routes.put(point, new HashSet<>());
-//            minX = Math.min(minX, point.getX());
-//            maxX = Math.max(maxX, point.getX());
-//            minY = Math.min(minY, point.getY());
-//            maxY = Math.max(maxY, point.getY());
         }
 
         // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
         for (int curr = 0; curr < points.length; curr++) {
             for (int off = curr + 1; off < points.length &&
-                    (points[curr].getX() - points[off].getX())*
+                    (points[curr].getX() - points[off].getX()) *
                             (points[curr].getX() - points[off].getX())
                             < MAX_DISTANCE_OF_ROUTE_FLAT; off++) {
                 if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
@@ -157,12 +154,12 @@ public class DataStructure {
      *
      * @param estimatedPoint
      * @return two points: the one that we are estimating it to be + the one that was the closest
-     * to the given point (should be used to call getOnMapPositionContinues)
+     * to the given point (should be used to call getOnMapPositionContinuesAndClosestPoint)
      */
     private Point getOnMapPositionContinues(Point estimatedPoint) {
         double distanceToNearest = Double.MAX_VALUE;
         Point nearestFromTheSet = null;
-        for (Point p : routes.get(lastLocation)) {
+        for (Point p : routes.get(lastPoint)) {
             int curDistance = squaredDistance(estimatedPoint, p);
             if (curDistance < distanceToNearest) {
                 distanceToNearest = curDistance;
@@ -171,8 +168,8 @@ public class DataStructure {
         }
 
         // in case the new point is closer than the older that was given
-        if (distanceToNearest < squaredDistance(estimatedPoint, lastLocation)) {
-            lastLocation = nearestFromTheSet;
+        if (distanceToNearest < squaredDistance(estimatedPoint, lastPoint)) {
+            lastPoint = nearestFromTheSet;
             return getOnMapPositionContinues(estimatedPoint);
         }
 
@@ -180,8 +177,8 @@ public class DataStructure {
             return null;
 
         // find the nearest point
-        return getPointOnLineThatIsClosestToOutsidePoint(estimatedPoint, lastLocation,
-                nearestFromTheSet);
+        return getPointOnLineThatIsClosestToOutsidePoint(estimatedPoint,
+                lastPoint, nearestFromTheSet);
     }
 
     /**
@@ -190,7 +187,7 @@ public class DataStructure {
      *
      * @param point
      * @return two points: the one that we are estimating it to be + the one that was the closest
-     * to the given point (should be used to call getOnMapPositionContinues)
+     * to the given point (should be used to call getOnMapPositionContinuesAndClosestPoint)
      * returns null if the the point is far from any of the points on the graph
      */
     private Point getOnMapPositionFirstTime(Point point) {
@@ -199,26 +196,27 @@ public class DataStructure {
         if (indexRange == null)
             return null;
 
-        Point nearest = findNearestLocation(point, indexRange);
+        Point nearest = findNearestPoint(point, indexRange);
         if (nearest == null)
             return null;
 
         // find second Nearest point
-        Point secNearest = findSecondNearestLocation(point, nearest);
+        Point secNearest = findSecondNearestPoint(point, nearest);
         if (secNearest == null)
             return null;
 
-        lastLocation = nearest;
+        lastPoint = nearest;
         // find the nearest point
         return getPointOnLineThatIsClosestToOutsidePoint(point, nearest, secNearest);
     }
 
-    private Point findNearestLocation(Point point, int[] indexRange) {
+    private Point findNearestPoint(Point point, int[] indexRange) {
         Point nearest = null;
         double distanceToNearest = Double.MAX_VALUE;
         for (int i = indexRange[0]; i <= indexRange[1]; i++) {
             int curDistance = squaredDistance(point, points[i]);
-            if (curDistance < distanceToNearest && curDistance <= MAX_APPROXIMATE_DISTANCE_FROM_POINT) {
+            if (curDistance < distanceToNearest && curDistance <=
+                    MAX_APPROXIMATE_DISTANCE_FROM_POINT) {
                 distanceToNearest = curDistance;
                 nearest = points[i];
             }
@@ -226,7 +224,7 @@ public class DataStructure {
         return nearest;
     }
 
-    private Point findSecondNearestLocation(Point point, Point nearest) {
+    private Point findSecondNearestPoint(Point point, Point nearest) {
         Point secNearest = null;
         double distance = Double.MAX_VALUE;
         for (Point p : routes.get(nearest)) {
@@ -239,9 +237,9 @@ public class DataStructure {
         return secNearest;
     }
 
-    private int squaredDistance(Point a, Point b) {
-        return (a.getX() - b.getX())*(a.getX() - b.getX())
-                + (a.getY() - b.getY())*(a.getY() - b.getY());
+    public int squaredDistance(Point a, Point b) {
+        return (a.getX() - b.getX()) * (a.getX() - b.getX())
+                + (a.getY() - b.getY()) * (a.getY() - b.getY());
     }
 
     /**
@@ -261,7 +259,8 @@ public class DataStructure {
                 bottom = range[0];
             }
         }
-        range[0] = points[bottom].getX() >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom : top;
+        range[0] = points[bottom].getX() >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom
+                : top;
 
         bottom = 0;
         top = points.length - 1;
@@ -273,7 +272,8 @@ public class DataStructure {
                 top = range[1];
             }
         }
-        range[1] = points[top].getX() <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top : bottom;
+        range[1] = points[top].getX() <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top :
+                bottom;
 
         return range;
     }
@@ -304,10 +304,10 @@ public class DataStructure {
         Location locationCenteredToEntranceReversed =
                 calibrateLocationToEntranceAndReverseLongitudeAxis(location);
         Location turnedLocation = rotateLocationAroundEntrance(locationCenteredToEntranceReversed);
-        Location locationCenteredAndRatioed = scaleLocationToPoints(turnedLocation);
+        Point pointCenteredAndRatioed = scaleLocationToPoints(turnedLocation);
 
-        return new Point((int) locationCenteredAndRatioed.getLongitude() + zooEntrancePoint.getX(),
-                (int) locationCenteredAndRatioed.getLatitude() + zooEntrancePoint.getY());
+        return new Point((int) pointCenteredAndRatioed.getX() + zooEntrancePoint.getX(),
+                (int) pointCenteredAndRatioed.getY() + zooEntrancePoint.getY());
     }
 
     @NonNull
@@ -325,10 +325,13 @@ public class DataStructure {
     }
 
     @NonNull
-    private Location scaleLocationToPoints(Location locationCenteredToEntranceReversed) {
+    private Point scaleLocationToPoints(Location locationCenteredToEntranceReversed) {
         // after, it should be centered, with point equaled values
-        return new Location(yLatitudeRatio * locationCenteredToEntranceReversed.getLatitude(),
-                xLongitudeRatio * locationCenteredToEntranceReversed.getLongitude());
+        return new Point((int) (xLongitudeRatio * locationCenteredToEntranceReversed.getLongitude
+                ()),
+                (int) (yLatitudeRatio * locationCenteredToEntranceReversed.getLatitude()));
+//        return new Location(yLatitudeRatio * locationCenteredToEntranceReversed.getLatitude(),
+//                xLongitudeRatio * locationCenteredToEntranceReversed.getLongitude());
     }
 
     @NonNull
@@ -341,5 +344,86 @@ public class DataStructure {
                 locationCenteredAndRatioed.getLongitude() * cosAlpha
                         - locationCenteredAndRatioed.getLatitude() * sinAlpha
         );
+    }
+
+    public void addAnimalStoriesToPoints(Enclosure[] enclosures, Animal.PersonalStories[] animalStories) {
+        for (Enclosure enclosure :
+                enclosures) {
+            for (Animal.PersonalStories animalStory :
+                    animalStories) {
+                if(enclosure.getId() == animalStory.getEncId()) {
+                    addAnimalStoryToPoints(enclosure, animalStory);
+                }
+            }
+        }
+    }
+
+    public Set<Animal.PersonalStories> getCloseAnimalStories() {
+        return lastPoint.getClosestAnimalStories();
+    }
+
+    private void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
+        Log.e("AVIV", "onMapPoint " + enclosure.getClosestPointX() + "::" + enclosure.getClosestPointY());
+        Point onMapPoint = getPointByXY(enclosure.getClosestPointX(), enclosure
+                .getClosestPointY());
+        if(onMapPoint != null) {
+            addAnimalStoryToPointByBFS(onMapPoint, animalStory);
+        }
+    }
+
+    /**
+     * precondition: the point should be in points array, otherwise will return null.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private Point getPointByXY(int x, int y) {
+        int mid, bottom = 0, top = points.length - 1;
+        while (top - bottom > 1) {
+            mid = (bottom + top) / 2;
+            if (x < points[mid].getX()) {
+                top = mid;
+            } else {
+                bottom = mid;
+            }
+        }
+
+        // finding the point
+        int curr = bottom;
+        while (curr < points.length && points[curr].getX() == x) {
+            if (points[curr].getY() == y)
+                return points[curr];
+            curr++;
+        }
+        curr = bottom - 1;
+        while (curr >= 0 && points[curr].getX() == x) {
+            if (points[curr].getY() == y)
+                return points[curr];
+            curr--;
+        }
+
+        // should never happen
+        return null;
+    }
+
+    private final int NUMBER_OF_POINTS_SHOULD_BE_BFS = 10;
+
+    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory) {
+        addAnimalStoryToPointByBFS(point, animalStory, new HashSet<>(), NUMBER_OF_POINTS_SHOULD_BE_BFS);
+    }
+
+    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory, Set<Point>
+            checkedPoints, int depth) {
+        point.addCloseAnimalStory(animalStory);
+        checkedPoints.add(point);
+        if (depth == 0)
+            return;
+        for (Point connectedPoint :
+                routes.get(point)) {
+            if (!checkedPoints.contains(connectedPoint)) {
+                addAnimalStoryToPointByBFS(connectedPoint, animalStory, checkedPoints, depth - 1);
+            }
+        }
     }
 }
