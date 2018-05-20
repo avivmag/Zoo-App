@@ -468,11 +468,11 @@ namespace ZooTests.Unit_Tests
 
             var det = new AnimalDetail
             {
-                animalId = 1,
-                name = "הקקי שלי",
-                category = "חרבון",
-                story = "זה סיפור על קקי יפה",
-                language = (long)Languages.ar
+                animalId        = 1,
+                name            = "הקקי שלי",
+                category        = "חרבון",
+                interesting     = "זה סיפור על קקי יפה",
+                language        = (long)Languages.ar
             };
 
             context.UpdateAnimalDetails(det);
@@ -490,10 +490,10 @@ namespace ZooTests.Unit_Tests
 
             var an = new AnimalDetail
             {
-                animalId = 1,
-                category = "חרבון",
-                story = "זה סיפור על קקי יפה",
-                language = (long)Languages.ar
+                animalId    = 1,
+                category    = "חרבון",
+                interesting = "זה סיפור על קקי יפה",
+                language    = (long)Languages.ar
             };
 
             context.UpdateAnimalDetails(an);
@@ -508,11 +508,11 @@ namespace ZooTests.Unit_Tests
 
             var an = new AnimalDetail
             {
-                animalId = -1,
-                name = "בבון הזית",
-                category = "חרבון",
-                story = "זה סיפור על קקי יפה",
-                language = (long)Languages.ar
+                animalId        = -1,
+                name            = "בבון הזית",
+                category        = "חרבון",
+                interesting     = "זה סיפור על קקי יפה",
+                language        = (long)Languages.ar
             };
 
             context.UpdateAnimalDetails(an);
@@ -527,16 +527,16 @@ namespace ZooTests.Unit_Tests
 
             var an = new AnimalDetail
             {
-                animalId = 1,
-                language = (long)Languages.he,
-                name = "בבון הזית",
-                category = "קופים",
-                series = "קוף",
-                distribution = "",
-                family = "",
-                food = "",
-                reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                animalId        = 1,
+                language        = (long)Languages.he,
+                name            = "בבון הזית",
+                category        = "קופים",
+                series          = "קוף",
+                distribution    = "",
+                family          = "",
+                food            = "",
+                reproduction    = "",
+                interesting     = "גילאור בבון הזית מאוד חמוד"
             };
 
             an.name = "אביב מאג";
@@ -558,16 +558,16 @@ namespace ZooTests.Unit_Tests
 
             var an = new AnimalDetail
             {
-                animalId = 1,
-                language = (long)Languages.he,
-                name = "בבון הזית",
-                category = "קופים",
-                series = "קוף",
-                distribution = "",
-                family = "",
-                food = "",
-                reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                animalId        = 1,
+                language        = (long)Languages.he,
+                name            = "בבון הזית",
+                category        = "קופים",
+                series          = "קוף",
+                distribution    = "",
+                family          = "",
+                food            = "",
+                reproduction    = "",
+                interesting     = "גילאור בבון הזית מאוד חמוד"
             };
 
             an.category = "";
@@ -593,16 +593,16 @@ namespace ZooTests.Unit_Tests
 
             var an = new AnimalDetail
             {
-                animalId = 1,
-                language = -4,
-                name = "בבון הזית",
-                category = "קופים",
-                series = "קוף",
-                distribution = "",
-                family = "",
-                food = "",
-                reproduction = "",
-                story = "גילאור בבון הזית מאוד חמוד"
+                animalId        = 1,
+                language        = -4,
+                name            = "בבון הזית",
+                category        = "קופים",
+                series          = "קוף",
+                distribution    = "",
+                family          = "",
+                food            = "",
+                reproduction    = "",
+                interesting     = "גילאור בבון הזית מאוד חמוד"
             };
             an.name = "גורילה";
 

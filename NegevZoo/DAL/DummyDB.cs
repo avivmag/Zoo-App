@@ -409,7 +409,7 @@ namespace DAL
                     family          = "",
                     food            = "",
                     reproduction    = "",
-                    story           = "גילאור בבון הזית מאוד חמוד"
+                    interesting     = "גילאור בבון הזית מאוד חמוד"
                 },
                 new AnimalDetail
                 {
@@ -422,7 +422,7 @@ namespace DAL
                     family          = "",
                     food            = "",
                     reproduction    = "",
-                    story           = "Gilor the olive baboon is very lovable."
+                    interesting     = "Gilor the olive baboon is very lovable."
                 },
 
                 //Gorila
@@ -437,7 +437,7 @@ namespace DAL
                     family          = "",
                     food            = "",
                     reproduction    = "",
-                    story           = "שרק הוא וואחד גורילה!"
+                    interesting     = "שרק הוא וואחד גורילה!"
                 },
                 new AnimalDetail
                 {
@@ -450,7 +450,7 @@ namespace DAL
                     family          = "",
                     food            = "",
                     reproduction    = "",
-                    story           = "Shrek the mighty gorilla!"
+                    interesting     = "Shrek the mighty gorilla!"
                 },
 
                 //Monkey
