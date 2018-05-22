@@ -107,8 +107,8 @@
             $scope.openMap                  = function(ev, selectedEnclosure) {
                 mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl').then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
-                        selectedEnclosure.markerLatitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
+                        selectedEnclosure.markerY       = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                        selectedEnclosure.markerX       = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
                     }
                 });
             }

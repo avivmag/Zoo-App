@@ -224,17 +224,26 @@ namespace BL
             // set the closest point on the road to the enclosure.
             var closestPointX = -1;
             var closestPointY = -1;
-            if (enclosure.markerX != null &&
-                enclosure.markerY != null)
+            if (enclosure.markerX.HasValue && enclosure.markerY.HasValue)
             {
                 var routes = zooDB.GetAllRoutes();
-                PointMap[] points = getPointMaps(routes);
+
+                // Get the routes to memory.
+                var routesArray = routes.ToArray();
+
+                PointMap[] points = getPointMaps(routesArray);
+
                 int[] indexRange = getIndexRangeInPoints(points, (int) enclosure.markerX);
+
                 PointMap nearest = findNearestPoint(points, new PointMap((int)enclosure.markerX, (int)enclosure.markerY), indexRange);
 
-                closestPointX = nearest.X;
-                closestPointY = nearest.Y;
+                if (nearest != null)
+                {
+                    closestPointX = nearest.X;
+                    closestPointY = nearest.Y;
+                }
             }
+
             enclosure.markerClosestPointX = closestPointX;
             enclosure.markerClosestPointY = closestPointY;
 
@@ -280,10 +289,11 @@ namespace BL
             }
         }
 
-        private PointMap[] getPointMaps(System.Data.Entity.DbSet<Route> routes)
+        private PointMap[] getPointMaps(IEnumerable<Route> routes)
         {
             List<PointMap> points = new List<PointMap>();
-            foreach(Route route in routes)
+
+            foreach(var route in routes)
             {
                 if (points.Count == 0 || points.Last().X != route.primaryLeft || points.Last().Y != route.primaryRight)
                     points.Add(new PointMap(route.primaryLeft, route.primaryRight));
@@ -293,14 +303,16 @@ namespace BL
 
         private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
         private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * 50 * 50;
+
         private int[] getIndexRangeInPoints(PointMap[] points, int x)
         {
             int[] range = new int[2];
+
             int bottom = 0, top = points.Length - 1;
             while (top - bottom > 1)
             {
                 range[0] = (bottom + top) / 2;
-                if (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT < points[range[0]].X)
+                if ((points.Length > range[0]) && ((x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT) < points[range[0]]?.X))
                 {
                     top = range[0];
                 }
@@ -309,15 +321,23 @@ namespace BL
                     bottom = range[0];
                 }
             }
-            range[0] = points[bottom].X >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom
-                    : top;
+
+            if (points.Length > bottom)
+            {
+                range[0] = (points[bottom]?.X >= (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT)) ? bottom : top;
+            }
+            else
+            {
+                // TODO:: Check if this is the default range.
+                range[0] = 0;
+            }
 
             bottom = 0;
             top = points.Length - 1;
             while (top - bottom > 1)
             {
                 range[1] = (bottom + top) / 2;
-                if (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT > points[range[1]].X)
+                if ((points.Length > range[1]) && ((x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT) > points[range[1]]?.X))
                 {
                     bottom = range[1];
                 }
@@ -326,8 +346,16 @@ namespace BL
                     top = range[1];
                 }
             }
-            range[1] = points[top].X <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top :
-                    bottom;
+
+            if (points.Length > top)
+            {
+                range[1] = (points[top]?.X <= (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT)) ? top : bottom;
+            }
+            else
+            {
+                // TODO: Check if this is the default range.
+                range[1] = 0;
+            }
 
             return range;
         }
