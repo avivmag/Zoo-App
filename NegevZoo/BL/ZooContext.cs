@@ -312,7 +312,7 @@ namespace BL
             while (top - bottom > 1)
             {
                 range[0] = (bottom + top) / 2;
-                if ((points.Length > range[0]) && ((x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT) < points[range[0]]?.X))
+                if (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT < points[range[0]]?.X)
                 {
                     top = range[0];
                 }
@@ -322,22 +322,14 @@ namespace BL
                 }
             }
 
-            if (points.Length > bottom)
-            {
-                range[0] = (points[bottom]?.X >= (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT)) ? bottom : top;
-            }
-            else
-            {
-                // TODO:: Check if this is the default range.
-                range[0] = 0;
-            }
+            range[0] = points[bottom]?.X >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom : top;
 
             bottom = 0;
             top = points.Length - 1;
             while (top - bottom > 1)
             {
                 range[1] = (bottom + top) / 2;
-                if ((points.Length > range[1]) && ((x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT) > points[range[1]]?.X))
+                if (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT > points[range[1]]?.X)
                 {
                     bottom = range[1];
                 }
@@ -347,15 +339,7 @@ namespace BL
                 }
             }
 
-            if (points.Length > top)
-            {
-                range[1] = (points[top]?.X <= (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT)) ? top : bottom;
-            }
-            else
-            {
-                // TODO: Check if this is the default range.
-                range[1] = 0;
-            }
+            range[1] = points[top]?.X <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top : bottom;
 
             return range;
         }
