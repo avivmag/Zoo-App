@@ -2764,7 +2764,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                    notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    data = new
+                    {
+                        Window = "com.zoovisitors.pl.map.MapActivity"
+                    }
                 };
 
                 var jsonBody = JsonConvert.SerializeObject(data);
