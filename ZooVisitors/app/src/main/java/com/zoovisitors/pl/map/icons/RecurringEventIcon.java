@@ -1,46 +1,38 @@
 package com.zoovisitors.pl.map.icons;
 
 import android.view.View;
-import android.widget.ImageView;
 
 import com.zoovisitors.pl.map.MapView;
 
-public class RecurringEventIcon extends ImageIcon {
-    private final String RECURRING_EVENT_STARTED_ICON = "recurring_event_started_icon";
+public class RecurringEventIcon extends TextIcon {
+    private static final float ALPHA_CHANGE = 0.05f;
+    private static final float MINIMAL_IMAGE_ALPHA = 0.2f;
+    private static final float MAXIMAL_IMAGE_ALPHA = 1f;
 
     public RecurringEventIcon(MapView mapView, View.OnTouchListener onTouchListener, int left, int top) {
-        super(mapView, new Object[] {onTouchListener}, left, top, false, false);
+        super(new Object[] {onTouchListener}, mapView, left, top);
+        // Note: be aware that the visibility is handled by the timer scheduling, not here.
     }
 
-    @Override
-    void setView() {
-        ImageView view = new ImageView(mapView.getContext());
-        int resourceId = mapView.getResources().getIdentifier(RECURRING_EVENT_STARTED_ICON, "mipmap", mapView.getContext().getPackageName());
-        view.setImageResource(resourceId);
-        view.setOnTouchListener((View.OnTouchListener) additionalData[0]);
-        view.setVisibility(View.INVISIBLE);
-        this.view = view;
+    public void setText(String text) {
+        updateViewText(text);
+        updateViewWidthHeight();
+        updateIconPosition();
     }
 
-    float lastAlpha = MapView.MAXIMAL_IMAGE_ALPHA;
+    float lastAlpha = MAXIMAL_IMAGE_ALPHA;
     boolean directionIsUp = false;
     public void updateOpacity()
     {
-        if(lastAlpha <= MapView.MINIMAL_IMAGE_ALPHA)
+        if(lastAlpha <= MINIMAL_IMAGE_ALPHA)
             directionIsUp = true;
-        else if(lastAlpha >= MapView.MAXIMAL_IMAGE_ALPHA)
+        else if(lastAlpha >= MAXIMAL_IMAGE_ALPHA)
             directionIsUp = false;
 
-        lastAlpha += directionIsUp ? MapView.ALPHA_CHANGE : -MapView.ALPHA_CHANGE;
-        view.post(() -> {
-            view.setVisibility(View.VISIBLE);
-            view.setAlpha(lastAlpha);
+        lastAlpha += directionIsUp ? ALPHA_CHANGE : -ALPHA_CHANGE;
+        textView.post(() -> {
+            textView.setAlpha(lastAlpha);
         });
-    }
-
-    public void hide() {
-        view.post(() -> {
-            view.setVisibility(View.INVISIBLE);
-        });
+        show();
     }
 }

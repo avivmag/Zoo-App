@@ -23,15 +23,39 @@ namespace RecEventsNotifications
                 var periodTimeSpan = TimeSpan.FromMinutes(10);
                 var startTimeSpan = TimeSpan.Zero;
 
-                //starting the timer with the task.
-                var timer = new Timer((e) =>
-                {
-                    //setting the task to be the sending function
-                    Task.Factory.StartNew(() => SendRecNotification());
-                }, null, startTimeSpan, periodTimeSpan);
+                // Create an IPC wait handle with a unique identifier.
+                bool createdNew;
+                var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "CF2D4313-33DE-489D-9721-6AFF69841DEA", out createdNew);
+                var signaled = false;
 
-                //keeping the runing alive so the process won't die.
-                while (true) { }
+                // If the handle was already there, inform the other process to exit itself.
+                // Afterwards we'll also die.
+                if (!createdNew)
+                {
+                    Logger.GetInstance(false).WriteLine("Inform other process to stop.");
+                    waitHandle.Set();
+                    Logger.GetInstance(false).WriteLine("Informer exited.");
+
+                    return;
+                }
+
+                // Start a another thread that does something every 10 seconds.
+                var timer = new Timer((e) =>
+                    {
+                        //setting the task to be the sending function
+                        Task.Factory.StartNew(() => SendRecNotification());
+                    }, null, startTimeSpan, periodTimeSpan);
+
+                // Wait if someone tells us to die or do every five seconds something else.
+                do
+                {
+                    signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(5));
+                } while (!signaled);
+
+                // The above loop with an interceptor could also be replaced by an endless waiter
+                //waitHandle.WaitOne();
+
+                Logger.GetInstance(false).WriteLine("Got signal to kill myself.");
             }
 
             private void SendRecNotification()

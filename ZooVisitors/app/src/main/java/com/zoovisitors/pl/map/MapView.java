@@ -3,19 +3,15 @@ package com.zoovisitors.pl.map;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.backend.Misc;
-import com.zoovisitors.pl.map.icons.ImageIcon;
 import com.zoovisitors.pl.map.icons.MiscIcon;
-import com.zoovisitors.pl.map.icons.TextIcon;
 import com.zoovisitors.pl.map.icons.VisitorIcon;
 import com.zoovisitors.pl.map.icons.ZooMapIcon;
+import com.zoovisitors.pl.map.icons.handlers.EnclosureIconsHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +26,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
-    public static final float ALPHA_CHANGE = 0.1f;
-    public static final float MINIMAL_IMAGE_ALPHA = 0.2f;
-    public static final float MAXIMAL_IMAGE_ALPHA = 1f;
-    public static long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30 * 60 * 1000;
-    private static long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
-    private static long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
-
-    public static final int TEXT_VIEW_TEXT_SIZE = 10;
+    private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
+    private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
+    private static final int PRIMARY_IMAGE_MARGIN = 50;
 
     private float mPosX;
     private float mPosY;
@@ -47,8 +38,15 @@ public class MapView extends RelativeLayout {
     private int mTouchSlop = 5;
     private int mActivePointerId = INVALID_POINTER_ID;
 
+    /**
+     * it represents the approximate factor to make all devices show as the same.
+     */
+    private float equatorScaleFactor = 0f;
     private ScaleGestureDetector mScaleDetector;
-    private float mScaleFactor = 0f, mLastScaleFactor = 0f, maxScaleFactor, minScaleFactor;
+    private float mScaleFactor = 0f;
+    private float mLastScaleFactor = 0f;
+    private float maxScaleFactor;
+    private float minScaleFactor;
 
     private Timer timer;
     private List<Runnable> timerFastRunnables;
@@ -61,24 +59,24 @@ public class MapView extends RelativeLayout {
     private int screenWidth;
     private int screenHeight;
 
-    public int getIconsOffsetLeft(int left) {
-        return (int) ((left - zooMapIcon.width / 2) + screenWidth / getCurrentScaleFactor() / 2);
-    }
-
-    public int getIconsOffsetTop(int top) {
-        return (int) ((top - zooMapIcon.height / 2) + screenHeight / getCurrentScaleFactor() / 2);
-    }
-
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
-        mScaleFactor = mLastScaleFactor =
-                ((float) screenWidth / primaryImageWidth + (float) screenHeight /
-                        primaryImageHeight) / 2;
-        maxScaleFactor = mScaleFactor / 2;
-        minScaleFactor = mScaleFactor * 2;
-    }
+        equatorScaleFactor = ((float) screenWidth / primaryImageWidth + (float) screenHeight /
+                primaryImageHeight) / 2;
+        maxScaleFactor = equatorScaleFactor * 3;
+        minScaleFactor =
+                Math.max(
+                        (float) screenWidth / (primaryImageWidth + 2 * PRIMARY_IMAGE_MARGIN),
+                        (float) screenHeight / (primaryImageHeight + 2 * PRIMARY_IMAGE_MARGIN)
+                );
 
-    public float getCurrentScaleFactor() {
-        return mScaleFactor;
+
+        mScaleFactor = mLastScaleFactor =
+                Math.max(
+                        (float) screenWidth / primaryImageWidth,
+                        (float) screenHeight / primaryImageHeight
+                );
+        mPosX = screenWidth / 2 - getmScaleFactor() *zooMapIcon.width / 2;
+        mPosY = screenHeight / 2 - getmScaleFactor() *zooMapIcon.height / 2;
     }
 
     public MapView(Context context) {
@@ -127,6 +125,11 @@ public class MapView extends RelativeLayout {
         );
     }
 
+    public void SetInitialValues() {
+        zooMapIcon = new ZooMapIcon(this, null);
+        visitorIcon = new VisitorIcon(this, null);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (MotionEvent.ACTION_DOWN == ev.getAction()) {
@@ -168,12 +171,12 @@ public class MapView extends RelativeLayout {
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
-                mPosX = (mPosX - mLastTouchX) * mScaleFactor / mLastScaleFactor + x;
-                mPosY = (mPosY - mLastTouchY) * mScaleFactor / mLastScaleFactor + y;
-                mLastScaleFactor = mScaleFactor;
+                setMposX(x);
+                setMposY(y);
+                mLastScaleFactor = getmScaleFactor();
 
                 //updateIconPositionWithoutSize(zooMapIcon);
-                updateIconPositionWithSize(zooMapIcon);
+                zooMapIcon.updateIconPosition();
 
                 for (EnclosureIconsHandler enclosureIconsHandler :
                         enclosureIconsHandlers) {
@@ -181,10 +184,11 @@ public class MapView extends RelativeLayout {
                 }
                 for (MiscIcon miscIcon :
                         miscIcons) {
-                    updateIconPositionWithSize(miscIcon);
+                    miscIcon.updateIconPosition();
                 }
-                if (visitorIcon.view.getVisibility() == VISIBLE)
-                    updateIconPositionWithSize(visitorIcon);
+                if (visitorIcon.view.getVisibility() == VISIBLE) {
+                    visitorIcon.updateIconPosition();
+                }
 
                 mLastTouchX = x;
                 mLastTouchY = y;
@@ -215,49 +219,50 @@ public class MapView extends RelativeLayout {
         return true;
     }
 
-    /**
-     * Updates the icon position so the middle of the image will be at the point
-     *
-     * @param icon
-     */
-    public void updateIconPositionWithSize(ImageIcon icon) {
-        if (icon.width != 0 && icon.height != 0) {
-            LayoutParams params =
-                    new LayoutParams((int) (icon.width * mScaleFactor), (int) (icon.height *
-                            mScaleFactor));
-
-            params.setMargins(
-                    (int) ((icon.left - icon.width / 2) * mScaleFactor + mPosX),
-                    (int) ((icon.top - icon.height / 2) * mScaleFactor + mPosY),
-                    Integer.MAX_VALUE,
-                    Integer.MAX_VALUE);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-            icon.view.setLayoutParams(params);
-        }
+    private void setMposX(float deltaX) {
+        mPosX =
+                Math.max(
+                        Math.min(
+                                (getmPosX() - mLastTouchX) * getmScaleFactor() / mLastScaleFactor + deltaX,
+                                getmScaleFactor() * (zooMapIcon.left - zooMapIcon.width / 2 + PRIMARY_IMAGE_MARGIN)
+                        ),
+                        screenWidth - getmScaleFactor() *(zooMapIcon.width + PRIMARY_IMAGE_MARGIN)
+                );
     }
 
-    public void updateIconPositionWithSize(TextIcon icon) {
-        if (icon.width != 0 && icon.height != 0) {
-            ((ViewGroup.MarginLayoutParams) icon.textView.getLayoutParams()).setMargins(
-                    (int) ((icon.left - icon.width / 2) * mScaleFactor + mPosX),
-                    (int) ((icon.top - icon.height / 2) * mScaleFactor + mPosY),
-                    Integer.MAX_VALUE,
-                    Integer.MAX_VALUE);
-            icon.textView.setTextSize(TEXT_VIEW_TEXT_SIZE * mScaleFactor);
-        }
+    private void setMposY(float deltaY) {
+        mPosY =
+                Math.max(
+                        Math.min(
+                                (getmPosY() - mLastTouchY) * getmScaleFactor() / mLastScaleFactor + deltaY,
+                                getmScaleFactor() * (zooMapIcon.top - zooMapIcon.height / 2 + PRIMARY_IMAGE_MARGIN)
+                        ),
+                        screenHeight - getmScaleFactor() *(zooMapIcon.height + PRIMARY_IMAGE_MARGIN)
+                );
+
+    }
+
+    public float getmPosX() {
+        return mPosX;
+    }
+
+    public float getmPosY() {
+        return mPosY;
+    }
+
+    public float getmScaleFactor() {
+        return mScaleFactor;
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-//            mScaleFactor = Math.min(
-//                    Math.max(
-//                            mScaleFactor * detector.getScaleFactor(),
-//                            minScaleFactor),
-//                    maxScaleFactor
-//            );
-//            Log.e("AVIV", "mScaleFactor " + mScaleFactor);
-            mScaleFactor = mScaleFactor * detector.getScaleFactor();
+            mScaleFactor = Math.min(
+                    Math.max(
+                            getmScaleFactor() * detector.getScaleFactor(),
+                            minScaleFactor),
+                    maxScaleFactor
+            );
             return true;
         }
     }
@@ -267,16 +272,8 @@ public class MapView extends RelativeLayout {
                 top, timer, timerFastRunnables, timerSlowRunnables));
     }
 
-    public void addMiscIcon(Drawable resource, Misc misc, int left, int top) {
-        miscIcons.add(new MiscIcon(this, resource, misc, left, top));
-    }
-
-    public void SetZooMapIcon() {
-        zooMapIcon = new ZooMapIcon(this, null, screenWidth / 2, screenHeight / 2);
-    }
-
-    public void SetVisitorIcon() {
-        visitorIcon = new VisitorIcon(this, null);
+    public void addMiscIcon(Drawable resource, int left, int top) {
+        miscIcons.add(new MiscIcon(this, resource, left, top));
     }
 
     public void ShowVisitorIcon() {

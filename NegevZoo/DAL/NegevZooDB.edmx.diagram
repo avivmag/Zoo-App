@@ -24,7 +24,7 @@
         <EntityTypeShape EntityType="NegevZooModel.AnimalDetail" Width="1.5" PointX="0.5" PointY="6" />
         <EntityTypeShape EntityType="NegevZooModel.EnclosureDetail" Width="1.5" PointX="2.625" PointY="7.875" />
         <EntityTypeShape EntityType="NegevZooModel.Device" Width="1.5" PointX="11.375" PointY="3.75" />
-        <EntityTypeShape EntityType="NegevZooModel.MapInfo" Width="1.5" PointX="4.75" PointY="7.75" />
+        <EntityTypeShape EntityType="NegevZooModel.MapInfo" Width="1.875" PointX="4.75" PointY="7.75" />
         <EntityTypeShape EntityType="NegevZooModel.UserSession" Width="1.5" PointX="6.75" PointY="8.875" />
         <EntityTypeShape EntityType="NegevZooModel.AnimalStory" Width="1.5" PointX="8.75" PointY="8.875" IsExpanded="true" />
         <EntityTypeShape EntityType="NegevZooModel.AnimalStoryDetail" Width="1.5" PointX="10.75" PointY="8.875" />

@@ -1,6 +1,7 @@
 package com.zoovisitors.dal;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
@@ -945,19 +946,17 @@ public class Memory {
                         (ZOO_ENTRANCE_LOCATION.getLongitude() - ZOO_EXIT_LOCATION.getLongitude()) * getXLongitudeRatio()));
     }
 
-//    public static Point[] getPoints() {
-//        return points;
-//    }
-
     public static Point[] getPoints()
     {
         Point[] points = new Point[locations.length];
         for (int i = 0; i < locations.length; i++) {
             points[i] = locationToPoint(locations[i]);
         }
-//        Point p = locationToPoint(new Location(31.25823983,34.74393641));
-//        System.out.println(new Point(p.getX() + ZOO_ENTRANCE_POINT.getX(), p.getY()  + ZOO_ENTRANCE_POINT.getY()));
         Arrays.sort(points, (p1, p2) -> Double.compare(p1.getX(),p2.getX()));
+//        for (Point point :
+//                points) {
+//            Log.e("AVIV", point.toString());
+//        }
         return points;
     }
 
@@ -1011,7 +1010,6 @@ public class Memory {
     @NonNull
     private static Location rotateLocationAroundEntrance(Location locationCenteredAndRatioed) {
         // turn it around
-//        return locationCenteredAndRatioed;
         return new Location(
                 locationCenteredAndRatioed.getLatitude() * getCosAlpha()
                         + locationCenteredAndRatioed.getLongitude() * getSinAlpha(),

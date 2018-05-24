@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,6 +10,44 @@
     <com.zoovisitors.pl.map.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/mapBackgroundColor"
         android:id="@+id/map_view_layout">
     </com.zoovisitors.pl.map.MapView>
-</LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:orientation="horizontal">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:background="@drawable/map_get_to_know_me_gradient"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/map_view_layout"
+        app:layout_constraintStart_toEndOf="@+id/map_view_layout"
+        app:layout_constraintTop_toTopOf="parent">
+        <!--android:layout_marginTop="20dp"-->
+
+        <ImageView
+            android:id="@+id/map_get_to_know_me_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
+
+        <TextView
+            android:id="@+id/map_get_to_know_me_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textColor="@color/mapGetToKnowMeText" />
+    </LinearLayout>
+    <!--</LinearLayout>-->
+
+</android.support.constraint.ConstraintLayout>

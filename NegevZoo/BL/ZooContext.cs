@@ -96,8 +96,10 @@ namespace BL
                                        Id                   = e.id,
                                        Language             = ed.language,
                                        MarkerIconUrl        = e.markerIconUrl,
-                                       MarkerLatitude       = e.markerLatitude,
-                                       MarkerLongtitude     = e.markerLongitude,
+                                       MarkerX              = e.markerX,
+                                       MarkerY              = e.markerY,
+                                       MarkerClosestPointX  = e.markerClosestPointX,
+                                       MarkerClosestPointY  = e.markerClosestPointY,
                                        PictureUrl           = e.pictureUrl,
                                        Name                 = ed.name,
                                        Story                = ed.story,
@@ -217,9 +219,33 @@ namespace BL
                 throw new ArgumentException("Wrong input. enclosure name is null or white space");
             }
 
-            //TODO: add a check to latitude or longtitude out of the range of the zoo.
-
             var enclosures = zooDB.GetAllEnclosures();
+
+            // set the closest point on the road to the enclosure.
+            var closestPointX = -1;
+            var closestPointY = -1;
+            if (enclosure.markerX.HasValue && enclosure.markerY.HasValue)
+            {
+                var routes = zooDB.GetAllRoutes();
+
+                // Get the routes to memory.
+                var routesArray = routes.ToArray();
+
+                PointMap[] points = getPointMaps(routesArray);
+
+                int[] indexRange = getIndexRangeInPoints(points, (int) enclosure.markerX);
+
+                PointMap nearest = findNearestPoint(points, new PointMap((int)enclosure.markerX, (int)enclosure.markerY), indexRange);
+
+                if (nearest != null)
+                {
+                    closestPointX = nearest.X;
+                    closestPointY = nearest.Y;
+                }
+            }
+
+            enclosure.markerClosestPointX = closestPointX;
+            enclosure.markerClosestPointY = closestPointY;
 
             if (enclosure.id == default(int)) //add a new enclosure
             {
@@ -252,13 +278,87 @@ namespace BL
 
                 //enclosure.id = oldEnc.id;
                 oldEnc.markerIconUrl = enclosure.markerIconUrl;
-                oldEnc.markerLatitude = enclosure.markerLatitude;
-                oldEnc.markerLongitude = enclosure.markerLongitude;
+                oldEnc.markerX = enclosure.markerX;
+                oldEnc.markerY = enclosure.markerY;
+                oldEnc.markerClosestPointX = enclosure.markerClosestPointX;
+                oldEnc.markerClosestPointY = enclosure.markerClosestPointY;
                 oldEnc.name = enclosure.name;
                 oldEnc.pictureUrl = enclosure.pictureUrl;
 
                 return oldEnc;
             }
+        }
+
+        private PointMap[] getPointMaps(IEnumerable<Route> routes)
+        {
+            List<PointMap> points = new List<PointMap>();
+
+            foreach(var route in routes)
+            {
+                if (points.Count == 0 || points.Last().X != route.primaryLeft || points.Last().Y != route.primaryRight)
+                    points.Add(new PointMap(route.primaryLeft, route.primaryRight));
+            }
+            return points.ToArray();
+        }
+
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * 50 * 50;
+
+        private int[] getIndexRangeInPoints(PointMap[] points, int x)
+        {
+            int[] range = new int[2];
+
+            int bottom = 0, top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[0] = (bottom + top) / 2;
+                if (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT < points[range[0]]?.X)
+                {
+                    top = range[0];
+                }
+                else
+                {
+                    bottom = range[0];
+                }
+            }
+
+            range[0] = points[bottom]?.X >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom : top;
+
+            bottom = 0;
+            top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[1] = (bottom + top) / 2;
+                if (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT > points[range[1]]?.X)
+                {
+                    bottom = range[1];
+                }
+                else
+                {
+                    top = range[1];
+                }
+            }
+
+            range[1] = points[top]?.X <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top : bottom;
+
+            return range;
+        }
+
+        private PointMap findNearestPoint(PointMap[] points, PointMap point, int[] indexRange)
+        {
+            PointMap nearest = null;
+            double distanceToNearest = Double.MaxValue;
+            for (int i = indexRange[0]; i <= indexRange[1]; i++)
+            {
+                int curDistance = squaredDistance(point, points[i]);
+                if (curDistance < distanceToNearest && curDistance <=
+                        MAX_APPROXIMATE_DISTANCE_FROM_POINT)
+                {
+                    distanceToNearest = curDistance;
+                    nearest = points[i];
+                }
+            }
+            return nearest;
         }
 
         /// <summary>
@@ -604,7 +704,7 @@ namespace BL
                                 {
                                     Id              = a.id,
                                     Name            = ad.name,
-                                    Story           = ad.story,
+                                    Interesting     = ad.interesting,
                                     EncId           = a.enclosureId,
                                     Category        = ad.category,
                                     Series          = ad.series,
@@ -627,7 +727,7 @@ namespace BL
         /// <returns>All the AnimalResults that have a special story in the given language.</returns>
         public IEnumerable<AnimalResult> GetAnimalResultsWithStory(int language)
         {
-            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Story));
+            return GetAnimalsResults(language).Where(ar => !String.IsNullOrWhiteSpace(ar.Interesting));
         }
 
         /// <summary>
@@ -663,7 +763,7 @@ namespace BL
             {
                 Id = id,
                 Name = details?.name,
-                Story = details?.story,
+                Interesting = details?.interesting,
                 EncId = an.enclosureId,
                 Category = details?.category,
                 Distribution = details?.distribution,
@@ -973,16 +1073,15 @@ namespace BL
             }
             else // update existing animal.
             {
-
-                oldDetails.name = animalDetails.name;
-                oldDetails.story = animalDetails.story;
-                oldDetails.series = animalDetails.series;
+                oldDetails.name         = animalDetails.name;
+                oldDetails.interesting  = animalDetails.interesting;
+                oldDetails.series       = animalDetails.series;
                 oldDetails.reproduction = animalDetails.reproduction;
-                oldDetails.language = animalDetails.language;
-                oldDetails.food = animalDetails.food;
-                oldDetails.family = animalDetails.family;
+                oldDetails.language     = animalDetails.language;
+                oldDetails.food         = animalDetails.food;
+                oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
-                oldDetails.category = animalDetails.category;
+                oldDetails.category     = animalDetails.category;
             }
         }
 
@@ -1961,12 +2060,11 @@ namespace BL
 
             //should be only 1.
             var mapSettings = allSettings.First();
-            
+
             return new MapSettingsResult
             {
-                PointsPath = mapSettings.pointspath,
-                Longitude = mapSettings.longitude,
-                Latitude = mapSettings.latitude,
+                zooLocationLongitude = mapSettings.zooLocationLongitude,
+                zooLocationLatitude = mapSettings.zooLocationLatitude,
                 ZooPointX = mapSettings.zooPointX,
                 ZooPointY = mapSettings.zooPointY,
                 XLongitudeRatio = mapSettings.xLongitudeRatio,
@@ -1980,77 +2078,154 @@ namespace BL
                 Routes = zooDB.GetAllRoutes().ToArray()
             };
         }
-        
+
+        private const int MAX_DISTANCE_OF_ROUTE_FLAT = 50 * 50;
+        // maximum len on x is around 50, the 30 is estimation for the other road. I better change
+        // one day so it will support different latlng/xy ratio
+        private const int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
         /// <summary>
         /// This method intitiates the map with the given parameters. 
         /// </summary>
-        /// <param name="pointsFilePath"> This variables represents the path of the CSV file that contains the points of the map.</param>
-        /// <param name="longitude"> This variable represents the longitude of a point in the map</param>
-        /// <param name="latitude">This variable represents the latitude of a point in the map</param>
-        /// <param name="xLocation"> This variable represents the location of the longitude on the map picture</param>
-        /// <param name="yLocation"> This variable represents the location of the latitude on the map picture</param>
-        public void InitMapSettings(string pointsFilePath, double longitude, double latitude, int xLocation, int yLocation)
+        /// <param name="locationsFilePath"> This variables represents the path of the CSV file that contains the locations (latitude and longitude) on the map.</param>
+        /// <param name="pointsFilePath"> This variables represents the path of the CSV file that will contain the points (x and y) on the map.</param>
+        /// <param name="point1Latitude">This variable represents the latitude of a point in the map</param>
+        /// <param name="point1Longitude"> This variable represents the longitude of a point in the map</param>
+        /// <param name="point1XLocation"> This variable represents the location of the longitude on the map picture</param>
+        /// <param name="point1YLocation"> This variable represents the location of the latitude on the map picture</param>
+        /// <param name="point2Latitude">This variable represents the latitude of a point in the map</param>
+        /// <param name="point2Longitude"> This variable represents the longitude of a point in the map</param>
+        /// <param name="point2XLocation"> This variable represents the location of the longitude on the map picture</param>
+        /// <param name="point2YLocation"> This variable represents the location of the latitude on the map picture</param>
+        public void InitMapSettings(string locationsFilePath, string pointsFilePath, double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
         {
-            List<PointMap> points = ExtractPointsFromCSVFile(pointsFilePath);
-            Dictionary<PointMap, List<PointMap>> routes = new Dictionary<PointMap, List<PointMap>>();
-            double xLongitudeRatio  = 0;
-            double yLatitudeRatio   = 0;
-            double sinAlpha         = 0;
-            double cosAlpha         = 0;
-            double minLatitude      = 0;
-            double maxLatitude      = 0;
-            double minLongitude     = 0;
-            double maxLongitude     = 0;
-
-            ///////////// TODO: Aviv's Impl start/////////////
-            //Example PointMap usage
-            //var point = points.First();
-            //int left = point.Left;
-            //int right = point.Right;
-
-
-
-
-
-
-            ///////////// Aviv's Impl /////////////
-
-            //Add the routes to the db
-            //Note: the key of the routes in the db is id which is auto incresed.
+            List<LocationMap> locations = ExtractLocationsFromCSVFile(locationsFilePath);
+            double alpha = getAlpha(point1Latitude, point1Longitude, point1XLocation, point1YLocation, point2Latitude, point2Longitude, point2XLocation, point2YLocation);
+            
+            double xLongitudeRatio  = getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation);
+            double yLatitudeRatio   = getYLatitudeRatio(point1Latitude, point1YLocation, point2Latitude, point2YLocation);
+            double sinAlpha         = Math.Sin(alpha);
+            double cosAlpha         = Math.Cos(alpha);
+            double minLatitude      = locations.Select(location => location.Latitude).Min();
+            double maxLatitude      = locations.Select(location => location.Latitude).Max();
+            double minLongitude     = locations.Select(location => location.Longitude).Min();
+            double maxLongitude     = locations.Select(location => location.Longitude).Max();
+            PointMap[] points = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
             var allRoutes = zooDB.GetAllRoutes();
 
-            foreach(PointMap primaryPoint in routes.Keys)
+            // store the routes
+            for (int curr = 0; curr < points.Length; curr++)
             {
-                foreach(PointMap secPoint in routes[primaryPoint])
+                for (int off = curr + 1; off < points.Length &&
+                        (points[curr].X - points[off].X) *
+                                (points[curr].X - points[off].X)
+                                < MAX_DISTANCE_OF_ROUTE_FLAT; off++)
                 {
-                    allRoutes.Add(new Route
-                    {
-                        primaryLeft     = primaryPoint.Left,
-                        primaryRight    = primaryPoint.Right,
-                        secLeft         = secPoint.Left,
-                        secRight        = secPoint.Right
-                    });
+                    if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
+                        allRoutes.Add(new Route
+                        {
+                            primaryLeft = points[curr].X,
+                            primaryRight = points[curr].Y,
+                            secLeft = points[off].X,
+                            secRight = points[off].Y
+                        });
+                    }
                 }
             }
-
+            
             //add the map info to the db.
             zooDB.GetAllMapInfos().Add(new MapInfo
             {
-                pointspath      = pointsFilePath,
-                longitude       = longitude,
-                latitude        = latitude,
-                zooPointX       = xLocation,
-                zooPointY       = yLocation,
-                xLongitudeRatio = xLongitudeRatio,
-                yLatitudeRatio  = yLatitudeRatio,
-                sinAlpha        = sinAlpha,
-                cosAlpha        = cosAlpha,
-                minLatitude     = minLatitude,
-                maxLatitude     = maxLatitude,
-                minLongitude    = minLongitude,
-                maxLongitude    = maxLongitude
+                zooLocationLongitude    = point1Longitude,
+                zooLocationLatitude     = point1Latitude,
+                zooPointX               = point1XLocation,
+                zooPointY               = point1YLocation,
+                xLongitudeRatio         = xLongitudeRatio,
+                yLatitudeRatio          = yLatitudeRatio,
+                sinAlpha                = sinAlpha,
+                cosAlpha                = cosAlpha,
+                minLatitude             = minLatitude,
+                maxLatitude             = maxLatitude,
+                minLongitude            = minLongitude,
+                maxLongitude            = maxLongitude
             });
         }
+
+        private double getAlpha(double point1Latitude, double point1Longitude, int point1XLocation, int point1YLocation, double point2Latitude, double point2Longitude, int point2XLocation, int point2YLocation)
+        {
+            return Math.Abs(Math.Atan2(point1YLocation - point2YLocation,
+                    point1XLocation - point2XLocation))
+                    -
+                    Math.Abs(Math.Atan2((point1Latitude - point2Latitude) * getYLatitudeRatio(point1Latitude, point1YLocation, point2Latitude, point2YLocation),
+                            (point1Longitude - point2Longitude) * getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation)));
+        }
+
+        private double getXLongitudeRatio(double point1Longitude, int point1XLocation, double point2Longitude, int point2XLocation)
+        {
+            return (point1XLocation - point2XLocation) / (point1Longitude - point2Longitude);
+        }
+
+        private double getYLatitudeRatio(double point1Latitude, int point1YLocation, double point2Latitude, int point2YLocation)
+        {
+            // SELF NOTE: be aware that the y axis are upside down in contrary to the points
+            return (point2YLocation - point1YLocation) / (point1Latitude - point2Latitude);
+        }
+
+        private PointMap[] getPoints(List<LocationMap> locations, double point1Latitude, double point1Longitude, int point1XLocation, int point1YLocation, double cosAlpha, double sinAlpha, double xLongitudeRatio, double yLatitudeRatio)
+        {
+            PointMap[] points = new PointMap[locations.Count];
+            for (int i = 0; i < locations.Count; i++)
+            {
+                points[i] = locationToPoint(locations[i], point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
+            }
+
+            Array.Sort(points, (p1, p2) => p1.X.CompareTo(p2.Y));
+            return points;
+        }
+
+        private PointMap locationToPoint(LocationMap location, double point1Latitude, double point1Longitude, int point1XLocation, int point1YLocation, double cosAlpha, double sinAlpha, double xLongitudeRatio, double yLatitudeRatio)
+        {
+            LocationMap locationCenteredToEntranceReversed = calibrateLocationToEntranceAndReverseLongitudeAxis(location, point1Latitude, point1Longitude);
+            LocationMap turnedLocation = rotateLocationAroundEntrance(locationCenteredToEntranceReversed, cosAlpha, sinAlpha);
+            LocationMap locationCenteredAndRatioed = scaleLocationToPoints(turnedLocation, xLongitudeRatio, yLatitudeRatio);
+
+            return new PointMap((int)locationCenteredAndRatioed.Longitude + point1XLocation,
+                    (int)locationCenteredAndRatioed.Latitude + point1YLocation);
+        }
+
+        private LocationMap calibrateLocationToEntranceAndReverseLongitudeAxis(LocationMap location, double point1Latitude, double point1Longitude)
+        {
+            // calibrate the position of the location based on the entrance
+            // reverse the latitude axis, so both the before and after would have the same axis
+            return new LocationMap(
+                    point1Latitude - location.Latitude,
+                    location.Longitude - point1Longitude
+            );
+        }
+
+        private LocationMap rotateLocationAroundEntrance(LocationMap locationCenteredAndRatioed, double cosAlpha, double sinAlpha)
+        {
+            // turn it around
+            return new LocationMap(
+                    locationCenteredAndRatioed.Latitude * cosAlpha
+                            + locationCenteredAndRatioed.Longitude * sinAlpha,
+                    locationCenteredAndRatioed.Longitude * cosAlpha
+                            - locationCenteredAndRatioed.Latitude * sinAlpha
+            );
+        }
+
+        private LocationMap scaleLocationToPoints(LocationMap locationCenteredToEntranceReversed, double xLongitudeRatio, double yLatitudeRatio)
+        {
+            // after, it should be centered, with point equaled values
+            return new LocationMap(yLatitudeRatio * locationCenteredToEntranceReversed.Latitude,
+                    xLongitudeRatio * locationCenteredToEntranceReversed.Longitude);
+        }
+
+        private int squaredDistance(PointMap a, PointMap b)
+        {
+            return (a.X - b.X) * (a.X - b.X)
+                    + (a.Y - b.Y) * (a.Y - b.Y);
+        }
+
 
         /// <summary>
         /// Returns all map markers.
@@ -2063,14 +2238,14 @@ namespace BL
 
             // Get all enclosure's markers, if exists.
             var enclosuresWithMarkers = zooDB.GetAllEnclosures()
-                .Where(enc => enc.markerIconUrl != null && enc.markerLatitude.HasValue && enc.markerLongitude.HasValue)
+                .Where(enc => enc.markerIconUrl != null && enc.markerX.HasValue && enc.markerY.HasValue)
                 .ToArray();
 
             var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
                 {
                     iconUrl     = enc.markerIconUrl,
-                    latitude    = (float)enc.markerLatitude.Value,
-                    longitude   = (float)enc.markerLongitude.Value
+                    latitude    = (float)enc.markerX.Value,
+                    longitude   = (float)enc.markerY.Value
                     //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 
@@ -2589,7 +2764,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                    notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    data = new
+                    {
+                        Window = "com.zoovisitors.pl.map.MapActivity"
+                    }
                 };
 
                 var jsonBody = JsonConvert.SerializeObject(data);
@@ -2687,28 +2866,28 @@ namespace BL
             }
         }
 
-        private List<PointMap> ExtractPointsFromCSVFile(string pointsFilePath)
+        private List<LocationMap> ExtractLocationsFromCSVFile(string locationsFilePath)
         {
             //init variables
             string line;
-            List<PointMap> points = new List<PointMap>();
-            var pointsFileReader = new StreamReader(pointsFilePath);
+            List<LocationMap> locations = new List<LocationMap>();
+            var locationsFileReader = new StreamReader(locationsFilePath);
 
             //while there is a line to read
-            while ((line = pointsFileReader.ReadLine()) != null)
+            while ((line = locationsFileReader.ReadLine()) != null)
             {
                 //seperate the line
                 string[] values = Regex.Split(line, ",");
 
                 // parse the string to int
-                int left = Int32.Parse(values[0]);
-                int right = Int32.Parse(values[1]);
+                double latitude = Double.Parse(values[0]);
+                double longitude = Double.Parse(values[1]);
 
                 //create a new point that represented with a Pair object.
-                points.Add(new PointMap(left, right));
+                locations.Add(new LocationMap(latitude, longitude));
             }
 
-            return points;
+            return locations;
         }
         
         #endregion

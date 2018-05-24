@@ -1,4 +1,4 @@
-package com.zoovisitors.pl.map;
+package com.zoovisitors.pl.map.icons.handlers;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -12,12 +12,13 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.RecurringEventsHandler;
 import com.zoovisitors.pl.enclosures.EnclosureActivity;
+import com.zoovisitors.pl.map.MapView;
 import com.zoovisitors.pl.map.icons.EnclosureIcon;
+import com.zoovisitors.pl.map.icons.RecurringEventCountDownIcon;
 import com.zoovisitors.pl.map.icons.RecurringEventIcon;
 import com.zoovisitors.pl.map.icons.TextIcon;
 
 import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,10 +26,11 @@ import static com.zoovisitors.bl.RecurringEventsHandler.SEVEN_DAYS;
 import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
 
 public class EnclosureIconsHandler {
-    private MapView mapView;
+    public static final long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30 * 60 * 1000;
+
     private EnclosureIcon enclosureIcon;
     private View.OnTouchListener onTouchListener;
-    private TextIcon recurringEventTextViewIcon;
+    private RecurringEventCountDownIcon recurringEventCountDownIcon;
     private RecurringEventIcon recurringEventIcon;
     private RecurringEventsHandler recurringEventsHandler;
     private Timer timer;
@@ -38,7 +40,6 @@ public class EnclosureIconsHandler {
     public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Drawable enclosureIconResource,
                                  int left, int top, Timer timer, List<Runnable> timerFastRunnables,
                                  List<Runnable> timerSlowRunnables) {
-        this.mapView = mapView;
         this.timerFastRunnables = timerFastRunnables;
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
@@ -46,7 +47,7 @@ public class EnclosureIconsHandler {
         onTouchListener = createOnTouchListener(enclosure);
         enclosureIcon = new EnclosureIcon(mapView, enclosureIconResource, onTouchListener, left, top);
 
-        recurringEventTextViewIcon = new TextIcon(mapView,
+        recurringEventCountDownIcon = new RecurringEventCountDownIcon(mapView,
                 onTouchListener,
                 left,
                 top);
@@ -57,20 +58,17 @@ public class EnclosureIconsHandler {
 
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
-            recurringEventTextViewIcon.top -= enclosureIcon.height / 2 + recurringEventTextViewIcon.textView.getLineHeight();
-            recurringEventIcon.top -= enclosureIcon.height / 2 + recurringEventTextViewIcon.textView.getLineHeight();
-
-            mapView.updateIconPositionWithSize(recurringEventTextViewIcon);
-            mapView.updateIconPositionWithSize(recurringEventIcon);
-
-            scheduleRecurringTasks();
+            recurringEventCountDownIcon.top -= enclosureIcon.height / 2 + recurringEventCountDownIcon.textView.getLineHeight();
+            recurringEventIcon.top = recurringEventCountDownIcon.top;
         });
+
+        scheduleRecurringTasks();
     }
 
     public void updateIconPositionWithSize() {
-        mapView.updateIconPositionWithSize(enclosureIcon);
-        mapView.updateIconPositionWithSize(recurringEventTextViewIcon);
-        mapView.updateIconPositionWithSize(recurringEventIcon);
+        enclosureIcon.updateIconPosition();
+        recurringEventCountDownIcon.updateIconPosition();
+        recurringEventIcon.updateIconPosition();
     }
 
     @NonNull
@@ -106,13 +104,14 @@ public class EnclosureIconsHandler {
         if(recurringEventsHandler.isEmpty())
             return;
         Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent();
+        recurringEventIcon.setText(recurringEvent.getTitle());
         // means the text should not be shown yet
-        if (recurringEvent.getStartTime() - MapView.RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
-            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - MapView.RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
+        if (recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
+            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
         } else if (recurringEvent.getStartTime() > currentTime) { // means we should be at the middle of the text timer ticking
             scheduleTextIcon(recurringEvent.getStartTime(), 0);
         } else if (currentTime >= recurringEvent.getEndTime()) { // means we are after the event time, we delay the time until the week will pass and to the starting minus Wait interval
-            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - MapView.RECURRING_EVENT_TIMER_ELAPSE_TIME + SEVEN_DAYS - currentTime);
+            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME + SEVEN_DAYS - currentTime);
         }
 
         // means that we shouldn't show the image yet
@@ -159,9 +158,9 @@ public class EnclosureIconsHandler {
                                            public void run() {
                                                long currentTime = getTimeAdjustedToWeekTime();
                                                if(currentTime < startTime){
-                                                   recurringEventTextViewIcon.setTime(startTime - currentTime);
+                                                   recurringEventCountDownIcon.setTime(startTime - currentTime);
                                                } else {
-                                                   recurringEventTextViewIcon.hide();
+                                                   recurringEventCountDownIcon.hide();
                                                    timerSlowRunnables.remove(this);
                                                }
                                            }

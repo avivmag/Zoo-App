@@ -102,12 +102,14 @@ public class BusinessLayerImpl implements BusinessLayer {
                 long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
                 for (int i = 0; i < enc.length; i++) {
                     enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
-                                    (currentTime + 10 * 1000) % (7*24*60*60*1000),
-                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), ""),
-                            Enclosure.RecurringEvent.createRecurringEvent(1, "",
-                                    (currentTime + 30 * 1000) % (7*24*60*60*1000),
-                                    (currentTime + 40 * 1000) % (7*24*60*60*1000), "")
+                            Enclosure.RecurringEvent.createRecurringEvent(1,
+                                    "",
+                                    (currentTime + 5 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 10 * 1000) % (7*24*60*60*1000), "האכלה"),
+                            Enclosure.RecurringEvent.createRecurringEvent(2,
+                                    "",
+                                    (currentTime + 15 * 1000) % (7*24*60*60*1000),
+                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), "פיפי בפינה")
                     });
                 }
 

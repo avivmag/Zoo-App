@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.map.icons;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -12,24 +13,23 @@ public class VisitorIcon extends ImageIcon {
     private final String VISITOR_ICON = "visitor_icon";
 
     public VisitorIcon(MapView mapView, Object[] additionalData) {
-        super(mapView, additionalData, 0, 0, false, false);
+        super(mapView, additionalData, 0, 0, false);
     }
 
     @Override
     void setView() {
-        ImageView view = new ImageView(mapView.getContext());
+        ImageView imageView = new ImageView(mapView.getContext());
+        imageView.setBackgroundColor(Color.TRANSPARENT);
         int resourceId = mapView.getResources().getIdentifier(VISITOR_ICON, "mipmap", mapView.getContext().getPackageName());
-        view.setImageResource(resourceId);
-        this.view = view;
+        imageView.setImageResource(resourceId);
+        this.view = imageView;
     }
 
     public void UpdateVisitorLocation(int left, int top) {
-        // TODO: fix this.
-        Log.e("AVIV", "left, top " + left + ":" + top);
-        this.left = mapView.getIconsOffsetLeft(left);
-        this.top = mapView.getIconsOffsetTop(top);
+        this.left = left;
+        this.top = top;
 
-        mapView.updateIconPositionWithSize(this);
+        updateIconPosition();
     }
 
     public void Show() {

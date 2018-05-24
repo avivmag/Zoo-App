@@ -1,3 +1,5 @@
+<meta charset="utf-8" http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
 <div layout="row" layout-align="center center">
     <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
 </div>
@@ -65,32 +67,37 @@
                         <label>בחר מחלקה</label>
                         <input ng-model="animalDetails[selectedTab].category" type="text">
                     </md-input-container>
-                    
+
                     <md-input-container>
                         <label>בחר סדרה</label>
                         <input ng-model="animalDetails[selectedTab].series" type="text">
                     </md-input-container>
-
+                    
                     <md-input-container>
                         <label>בחר משפחה</label>
                         <input rows="3" ng-model="animalDetails[selectedTab].family" type="text">
                     </md-input-container>
-
+                    
                     <md-input-container>
                         <label>הכנס תפוצה</label>
                         <textarea rows="3" ng-model="animalDetails[selectedTab].distribution" type="text"></textarea>
                     </md-input-container>
-
+                    
                     <md-input-container>
                         <label>הכנס מזון</label>
                         <textarea rows="3" ng-model="animalDetails[selectedTab].food" type="text"></textarea>
                     </md-input-container>
-
+                    
                     <md-input-container>
                         <label>הכנס רבייה</label>
                         <textarea rows="3" ng-model="animalDetails[selectedTab].reproduction" type="text"></textarea>
                     </md-input-container>
-
+                    
+                    <md-input-container>
+                        <label>משהו מעניין עליי</label>
+                        <textarea rows="3" ng-model="animalDetails[selectedTab].interesting" type="text"></textarea>
+                    </md-input-container>
+                    
                     <md-input-container>
                         <md-button class="md-raised md-primary" ng-click="addAnimalDetail(animalDetails[selectedTab])">הוסף תוכן לחיה בשפה שנבחרה</md-button>
                     </md-input-container>

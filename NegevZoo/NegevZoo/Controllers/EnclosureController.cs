@@ -202,9 +202,11 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                string EnclosureInput = "Id: " + enclosure.id + "name: " + enclosure.name + 
-                    "Icon Url: " + enclosure.markerIconUrl + "Marker Longitude: " + enclosure.markerLongitude +
-                    "Marker Latitude: " + enclosure.markerLatitude + "Picture Url: " + enclosure.pictureUrl;
+                string EnclosureInput = "Id: " + enclosure.id + ", name: " + enclosure.name + 
+                    ", Icon Url: " + enclosure.markerIconUrl + ", Marker X: " + enclosure.markerX +
+                    ", Marker Y: " + enclosure.markerY + ", marker closest point x: "+ enclosure.markerClosestPointX +
+                    ", marker closest point y: " + enclosure.markerClosestPointY +
+                    "Picture Url: " + enclosure.pictureUrl;
 
                 Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Enclosure: " + EnclosureInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
