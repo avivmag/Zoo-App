@@ -24,6 +24,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.cl.notifications.MyFirebaseMessagingService;
 import com.zoovisitors.pl.customViews.TextViewOutline;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
@@ -55,9 +56,6 @@ public class MainActivity extends BaseActivity {
         ab.setDisplayShowHomeEnabled(true);
         ab.setDisplayShowTitleEnabled(false);
         ab.setIcon(R.mipmap.logo);
-
-
-
 
         //TODO: TESTING LOADING
         Log.e("TESTENC", GlobalVariables.testEnc[0].getName());

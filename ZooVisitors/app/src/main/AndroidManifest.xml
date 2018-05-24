@@ -65,6 +65,9 @@
         <activity android:name=".pl.general_info.WatchAll" />
         <activity android:name=".pl.personalStories.PersonalPopUp"
             android:theme="@style/AppTheme.PopUp"></activity>
+
+        <activity android:name=".pl.enclosures.EnclosureAssetsPopUp"
+            android:theme="@style/AppTheme.PopUp"></activity>
     </application>
 
 </manifest>
