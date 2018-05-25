@@ -107,8 +107,8 @@
             $scope.openMap                  = function(ev, selectedEnclosure) {
                 mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl').then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerLongitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
-                        selectedEnclosure.markerLatitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
+                        selectedEnclosure.markerY       = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                        selectedEnclosure.markerX       = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
                     }
                 });
             }
@@ -126,6 +126,12 @@
 
                     $q.all(uploadPromises).then(
                         () => {
+                            if (!checkEnclosure(enclosure)) {
+                                $scope.isLoading = false;
+
+                                return;
+                            }
+                            
                             enclosureService.enclosures.updateEnclosure(enclosure).then(
                                 function (response) {
                                     utilitiesService.utilities.alert(successContent);
@@ -183,6 +189,10 @@
             }
 
             $scope.addEnclosureVideo        = function(selectedEnclosure, videoUrl) {
+                if (!checkVideoUrl(videoUrl)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
                 var watchString         = videoUrl.split('watch?v=')[1].split('&')[0];
                 
@@ -283,6 +293,10 @@
             };
 
             $scope.addRecurringEvent        = function(recurringEvent) {
+                if (!checkRecurringEvent(recurringEvent)) {
+                    return false;
+                }
+
                 var successContent      = recurringEvent.isNew ? 'האירוע החוזר נוסף בהצלחה!' : 'האירוע החוזר עודכן בהצלחה!';
                 var failContent         = recurringEvent.isNew ? 'התרחשה שגיאה בעת שמירת האירוע החוזר' : 'התרחשה שגיאה בעת עדכון האירוע החוזר';
 
@@ -318,6 +332,93 @@
                     });
             }
         };
+
+        function checkEnclosure(enclosure) {
+            if (!angular.isDefined(enclosure.name) || enclosure.name == '') {
+                utilitiesService.utilities.alert('אנא בחר שם למתחם');
+
+                return false;
+            }
+
+            if ((enclosure.markerX !== undefined && enclosure.markerX < 0) ||
+                (enclosure.markerY !== undefined && enclosure.markerY < 0)) {
+                    utilitiesService.utilities.alert('הנקודות שנבחרו למיקום המתחם אינן חוקיות');
+
+                    return false;
+            }
+
+            if (enclosure.markerX !== undefined && enclosure.markerY !== undefined &&
+                (enclosure.markerIconUrl === undefined || enclosure.markerIconUrl === null)) {
+                    utilitiesService.utilities.alert('אין לבחור מיקום מתחם ללא העלאת אייקון.');
+
+                    return false;
+            }
+
+            if ((enclosure.markerX === undefined || enclosure.markerX === null || enclosure.markerY === undefined || enclosure.markerY === null) &&
+                (enclosure.markerIconUrl !== undefined && enclosure.markerIconUrl !== null)) {
+                    utilitiesService.utilities.alert('אין להעלות אייקון ללא בחירת מיקום.');
+
+                    return false;
+            }
+
+            return true;
+        }
+
+        function checkVideoUrl(videoUrl) {
+            if (!videoUrl) {
+                return false;
+            }
+
+            if ((videoUrl.indexOf('https://www.youtube.com/') === -1) || (videoUrl.indexOf('watch?v=') === -1)) {
+                utilitiesService.utilities.alert('אנא הכנס לינק תקין של יוטיוב.');
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function checkRecurringEvent(recurringEvent) {
+            if (!recurringEvent) {
+                return false;
+            }
+
+            if (!angular.isDefined(recurringEvent.title) || recurringEvent.title === '') {
+                utilitiesService.utilities.alert('אנא בחר כותרת לאירוע החוזר.');
+
+                return false;
+            }
+
+            if (!angular.isDefined(recurringEvent.description) || recurringEvent.description === '') {
+                utilitiesService.utilities.alert('אנא בחר תיאור לאירוע החוזר.');
+
+                return false;
+            }
+
+            if (recurringEvent.day === undefined || recurringEvent.day < 1 || recurringEvent.day > 7) {
+                utilitiesService.utilities.alert('אנא בחר יום תקין לאירוע החוזר.');
+
+                return false;
+            }
+
+            if (recurringEvent.startTime === undefined || 
+                recurringEvent.startTime.hour === undefined ||
+                recurringEvent.startTime.minute === undefined) {
+                    utilitiesService.utilities.alert('אנא בחר שעת התחלה תקינה.');
+
+                    return false;
+            }
+
+            if (recurringEvent.endTime === undefined || 
+                recurringEvent.endTime.hour === undefined ||
+                recurringEvent.endTime.minute === undefined) {
+                    utilitiesService.utilities.alert('אנא בחר שעת סוף תקינה.');
+
+                    return false;
+            }
+
+            return true;
+        }
 
         function addEmptyRecurringEvent (recurringEvents) {
             recurringEvents.push({ isNew: true, language: $scope.language.id, id: 0, enclosureId: $scope.selectedEnclosure.id });

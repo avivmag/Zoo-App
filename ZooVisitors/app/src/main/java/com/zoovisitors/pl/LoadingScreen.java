@@ -3,8 +3,6 @@ package com.zoovisitors.pl;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,6 +16,7 @@ import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.callbacks.FunctionInterface;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.pl.customViews.ProgressBarCustomView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,16 @@ import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends BaseActivity {
+    private final static int HUNDRED = 100;
+
     private boolean endAllThreads = false;
     private CountDownLatch doneSignal;
     private VideoView videoview;
     private List<FunctionInterface> tasks;
+
+    //progress bar fields
+    private double progressPercentage;
+    private ProgressBarCustomView pb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,27 +50,39 @@ public class LoadingScreen extends BaseActivity {
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         //TODO: Delete this when sending device id to the server
         Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
+        progressPercentage = 0;
+        pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
+        pb.setProgressPrecentage((int) progressPercentage);
 
         tasks = new ArrayList<>();
 
 
-        videoview = (VideoView) findViewById(R.id.loading_video);
-        videoview.setTranslationX(-525f);
-        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-            }
-        });
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
-        videoview.setVideoURI(uri);
-        videoview.start();
+//        videoview = (VideoView) findViewById(R.id.loading_video);
+//        videoview.setTranslationX(-525f);
+//        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mp) {
+//                mp.setLooping(true);
+//            }
+//        });
+//        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
+//        videoview.setVideoURI(uri);
+//        videoview.start();
+
+
+
 
         tasks.add(() -> {
             GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     GlobalVariables.testEnc = (Enclosure[]) response;
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    increasePercentage();
                     doneSignal.countDown();
                 }
 
@@ -81,6 +98,12 @@ public class LoadingScreen extends BaseActivity {
                 @Override
                 public void onSuccess(Object response) {
                     GlobalVariables.testOp = (OpeningHours []) response;
+                    try {
+                        Thread.sleep(4000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    increasePercentage();
                     doneSignal.countDown();
                 }
 
@@ -93,10 +116,18 @@ public class LoadingScreen extends BaseActivity {
 
         tasks.add(() -> {
             changeToHebrew();
+            try {
+                Thread.sleep(8000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            increasePercentage();
             doneSignal.countDown();
         });
 
         makeTasks();
+
+
 
     }
 
@@ -144,5 +175,13 @@ public class LoadingScreen extends BaseActivity {
             }
         });
         task.start();
+    }
+
+    private synchronized void increasePercentage(){
+        progressPercentage++;
+        Log.e("PERC", "" + ((int) ((progressPercentage/(double) tasks.size()) * HUNDRED)));
+//        Log.e("PERC", "" + )
+        pb.post(()-> {pb.setProgressPrecentage((int) ((progressPercentage/(double) tasks.size()) * HUNDRED));});
+//        pb.post(()-> {pb.setProgressPrecentage();});
     }
 }

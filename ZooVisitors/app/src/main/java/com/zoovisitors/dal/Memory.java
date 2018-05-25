@@ -1,6 +1,7 @@
 package com.zoovisitors.dal;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
@@ -952,6 +953,10 @@ public class Memory {
             points[i] = locationToPoint(locations[i]);
         }
         Arrays.sort(points, (p1, p2) -> Double.compare(p1.getX(),p2.getX()));
+//        for (Point point :
+//                points) {
+//            Log.e("AVIV", point.toString());
+//        }
         return points;
     }
 

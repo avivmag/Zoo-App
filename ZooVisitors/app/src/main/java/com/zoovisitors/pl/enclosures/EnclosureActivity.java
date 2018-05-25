@@ -2,6 +2,7 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,16 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
@@ -25,6 +36,9 @@ import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.customViews.buttonCustomView;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,6 +57,14 @@ public class EnclosureActivity extends BaseActivity {
     private GridLayout assetsLayout;
     private RecurringEventsHandler recurringEventsHandler;
 
+    private List<Bitmap> imagesInAsset;
+
+    //facebook fields
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    private Target target;
+    private Bitmap encImage;
+
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -51,6 +73,8 @@ public class EnclosureActivity extends BaseActivity {
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
+
+        imagesInAsset = new ArrayList<Bitmap>();
 
         GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -81,6 +105,8 @@ public class EnclosureActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 enclosureImageView.setImageBitmap((Bitmap) response);
+                encImage = (Bitmap) response;
+
             }
 
             @Override
@@ -123,21 +149,81 @@ public class EnclosureActivity extends BaseActivity {
 
 
         //initialize the facebook and show on map buttons
-        buttonCustomView facebookButton = (buttonCustomView) findViewById(R.id.shareOnFacebook);
-        facebookButton.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black,0, 125);
+        buttonCustomView facebookShare = (buttonCustomView) findViewById(R.id.shareOnFacebook);
+        facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black,0, 125);
+
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+
+        target = new Target(){
+
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                SharePhoto sharePhoto = new SharePhoto.Builder()
+                        .setBitmap(bitmap)
+                        .build();
+
+                if (ShareDialog.canShow(SharePhotoContent.class)){
+                    SharePhotoContent content = new SharePhotoContent.Builder()
+                            .addPhoto(sharePhoto)
+                            .build();
+                    shareDialog.show(content);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        facebookShare.setOnClickListener((v) -> {
+            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    Toast.makeText(EnclosureActivity.this, "Share Successful", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onCancel() {
+                    Toast.makeText(EnclosureActivity.this, "Share Cancel", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Toast.makeText(EnclosureActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.e("URL", GlobalVariables.ServerAddress + enclosure.getPictureUrl());
+//            Picasso.with(getBaseContext())
+//                    .load(GlobalVariables.ServerAddress + enclosure.getPictureUrl())
+//                    .into(target);
+
+//            target.onBitmapLoaded(encImage, null);
+
+            SharePhoto sharePhoto = new SharePhoto.Builder()
+                    .setBitmap(encImage)
+                    .build();
+
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(sharePhoto)
+                        .build();
+                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+            }
+
+        });
+
 
         buttonCustomView showOnMapButton = (buttonCustomView) findViewById(R.id.showOnMap);
         showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black,0, 125);
 
         showOnMapButton.setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    startActivity(intent);
-
-                }
-        );
-
-        facebookButton.setOnClickListener(
                 v -> {
                     Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
                     startActivity(intent);
@@ -158,7 +244,9 @@ public class EnclosureActivity extends BaseActivity {
         RecyclerView.Adapter adapterAnim = new AnimalsRecyclerAdapter(animals, R.layout.animal_card);
         recycleViewAnim.setAdapter(adapterAnim);
 
+
         //initialize the 'pictures and videos' section
+
         assetsLayout = (GridLayout) findViewById(R.id.enc_asset_grid_layout);
         int assetWidth = 250;
         int assetHeight = 250;
@@ -190,6 +278,23 @@ public class EnclosureActivity extends BaseActivity {
                     imageView.setLayoutParams(layoutParams);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     assetsLayout.addView(imageView);
+                    imagesInAsset.add((Bitmap) response);
+
+                    imageView.setOnClickListener(v -> {
+                        Intent assetsPopUp = new Intent(GlobalVariables.appCompatActivity, EnclosureAssetsPopUp.class);
+                        assetsPopUp.putExtra("arraySize", imagesInAsset.size());
+                        for (int i=0; i<imagesInAsset.size(); i++) {
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            imagesInAsset.get(i).compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            byte[] byteArray = stream.toByteArray();
+
+                            assetsPopUp.putExtra("image" + i, byteArray);
+
+//                            assetsPopUp.putExtra("images" + i, imagesInAsset.get(i));
+                            startActivity(assetsPopUp);
+                        }
+                    });
+
                 }
 
                 @Override
@@ -288,4 +393,21 @@ public class EnclosureActivity extends BaseActivity {
             }
         }, DELAY, PERIOD);
     }
+
+
+//    private void printKeyHash() {
+//        try{
+//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+//            for (Signature s :  info.signatures){
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(s.toByteArray());
+//                Log.e("KEY", android.util.Base64.encodeToString(md.digest(), android.util.Base64.DEFAULT));
+//            }
+//        }
+//        catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

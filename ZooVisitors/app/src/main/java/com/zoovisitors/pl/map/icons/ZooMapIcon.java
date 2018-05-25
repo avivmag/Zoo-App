@@ -8,8 +8,8 @@ import com.zoovisitors.pl.map.MapView;
 public class ZooMapIcon extends ImageIcon {
     private final String ZOO_MAP = "zoo_map";
 
-    public ZooMapIcon(MapView mapView, Object[] additionalData, int left, int top) {
-        super(mapView, additionalData, left, top, true);
+    public ZooMapIcon(MapView mapView, Object[] additionalData) {
+        super(mapView, additionalData, 0, 0, true);
     }
     @Override
     protected void doOnPost(boolean isVisible) {

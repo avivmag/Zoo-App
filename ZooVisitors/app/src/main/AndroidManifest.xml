@@ -38,6 +38,8 @@
         </activity>
 
         <activity android:name=".pl.enclosures.EnclosureActivity" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"></meta-data>
 
         <activity android:name=".pl.map.MapActivity">
             <!--android:theme="@style/CustomTheme">-->
@@ -73,6 +75,14 @@
         <activity android:name=".pl.general_info.WatchAll" />
         <activity android:name=".pl.personalStories.PersonalPopUp"
             android:theme="@style/AppTheme.PopUp"></activity>
+
+        <activity android:name=".pl.enclosures.EnclosureAssetsPopUp"
+            android:theme="@style/AppTheme.PopUp"></activity>
+        
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider1991264511112012"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

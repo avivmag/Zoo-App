@@ -56,6 +56,10 @@
             };
 
             $scope.addAnimal        = function(animal) {
+                if (!checkAnimal(animal)) {
+                    return;
+                }
+
                 $scope.isLoading            = true;
                     var successContent      = !$scope.isEdit ? 'החיה נוספה בהצלחה!' : 'החיה עודכנה בהצלחה!';
                     var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת החיה' : 'התרחשה שגיאה בעת עדכון החיה';
@@ -126,6 +130,26 @@
                         });
             }
         };
+
+        function checkAnimal(animal) {
+            if (!animal) {
+                return false;
+            }
+
+            if (!angular.isDefined(animal.name) || animal.name == '') {
+                utilitiesService.utilities.alert('אנא בחר שם לחיה');
+
+                return false;
+            }
+
+            if (!angular.isDefined(animal.preservation)) {
+                utilitiesService.utilities.alert('אנא בחר רמת שימור לחיה');
+
+                return false;
+            }
+
+            return true;
+        }
 
         function uploadProfilePicture (picture, animal) {
             if (!angular.isDefined(picture)) {

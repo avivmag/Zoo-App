@@ -1,4 +1,6 @@
-﻿<div ng-controller="zooOpeningHoursCtrl as vm">
+﻿<meta charset="utf-8" http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
+<div ng-controller="zooOpeningHoursCtrl as vm">
     <div layout="row" layout-align="center center">
         <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
     </div>
@@ -79,8 +81,8 @@
                     </div>
                 </md-card-content>
                 
-                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour)">שמור שעת פתיחה חדשה</md-button>
-                <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour)">עדכון שעת פתיחה</md-button>
+                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">שמור שעת פתיחה חדשה</md-button>
+                <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">עדכון שעת פתיחה</md-button>
             </div>
         </md-card-content>
         <md-card-content ng-if="!isLoading && (!openingHours || openingHours.length === 0)">

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -16,6 +17,9 @@ import com.zoovisitors.pl.MainActivity;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by Gili on 21/03/2018.
  */
@@ -24,15 +28,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = null;
+        try {
+            Log.e("CLASS", remoteMessage.getData().get("Window"));
+            intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
+        } catch (ClassNotFoundException e) {
+            intent = new Intent(this, MainActivity.class);
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setContentTitle("Negev Zoo");
+        notificationBuilder.setContentTitle(remoteMessage.getData().get("Title"));
         notificationBuilder.setContentText(remoteMessage.getNotification().getBody());
         notificationBuilder.setAutoCancel(true);
         //set the sound of the notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         notificationBuilder.setSound(alarmSound);
         notificationBuilder.setSmallIcon(R.mipmap.logo);
         notificationBuilder.setContentIntent(pendingIntent);

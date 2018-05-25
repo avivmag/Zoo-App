@@ -1,4 +1,6 @@
-﻿<div layout="row" layout-align="center center">
+﻿<meta charset="utf-8" http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
+<div layout="row" layout-align="center center">
     <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
 </div>
 
@@ -32,8 +34,8 @@
             
             <md-button class="md-raised md-accent" ng-if="!user.isNew" ng-click="resetPassword(user)">אפס סיסמא</md-button>
             
-            <md-button class="md-primary md-raised" ng-if="user.isNew" ng-click="addUser(user)">שמור משתמש חדש</md-button>
-            <md-button class="md-primary md-raised" ng-if="!user.isNew" ng-click="updateUsername(user)">עדכן שם משתמש</md-button>
+            <md-button class="md-primary md-raised" ng-if="user.isNew" ng-click="addUser(user, users)">שמור משתמש חדש</md-button>
+            <md-button class="md-primary md-raised" ng-if="!user.isNew" ng-click="updateUsername(user, users)">עדכן שם משתמש</md-button>
         </div>
     </md-card-content>
     <md-card-content ng-if="!isLoading && (!users || users.length === 0)">

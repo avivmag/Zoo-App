@@ -53,6 +53,7 @@
     <!-- Schedule -->
     <string name="todays_event">אירועי היום</string>
     <string name="facebook_app_id">1991264511112012</string>
+    <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
 
     <!--Gps provider dialog-->
     <string name="gps_no_permission_dialog_title">הרשאת מיקום</string>

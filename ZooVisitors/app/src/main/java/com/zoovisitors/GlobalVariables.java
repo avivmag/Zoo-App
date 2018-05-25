@@ -21,6 +21,8 @@ public class GlobalVariables {
     public static AppCompatActivity foregroundActivity;
     public static String firebaseToken;
     public static String deviceId;
+//
+//    public static String facebookAppId = "591313814575886";
 
 
     public static OpeningHours[] testOp;

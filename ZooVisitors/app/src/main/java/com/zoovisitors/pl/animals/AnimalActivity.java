@@ -119,7 +119,7 @@ public class AnimalActivity extends BaseActivity {
 
         //initialize animal interesting
         TextView interesting = findViewById(R.id.animal_interesting_text);
-        interesting.setText(animal.getStory());
+        interesting.setText(animal.getInteresting());
 
 //        // Find the view pager that will allow the user to swipe between fragments
 //        final ViewPager viewPager = (ViewPager) findViewById(R.id.animal_viewpager);

@@ -58,6 +58,10 @@
             }
 
             $scope.addContactInfo           = function (contactInfo) {
+                if (!checkContactInfo(contactInfo)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
                 var successContent      = contactInfo.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
@@ -118,5 +122,25 @@
                             .ok('סגור')
                     );
                 });
+        }
+
+        function checkContactInfo(contactInfo) {
+            if (!contactInfo) {
+                return;
+            }
+
+            if (!angular.isDefined(contactInfo.via) || contactInfo.via === '') {
+                utilitiesService.utilities.alert('אנא הכנס דרך התקשרות');
+
+                return false;
+            }
+
+            if (!angular.isDefined(contactInfo.address) || contactInfo.address === '') {
+                utilitiesService.utilities.alert('אנא הכנס כתובת התקשרות');
+
+                return false;
+            }
+
+            return true;
         }
 }]);
