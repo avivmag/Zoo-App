@@ -36,6 +36,8 @@ public class MapActivity extends ProviderBasedActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         mapView = findViewById(R.id.map_view_layout);
         bl = new BusinessLayerImpl(this);
         mapDS = new DataStructure(Memory.getPoints(),

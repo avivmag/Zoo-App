@@ -55,16 +55,16 @@ public class buttonCustomView extends LinearLayout {
         return iconImage.getId();
     }
 
-    public void designButton(int background, int image, int text){
+    public void designButton(int background, int image, int text, int text_size, int text_color, int image_bottom_margin, int button_size){
 
-        iconText.setTextSize(20);
+        iconText.setTextSize(text_size);
         iconText.setText(text);
-        iconText.setTextColor(getResources().getColor(R.color.white));
+        iconText.setTextColor(getResources().getColor(text_color));
 
         iconImage.setImageResource(image);
-        LayoutParams layoutParams = new LayoutParams(150, 150);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        layoutParams.bottomMargin = 20;
+        LayoutParams layoutParams = new LayoutParams(button_size, button_size);
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.bottomMargin = image_bottom_margin;
         iconImage.setLayoutParams(layoutParams);
         setBackgroundColor(getResources().getColor(background));
         iconImage.setOnClickListener(new OnClickListener() {

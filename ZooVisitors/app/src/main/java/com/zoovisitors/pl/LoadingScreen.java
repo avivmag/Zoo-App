@@ -33,6 +33,11 @@ public class LoadingScreen extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //hiding the action bar in this activity
+        android.support.v7.app.ActionBar AB= getSupportActionBar();
+        AB.hide();
+
         setContentView(R.layout.activity_loading_screen);
         //Initialize business layer (change for testing)
         GlobalVariables.appCompatActivity = this;
