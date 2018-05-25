@@ -82,9 +82,11 @@
           </Key>
           <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="tinytext" Nullable="false" />
-          <Property Name="markerLongitude" Type="double" />
-          <Property Name="markerLatitude" Type="double" />
+          <Property Name="markerX" Type="int" />
+          <Property Name="markerY" Type="int" />
           <Property Name="markerIconUrl" Type="varchar" MaxLength="255" />
+          <Property Name="markerClosestPointX" Type="int" />
+          <Property Name="markerClosestPointY" Type="int" />
           <Property Name="pictureUrl" Type="mediumtext" />
         </EntityType>
         <EntityType Name="enclosuresdetails">
@@ -120,8 +122,8 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="longitude" Type="double" Nullable="false" />
-          <Property Name="latitude" Type="double" Nullable="false" />
+          <Property Name="zooLocationLongitude" Type="double" Nullable="false" />
+          <Property Name="zooLocationLatitude" Type="double" Nullable="false" />
           <Property Name="zooPointX" Type="int" Nullable="false" />
           <Property Name="zooPointY" Type="int" Nullable="false" />
           <Property Name="xLongitudeRatio" Type="double" Nullable="false" />
@@ -301,8 +303,10 @@
           </Key>
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="markerLongitude" Type="Double" />
-          <Property Name="markerLatitude" Type="Double" />
+          <Property Name="markerX" Type="Int32" />
+          <Property Name="markerY" Type="Int32" />
+          <Property Name="markerClosestPointX" Type="Int32" />
+          <Property Name="markerClosestPointY" Type="Int32" />
           <Property Name="markerIconUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="pictureUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -455,13 +459,13 @@
           <Property Name="animalId" Type="Int64" Nullable="false" />
           <Property Name="language" Type="Int64" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="interesting" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="category" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="series" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="reproduction" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="food" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="interesting" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="EnclosureDetail">
           <Key>
@@ -492,13 +496,13 @@
           <Property Name="zooPointX" Type="Int32" Nullable="false" />
           <Property Name="zooPointY" Type="Int32" Nullable="false" />
           <Property Name="xLongitudeRatio" Type="Double" Nullable="false" />
+          <Property Name="yLatitudeRatio" Type="Double" Nullable="false" />
           <Property Name="sinAlpha" Type="Double" Nullable="false" />
           <Property Name="cosAlpha" Type="Double" Nullable="false" />
           <Property Name="minLatitude" Type="Double" Nullable="false" />
           <Property Name="maxLatitude" Type="Double" Nullable="false" />
           <Property Name="minLongitude" Type="Double" Nullable="false" />
           <Property Name="maxLongitude" Type="Double" Nullable="false" />
-          <Property Name="yLatitudeRatio" Type="Double" Nullable="false" />
         </EntityType>
         <EntityType Name="UserSession">
           <Key>
@@ -566,10 +570,12 @@
           <EntitySetMapping Name="Enclosures">
             <EntityTypeMapping TypeName="NegevZooModel.Enclosure">
               <MappingFragment StoreEntitySet="enclosures">
+                <ScalarProperty Name="markerClosestPointY" ColumnName="markerClosestPointY" />
+                <ScalarProperty Name="markerClosestPointX" ColumnName="markerClosestPointX" />
+                <ScalarProperty Name="markerY" ColumnName="markerY" />
+                <ScalarProperty Name="markerX" ColumnName="markerX" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="markerLongitude" ColumnName="markerLongitude" />
-                <ScalarProperty Name="markerLatitude" ColumnName="markerLatitude" />
                 <ScalarProperty Name="markerIconUrl" ColumnName="markerIconUrl" />
                 <ScalarProperty Name="pictureUrl" ColumnName="pictureUrl" />
               </MappingFragment>
@@ -706,13 +712,13 @@
           <EntitySetMapping Name="AnimalDetails">
             <EntityTypeMapping TypeName="NegevZooModel.AnimalDetail">
               <MappingFragment StoreEntitySet="animalsdetails">
+                <ScalarProperty Name="interesting" ColumnName="interesting" />
                 <ScalarProperty Name="food" ColumnName="food" />
                 <ScalarProperty Name="reproduction" ColumnName="reproduction" />
                 <ScalarProperty Name="distribution" ColumnName="distribution" />
                 <ScalarProperty Name="family" ColumnName="family" />
                 <ScalarProperty Name="series" ColumnName="series" />
                 <ScalarProperty Name="category" ColumnName="category" />
-                <ScalarProperty Name="interesting" ColumnName="interesting" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="language" ColumnName="language" />
                 <ScalarProperty Name="animalId" ColumnName="animalId" />
@@ -742,6 +748,8 @@
           <EntitySetMapping Name="MapInfos">
             <EntityTypeMapping TypeName="NegevZooModel.MapInfo">
               <MappingFragment StoreEntitySet="mapinfo">
+                <ScalarProperty Name="zooLocationLatitude" ColumnName="zooLocationLatitude" />
+                <ScalarProperty Name="zooLocationLongitude" ColumnName="zooLocationLongitude" />
                 <ScalarProperty Name="yLatitudeRatio" ColumnName="yLatitudeRatio" />
                 <ScalarProperty Name="maxLongitude" ColumnName="maxLongitude" />
                 <ScalarProperty Name="minLongitude" ColumnName="minLongitude" />
@@ -752,8 +760,6 @@
                 <ScalarProperty Name="xLongitudeRatio" ColumnName="xLongitudeRatio" />
                 <ScalarProperty Name="zooPointY" ColumnName="zooPointY" />
                 <ScalarProperty Name="zooPointX" ColumnName="zooPointX" />
-                <ScalarProperty Name="zooLocationLatitude" ColumnName="latitude" />
-                <ScalarProperty Name="zooLocationLongitude" ColumnName="longitude" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -27,7 +28,10 @@ import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,6 +62,8 @@ public class EnclosureActivity extends BaseActivity {
     private RecurringEventsHandler recurringEventsHandler;
     private boolean blinking;
 
+    private List<Bitmap> imagesInAsset;
+
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar ab = getSupportActionBar();
 
@@ -71,6 +77,8 @@ public class EnclosureActivity extends BaseActivity {
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
+
+        imagesInAsset = new ArrayList<Bitmap>();
 
         GlobalVariables.bl.getAnimals(id, new GetObjectInterface() {
             @Override
@@ -179,6 +187,16 @@ public class EnclosureActivity extends BaseActivity {
                     imageView.setLayoutParams(layoutParams);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     assetsLayout.addView(imageView);
+                    imagesInAsset.add((Bitmap) response);
+
+                    imageView.setOnClickListener(v -> {
+                        Intent assetsPopUp = new Intent(GlobalVariables.appCompatActivity, EnclosureAssetsPopUp.class);
+                        assetsPopUp.putExtra("arraySize", imagesInAsset.size());
+                        for (int i=0; i<imagesInAsset.size(); i++)
+                            assetsPopUp.putExtra("images" + i, imagesInAsset.get(i));
+                        startActivity(assetsPopUp);
+                    });
+
                 }
 
                 @Override

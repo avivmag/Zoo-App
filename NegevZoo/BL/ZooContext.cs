@@ -96,8 +96,10 @@ namespace BL
                                        Id                   = e.id,
                                        Language             = ed.language,
                                        MarkerIconUrl        = e.markerIconUrl,
-                                       MarkerLatitude       = e.markerLatitude,
-                                       MarkerLongtitude     = e.markerLongitude,
+                                       MarkerX              = e.markerX,
+                                       MarkerY              = e.markerY,
+                                       MarkerClosestPointX  = e.markerClosestPointX,
+                                       MarkerClosestPointY  = e.markerClosestPointY,
                                        PictureUrl           = e.pictureUrl,
                                        Name                 = ed.name,
                                        Story                = ed.story,
@@ -217,9 +219,33 @@ namespace BL
                 throw new ArgumentException("Wrong input. enclosure name is null or white space");
             }
 
-            //TODO: add a check to latitude or longtitude out of the range of the zoo.
-
             var enclosures = zooDB.GetAllEnclosures();
+
+            // set the closest point on the road to the enclosure.
+            var closestPointX = -1;
+            var closestPointY = -1;
+            if (enclosure.markerX.HasValue && enclosure.markerY.HasValue)
+            {
+                var routes = zooDB.GetAllRoutes();
+
+                // Get the routes to memory.
+                var routesArray = routes.ToArray();
+
+                PointMap[] points = getPointMaps(routesArray);
+
+                int[] indexRange = getIndexRangeInPoints(points, (int) enclosure.markerX);
+
+                PointMap nearest = findNearestPoint(points, new PointMap((int)enclosure.markerX, (int)enclosure.markerY), indexRange);
+
+                if (nearest != null)
+                {
+                    closestPointX = nearest.X;
+                    closestPointY = nearest.Y;
+                }
+            }
+
+            enclosure.markerClosestPointX = closestPointX;
+            enclosure.markerClosestPointY = closestPointY;
 
             if (enclosure.id == default(int)) //add a new enclosure
             {
@@ -252,13 +278,87 @@ namespace BL
 
                 //enclosure.id = oldEnc.id;
                 oldEnc.markerIconUrl = enclosure.markerIconUrl;
-                oldEnc.markerLatitude = enclosure.markerLatitude;
-                oldEnc.markerLongitude = enclosure.markerLongitude;
+                oldEnc.markerX = enclosure.markerX;
+                oldEnc.markerY = enclosure.markerY;
+                oldEnc.markerClosestPointX = enclosure.markerClosestPointX;
+                oldEnc.markerClosestPointY = enclosure.markerClosestPointY;
                 oldEnc.name = enclosure.name;
                 oldEnc.pictureUrl = enclosure.pictureUrl;
 
                 return oldEnc;
             }
+        }
+
+        private PointMap[] getPointMaps(IEnumerable<Route> routes)
+        {
+            List<PointMap> points = new List<PointMap>();
+
+            foreach(var route in routes)
+            {
+                if (points.Count == 0 || points.Last().X != route.primaryLeft || points.Last().Y != route.primaryRight)
+                    points.Add(new PointMap(route.primaryLeft, route.primaryRight));
+            }
+            return points.ToArray();
+        }
+
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
+        private const int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * 50 * 50;
+
+        private int[] getIndexRangeInPoints(PointMap[] points, int x)
+        {
+            int[] range = new int[2];
+
+            int bottom = 0, top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[0] = (bottom + top) / 2;
+                if (x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT < points[range[0]]?.X)
+                {
+                    top = range[0];
+                }
+                else
+                {
+                    bottom = range[0];
+                }
+            }
+
+            range[0] = points[bottom]?.X >= x - MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? bottom : top;
+
+            bottom = 0;
+            top = points.Length - 1;
+            while (top - bottom > 1)
+            {
+                range[1] = (bottom + top) / 2;
+                if (x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT > points[range[1]]?.X)
+                {
+                    bottom = range[1];
+                }
+                else
+                {
+                    top = range[1];
+                }
+            }
+
+            range[1] = points[top]?.X <= x + MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT ? top : bottom;
+
+            return range;
+        }
+
+        private PointMap findNearestPoint(PointMap[] points, PointMap point, int[] indexRange)
+        {
+            PointMap nearest = null;
+            double distanceToNearest = Double.MaxValue;
+            for (int i = indexRange[0]; i <= indexRange[1]; i++)
+            {
+                int curDistance = squaredDistance(point, points[i]);
+                if (curDistance < distanceToNearest && curDistance <=
+                        MAX_APPROXIMATE_DISTANCE_FROM_POINT)
+                {
+                    distanceToNearest = curDistance;
+                    nearest = points[i];
+                }
+            }
+            return nearest;
         }
 
         /// <summary>
@@ -973,16 +1073,15 @@ namespace BL
             }
             else // update existing animal.
             {
-
-                oldDetails.name = animalDetails.name;
-                oldDetails.interesting = animalDetails.interesting;
-                oldDetails.series = animalDetails.series;
+                oldDetails.name         = animalDetails.name;
+                oldDetails.interesting  = animalDetails.interesting;
+                oldDetails.series       = animalDetails.series;
                 oldDetails.reproduction = animalDetails.reproduction;
-                oldDetails.language = animalDetails.language;
-                oldDetails.food = animalDetails.food;
-                oldDetails.family = animalDetails.family;
+                oldDetails.language     = animalDetails.language;
+                oldDetails.food         = animalDetails.food;
+                oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
-                oldDetails.category = animalDetails.category;
+                oldDetails.category     = animalDetails.category;
             }
         }
 
@@ -2140,14 +2239,14 @@ namespace BL
 
             // Get all enclosure's markers, if exists.
             var enclosuresWithMarkers = zooDB.GetAllEnclosures()
-                .Where(enc => enc.markerIconUrl != null && enc.markerLatitude.HasValue && enc.markerLongitude.HasValue)
+                .Where(enc => enc.markerIconUrl != null && enc.markerX.HasValue && enc.markerY.HasValue)
                 .ToArray();
 
             var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
                 {
                     iconUrl     = enc.markerIconUrl,
-                    latitude    = (float)enc.markerLatitude.Value,
-                    longitude   = (float)enc.markerLongitude.Value
+                    latitude    = (float)enc.markerX.Value,
+                    longitude   = (float)enc.markerY.Value
                     //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 
@@ -2666,7 +2765,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                    notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    data = new
+                    {
+                        Window = "com.zoovisitors.pl.map.MapActivity"
+                    }
                 };
 
                 var jsonBody = JsonConvert.SerializeObject(data);
