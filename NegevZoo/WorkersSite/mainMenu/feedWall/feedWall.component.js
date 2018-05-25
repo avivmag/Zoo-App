@@ -130,8 +130,19 @@
                 return false;
             }
 
+            if (feed.isPushMessage === true && !angular.isDefined(feed.pushRecipients)) {
+                utilitiesService.utilities.alert('אנא בחר נמענים להודעת הפוש');
+
+                return false;
+            }
+
             feed.isPushMessage  = feed.isPushMessage || false;
             feed.isFeedWall     = feed.isFeedWall || false;
+
+            if (!feed.isPushMessage && feed.pushRecipients) {
+                delete feed.pushRecipients == '';
+            }
+
             return true;
         }        
 }]);

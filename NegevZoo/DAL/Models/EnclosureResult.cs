@@ -22,5 +22,6 @@ namespace DAL.Models
         public EnclosurePicture[] Pictures { get; set; }
         public RecurringEventsResult[] RecEvents {get;set;}
         public string AudioUrl { get; set; }
+        public byte[] MarkerData { get; set; }
     }
 }

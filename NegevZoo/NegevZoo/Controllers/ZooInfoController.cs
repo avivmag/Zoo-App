@@ -464,8 +464,8 @@ namespace NegevZoo.Controllers
         /// <param name="isPush">is the feed need to be pushed</param>
         /// <param name="isWallFeed"> is the feed should be added to the feed wall</param>
         [HttpPost]
-        [Route("Wallfeed/update/{isPush}/{isWallFeed}")]
-        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
+        [Route("Wallfeed/update/{isPush}/{isWallFeed}/{pushRecipients}")]
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed, string pushRecipients = null)
         {
             try
             {
@@ -474,7 +474,7 @@ namespace NegevZoo.Controllers
                     if (ValidateSessionId(db))
                     {
                         feed.created = DateTime.Today;
-                        db.UpdateWallFeed(feed, isPush, isWallFeed);
+                        db.UpdateWallFeed(feed, isPush, isWallFeed, pushRecipients);
                     }
                     else
                     {
@@ -775,5 +775,26 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets all the relevant info for the application.
+        /// </summary>
+        /// <returns>All the relevant info for the application.</returns>
+        [HttpGet]
+        [Route("app/all/{language}")]
+        public IHttpActionResult GetAllInfo(int language)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return Ok(db.GetAllInfo(language));
+                }
+            }
+            catch (Exception exp)
+            {
+                return InternalServerError();
+            }
+        }
     }
 }
