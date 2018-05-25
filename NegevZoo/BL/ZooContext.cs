@@ -3097,6 +3097,84 @@ namespace BL
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
         }
 
+        public object GetAllInfo(int language)
+        {
+            // Get the enclosures.
+            var enclosures = this.GetAllEnclosureResults(language);
+
+            // Add the marker data.
+            foreach (var e in enclosures)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + e.MarkerIconUrl);
+                if (!String.IsNullOrWhiteSpace(e.MarkerIconUrl) && File.Exists(filePath))
+                {
+                    e.MarkerData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the stories.
+            var animalStories = this.GetAllAnimalStoriesResults(language);
+
+            // Add the story data.
+            foreach (var story in animalStories)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + story.PictureUrl);
+                if (!String.IsNullOrWhiteSpace(story.PictureUrl) && File.Exists(filePath))
+                {
+                    story.pictureData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the markers.
+            var miscMarkers = this.GetAllMarkers().Select(mm =>
+            new
+            {
+                mm.id,
+                mm.latitude,
+                mm.longitude,
+                IconData = mm.iconUrl != null && File.Exists(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) ? File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) : null
+            });
+
+            // Get the map data.
+            var mapData = File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + this.GetMapUrl().First()));
+
+            var openingHours = this.GetAllOpeningHours(language);
+
+            var openingHoursNote = this.GetOpeningHourNote(language);
+
+            var prices = this.GetAllPrices(language);
+
+            var contactInfo = this.GetAllContactInfos(language);
+
+            var contactInfoNote = this.GetContactInfoNote(language);
+
+            var aboutUs = this.GetZooAboutInfo(language).FirstOrDefault();
+
+            var contactInfoResult = new
+            {
+                contactInfo,
+                contactInfoNote
+            };
+
+            var openingHoursResult = new
+            {
+                openingHours,
+                openingHoursNote
+            };
+
+            return new
+            {
+                enclosures,
+                animalStories,
+                miscMarkers,
+                mapData,
+                contactInfoResult,
+                openingHoursResult,
+                prices,
+                aboutUs
+            };
+        }
+
         #endregion
 
         public void Dispose()

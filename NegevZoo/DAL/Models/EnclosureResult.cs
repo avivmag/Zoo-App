@@ -21,5 +21,6 @@ namespace DAL.Models
         public YoutubeVideoUrl[] Videos { get; set; }
         public EnclosurePicture[] Pictures { get; set; }
         public RecurringEventsResult[] RecEvents {get;set;}
+        public byte[] MarkerData { get; set; }
     }
 }
