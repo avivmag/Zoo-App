@@ -2,6 +2,7 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -11,13 +12,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
@@ -28,9 +40,10 @@ import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
 
-import java.io.Serializable;
+import java.io.ByteArrayOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -64,7 +77,14 @@ public class EnclosureActivity extends BaseActivity {
 
     private List<Bitmap> imagesInAsset;
 
+    //facebook fields
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    private Target target;
+    private Bitmap encImage;
+
     protected void onCreate(Bundle savedInstanceState) {
+//        printKeyHash();
         ActionBar ab = getSupportActionBar();
 
         ab.setDisplayUseLogoEnabled(true);
@@ -126,6 +146,8 @@ public class EnclosureActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 enclosureImageView.setImageBitmap((Bitmap) response);
+                encImage = (Bitmap) response;
+
             }
 
             @Override
@@ -154,7 +176,73 @@ public class EnclosureActivity extends BaseActivity {
         adapterAnim = new AnimalsRecyclerAdapter(animals, R.layout.animal_card);
         recycleViewAnim.setAdapter(adapterAnim);
 
-        //ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+        ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+
+         target = new Target(){
+
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                SharePhoto sharePhoto = new SharePhoto.Builder()
+                        .setBitmap(bitmap)
+                        .build();
+
+                if (ShareDialog.canShow(SharePhotoContent.class)){
+                    SharePhotoContent content = new SharePhotoContent.Builder()
+                            .addPhoto(sharePhoto)
+                            .build();
+                    shareDialog.show(content);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        facebookShare.setOnClickListener((v) -> {
+            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    Toast.makeText(EnclosureActivity.this, "Share Successful", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onCancel() {
+                    Toast.makeText(EnclosureActivity.this, "Share Cancel", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Toast.makeText(EnclosureActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.e("URL", GlobalVariables.ServerAddress + enclosure.getPictureUrl());
+//            Picasso.with(getBaseContext())
+//                    .load(GlobalVariables.ServerAddress + enclosure.getPictureUrl())
+//                    .into(target);
+
+//            target.onBitmapLoaded(encImage, null);
+
+            SharePhoto sharePhoto = new SharePhoto.Builder()
+                    .setBitmap(encImage)
+                    .build();
+
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(sharePhoto)
+                        .build();
+                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+            }
+
+        });
 
         assetsLayout = (GridLayout) findViewById(R.id.enc_asset_grid_layout);
         int assetWidth = 250;
@@ -192,9 +280,16 @@ public class EnclosureActivity extends BaseActivity {
                     imageView.setOnClickListener(v -> {
                         Intent assetsPopUp = new Intent(GlobalVariables.appCompatActivity, EnclosureAssetsPopUp.class);
                         assetsPopUp.putExtra("arraySize", imagesInAsset.size());
-                        for (int i=0; i<imagesInAsset.size(); i++)
-                            assetsPopUp.putExtra("images" + i, imagesInAsset.get(i));
-                        startActivity(assetsPopUp);
+                        for (int i=0; i<imagesInAsset.size(); i++) {
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            imagesInAsset.get(i).compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            byte[] byteArray = stream.toByteArray();
+
+                            assetsPopUp.putExtra("image" + i, byteArray);
+
+//                            assetsPopUp.putExtra("images" + i, imagesInAsset.get(i));
+                            startActivity(assetsPopUp);
+                        }
                     });
 
                 }
@@ -295,4 +390,21 @@ public class EnclosureActivity extends BaseActivity {
             }
         }, DELAY, PERIOD);
     }
+
+
+//    private void printKeyHash() {
+//        try{
+//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+//            for (Signature s :  info.signatures){
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(s.toByteArray());
+//                Log.e("KEY", android.util.Base64.encodeToString(md.digest(), android.util.Base64.DEFAULT));
+//            }
+//        }
+//        catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

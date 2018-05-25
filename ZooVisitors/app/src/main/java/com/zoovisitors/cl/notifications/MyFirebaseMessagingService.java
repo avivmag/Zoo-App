@@ -43,6 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setAutoCancel(true);
         //set the sound of the notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         notificationBuilder.setSound(alarmSound);
         notificationBuilder.setSmallIcon(R.mipmap.logo);
         notificationBuilder.setContentIntent(pendingIntent);
