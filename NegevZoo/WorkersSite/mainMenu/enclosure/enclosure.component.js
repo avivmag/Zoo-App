@@ -175,17 +175,27 @@
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
 
-                    enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
-                        function () {
-                            utilitiesService.utilities.alert(successContent);
+                    var audioUploadQuery    = uploadAudioFile(enclosureDetail);
 
-                            $scope.isLoading = false;
+                    $q.all([audioUploadQuery]).then(
+                        () => {
+                            enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
+                                function () {
+                                    utilitiesService.utilities.alert(successContent);
+        
+                                    $scope.isLoading = false;
+                                },
+                                function () {
+                                    utilitiesService.utilities.alert(failContent);
+        
+                                    $scope.isLoading = false;
+                            });
                         },
-                        function () {
-                            utilitiesService.utilities.alert(failContent);
-
-                            $scope.isLoading = false;
+                        () => {
+                            utilitiesService.utilities.alert(failContent)
                         });
+
+                    
             }
 
             $scope.addEnclosureVideo        = function(selectedEnclosure, videoUrl) {
@@ -449,6 +459,26 @@
 
             return fileUploadQuery;
         };
+
+        function uploadAudioFile(enclosureDetail) {
+            if (!angular.isDefined(enclosureDetail.enclosureAudioFile) || enclosureDetail.enclosureAudioFile === null) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'enclosures/upload/audio';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(enclosureDetail.enclosureAudioFile, uploadUrl).then(
+                (success)   => {
+                    enclosureDetail.audioUrl    = success.data[0];
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        }
 
         function uploadIcon (icon, enclosure) {
             if (!angular.isDefined(icon) || icon === null) {

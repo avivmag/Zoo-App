@@ -105,7 +105,8 @@ namespace BL
                                        Story                = ed.story,
                                        Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
                                        Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
-                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray()
+                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray(),
+                                       AudioUrl             = ed.audioUrl                                       
                                    };
 
             return enclosureResults.ToArray();
@@ -416,6 +417,7 @@ namespace BL
                 oldEnc.language = enclosureDetail.language;
                 oldEnc.name = enclosureDetail.name;
                 oldEnc.story = enclosureDetail.story;
+                oldEnc.audioUrl = enclosureDetail.audioUrl;
             }
         }
         
@@ -3039,8 +3041,9 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
+        /// <param name="isPicture">Indicated whether the file is a picture file.</param>
         /// <returns>An array of the uploaded images path.</returns>
-        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath, bool isPicture = true)
         {
             var fileNames           = new List<String>();
 
@@ -3055,13 +3058,16 @@ namespace BL
 
                 postedFile.SaveAs(filePath);
 
-                if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                if (isPicture)
                 {
-                    SaveAsIcon(filePath);
-                }
-                else
-                {
-                    Save(filePath);
+                    if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                    {
+                        SaveAsIcon(filePath);
+                    }
+                    else if (relativePath.Contains("image"))
+                    {
+                        Save(filePath);
+                    }
                 }
 
                 fileNames.Add(fileName);

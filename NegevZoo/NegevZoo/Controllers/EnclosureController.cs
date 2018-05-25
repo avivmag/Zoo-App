@@ -475,7 +475,8 @@ namespace NegevZoo.Controllers
 
         [HttpPost]
         [Route("enclosures/upload/{path}")]
-        public JArray EnclosureImagesUpload(String path)
+        [Route("enclosures/upload/{path}/{isPicture}")]
+        public JArray EnclosureImagesUpload(String path, bool isPicture = true)
         {
             if (String.IsNullOrWhiteSpace(path))
             {
@@ -498,7 +499,7 @@ namespace NegevZoo.Controllers
                         throw new AuthenticationException("Couldn't validate the session");
                     }
 
-                    var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/');
+                    var responseObject = db.FileUpload(httpRequest, @"~/assets/enclosures/" + path + '/', isPicture);
 
                     return responseObject;
                 }
