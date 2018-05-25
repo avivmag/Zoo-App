@@ -49,6 +49,8 @@ public class MapActivity extends ProviderBasedActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         mapView = findViewById(R.id.map_view_layout);
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
         getToKnowMeIb = findViewById(R.id.map_get_to_know_me_imagebutton);

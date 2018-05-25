@@ -55,6 +55,10 @@
             };
 
             $scope.addAnimalStory   = function(animalStory) {
+                if (!checkAnimalStory(animalStory)) {
+                    return;
+                }
+
                 $scope.isLoading            = true;
                     var successContent      = !$scope.isEdit ? 'הסיפור האישי נוסף בהצלחה!' : 'הסיפור האישי עודכן בהצלחה!';
                     var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת הסיפור האישי' : 'התרחשה שגיאה בעת עדכון הסיפור האישי';
@@ -125,6 +129,20 @@
                         });
             }
         };
+
+        function checkAnimalStory(checkAnimalStory) {
+            if (!checkAnimalStory) {
+                return false;
+            }
+
+            if (!angular.isDefined(checkAnimalStory.name) || checkAnimalStory.name == '') {
+                utilitiesService.utilities.alert('אנא בחר שם לסיפור החיה');
+
+                return false;
+            }
+
+            return true;
+        }
 
         function uploadProfilePicture (picture, animalStory) {
             if (!angular.isDefined(picture)) {

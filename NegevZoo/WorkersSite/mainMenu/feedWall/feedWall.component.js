@@ -1,5 +1,5 @@
-﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService',
-    function feedWallController($scope, $mdDialog, $mdToast, zooInfoService) {
+﻿app.controller('zooFeedWallCtrl', ['$scope', '$mdDialog', '$mdToast', 'zooInfoService', 'utilitiesService',
+    function feedWallController($scope, $mdDialog, $mdToast, zooInfoService, utilitiesService) {
         initializeComponent();
 
         app.getLanguages().then(
@@ -12,15 +12,13 @@
 
         function initializeComponent() {
             $scope.isLoading            = true;
-            $scope.isFeedWall           = true;
-            $scope.isPushMessage        = false;
 
             $scope.updateFeed           = function (language) {
                 $scope.language         = language;
 
                 zooInfoService.feedWall.getAllFeeds(language.id).then(
                     function (data) {
-                        $scope.feedWall     = data.data;
+                        $scope.feedWall     = data.data.map(fw => { fw.isFeedWall = true; return fw; });
                         $scope.isLoading    = false;
 
                         addEmptyFeed($scope.feedWall);
@@ -48,12 +46,16 @@
                 $mdDialog.show(confirm).then(function () { deleteFeed(feed, feedWall); });
             }
 
-            $scope.addFeed              = function (feed, isFeedWall, isPushMessage) {
+            $scope.addFeed              = function (feed) {
+                if (!checkFeedWall(feed)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
                 var successContent      = feed.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = feed.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
 
-                zooInfoService.feedWall.updateFeed(feed, isFeedWall, isPushMessage).then(
+                zooInfoService.feedWall.updateFeed(feed).then(
                     function () {
                         $mdDialog.show(
                             $mdDialog.alert()
@@ -80,7 +82,7 @@
         }
 
         function addEmptyFeed(feedWall) {
-            feedWall.push({ isNew: true, language: $scope.language.id, id: 0 });
+            feedWall.push({ isNew: true, language: $scope.language.id, id: 0, isPushMessage: false, isFeedWall: true });
         }
 
         function deleteFeed(feed, feedWall) {
@@ -104,4 +106,32 @@
                     );
                 });
         }
+
+        function checkFeedWall(feed) {
+            if (!feed.isFeedWall && !feed.isPushMessage) {
+                utilitiesService.utilities.alert('אנא בחר האם הודעה זו תישלח כהודעות פוש ו\\או כהודעה על קיר העדכונים');
+
+                return false;
+            }
+
+            if (!feed) {
+                return false;
+            }
+
+            if (!angular.isDefined(feed.title)) {
+                utilitiesService.utilities.alert('אנא הכנס כותרת לעדכון');
+
+                return false;
+            }
+
+            if (!angular.isDefined(feed.info)) {
+                utilitiesService.utilities.alert('אנא הכנס תוכן לעדכון');
+
+                return false;
+            }
+
+            feed.isPushMessage  = feed.isPushMessage || false;
+            feed.isFeedWall     = feed.isFeedWall || false;
+            return true;
+        }        
 }]);

@@ -58,7 +58,11 @@
                     () => $scope.isLoading    = false);
             };
 
-            $scope.addOpeningHour               = function (openingHour) {
+            $scope.addOpeningHour               = function (openingHour, openingHours) {
+                if (!checkOpeningHour(openingHour, openingHours)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
                 var successContent      = openingHour.isNew ? 'שעת הפתיחה נוספה בהצלחה!' : 'שעת הפתיחה עודכנה בהצלחה!';
                 var failContent         = openingHour.isNew ? 'התרחשה שגיאה בעת שמירת שעת הפתיחה' : 'התרחשה שגיאה בעת עדכון שעת הפתיחה';
@@ -138,6 +142,66 @@
                             .ok('סגור')
                     );
                 });
+        }
+
+        function checkOpeningHour(openingHour, openingHours) {
+            if (!openingHour) {
+                return false;;
+            }
+
+            if (openingHour.day === undefined || !angular.isNumber(openingHour.day) || openingHour.day < 1 || openingHour.day > 7) {
+                utilitiesService.utilities.alert('אנא בחר יום חוקי מרשימת הימים');
+
+                return false;;
+            }
+
+            if (openingHours.filter(oh => oh.day === openingHour.day).length > 1) {
+                utilitiesService.utilities.alert('ישנה כבר שעת פתיחה קיימת ליום זה');
+
+                return false;
+            }
+
+            if (!openingHour.startTime ||
+                openingHour.startTime.minute === undefined ||
+                !angular.isNumber(openingHour.startTime.minute) ||
+                openingHour.startTime.minute < 0 ||
+                openingHour.startTime.minute > 60) {
+                    utilitiesService.utilities.alert('אנא בחר דקת תאריך תחילה חוקית מרשימת הדקות');
+
+                    return false;
+            }
+
+            if (!openingHour.startTime ||
+                openingHour.startTime.hour === undefined ||
+                !angular.isNumber(openingHour.startTime.hour) ||
+                openingHour.startTime.hour < 0 ||
+                openingHour.startTime.hour > 24) {
+                    utilitiesService.utilities.alert('אנא בחר שעת תאריך תחילה חוקית מרשימת השעות');
+
+                    return false;
+            }
+
+            if (!openingHour.endTime ||
+                openingHour.endTime.minute === undefined ||
+                !angular.isNumber(openingHour.endTime.minute) ||
+                openingHour.endTime.minute < 0 ||
+                openingHour.endTime.minute > 60) {
+                    utilitiesService.utilities.alert('אנא בחר דקת תאריך סיום חוקית מרשימת הדקות');
+                    
+                    return false;
+            }
+
+            if (!openingHour.endTime ||
+                openingHour.endTime.hour === undefined ||
+                !angular.isNumber(openingHour.endTime.hour) ||
+                openingHour.endTime.hour < 0 ||
+                openingHour.endTime.hour > 24) {
+                    utilitiesService.utilities.alert('אנא בחר שעת תאריך סיום חוקית מרשימת השעות');
+
+                    return false;
+            }
+
+            return true;
         }
 }])
 .directive('zooOpeningHours', function () {

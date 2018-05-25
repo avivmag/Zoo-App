@@ -15,11 +15,12 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.pl.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnclosureListActivity extends AppCompatActivity {
+public class EnclosureListActivity extends BaseActivity {
     private RecyclerView recycleViewEnc;
     private RecyclerView.LayoutManager layoutManagerEnc;
     private RecyclerView.Adapter adapterEnc;
@@ -31,14 +32,9 @@ public class EnclosureListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ActionBar ab = getSupportActionBar();
-
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(false);
-        ab.setIcon(R.mipmap.logo);
 
         super.onCreate(savedInstanceState);
+        setActionBar(R.color.greenIcon);
         setContentView(R.layout.activity_enclosure_list);
         GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
             @Override

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,17 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
@@ -39,10 +35,8 @@ import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
-
+import com.zoovisitors.pl.customViews.buttonCustomView;
 import java.io.ByteArrayOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -50,30 +44,18 @@ import java.util.TimerTask;
 
 import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
 
-//import com.facebook.*;
-
-
 /**
  * Created by Gili on 28/12/2017.
  */
 
 public class EnclosureActivity extends BaseActivity {
 
-    private TextView enclosureNameTextView;
-    private ImageView enclosureImageView;
     private TextView closestEvent;
     private TextView closestEventTimer;
-    private RecyclerView recycleViewAnim;
-    private RecyclerView.LayoutManager layoutManagerAnim;
-    private RecyclerView.Adapter adapterAnim;
-
-    private Animal[] animals;
-    private Bundle clickedEnclosure;
-    private TextView enclosureStoryText;
     private Enclosure enclosure;
+    private Animal[] animals;
     private GridLayout assetsLayout;
     private RecurringEventsHandler recurringEventsHandler;
-    private boolean blinking;
 
     private List<Bitmap> imagesInAsset;
 
@@ -84,16 +66,10 @@ public class EnclosureActivity extends BaseActivity {
     private Bitmap encImage;
 
     protected void onCreate(Bundle savedInstanceState) {
-//        printKeyHash();
-        ActionBar ab = getSupportActionBar();
-
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(false);
-        ab.setIcon(R.mipmap.logo);
 
         super.onCreate(savedInstanceState);
-        clickedEnclosure = getIntent().getExtras();
+        setActionBar(R.color.greenIcon);
+        Bundle clickedEnclosure = getIntent().getExtras();
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
@@ -113,35 +89,18 @@ public class EnclosureActivity extends BaseActivity {
             }
         });
 
+
     }
 
     private void draw(){
         setContentView(R.layout.activity_enclosure);
-        ((ImageView) findViewById(R.id.mapIconImage)).setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    startActivity(intent);
 
-                }
-        );
+        //initialize the name textView
+        TextView enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
+        enclosureNameTextView.setText(enclosure.getName());
 
-        ((TextView) findViewById(R.id.showOnMap)).setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    startActivity(intent);
-
-                }
-        );
-        enclosureNameTextView = (TextView) findViewById(R.id.enclosureName);
-        enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
-        enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
-        closestEvent = (TextView) findViewById(R.id.closesEventText);
-        closestEventTimer = (TextView) findViewById(R.id.closestEventTimer);
-
-        if(clickedEnclosure != null) {
-
-        }
-
+        //initialize the enclosure picture
+        ImageView enclosureImageView = (ImageView) findViewById(R.id.enclosureImage);
         GlobalVariables.bl.getImage(enclosure.getPictureUrl(), 500, 500, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -156,31 +115,47 @@ public class EnclosureActivity extends BaseActivity {
             }
         });
 
-        enclosureNameTextView.setText(enclosure.getName());
-        enclosureStoryText.setText(enclosure.getStory());
-        long delay = 6000;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                long startTime = getTimeAdjustedToWeekTime() + delay;
-                handleClosestEvent(startTime);
-            }
-        }, 0l ,delay*5);
+        //initialize the closest event section
+        LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
+        if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+            enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+        else{
+            enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        }
 
-        //Cards and Recycle of the animals
-        recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle);
-        layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
-        recycleViewAnim.setLayoutManager(layoutManagerAnim);
+        // if there are recurring events add them and start the timer.
+        if (enclosure.getRecurringEvents().length > 0) {
 
-        adapterAnim = new AnimalsRecyclerAdapter(animals, R.layout.animal_card);
-        recycleViewAnim.setAdapter(adapterAnim);
+            closestEvent = (TextView) findViewById(R.id.closesEventText);
+            closestEventTimer = (TextView) findViewById(R.id.closestEventTimer);
 
-        ImageView facebookShare = (ImageView) findViewById(R.id.shareOnFacebookImage);
+            long delay = 6000;
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    long startTime = getTimeAdjustedToWeekTime() + delay;
+                    handleClosestEvent(startTime);
+                }
+            }, 0l ,delay*5);
+        }
+        else{ //else remove them from the main layout so it won't appear.
+            LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
+            LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
+
+            encMainLayout.removeView(enclosureClosestEventLayout);
+        }
+
+
+        //initialize the facebook and show on map buttons
+        buttonCustomView facebookShare = (buttonCustomView) findViewById(R.id.shareOnFacebook);
+        facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black,0, 125);
+
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 
-         target = new Target(){
+        target = new Target(){
 
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -243,6 +218,34 @@ public class EnclosureActivity extends BaseActivity {
             }
 
         });
+
+
+        buttonCustomView showOnMapButton = (buttonCustomView) findViewById(R.id.showOnMap);
+        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black,0, 125);
+
+        showOnMapButton.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                    startActivity(intent);
+
+                }
+        );
+
+        //initialize the title and the story of the enclosure
+        TextView enclosureStoryText = (TextView) findViewById(R.id.enc_story_text);
+        enclosureStoryText.setText(enclosure.getStory());
+
+        //initialize the 'who live here' section
+        //Cards and Recycle of the animals
+        RecyclerView recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle);
+        RecyclerView.LayoutManager layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity, LinearLayoutManager.HORIZONTAL, false);
+        recycleViewAnim.setLayoutManager(layoutManagerAnim);
+
+        RecyclerView.Adapter adapterAnim = new AnimalsRecyclerAdapter(animals, R.layout.animal_card);
+        recycleViewAnim.setAdapter(adapterAnim);
+
+
+        //initialize the 'pictures and videos' section
 
         assetsLayout = (GridLayout) findViewById(R.id.enc_asset_grid_layout);
         int assetWidth = 250;
@@ -336,7 +339,7 @@ public class EnclosureActivity extends BaseActivity {
     private void handleClosestEvent(long starTimeArg){
         final long DELAY_TIME = 0;
         final long PERIOD = 250;
-        blinking = false;
+        boolean blinking = false;
         Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent();
         final long startTime = starTimeArg;
         closestEvent.post(() -> closestEvent.setText(recurringEvent.getTitle()));
@@ -357,7 +360,7 @@ public class EnclosureActivity extends BaseActivity {
                                                 }
                                                 else{
                                                     blinkingText(blinkingTimer);
-                                                    blinking = true;
+                                                    boolean blinking = true;
                                                     timer.cancel();
                                                 }
                                             });

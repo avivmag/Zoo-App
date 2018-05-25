@@ -35,7 +35,6 @@ public class TextViewOutline extends TextView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-
     @Override
     public void onDraw(Canvas canvas)
     {

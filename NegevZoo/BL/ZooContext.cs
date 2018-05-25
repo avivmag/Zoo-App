@@ -1353,7 +1353,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray();
+            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray().OrderBy(oh => oh.day);
 
             List<OpeningHourResult> opHoursResults = new List<OpeningHourResult>();
 
@@ -1801,7 +1801,8 @@ namespace BL
 
                 wallFeeds.Add(feed);
             }
-            else //update a feed wall
+            //update a feed wall
+            else if (isWallFeed)
             {
                 WallFeed oldFeed = wallFeeds.SingleOrDefault(wf => wf.id == feed.id);
 
