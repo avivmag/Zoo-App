@@ -1755,7 +1755,8 @@ namespace BL
         /// <param name="feed">The wallfeed to add or update</param>
         /// <param name="isPush">represents if the feed should be send as push notification</param>
         /// <param name="isWallFeed">represents if the feed should be added to the wall feed</param>
-        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
+        /// <param name="pushRecipients">represenets the push recipients (all or online).</param>
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed, string pushRecipients = null)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1826,7 +1827,14 @@ namespace BL
 
             if (isPush)
             {
-                SendNotificationsAllDevices(feed.title, feed.info);
+                if (pushRecipients == "all")
+                {
+                    SendNotificationsAllDevices(feed.title, feed.info);
+                }
+                else if (pushRecipients == "online")
+                {
+                    SendNotificationsOnlineDevices(feed.title, feed.info);
+                }
             }
         }
 
@@ -2765,10 +2773,12 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
                     data = new
                     {
-                        Window = "com.zoovisitors.pl.map.MapActivity"
+                        Title   = title,
+                        Body    = body,
+                        Window  = "com.zoovisitors.pl.map.MapActivity"
                     }
                 };
 
@@ -2777,7 +2787,7 @@ namespace BL
                 using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
                 {
                     httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
-                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Headers.TryAddWithoutValidation("Content-Type", "application/json");
                     httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
                     using (var httpClient = new HttpClient())
