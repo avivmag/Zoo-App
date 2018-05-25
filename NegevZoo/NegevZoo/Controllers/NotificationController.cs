@@ -40,7 +40,7 @@ namespace NegevZoo.Controllers
         /// </summary>
         /// <param name="deviceId">The device id to add</param>
         /// <param name="inPark">a boolean that indicates if the device is in the park</param>
-        [HttpPost]
+        [HttpGet]
         [Route("notification/updateDevice/{deviceId}/{inPark}")]
         public void UpdateDevice(string deviceId, bool inPark)
         {
