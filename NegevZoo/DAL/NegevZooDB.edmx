@@ -30,6 +30,7 @@
           <Property Name="distribution" Type="mediumtext" />
           <Property Name="reproduction" Type="mediumtext" />
           <Property Name="food" Type="mediumtext" />
+          <Property Name="audioUrl" Type="mediumtext" />
         </EntityType>
         <EntityType Name="animalstory">
           <Key>
@@ -466,6 +467,7 @@
           <Property Name="distribution" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="reproduction" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="food" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="audioUrl" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
           <Property Name="interesting" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="EnclosureDetail">
@@ -716,6 +718,7 @@
               <MappingFragment StoreEntitySet="animalsdetails">
                 <ScalarProperty Name="interesting" ColumnName="interesting" />
                 <ScalarProperty Name="food" ColumnName="food" />
+                <ScalarProperty Name="audioUrl" ColumnName="audioUrl" />
                 <ScalarProperty Name="reproduction" ColumnName="reproduction" />
                 <ScalarProperty Name="distribution" ColumnName="distribution" />
                 <ScalarProperty Name="family" ColumnName="family" />

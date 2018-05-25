@@ -18,6 +18,7 @@ namespace DAL.Models
         public string Distribution { get; set; }
         public string Reproduction { get; set; }
         public string Food { get; set; }
+        public string AudioUrl { get; set; }
         public long Preservation { get; set; }
         public string PictureUrl { get; set; }
         public long Language { get; set; }

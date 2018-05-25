@@ -23,6 +23,7 @@ namespace DAL
         public string distribution { get; set; }
         public string reproduction { get; set; }
         public string food { get; set; }
+        public string audioUrl { get; set; }
         public string interesting { get; set; }
     }
 }
