@@ -1353,7 +1353,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray();
+            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray().OrderBy(oh => oh.day);
 
             List<OpeningHourResult> opHoursResults = new List<OpeningHourResult>();
 
@@ -1368,9 +1368,6 @@ namespace BL
                     Language = oh.language
                 });
             }
-
-            // Sort the opening hours by day.
-            var sortedOpHours = opHoursResults.OrderBy(oh => oh.Day);
 
             return opHoursResults;
         }
