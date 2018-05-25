@@ -126,6 +126,10 @@
 
                     $q.all(uploadPromises).then(
                         () => {
+                            if (!checkEnclosure(enclosure)) {
+                                return;
+                            }
+                            
                             enclosureService.enclosures.updateEnclosure(enclosure).then(
                                 function (response) {
                                     utilitiesService.utilities.alert(successContent);
@@ -318,6 +322,23 @@
                     });
             }
         };
+
+        function checkEnclosure(enclosure) {
+            if (!angular.isDefined(enclosure.enclosureName) || enclosure.enclosureName == '') {
+                utilitiesService.utilities.alert('אנא בחר שם למתחם');
+
+                return false;
+            }
+
+            if ((enclosure.markerX !== undefined && enclosure.markerX < 0) ||
+                (enclosure.markerY !== undefined && enclosure.markerY < 0)) {
+                    utilitiesService.utilities.alert('הנקודות שנבחרו למיקום המתחם אינן חוקיות');
+
+                    return false;
+            }
+
+            return true;
+        }
 
         function addEmptyRecurringEvent (recurringEvents) {
             recurringEvents.push({ isNew: true, language: $scope.language.id, id: 0, enclosureId: $scope.selectedEnclosure.id });

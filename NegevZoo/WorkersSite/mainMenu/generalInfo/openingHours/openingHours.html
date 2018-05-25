@@ -79,8 +79,8 @@
                     </div>
                 </md-card-content>
                 
-                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour)">שמור שעת פתיחה חדשה</md-button>
-                <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour)">עדכון שעת פתיחה</md-button>
+                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">שמור שעת פתיחה חדשה</md-button>
+                <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">עדכון שעת פתיחה</md-button>
             </div>
         </md-card-content>
         <md-card-content ng-if="!isLoading && (!openingHours || openingHours.length === 0)">

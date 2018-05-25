@@ -1702,7 +1702,8 @@ namespace BL
 
                 wallFeeds.Add(feed);
             }
-            else //update a feed wall
+            //update a feed wall
+            else if (isWallFeed)
             {
                 WallFeed oldFeed = wallFeeds.SingleOrDefault(wf => wf.id == feed.id);
 
