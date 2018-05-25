@@ -196,6 +196,14 @@
                         <label>הכנס סיפור למתחם</label>
                         <textarea rows="6" ng-model="enclosureDetails[selectedTab].story" required type="text"></textarea>
                     </md-input-container>
+
+                    <md-card-content layout-align="start start">
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר קובץ שמע להעלות:</div>
+                            <input type="file" file-model="enclosureDetails[selectedTab].enclosureAudioFile" accept="audio/*"/>
+                        </div>
+                    </md-card-content>
+
                     <md-input-container>
                         <md-button class="md-raised md-primary" ng-click="addEnclosureDetail(enclosureDetails[selectedTab])">הוסף תוכן למתחם בשפה שנבחרה</md-button>
                     </md-input-container>
