@@ -59,7 +59,17 @@ public class MainActivity extends BaseActivity {
         //changeToHebrew();
 
         //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
-        GlobalVariables.bl.sendDeviceId();
+        GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+
+            }
+
+            @Override
+            public void onFailure(Object response) {
+
+            }
+        });
 
         //Set design for each button
         buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);

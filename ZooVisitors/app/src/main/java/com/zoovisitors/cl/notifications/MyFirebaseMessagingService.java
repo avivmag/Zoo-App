@@ -39,7 +39,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setContentTitle(remoteMessage.getData().get("Title"));
-        notificationBuilder.setContentText(remoteMessage.getNotification().getBody());
+        notificationBuilder.setContentText(remoteMessage.getData().get("Body"));
         notificationBuilder.setAutoCancel(true);
         //set the sound of the notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

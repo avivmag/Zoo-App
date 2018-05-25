@@ -321,20 +321,20 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-    @Override
-    public void sendDeviceId() {
-        ni.post("/" + "?deviceID=" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Log.e("DeviceID","Succeed sending");
-            }
-
-            @Override
-            public void onFailure(String response) {
-                Log.e("DeviceID","cannot send to server");
-            }
-        });
-    }
+//    @Override
+//    public void sendDeviceId() {
+//        ni.post("/" + "?deviceID=" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
+//            @Override
+//            public void onSuccess(String response) {
+//                Log.e("DeviceID","Succeed sending");
+//            }
+//
+//            @Override
+//            public void onFailure(String response) {
+//                Log.e("DeviceID","cannot send to server");
+//            }
+//        });
+//    }
 
     public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
         ni.postImageWithoutPrefix(url, width, height, new ResponseInterface<Bitmap>() {
