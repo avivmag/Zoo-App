@@ -1369,6 +1369,9 @@ namespace BL
                 });
             }
 
+            // Sort the opening hours by day.
+            var sortedOpHours = opHoursResults.OrderBy(oh => oh.Day);
+
             return opHoursResults;
         }
 
