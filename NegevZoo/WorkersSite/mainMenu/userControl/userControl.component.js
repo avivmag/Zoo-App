@@ -28,7 +28,11 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
                     });
             };
 
-            $scope.addUser              = function (user) {
+            $scope.addUser              = function (user, users) {
+                if (!checkUser(user, users)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
 
                 var successContent      = user.isNew ? 'המשתמש נוסף בהצלחה!' : 'המשתמש עודכן בהצלחה!';
@@ -36,24 +40,14 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
 
                 usersService.updateUser(user).then(
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(successContent)
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert(successContent);
 
                         $scope.isLoading = false;
 
                         $scope.updateUsers();
                     },
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(failContent)
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert(failContent);
 
                         $scope.isLoading = false;
                     });
@@ -104,13 +98,21 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
                     function(newPass) {
                         user.password = newPass;
 
+                        if (!checkUser(user)) {
+                            return;
+                        }
+
                         usersService.updatePassword(user.id, user.password).then(
                             () => utilitiesService.utilities.alert("הסיסמא אופסה בהצלחה"),
                             () => utilitiesService.utilities.alert("קרתה שגיאה בעת איפוס הסיסמא"));
                     });
             };
 
-            $scope.updateUsername       = function (user) {
+            $scope.updateUsername       = function (user, users) {
+                if (!checkUser(user, users)) {
+                    return;
+                }
+
                 usersService.updateUsername(user.id, user.name).then(
                     () => utilitiesService.utilities.alert("שם המשתמש עודכן בהצלחה"),
                     () => utilitiesService.utilities.alert("קרתה שגיאה בעת עדכון שם המשתמש")); 
@@ -141,6 +143,38 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
 
         function addEmptyUser(users) {
             users.push({ id: 0, isNew: true });
+        }
+
+        function checkUser(user, users) {
+            if (!user) {
+                return false;
+            }
+
+            if (!angular.isDefined(user.name) || user.name === '') {
+                utilitiesService.utilities.alert('אנא בחר שם משתמש');
+
+                return false;
+            }
+
+            if (users && users.filter(u => u.name === user.name).length > 1) {
+                utilitiesService.utilities.alert('שם המשתמש הנבחר כבר בשימוש');
+
+                return false;
+            }
+
+            if (!angular.isDefined(user.password) || user.password === '') {
+                utilitiesService.utilities.alert('אנא בחר סיסמא');
+
+                return false;
+            }
+
+            if (user.password.length < 6) {
+                utilitiesService.utilities.alert('הסיסמא חייבת להיות לפחות 6 תווים');
+
+                return false;
+            }
+
+            return true;
         }
 }])
 .directive('zooUserControl', function () {

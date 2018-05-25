@@ -1369,6 +1369,9 @@ namespace BL
                 });
             }
 
+            // Sort the opening hours by day.
+            var sortedOpHours = opHoursResults.OrderBy(oh => oh.Day);
+
             return opHoursResults;
         }
 
@@ -1801,7 +1804,8 @@ namespace BL
 
                 wallFeeds.Add(feed);
             }
-            else //update a feed wall
+            //update a feed wall
+            else if (isWallFeed)
             {
                 WallFeed oldFeed = wallFeeds.SingleOrDefault(wf => wf.id == feed.id);
 

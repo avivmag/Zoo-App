@@ -37,6 +37,10 @@
             };
 
             $scope.addEvent                     = function (event) {
+                if (!checkEvent(event)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
                 var successContent      = event.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = event.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
@@ -87,6 +91,38 @@
                     deleteEvent(event, events);
                 });
             }
+        }
+
+        function checkEvent(event) {
+            if (!event) {
+                return false;
+            }
+
+            if (!angular.isDefined(event.title) || event.title === '') {
+                utilitiesService.utilities.alert('אנא בחר כותרת לאירוע');
+
+                return false;
+            }
+
+            if (!angular.isDefined(event.description) || event.description === '') {
+                utilitiesService.utilities.alert('אנא בחר תיאור לאירוע');
+
+                return false;
+            }
+
+            if (!angular.isDefined(event.startDate) || !angular.isDefined(event.endDate)) {
+                utilitiesService.utilities.alert('אנא בחר תאריכי התחלה וסיום לאירוע');
+
+                return false;
+            }
+
+            if (event.startDate > event.endDate) {
+                utilitiesService.utilities.alert('תאריך ההתחלה מוכרח להיות מוקדם מתאריך הסיום של האירוע');
+
+                return false;
+            }
+
+            return true;
         }
 
         function deleteEvent(event, events) {
