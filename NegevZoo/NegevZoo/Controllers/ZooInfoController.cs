@@ -791,9 +791,10 @@ namespace NegevZoo.Controllers
                     return Ok(db.GetAllInfo(language));
                 }
             }
-            catch (Exception exp)
+            catch (Exception Exp)
             {
-                return InternalServerError();
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Language: " + language);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
     }
