@@ -775,5 +775,26 @@ namespace NegevZoo.Controllers
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets all the relevant info for the application.
+        /// </summary>
+        /// <returns>All the relevant info for the application.</returns>
+        [HttpGet]
+        [Route("app/all/{language}")]
+        public IHttpActionResult GetAllInfo(int language)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return Ok(db.GetAllInfo(language));
+                }
+            }
+            catch (Exception exp)
+            {
+                return InternalServerError();
+            }
+        }
     }
 }
