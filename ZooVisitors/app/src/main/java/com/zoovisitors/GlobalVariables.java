@@ -1,7 +1,6 @@
 package com.zoovisitors;
 
 import android.support.v7.app.AppCompatActivity;
-
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.bl.BusinessLayer;

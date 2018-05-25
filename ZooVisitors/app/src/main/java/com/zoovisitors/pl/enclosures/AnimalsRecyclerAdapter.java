@@ -51,7 +51,6 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
 
             }
 
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,6 +80,7 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
         viewHolder.animalName.setText(animals[i].getName());
         int width = 400;
         int height = 400;
+
         GlobalVariables.bl.getImage(animals[i].getPictureUrl(), width, height, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {

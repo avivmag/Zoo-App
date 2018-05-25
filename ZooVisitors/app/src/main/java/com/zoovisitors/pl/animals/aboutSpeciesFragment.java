@@ -4,7 +4,6 @@ package com.zoovisitors.pl.animals;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.pl.LoadingScreen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,13 +40,13 @@ public class aboutSpeciesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.about_species_res, container, false);
 
         numToPicture = new HashMap<>();
-        numToPicture.put(1, R.mipmap.conservation1);
-        numToPicture.put(2, R.mipmap.conservation2);
-        numToPicture.put(3, R.mipmap.conservation3);
+        numToPicture.put(1, R.mipmap.conservation8);
+        numToPicture.put(2, R.mipmap.conservation6);
+        numToPicture.put(3, R.mipmap.conservation5);
         numToPicture.put(4, R.mipmap.conservation4);
-        numToPicture.put(5, R.mipmap.conservation5);
-        numToPicture.put(6, R.mipmap.conservation6);
-        numToPicture.put(7, R.mipmap.conservation7);
+        numToPicture.put(5, R.mipmap.conservation3);
+        numToPicture.put(6, R.mipmap.conservation2);
+        numToPicture.put(7, R.mipmap.conservation1);
 
 //        ((ImageView) rootView.findViewById(R.id.conservation_image)).setImageResource(numToPicture.get(animal.getPreservation()));
         linearLayoutSpecies = (LinearLayout) rootView.findViewById(R.id.linear_about_species);

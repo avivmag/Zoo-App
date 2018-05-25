@@ -15,7 +15,8 @@ public class GeneralInfoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_info);
-
+        android.support.v7.app.ActionBar actionBar= getSupportActionBar();
+        actionBar.hide();
         GlobalVariables.bl.sendDeviceId();
 
         // Find the view pager that will allow the user to swipe between fragments

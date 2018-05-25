@@ -18,21 +18,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.support.v7.app.ActionBar;
-
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.cl.notifications.MyFirebaseMessagingService;
-import com.zoovisitors.pl.customViews.TextViewOutline;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-
 import com.zoovisitors.pl.customViews.buttonCustomView;
 
 import java.util.HashMap;
@@ -49,14 +44,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        ActionBar ab = getSupportActionBar();
-
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(false);
-        ab.setIcon(R.mipmap.logo);
-
         //TODO: TESTING LOADING
         Log.e("TESTENC", GlobalVariables.testEnc[0].getName());
 
@@ -64,6 +51,7 @@ public class MainActivity extends BaseActivity {
 
 
         super.onCreate(savedInstanceState);
+        setActionBar(R.color.blueIcon);
         setContentView(R.layout.activity_main);
 //        GlobalVariables.appCompatActivity = this;
 //        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -75,22 +63,22 @@ public class MainActivity extends BaseActivity {
 
         //Set design for each button
         buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);
-        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures);
+        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures, 20, R.color.white, 20, 150);
 
         buttonCustomView otherInfoButton = (buttonCustomView) findViewById(R.id.otherInfoButton);
-        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info);
+        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info, 20, R.color.white, 20, 150);
 
         buttonCustomView personalButton= (buttonCustomView) findViewById(R.id.personalStoriesButton);
-        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal);
+        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal, 20, R.color.white, 20, 150);
 
         buttonCustomView mapButton = (buttonCustomView) findViewById(R.id.mapButton);
-        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map);
+        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map, 20, R.color.white, 20, 150);
 
         buttonCustomView wazebutton = (buttonCustomView) findViewById(R.id.wazeButton);
-        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav);
+        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav, 20, R.color.white, 20, 150);
 
         buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
-        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule);
+        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule, 20, R.color.white, 20, 150);
 
 
 
@@ -263,7 +251,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -323,7 +310,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
     private boolean isAppInstalled(Context context, String packageName) {
         try {
             context.getPackageManager().getApplicationInfo(packageName, 0);
@@ -352,18 +338,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        System.exit(0);
-        super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
-//    private void designButton(int id, int background, int image, int text){
-//        buttonCustomView button = (buttonCustomView) findViewById(id);
-//        button.setBackgroundColor(background);
-//        TextView iconText = (TextView) findViewById(button.getTextId());
-//        ImageView iconImage = (ImageView) findViewById(button.getImageId());
-//
-//        iconText.setTextSize(20);
-//        iconText.setText(text);
-//
-//        iconImage.setImageResource(image);
-//    }
 }

@@ -19,15 +19,19 @@
     <string name="title_activity_animal">החיות שלנו</string>
     <string name="about_animal">על החיות שלנו</string>
     <string name="about_species">על המין</string>
-    <string name="category">קטגוריה:</string>
+    <string name="preservation">מצב שימור:</string>
+    <string name="doesnt_know">מצב שימור לא ידוע</string>
+    <string name="category">מחלקה:</string>
     <string name="series">סדרה:</string>
     <string name="family">משפחה:</string>
     <string name="distribution">תפוצה:</string>
     <string name="reproduction">רבייה:</string>
-    <string name="food">אוכל:</string>
+    <string name="food">תזונה:</string>
+    <string name="interesting">משהו מעניין עליי:</string>
     <string name="shareOnFacebook">שתף בפייסבוק</string>
     <string name="showOnMap">הראה במפה</string>
-
+    <string name="about_enc">על המתחם:</string>
+    <string name="next_event">אירוע קרוב:</string>
 
     <!-- General Info -->
     <string name="title_activity_general_info">מידע כללי:</string>
@@ -43,7 +47,6 @@
 
     <!-- Schedule -->
     <string name="todays_event">אירועי היום</string>
-    <string name="preservation">מצב שימור</string>
     <string name="facebook_app_id">1991264511112012</string>
 
     <string name="personal">סיפורים אישיים</string>
