@@ -31,7 +31,7 @@ public class aboutAnimalFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.about_animal_res, container, false);
 
         TextView animalStory = (TextView) rootView.findViewById(R.id.story_animal_text);
-        animalStory.setText(animal.getStory());
+        animalStory.setText(animal.getInteresting());
 
         return rootView;
     }
