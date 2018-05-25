@@ -63,6 +63,19 @@
                         <input style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
                     </md-input-container>
 
+                     <md-card-content layout="column" layout-align="start start">
+                        <div style="margin-top: 7px" layout="row">
+                            <div style="width: 200px">בחר קובץ שמע להעלות:</div>
+                            <input type="file" file-model="animalDetails[selectedTab].animalAudioFile" accept="audio/*"/>
+                        </div>
+                        
+                        <div ng-if="animalDetails[selectedTab].audioUrl" layout="row">
+                            <h3>קובץ השמע הקיים:</h3>
+                            <img ng-if="!audio || audio.paused" src="icons/play-button.svg" alt="Play" ng-click="playSound(animalDetails[selectedTab].audioUrl)" width="24"/>
+                            <img ng-if="audio && !audio.paused" src="icons/stop-button.svg" alt="Play" ng-click="playSound(animalDetails[selectedTab].audioUrl)" width="24"/>
+                        </div>
+                    </md-card-content>
+
                     <md-input-container>
                         <label>בחר מחלקה</label>
                         <input ng-model="animalDetails[selectedTab].category" type="text">

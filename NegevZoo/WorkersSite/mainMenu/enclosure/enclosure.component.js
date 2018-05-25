@@ -191,9 +191,7 @@
                                     $scope.isLoading = false;
                             });
                         },
-                        () => {
-                            utilitiesService.utilities.alert(failContent)
-                        });
+                        () => utilitiesService.utilities.alert(failContent));
 
                     
             }
@@ -341,6 +339,20 @@
                         utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת האירוע החוזר.");
                     });
             }
+
+            $scope.playSound                = function(audioFile) {
+                if (!$scope.audio) {
+                    $scope.audio = new Audio($scope.baseURL + audioFile);
+                }
+                
+                if ($scope.audio.paused) {
+                    $scope.audio.play();
+                }
+                else {
+                    $scope.audio.pause();
+                    $scope.audio.currentTime    = 0;
+                }
+            };
         };
 
         function checkEnclosure(enclosure) {
@@ -467,7 +479,7 @@
 
             $scope.isLoading        = true;
 
-            var uploadUrl           = 'enclosures/upload/audio';
+            var uploadUrl           = 'enclosures/upload/audio/false';
 
             var fileUploadQuery     = fileUpload.uploadFileToUrl(enclosureDetail.enclosureAudioFile, uploadUrl).then(
                 (success)   => {

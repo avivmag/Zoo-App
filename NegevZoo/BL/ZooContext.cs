@@ -1084,6 +1084,7 @@ namespace BL
                 oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
                 oldDetails.category     = animalDetails.category;
+                oldDetails.audioUrl     = animalDetails.audioUrl;
             }
         }
 
@@ -3074,7 +3075,7 @@ namespace BL
                     {
                         SaveAsIcon(filePath);
                     }
-                    else if (relativePath.Contains("image"))
+                    else
                     {
                         Save(filePath);
                     }
