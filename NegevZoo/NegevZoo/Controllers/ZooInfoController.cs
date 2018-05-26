@@ -560,8 +560,8 @@ namespace NegevZoo.Controllers
         /// <param name="language">The data language. Default is Hebrew</param>
         /// <param name="info">The info to add or update</param>
         [HttpPost]
-        [Route("about/update/{info}/{language}")]
-        public void UpdateZooAboutInfo(String info, int language = 1)
+        [Route("about/update/{language}")]
+        public void UpdateZooAboutInfo(AboutUsResult aboutUs, int language = 1)
         {
             try
             {
@@ -569,7 +569,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateZooAboutInfo(info, language);
+                        db.UpdateZooAboutInfo(aboutUs.AboutUs, language);
                     }
                     else
                     {
@@ -579,7 +579,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "About info: " + info + ", language: " + language);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "About info: " + aboutUs.AboutUs + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -619,8 +619,8 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("openingHours/update/{note}/{language}")]
-        public void UpdateOpeningHourNote(string note, int language = 1)
+        [Route("openingHours/update/{language}")]
+        public void UpdateOpeningHourNote(OpeningHourNoteResult openingHourNote, int language = 1)
         {
             try
             {
@@ -628,7 +628,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateOpeningHourNote(note, language);
+                        db.UpdateOpeningHourNote(openingHourNote.OpeningHourNote, language);
                     }
                     else
                     {
@@ -638,7 +638,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour note: " + note + ", langauge: " + language);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Opening Hour note: " + openingHourNote.OpeningHourNote + ", langauge: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }
@@ -678,8 +678,8 @@ namespace NegevZoo.Controllers
         /// <param name="note">The note to add or update</param>
         /// <param name="language">The data language. Default is Hebrew</param>
         [HttpPost]
-        [Route("contactInfos/update/{note}/{language}")]
-        public void UpdateContactInfoNote(string note, int language = 1)
+        [Route("contactInfos/update/{language}")]
+        public void UpdateContactInfoNote(ContactInfoNoteResult contactInfoNote, int language = 1)
         {
             try
             {
@@ -687,7 +687,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.UpdateContactInfoNote(note, language);
+                        db.UpdateContactInfoNote(contactInfoNote.ContactInfoNote, language);
                     }
                     else
                     {
@@ -697,7 +697,7 @@ namespace NegevZoo.Controllers
             }
             catch (Exception Exp)
             {
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info note: " + note + ", language: " + language);
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Contact info note: " + contactInfoNote.ContactInfoNote + ", language: " + language);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

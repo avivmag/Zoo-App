@@ -92,7 +92,9 @@
             }
 
             $scope.addContactInfoNote       = function (contactInfoNote, languageId) {
-                zooInfoService.contactInfo.updateContactInfoNote(contactInfoNote, languageId).then(
+                var contactInfoObj          = { contactInfoNote: contactInfoNote };
+
+                zooInfoService.contactInfo.updateContactInfoNote(contactInfoObj, languageId).then(
                     () => utilitiesService.utilities.alert('התוכן נשמר בהצלחה'),
                     () => utilitiesService.utilities.alert('אירעה שגיאה בעת שמירת התוכן'));
             }
