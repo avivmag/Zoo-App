@@ -3177,10 +3177,10 @@ namespace BL
             var mapInfo             = this.GetMapSettings();
             var wallFeeds           = this.GetAllWallFeeds(language);
             var openingHours        = this.GetAllOpeningHours(language);
-            var openingHoursNote    = this.GetOpeningHourNote(language);
+            var openingHoursNote    = this.GetOpeningHourNote(language).FirstOrDefault();
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
-            var contactInfoNote     = this.GetContactInfoNote(language);
+            var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
             var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
 
             var contactInfoResult   = new
