@@ -55,7 +55,7 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
                     Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
                     Bundle clickedAnimal = new Bundle();
                     clickedAnimal.putSerializable("animal", personalStories[pos]);
-                    intent.putExtra("image", images[pos]);
+                    intent.putExtra("url", personalStories[pos].getPictureUrl());
                     intent.putExtras(clickedAnimal);
                     GlobalVariables.appCompatActivity.startActivity(intent);
                 }
