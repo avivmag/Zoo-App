@@ -8,5 +8,11 @@
     <Setting Name="serverKey" Type="System.String" Scope="Application">
       <Value Profile="(Default)">AAAAjd6PHvA:APA91bHWjiP-lc4O7qVxZUklPCKJU6PIw5hj9Tjy2Gpye8FJI1CaKa0IGIRL_uIZywWLTfqQq6V3V3WzJUhmNcnZ-oKYmxUGfDjLIVVWxzdR72fBjLBDRpL5l6ITtThI0hjSoI9LMDUn</Value>
     </Setting>
+    <Setting Name="LocationFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Temp\Locations.csv</Value>
+    </Setting>
+    <Setting Name="PointsFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Temp\Points.pt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
