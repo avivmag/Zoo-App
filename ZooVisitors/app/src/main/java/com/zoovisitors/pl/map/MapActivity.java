@@ -1,12 +1,16 @@
 package com.zoovisitors.pl.map;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +19,6 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
-//import com.zoovisitors.backend.RecurringEvent;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
@@ -25,6 +28,7 @@ import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.dal.Memory;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,9 +43,14 @@ public class MapActivity extends ProviderBasedActivity
     private final double MAX_MARGIN = 10 * 0.0111111;
     private Enclosure[] enclosures;
     private Animal.PersonalStories[] animalStories;
+    private TranslateAnimation translateAnimationYOut, translateAnimationYIn;
+    private LinearLayout getToKnowMeLayout;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
-    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
+    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 3500; //10 * 1000 ;
+    private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1000;
+    private final float GET_TO_KNOW_ME_ANIMATION_START_Y = -200f;
+    private final float GET_TO_KNOW_ME_ANIMATION_END_Y = 200f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,10 @@ public class MapActivity extends ProviderBasedActivity
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         mapView = findViewById(R.id.map_view_layout);
+        getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
+
+        initializeAnimations();
+
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
         getToKnowMeIb = findViewById(R.id.map_get_to_know_me_imagebutton);
         getToKnowMeIb.setBackgroundColor(Color.TRANSPARENT);
@@ -71,6 +84,18 @@ public class MapActivity extends ProviderBasedActivity
         setNetworkDataProvider();
     }
 
+    private void initializeAnimations() {
+        translateAnimationYIn = new TranslateAnimation(0, 0, GET_TO_KNOW_ME_ANIMATION_START_Y,
+                GET_TO_KNOW_ME_ANIMATION_END_Y);
+        translateAnimationYIn.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
+        translateAnimationYIn.setFillAfter(true);
+
+        translateAnimationYOut = new TranslateAnimation(0, 0, GET_TO_KNOW_ME_ANIMATION_END_Y,
+                GET_TO_KNOW_ME_ANIMATION_START_Y);
+        translateAnimationYOut.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
+        translateAnimationYOut.setFillAfter(true);
+    }
+
     private CountDownLatch cdl;
 
     private void setNetworkDataProvider() {
@@ -80,12 +105,14 @@ public class MapActivity extends ProviderBasedActivity
             public void onSuccess(Object response) {
                 enclosures = (Enclosure[]) response;
                 // TODO: remove dummies
-                enclosures[0].setClosestPointX(866);
-                enclosures[0].setClosestPointY(352);
-//                enclosures[1].setClosestPointX(441);
-//                enclosures[1].setClosestPointY(336);
-                enclosures[1].setClosestPointX(1210);
-                enclosures[1].setClosestPointY(935);
+                enclosures[0].setClosestPointX(425);
+                enclosures[0].setClosestPointY(356);
+//                enclosures[0].setClosestPointX(164);
+//                enclosures[0].setClosestPointY(601);
+                enclosures[1].setClosestPointX(164);
+                enclosures[1].setClosestPointY(601);
+//                enclosures[2].setClosestPointX(1210);
+//                enclosures[2].setClosestPointY(935);
                 getEnclosureIconsAndSetImagesOnMap(enclosures);
                 cdl.countDown();
             }
@@ -112,6 +139,7 @@ public class MapActivity extends ProviderBasedActivity
             @Override
             public void onSuccess(Object response) {
                 animalStories = (Animal.PersonalStories[]) response;
+                Log.e("AVIV", Arrays.toString((Animal.PersonalStories[]) response));
                 cdl.countDown();
             }
 
@@ -178,6 +206,9 @@ public class MapActivity extends ProviderBasedActivity
 
     @Override
     public void onLocationChanged(android.location.Location location) {
+//        // TODO: remove this
+//        location.setLatitude(31.2591);
+//        location.setLongitude(34.7438);
         if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
@@ -204,6 +235,8 @@ public class MapActivity extends ProviderBasedActivity
                 movementInProgress.set(false);
                 return;
             }
+//            // TODO: remove this
+//            calibratedPointAndClosestPointFromPoints = new Point(164,601);
 
             updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
             updateGetToKnowMe();
@@ -223,24 +256,58 @@ public class MapActivity extends ProviderBasedActivity
 
     private long lastTimeUpdatedGetToKnowMe = 0;
     private Animal.PersonalStories lastPersonalStoryShowed = null;
+
+    private boolean isGetToKnowMeShown = false;
     private void updateGetToKnowMe() {
         if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
                 MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
             Set<Animal.PersonalStories> animalPersonalStories = mapDS.getCloseAnimalStories();
-            Log.e("AVIV", "animalPersonalStories " + animalPersonalStories.size());
-            if(animalPersonalStories.isEmpty())
+            if (animalPersonalStories.isEmpty()) {
+                if(isGetToKnowMeShown)
+                    hideGetToKnowMe();
                 return;
+            }
             Animal.PersonalStories nextPersonalStory =
                     animalPersonalStories.toArray(
                             new Animal.PersonalStories[animalPersonalStories.size()])
                             [(int) (Math.random() * animalPersonalStories.size())];
-            if(nextPersonalStory == lastPersonalStoryShowed)
-                return;
-            updateGetToKnowMe(nextPersonalStory);
+            if (nextPersonalStory != lastPersonalStoryShowed) {
+                updateGetToKnowMe(nextPersonalStory);
+                lastPersonalStoryShowed = nextPersonalStory;
+            }
+            lastTimeUpdatedGetToKnowMe = System.currentTimeMillis();
         }
     }
+
     private void updateGetToKnowMe(Animal.PersonalStories nextPersonalStory) {
-        Log.e("AVIV", "nextPersonalStory " + nextPersonalStory.toString());
+        if (isGetToKnowMeShown) {
+            changeGetToKnowMe(nextPersonalStory.getName());
+        } else {
+            showGetToKnowMe(nextPersonalStory.getName());
+        }
+
+//        getToKnowMeIb.setImageDrawable(nextPersonalStory.getDrawable());
+    }
+
+    private void showGetToKnowMe(String text) {
+        getToKnowMeTv.setText(text);
+        getToKnowMeLayout.startAnimation(translateAnimationYIn);
+        isGetToKnowMeShown = true;
+    }
+
+    private void changeGetToKnowMe(String text) {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                getToKnowMeLayout.clearAnimation();
+                showGetToKnowMe(text);
+            }
+        }, translateAnimationYOut.getDuration());
+        getToKnowMeLayout.startAnimation(translateAnimationYOut);
+    }
+
+    private void hideGetToKnowMe() {
+        getToKnowMeLayout.startAnimation(translateAnimationYOut);
+        isGetToKnowMeShown = false;
     }
 
     @Override
@@ -262,33 +329,4 @@ public class MapActivity extends ProviderBasedActivity
     public int getMinDistance() {
         return 0;
     }
-
-//    private boolean isMessageShown = false;
-//    private Set<AnimalStory> lastAnimalStorySet;
-//    private void updateGetToKnowMe(Point point) {
-//        if(isMessageShown)
-//            return;
-//        isMessageShown = true;
-//
-//    }
-
-//    private Set<AnimalStory> getClosestAnimalStories(Point point) {
-//        Set<Enclosure> nearEnclosures = new HashSet<>();
-//        for (Enclosure enc :
-//                enclosures) {
-//            if(mapDS.squaredDistance(new Point(enc.getMarkerX(), enc.getMarkerY()), point) <
-// MAX_DISTANCE_FROM_ENCLOSURE) {
-//                nearEnclosures.add(enc);
-//            }
-//        }
-////        Set<Enclosure> nearEnclosures = Arrays.stream(enclosures).filter(enclosure -> mapDS
-/// .squaredDistance(new Point(enclosure.getMarkerX(), enclosure.getMarkerY()), point) <
-/// MAX_DISTANCE_FROM_ENCLOSURE).collect(Collectors.toSet());
-//    }
-
-//    @Override
-//    public void setAnimalStory(AnimalStory as) {
-//        getToKnowMeTv.setText(as.getName());
-//        getToKnowMeIb.setImageDrawable(as.getPictureDrawable());
-//    }
 }

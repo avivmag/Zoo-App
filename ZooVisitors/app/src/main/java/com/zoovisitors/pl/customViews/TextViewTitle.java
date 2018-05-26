@@ -15,6 +15,8 @@ import com.zoovisitors.R;
 
 @SuppressLint("AppCompatCustomView")
 public class TextViewTitle extends TextView {
+    private int textAlignment;
+
     public TextViewTitle(Context context) {
         super(context);
     }
@@ -27,15 +29,20 @@ public class TextViewTitle extends TextView {
         super(context, attrs, defStyleAttr);
     }
 
+    public  TextViewTitle(Context context, int textAlignment){
+        super(context);
+        this.textAlignment = textAlignment;
+    }
+
     @Override
     public void onDraw(Canvas canvas)
     {
         setTextColor(getResources().getColor(R.color.black));
         setTextSize(20);
         setIncludeFontPadding(false);
-        setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
         setPaintFlags(getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setTypeface(null, Typeface.BOLD);
+        setTextAlignment(textAlignment==0 ? TEXT_ALIGNMENT_TEXT_START : textAlignment);
         super.onDraw(canvas);
     }
 }

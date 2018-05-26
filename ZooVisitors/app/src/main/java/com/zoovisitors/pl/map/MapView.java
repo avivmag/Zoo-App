@@ -28,7 +28,9 @@ public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
     private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
     private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
-    private static final int PRIMARY_IMAGE_MARGIN = 50;
+    private int PRIMARY_IMAGE_INITIAL_MARGIN = 50;
+    private int maxPrimaryImageMargin;
+    private int primaryImageMargin;
 
     private float mPosX;
     private float mPosY;
@@ -64,9 +66,9 @@ public class MapView extends RelativeLayout {
                 primaryImageHeight) / 2;
         maxScaleFactor = equatorScaleFactor * 3;
         minScaleFactor =
-                Math.max(
-                        (float) screenWidth / (primaryImageWidth + 2 * PRIMARY_IMAGE_MARGIN),
-                        (float) screenHeight / (primaryImageHeight + 2 * PRIMARY_IMAGE_MARGIN)
+                Math.min(
+                        (float) screenWidth / (primaryImageWidth + 2 * primaryImageMargin),
+                        (float) screenHeight / (primaryImageHeight + 2 * primaryImageMargin)
                 );
 
 
@@ -171,11 +173,9 @@ public class MapView extends RelativeLayout {
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
-                setMposX(x);
-                setMposY(y);
+                setMPos(x,y);
                 mLastScaleFactor = getmScaleFactor();
 
-                //updateIconPositionWithoutSize(zooMapIcon);
                 zooMapIcon.updateIconPosition();
 
                 for (EnclosureIconsHandler enclosureIconsHandler :
@@ -219,25 +219,29 @@ public class MapView extends RelativeLayout {
         return true;
     }
 
-    private void setMposX(float deltaX) {
+    private void setMPos(float deltaX, float deltaY) {
+        primaryImageMargin = Math.max(PRIMARY_IMAGE_INITIAL_MARGIN,
+                        Math.max(
+                                (int)((screenHeight/getmScaleFactor() - zooMapIcon.height)/2),
+                                (int)((screenWidth/getmScaleFactor() - zooMapIcon.width)/2)
+                        )
+        );
+
         mPosX =
                 Math.max(
                         Math.min(
                                 (getmPosX() - mLastTouchX) * getmScaleFactor() / mLastScaleFactor + deltaX,
-                                getmScaleFactor() * (zooMapIcon.left - zooMapIcon.width / 2 + PRIMARY_IMAGE_MARGIN)
+                                getmScaleFactor() * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
                         ),
-                        screenWidth - getmScaleFactor() *(zooMapIcon.width + PRIMARY_IMAGE_MARGIN)
+                        screenWidth - getmScaleFactor() *(zooMapIcon.width + primaryImageMargin)
                 );
-    }
-
-    private void setMposY(float deltaY) {
         mPosY =
                 Math.max(
                         Math.min(
                                 (getmPosY() - mLastTouchY) * getmScaleFactor() / mLastScaleFactor + deltaY,
-                                getmScaleFactor() * (zooMapIcon.top - zooMapIcon.height / 2 + PRIMARY_IMAGE_MARGIN)
+                                getmScaleFactor() * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
                         ),
-                        screenHeight - getmScaleFactor() *(zooMapIcon.height + PRIMARY_IMAGE_MARGIN)
+                        screenHeight - getmScaleFactor() *(zooMapIcon.height + primaryImageMargin)
                 );
 
     }

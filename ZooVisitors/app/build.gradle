@@ -51,6 +51,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'cardview-v7'
         exclude group: 'com.android.support', module: 'customtabs'
     }
-
 }
 apply plugin: 'com.google.gms.google-services'

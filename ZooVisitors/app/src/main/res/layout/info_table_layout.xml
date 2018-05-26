@@ -6,50 +6,36 @@
     android:layout_height="match_parent"
     android:minHeight="0dp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/info_table_image"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp" />
-
-        <TextView
-            android:id="@+id/error_info_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TableLayout
-            android:id="@+id/info_table_table"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.49">
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:id="@+id/info_table_layout"
+            >
 
+            <ImageView
+                android:id="@+id/info_table_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
 
-            <TableRow
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/error_info_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TableLayout
+                android:id="@+id/info_table_table"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+            </TableLayout>
 
-                <TextView
-                    android:id="@+id/firstColInfoTbl"
-                    android:layout_width="153dp"
-                    android:layout_height="46dp"
-                    android:textSize="16sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/secColInfoTbl"
-                    android:layout_width="167dp"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

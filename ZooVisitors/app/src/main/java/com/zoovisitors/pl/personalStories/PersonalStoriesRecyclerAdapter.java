@@ -39,8 +39,8 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
         public ViewHolder(View itemView){
             super(itemView);
 
-            animal_card_image = (ImageView) itemView.findViewById(R.id.animal_card_image);
-            animalName = (TextView) itemView.findViewById(R.id.animal_card_text);
+            animal_card_image = (ImageView) itemView.findViewById(R.id.animal_personal_story_image);
+            animalName = (TextView) itemView.findViewById(R.id.animal_personal_story_name);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -62,19 +62,21 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
     @Override
     public PersonalStoriesRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.animal_card, viewGroup, false);
+                .inflate(R.layout.animal_personal_story_card, viewGroup, false);
         PersonalStoriesRecyclerAdapter.ViewHolder viewHolder = new PersonalStoriesRecyclerAdapter.ViewHolder(v);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(PersonalStoriesRecyclerAdapter.ViewHolder viewHolder, int i) {
-        final int width = 200;
-        final int height = 200;
+        //calculate image witdh according to the screen.
+        int screenSize = GlobalVariables.appCompatActivity.getResources().getDisplayMetrics().widthPixels;
+        int spaces = 30;
+        int imageWidth = screenSize/2 - spaces;
 
         viewHolder.animalName.setText(personalStories[i].getName());
 
-        GlobalVariables.bl.getImage(personalStories[i].getPictureUrl(), width, height, new GetObjectInterface() {
+        GlobalVariables.bl.getImage(personalStories[i].getPictureUrl(), imageWidth, imageWidth, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
                 viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
@@ -84,7 +86,7 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
 
             @Override
             public void onFailure(Object response) {
-                LinearLayout.LayoutParams layoutParams = new  LinearLayout.LayoutParams(width, height);
+                LinearLayout.LayoutParams layoutParams = new  LinearLayout.LayoutParams(imageWidth, imageWidth);
                 viewHolder.animal_card_image.setLayoutParams(layoutParams);
                 viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
                 images[i] = null;
