@@ -17,7 +17,7 @@ import android.util.Log;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 

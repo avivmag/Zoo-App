@@ -20,10 +20,5 @@ public class GlobalVariables {
     public static int firstEnter = 0;
     public static AppCompatActivity foregroundActivity;
     public static String firebaseToken;
-    public static String deviceId;
     public static boolean notifications = true;
-
-    public static OpeningHours[] testOp;
-    public static Enclosure[] testEnc;
-
 }

@@ -23,7 +23,7 @@ import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.dal.Memory;

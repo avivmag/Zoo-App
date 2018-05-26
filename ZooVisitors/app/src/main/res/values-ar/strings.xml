@@ -67,4 +67,6 @@
     <string name="hours">ساعات</string>
 
     <string name="turn_the_volume">הגבר את עוצמת השמע</string>
+
+    <string name="confirm">אישור</string>
 </resources>

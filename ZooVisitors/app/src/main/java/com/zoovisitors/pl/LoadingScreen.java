@@ -1,33 +1,29 @@
 package com.zoovisitors.pl;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.VideoView;
+
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.backend.OpeningHours;
+import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.callbacks.FunctionInterface;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.FunctionInterface;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends BaseActivity {
     private final static int HUNDRED = 100;
-
-    private boolean endAllThreads = false;
     private CountDownLatch doneSignal;
-    private VideoView videoview;
     private List<FunctionInterface> tasks;
 
     //progress bar fields
-    private double progressPercentage;
     private ProgressBarCustomView pb;
 
     @Override
@@ -46,106 +42,44 @@ public class LoadingScreen extends BaseActivity {
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         //TODO: Delete this when sending device id to the server
         Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
-        progressPercentage = 0;
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
-        pb.setProgressPrecentage((int) progressPercentage);
 
-        tasks = new ArrayList<>();
+        GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                goToMain();
+                //TODO: AVIV: Response is the whole data
+            }
 
+            @Override
+            public void onFailure(Object response) {
+                new AlertDialog.Builder(LoadingScreen.this)
+                        .setTitle("")
+                        .setMessage((String) response)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                if (whichButton == dialog.BUTTON_POSITIVE){
+                                    System.exit(0);
+                                }
+                            }}).show();
+            }
 
-//        videoview = (VideoView) findViewById(R.id.loading_video);
-//        videoview.setTranslationX(-525f);
-//        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                mp.setLooping(true);
-//            }
-//        });
-//        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
-//        videoview.setVideoURI(uri);
-//        videoview.start();
-
-
-
-
-        tasks.add(() -> {
-            GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    GlobalVariables.testEnc = (Enclosure[]) response;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    increasePercentage();
-                    doneSignal.countDown();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    GlobalVariables.language = 1;
-                    Log.e("Can't make task", (String) response);
-                    GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-                        @Override
-                        public void onSuccess(Object response) {
-                            GlobalVariables.testEnc = (Enclosure[]) response;
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            increasePercentage();
-                            GlobalVariables.language = 3;
-                            doneSignal.countDown();
-                        }
-
-                        @Override
-                        public void onFailure(Object response) {
-                            Log.e("Can't make task", (String) response);
-                        }
-                    });
-                }
-            });
+            @Override
+            public void onUpdate(Object response) {
+                pb.post(() -> pb.setProgressPrecentage((Integer) response));
+            }
         });
-
-        tasks.add(() -> {
-            GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    GlobalVariables.testOp = (OpeningHours []) response;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    increasePercentage();
-                    doneSignal.countDown();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Log.e("Can't make task", (String) response);
-                }
-            });
-        });
-
-        makeTasks();
-
-
 
     }
-
 
     private void goToMain(){
         Intent loadingIntent = new Intent(LoadingScreen.this, MainActivity.class);
         startActivity(loadingIntent);
     }
 
-
     private void changeLanguage() {
         if (GlobalVariables.firstEnter == 0) {
-
             switch (Locale.getDefault().getLanguage()){
                 case "he": //Hebrew
                     GlobalVariables.language = 1;
@@ -165,40 +99,5 @@ public class LoadingScreen extends BaseActivity {
             }
             GlobalVariables.firstEnter++;
         }
-    }
-
-
-    private void makeTasks(){
-        doneSignal = new CountDownLatch(tasks.size());
-        for (FunctionInterface f : tasks){
-            Thread task = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    f.whatToDo();
-                }
-            });
-            task.start();
-        }
-
-        Thread task = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    doneSignal.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                goToMain();
-            }
-        });
-        task.start();
-    }
-
-    private synchronized void increasePercentage(){
-        progressPercentage++;
-        Log.e("PERC", "" + ((int) ((progressPercentage/(double) tasks.size()) * HUNDRED)));
-//        Log.e("PERC", "" + )
-        pb.post(()-> {pb.setProgressPrecentage((int) ((progressPercentage/(double) tasks.size()) * HUNDRED));});
-//        pb.post(()-> {pb.setProgressPrecentage();});
     }
 }

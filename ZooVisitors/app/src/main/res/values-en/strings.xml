@@ -79,4 +79,9 @@
     <string name="hours">Hours</string>
 
     <string name="turn_the_volume">Please turn the volume up</string>
+
+    <string name="init_bad">Sorry but something went wrong. Close the app and open it again</string>
+
+    <string name="confirm">Confirm</string>
+
 </resources>

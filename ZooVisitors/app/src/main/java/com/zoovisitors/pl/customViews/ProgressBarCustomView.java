@@ -24,6 +24,7 @@ public class ProgressBarCustomView extends LinearLayout {
     private TextView progressText;
     private ProgressBar pb;
 
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public ProgressBarCustomView(Context context) {
         super(context);

@@ -17,10 +17,11 @@ import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
-import com.zoovisitors.cl.network.ResponseInterface;
+import com.zoovisitors.backend.callbacks.ResponseInterface;
 import com.zoovisitors.dal.InternalStorage;
 
 /**
@@ -375,5 +376,26 @@ public class BusinessLayerImpl implements BusinessLayer {
                 goi.onFailure(response);
             }
         });
+    }
+
+    @Override
+    public void getAllDataInit(final UpdateInterface updateInterface) {
+        ni.getInitDataString("app/all/" + GlobalVariables.language, new UpdateInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                updateInterface.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                updateInterface.onFailure(response);
+            }
+
+            @Override
+            public void onUpdate(Object response) {
+                updateInterface.onUpdate(response);
+            }
+        });
+
     }
 }
