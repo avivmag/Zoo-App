@@ -12,8 +12,8 @@ public class Animal implements java.io.Serializable{
     private int id;
     @SerializedName("name")
     private String name;
-    @SerializedName("story")
-    private String story;
+    @SerializedName("interesting")
+    private String interesting;
     @SerializedName("encId")
     private int encId;
     @SerializedName("category")
@@ -43,8 +43,8 @@ public class Animal implements java.io.Serializable{
         return name;
     }
 
-    public String getStory() {
-        return story;
+    public String getInteresting() {
+        return interesting;
     }
 
     public int getEncId() {

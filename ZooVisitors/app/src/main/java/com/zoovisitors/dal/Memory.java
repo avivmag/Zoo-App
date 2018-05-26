@@ -1,5 +1,6 @@
 package com.zoovisitors.dal;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -7,6 +8,8 @@ import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Memory {
 
@@ -20,6 +23,8 @@ public class Memory {
 //            maxY = Math.max(maxY, point.getY());
 //        }
 //    }
+
+    public static Map<String, Bitmap> urlToBitmapMap = new HashMap<String, Bitmap>();
 
     private static Location[] locations = {
             new Location(31.25806349,34.74502552),
