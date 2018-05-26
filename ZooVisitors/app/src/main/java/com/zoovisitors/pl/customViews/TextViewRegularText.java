@@ -38,6 +38,7 @@ public class TextViewRegularText extends TextView {
         setTextSize(20);
         setIncludeFontPadding(false);
         setTextAlignment(textAlignment==0 ? TEXT_ALIGNMENT_TEXT_START : textAlignment);
+
         super.onDraw(canvas);
     }
 }

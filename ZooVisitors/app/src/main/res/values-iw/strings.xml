@@ -34,13 +34,14 @@
     <string name="next_event">אירוע קרוב:</string>
 
     <!-- General Info -->
-    <string name="title_activity_general_info">מידע כללי:</string>
+        <!--contact ways-->
+    <string name="contact_us_headline">דרכי התקשרות</string>
     <string name="contact_info">יצירת קשר</string>
+    <string name="conatct_address">כתובת</string>
     <string name="prices">מחירון</string>
     <string name="population">אוכלוסיה</string>
     <string name="opening_hours">שעות פתיחה</string>
     <string name="about_us">עלינו</string>
-    <string name="contact_us_headline">דרכי התקשרות:</string>
     <string name="opening_hours_headline">זמני פתיחה:</string>
     <string name="prices_headline">מחירון:</string>
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>

@@ -1,10 +1,16 @@
 package com.zoovisitors.pl.general_info;
 
+import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -22,7 +28,6 @@ public class pricesFragment extends Fragment {
 
     public pricesFragment() {
         // Required empty public constructor
-
     }
 
     @Override
@@ -39,7 +44,6 @@ public class pricesFragment extends Fragment {
 
                 int screenSize = GlobalVariables.appCompatActivity.getResources().getDisplayMetrics().widthPixels;
                 int spaces = 20;
-
                 int cellWidth = screenSize/2 - spaces;
 
                 //add the titles to the table
@@ -86,20 +90,26 @@ public class pricesFragment extends Fragment {
                     else{
                         rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                     }
+                    rowLayout.setBaselineAligned(false);
+                    rowLayout.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
 
                     //pop cell
                     TextViewRegularText popColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the population
                     popColumn.setText(p.getPopulation());
                     popColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
                     popColumn.setWidth(cellWidth);
+                    popColumn.setHeight(150);
                     popColumn.setPadding(0,10,0,10);
+                    popColumn.setGravity(Gravity.CENTER);
 
                     //price cell
                     TextViewRegularText priceColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the prices
                     priceColumn.setText("" + p.getPricePop() + "₪");
                     priceColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
                     priceColumn.setWidth(cellWidth);
-                    priceColumn.setPadding(0,10,0,10);;
+                    priceColumn.setHeight(150);
+                    priceColumn.setPadding(0,10,0,10);
+                    priceColumn.setGravity(Gravity.CENTER);
 
                     rowLayout.addView(popColumn);
                     rowLayout.addView(priceColumn);
