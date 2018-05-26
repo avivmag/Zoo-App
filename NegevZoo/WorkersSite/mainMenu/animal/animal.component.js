@@ -125,6 +125,8 @@
                                 function () {
                                     utilitiesService.utilities.alert(successContent);
 
+                                    delete $scope.audio;
+
                                     $scope.isLoading = false;
                                 },
                                 function () {

@@ -182,7 +182,9 @@
                             enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
                                 function () {
                                     utilitiesService.utilities.alert(successContent);
-        
+
+                                    delete $scope.audio;
+
                                     $scope.isLoading = false;
                                 },
                                 function () {
