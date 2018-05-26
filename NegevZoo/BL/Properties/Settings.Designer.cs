@@ -41,5 +41,23 @@ namespace BL.Properties {
                 return ((string)(this["serverKey"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\Locations.csv")]
+        public string LocationFilePath {
+            get {
+                return ((string)(this["LocationFilePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\Points.pt")]
+        public string PointsFilePath {
+            get {
+                return ((string)(this["PointsFilePath"]));
+            }
+        }
     }
 }
