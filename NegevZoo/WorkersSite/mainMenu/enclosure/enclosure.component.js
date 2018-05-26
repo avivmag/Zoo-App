@@ -175,17 +175,27 @@
                     var successContent      = $scope.page === 'create' ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת המתחם' : 'התרחשה שגיאה בעת עדכון המתחם';
 
-                    enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
-                        function () {
-                            utilitiesService.utilities.alert(successContent);
+                    var audioUploadQuery    = uploadAudioFile(enclosureDetail);
 
-                            $scope.isLoading = false;
+                    $q.all([audioUploadQuery]).then(
+                        () => {
+                            enclosureService.enclosureDetails.updateEnclosureDetail(enclosureDetail).then(
+                                function () {
+                                    utilitiesService.utilities.alert(successContent);
+
+                                    delete $scope.audio;
+
+                                    $scope.isLoading = false;
+                                },
+                                function () {
+                                    utilitiesService.utilities.alert(failContent);
+        
+                                    $scope.isLoading = false;
+                            });
                         },
-                        function () {
-                            utilitiesService.utilities.alert(failContent);
+                        () => utilitiesService.utilities.alert(failContent));
 
-                            $scope.isLoading = false;
-                        });
+                    
             }
 
             $scope.addEnclosureVideo        = function(selectedEnclosure, videoUrl) {
@@ -331,6 +341,20 @@
                         utilitiesService.utilities.alert("אירעה שגיאה בעת מחיקת האירוע החוזר.");
                     });
             }
+
+            $scope.playSound                = function(audioFile) {
+                if (!$scope.audio) {
+                    $scope.audio = new Audio($scope.baseURL + audioFile);
+                }
+                
+                if ($scope.audio.paused) {
+                    $scope.audio.play();
+                }
+                else {
+                    $scope.audio.pause();
+                    $scope.audio.currentTime    = 0;
+                }
+            };
         };
 
         function checkEnclosure(enclosure) {
@@ -449,6 +473,26 @@
 
             return fileUploadQuery;
         };
+
+        function uploadAudioFile(enclosureDetail) {
+            if (!angular.isDefined(enclosureDetail.enclosureAudioFile) || enclosureDetail.enclosureAudioFile === null) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'enclosures/upload/audio/false';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(enclosureDetail.enclosureAudioFile, uploadUrl).then(
+                (success)   => {
+                    enclosureDetail.audioUrl    = success.data[0];
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        }
 
         function uploadIcon (icon, enclosure) {
             if (!angular.isDefined(icon) || icon === null) {

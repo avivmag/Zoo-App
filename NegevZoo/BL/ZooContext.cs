@@ -105,7 +105,8 @@ namespace BL
                                        Story                = ed.story,
                                        Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
                                        Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
-                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray()
+                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray(),
+                                       AudioUrl             = ed.audioUrl                                       
                                    };
 
             return enclosureResults.ToArray();
@@ -416,6 +417,7 @@ namespace BL
                 oldEnc.language = enclosureDetail.language;
                 oldEnc.name = enclosureDetail.name;
                 oldEnc.story = enclosureDetail.story;
+                oldEnc.audioUrl = enclosureDetail.audioUrl;
             }
         }
         
@@ -1082,6 +1084,7 @@ namespace BL
                 oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
                 oldDetails.category     = animalDetails.category;
+                oldDetails.audioUrl     = animalDetails.audioUrl;
             }
         }
 
@@ -1755,7 +1758,8 @@ namespace BL
         /// <param name="feed">The wallfeed to add or update</param>
         /// <param name="isPush">represents if the feed should be send as push notification</param>
         /// <param name="isWallFeed">represents if the feed should be added to the wall feed</param>
-        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
+        /// <param name="pushRecipients">represenets the push recipients (all or online).</param>
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed, string pushRecipients = null)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1826,7 +1830,14 @@ namespace BL
 
             if (isPush)
             {
-                SendNotificationsAllDevices(feed.title, feed.info);
+                if (pushRecipients == "all")
+                {
+                    SendNotificationsAllDevices(feed.title, feed.info);
+                }
+                else if (pushRecipients == "online")
+                {
+                    SendNotificationsOnlineDevices(feed.title, feed.info);
+                }
             }
         }
 
@@ -2765,10 +2776,12 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
                     data = new
                     {
-                        Window = "com.zoovisitors.pl.map.MapActivity"
+                        Title   = title,
+                        Body    = body,
+                        Window  = "com.zoovisitors.pl.map.MapActivity"
                     }
                 };
 
@@ -2777,7 +2790,7 @@ namespace BL
                 using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
                 {
                     httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
-                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Headers.TryAddWithoutValidation("Content-Type", "application/json");
                     httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
                     using (var httpClient = new HttpClient())
@@ -3039,8 +3052,9 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
+        /// <param name="isPicture">Indicated whether the file is a picture file.</param>
         /// <returns>An array of the uploaded images path.</returns>
-        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath, bool isPicture = true)
         {
             var fileNames           = new List<String>();
 
@@ -3055,13 +3069,16 @@ namespace BL
 
                 postedFile.SaveAs(filePath);
 
-                if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                if (isPicture)
                 {
-                    SaveAsIcon(filePath);
-                }
-                else
-                {
-                    Save(filePath);
+                    if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                    {
+                        SaveAsIcon(filePath);
+                    }
+                    else
+                    {
+                        Save(filePath);
+                    }
                 }
 
                 fileNames.Add(fileName);
@@ -3095,6 +3112,84 @@ namespace BL
             postedFile.SaveAs(filePath);
 
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
+        }
+
+        public object GetAllInfo(int language)
+        {
+            // Get the enclosures.
+            var enclosures = this.GetAllEnclosureResults(language);
+
+            // Add the marker data.
+            foreach (var e in enclosures)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + e.MarkerIconUrl);
+                if (!String.IsNullOrWhiteSpace(e.MarkerIconUrl) && File.Exists(filePath))
+                {
+                    e.MarkerData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the stories.
+            var animalStories = this.GetAllAnimalStoriesResults(language);
+
+            // Add the story data.
+            foreach (var story in animalStories)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + story.PictureUrl);
+                if (!String.IsNullOrWhiteSpace(story.PictureUrl) && File.Exists(filePath))
+                {
+                    story.pictureData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the markers.
+            var miscMarkers = this.GetAllMarkers().Select(mm =>
+            new
+            {
+                mm.id,
+                mm.latitude,
+                mm.longitude,
+                IconData = mm.iconUrl != null && File.Exists(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) ? File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) : null
+            });
+
+            // Get the map data.
+            var mapData = File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + this.GetMapUrl().First()));
+
+            var openingHours = this.GetAllOpeningHours(language);
+
+            var openingHoursNote = this.GetOpeningHourNote(language);
+
+            var prices = this.GetAllPrices(language);
+
+            var contactInfo = this.GetAllContactInfos(language);
+
+            var contactInfoNote = this.GetContactInfoNote(language);
+
+            var aboutUs = this.GetZooAboutInfo(language).FirstOrDefault();
+
+            var contactInfoResult = new
+            {
+                contactInfo,
+                contactInfoNote
+            };
+
+            var openingHoursResult = new
+            {
+                openingHours,
+                openingHoursNote
+            };
+
+            return new
+            {
+                enclosures,
+                animalStories,
+                miscMarkers,
+                mapData,
+                contactInfoResult,
+                openingHoursResult,
+                prices,
+                aboutUs
+            };
         }
 
         #endregion
