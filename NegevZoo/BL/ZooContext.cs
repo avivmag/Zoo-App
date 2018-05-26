@@ -2147,13 +2147,24 @@ namespace BL
                     }
                 }
             }
-
+            
+            // Remove deprecated routes from the database.
             zooDB.GetAllRoutes().RemoveRange(zooDB.GetAllRoutes());
 
+            // Add new routes to the database. 
             zooDB.GetAllRoutes().AddRange(routesToAdd);
 
-            //add the map info to the db.
-            zooDB.GetAllMapInfos().Add(new MapInfo
+            // Update the map info.
+            var mapInfos = zooDB.GetAllMapInfos();
+
+            var mapInfo = zooDB.GetAllMapInfos().FirstOrDefault();
+
+            if (mapInfo != default(MapInfo))
+            {
+                mapInfos.Remove(mapInfo);
+            }
+
+            mapInfos.Add(new MapInfo
             {
                 zooLocationLongitude    = point1Longitude,
                 zooLocationLatitude     = point1Latitude,
@@ -2737,9 +2748,11 @@ namespace BL
             //get all the recurring events in hebrew
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
             Logger.GetInstance(false).WriteLine("Package received");
-            
+
             //get the current time
-            var currentTime = DateTime.Now.ToLocalTime();
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             Console.WriteLine(currentTime);
             Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
@@ -3162,31 +3175,32 @@ namespace BL
                 IconData = mm.iconUrl != null && File.Exists(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) ? File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) : null
             });
 
-            // Get the map data.
-            var mapData = File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + this.GetMapUrl().First()));
+            var mapData             = File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + this.GetMapUrl().First()));
+            var mapInfo             = this.GetMapSettings();
+            var wallFeeds           = this.GetAllWallFeeds(language);
+            var openingHours        = this.GetAllOpeningHours(language);
+            var openingHoursNote    = this.GetOpeningHourNote(language);
+            var prices              = this.GetAllPrices(language);
+            var contactInfo         = this.GetAllContactInfos(language);
+            var contactInfoNote     = this.GetContactInfoNote(language);
+            var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
 
-            var openingHours = this.GetAllOpeningHours(language);
-
-            var openingHoursNote = this.GetOpeningHourNote(language);
-
-            var prices = this.GetAllPrices(language);
-
-            var contactInfo = this.GetAllContactInfos(language);
-
-            var contactInfoNote = this.GetContactInfoNote(language);
-
-            var aboutUs = this.GetZooAboutInfo(language).FirstOrDefault();
-
-            var contactInfoResult = new
+            var contactInfoResult   = new
             {
                 contactInfo,
                 contactInfoNote
             };
 
-            var openingHoursResult = new
+            var openingHoursResult  = new
             {
                 openingHours,
                 openingHoursNote
+            };
+
+            var mapResult           = new
+            {
+                mapData,
+                mapInfo
             };
 
             return new
@@ -3194,7 +3208,8 @@ namespace BL
                 enclosures,
                 animalStories,
                 miscMarkers,
-                mapData,
+                mapResult,
+                wallFeeds,
                 contactInfoResult,
                 openingHoursResult,
                 prices,
