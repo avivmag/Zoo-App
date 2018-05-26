@@ -2092,9 +2092,11 @@ namespace BL
         }
 
         private const int MAX_DISTANCE_OF_ROUTE_FLAT = 50 * 50;
+        
         // maximum len on x is around 50, the 30 is estimation for the other road. I better change
         // one day so it will support different latlng/xy ratio
         private const int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
+        
         /// <summary>
         /// This method intitiates the map with the given parameters. 
         /// </summary>
@@ -2108,9 +2110,11 @@ namespace BL
         /// <param name="point2Longitude"> This variable represents the longitude of a point in the map</param>
         /// <param name="point2XLocation"> This variable represents the location of the longitude on the map picture</param>
         /// <param name="point2YLocation"> This variable represents the location of the latitude on the map picture</param>
-        public void InitMapSettings(string locationsFilePath, string pointsFilePath, double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
+        public void InitMapSettings(double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
         {
-            List<LocationMap> locations = ExtractLocationsFromCSVFile(locationsFilePath);
+            List<LocationMap> locations = ExtractLocationsFromCSVFile(Properties.Settings.Default.LocationFilePath);
+            //File.Delete(Properties.Settings.Default.LocationFilePath);
+
             double alpha = getAlpha(point1Latitude, point1Longitude, point1XLocation, point1YLocation, point2Latitude, point2Longitude, point2XLocation, point2YLocation);
             
             double xLongitudeRatio  = getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation);
@@ -2121,8 +2125,8 @@ namespace BL
             double maxLatitude      = locations.Select(location => location.Latitude).Max();
             double minLongitude     = locations.Select(location => location.Longitude).Min();
             double maxLongitude     = locations.Select(location => location.Longitude).Max();
-            PointMap[] points = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
-            var allRoutes = zooDB.GetAllRoutes();
+            PointMap[] points       = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
+            var routesToAdd         = new List<Route>();
 
             // store the routes
             for (int curr = 0; curr < points.Length; curr++)
@@ -2133,7 +2137,7 @@ namespace BL
                                 < MAX_DISTANCE_OF_ROUTE_FLAT; off++)
                 {
                     if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
-                        allRoutes.Add(new Route
+                        routesToAdd.Add(new Route
                         {
                             primaryLeft = points[curr].X,
                             primaryRight = points[curr].Y,
@@ -2143,7 +2147,11 @@ namespace BL
                     }
                 }
             }
-            
+
+            zooDB.GetAllRoutes().RemoveRange(zooDB.GetAllRoutes());
+
+            zooDB.GetAllRoutes().AddRange(routesToAdd);
+
             //add the map info to the db.
             zooDB.GetAllMapInfos().Add(new MapInfo
             {
@@ -2190,7 +2198,7 @@ namespace BL
                 points[i] = locationToPoint(locations[i], point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
             }
 
-            Array.Sort(points, (p1, p2) => p1.X.CompareTo(p2.Y));
+            Array.Sort(points, (p1, p2) => p1.X.CompareTo(p2.X));
             return points;
         }
 
@@ -2885,23 +2893,25 @@ namespace BL
             //init variables
             string line;
             List<LocationMap> locations = new List<LocationMap>();
-            var locationsFileReader = new StreamReader(locationsFilePath);
 
-            //while there is a line to read
-            while ((line = locationsFileReader.ReadLine()) != null)
+            using (var locationsFileReader = new StreamReader(locationsFilePath))
             {
-                //seperate the line
-                string[] values = Regex.Split(line, ",");
+                //while there is a line to read
+                while ((line = locationsFileReader.ReadLine()) != null)
+                {
+                    //seperate the line
+                    string[] values = Regex.Split(line, ",");
 
-                // parse the string to int
-                double latitude = Double.Parse(values[0]);
-                double longitude = Double.Parse(values[1]);
+                    // parse the string to int
+                    double latitude = Double.Parse(values[0]);
+                    double longitude = Double.Parse(values[1]);
 
-                //create a new point that represented with a Pair object.
-                locations.Add(new LocationMap(latitude, longitude));
+                    //create a new point that represented with a Pair object.
+                    locations.Add(new LocationMap(latitude, longitude));
+                }
+
+                return locations;
             }
-
-            return locations;
         }
         
         #endregion
