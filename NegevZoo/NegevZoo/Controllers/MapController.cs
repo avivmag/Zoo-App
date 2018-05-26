@@ -79,8 +79,8 @@ namespace NegevZoo.Controllers
         /// <param name="xLocation"> This variable represents the location of the longitude on the map picture</param>
         /// <param name="yLocation"> This variable represents the location of the latitude on the map picture</param>
         [HttpGet]
-        [Route("map/initvars/{locationsFilePath}/{pointsFilePath}/{point1Longitude}/{point1Latitude}/{point1XLocation}/{point1YLocation}/{point2Longitude}/{point2Latitude}/{point2XLocation}/{point2YLocation}")]
-        public void InitMapSettings(string locationsFilePath, string pointsFilePath, double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
+        [Route("map/initvars/{point1Longitude}/{point1Latitude}/{point1XLocation}/{point1YLocation}/{point2Longitude}/{point2Latitude}/{point2XLocation}/{point2YLocation}")]
+        public IHttpActionResult InitMapSettings(double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
         {
             try
             {
@@ -88,7 +88,9 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        db.InitMapSettings(locationsFilePath, pointsFilePath, point1Longitude, point1Latitude, point1XLocation, point1YLocation, point2Longitude, point2Latitude, point2XLocation, point2YLocation);
+                        db.InitMapSettings(point1Longitude, point1Latitude, point1XLocation, point1YLocation, point2Longitude, point2Latitude, point2XLocation, point2YLocation);
+
+                        return Ok();
                     }
                     else
                     {
@@ -99,8 +101,6 @@ namespace NegevZoo.Controllers
             catch (Exception Exp)
             {
                 string mapSettingsInput =
-                    "locationsFilePath: " + locationsFilePath + ", " +
-                    "pointsFilePath: " + pointsFilePath + ", " +
                     "point1Longitude: " + point1Longitude + ", " +
                     "point1Latitude: " + point1Latitude + ", " +
                     "point1XLocation: " + point1XLocation + ", " +
