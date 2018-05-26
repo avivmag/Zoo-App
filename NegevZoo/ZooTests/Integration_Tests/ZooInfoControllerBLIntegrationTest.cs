@@ -1298,12 +1298,15 @@ namespace ZooTests
             Assert.AreEqual(aboutUs.Count(), 1);
 
             var oldAboutUs = aboutUs.SingleOrDefault(au => au.AboutUs == "We are Negev Zoo!!! We love animals");
-            var newAboutUs = "This is the new about us!";
+            var newAboutUs = new ZooInfoController.AboutUsResult
+            {
+                AboutUs = "This is the new about us!"
+            };
 
             ZooInfoController.UpdateZooAboutInfo(newAboutUs, (int)Languages.en);
 
             aboutUs = ZooInfoController.GetZooAboutInfo((int)Languages.en);
-            Assert.IsTrue(aboutUs.Any(au => au.AboutUs == newAboutUs));
+            Assert.IsTrue(aboutUs.Any(au => au.AboutUs == newAboutUs.AboutUs));
             Assert.IsFalse(aboutUs.Any(au => au.AboutUs == oldAboutUs.AboutUs));
         }
 
@@ -1311,21 +1314,31 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateAboutUsWrongAboutUsWhiteSpaces()
         {
-            ZooInfoController.UpdateZooAboutInfo("      ", (int)Languages.en);
+            var aboutUs = new ZooInfoController.AboutUsResult { AboutUs = "      " };
+            ZooInfoController.UpdateZooAboutInfo(aboutUs, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateAboutUsWrongAboutUsEmpty()
         {
-            ZooInfoController.UpdateZooAboutInfo("", (int)Languages.en);
+            var aboutUs = new ZooInfoController.AboutUsResult
+            {
+                AboutUs = ""
+            };
+            ZooInfoController.UpdateZooAboutInfo(aboutUs, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateAboutUsLangaugeNotExist()
         {
-            ZooInfoController.UpdateZooAboutInfo("This is the new about us !", nonExistantLangauge);
+            var aboutUs = new ZooInfoController.AboutUsResult
+            {
+                AboutUs = "This is the new about us !"
+            };
+
+            ZooInfoController.UpdateZooAboutInfo(aboutUs, nonExistantLangauge);
         }
         #endregion
 
@@ -1354,12 +1367,15 @@ namespace ZooTests
             Assert.AreEqual(ohNote.Count(), 1);
 
             var oldNote = ohNote.SingleOrDefault(ohn => ohn.OpeningHourNote == "The cashier desk will bew closed two hours before the zoo is closing.");
-            var newOpeningHournote = "This is the new note!";
+            var newOpeningHournote = new ZooInfoController.OpeningHourNoteResult
+            {
+                OpeningHourNote = "This is the new note!"
+            };
 
             ZooInfoController.UpdateOpeningHourNote(newOpeningHournote, (int)Languages.en);
 
             ohNote = ZooInfoController.GetOpeningHourNote((int)Languages.en);
-            Assert.IsTrue(ohNote.Any(ohn => ohn.OpeningHourNote == newOpeningHournote));
+            Assert.IsTrue(ohNote.Any(ohn => ohn.OpeningHourNote == newOpeningHournote.OpeningHourNote));
             Assert.IsFalse(ohNote.Any(ohn => ohn.OpeningHourNote == oldNote.OpeningHourNote));
         }
 
@@ -1367,21 +1383,36 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourNoteWrongAboutUsWhiteSpaces()
         {
-            ZooInfoController.UpdateOpeningHourNote("      ", (int)Languages.en);
+            var openingHourNote = new ZooInfoController.OpeningHourNoteResult
+            {
+                OpeningHourNote = "      "
+            };
+
+            ZooInfoController.UpdateOpeningHourNote(openingHourNote, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourNoteWrongAboutUsEmpty()
         {
-            ZooInfoController.UpdateOpeningHourNote("", (int)Languages.en);
+            var openingHourNote = new ZooInfoController.OpeningHourNoteResult
+            {
+                OpeningHourNote = ""
+            };
+
+            ZooInfoController.UpdateOpeningHourNote(openingHourNote, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateOpeningHourNoteLangaugeNotExist()
         {
-            ZooInfoController.UpdateOpeningHourNote("This is the new note!", nonExistantLangauge);
+            var openingHourNote = new ZooInfoController.OpeningHourNoteResult
+            {
+                OpeningHourNote = "This is the new note!"
+            };
+
+            ZooInfoController.UpdateOpeningHourNote(openingHourNote, nonExistantLangauge);
         }
 
         #endregion
@@ -1411,12 +1442,15 @@ namespace ZooTests
             Assert.AreEqual(ciNote.Count(), 1);
 
             var oldNote = ciNote.SingleOrDefault(cin => cin.ContactInfoNote == "Contact between 08:00 - 22:00");
-            var newContactInfoNote = "This is the new note!";
+            var newContactInfoNote = new ZooInfoController.ContactInfoNoteResult
+            {
+                ContactInfoNote = "This is the new note!"
+            };
 
             ZooInfoController.UpdateContactInfoNote(newContactInfoNote, (int)Languages.en);
 
             ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
-            Assert.IsTrue(ciNote.Any(cin => cin.ContactInfoNote == newContactInfoNote));
+            Assert.IsTrue(ciNote.Any(cin => cin.ContactInfoNote == newContactInfoNote.ContactInfoNote));
             Assert.IsFalse(ciNote.Any(cin => cin.ContactInfoNote == oldNote.ContactInfoNote));
         }
 
@@ -1424,21 +1458,36 @@ namespace ZooTests
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateContactInfoNoteWrongAboutUsWhiteSpaces()
         {
-            ZooInfoController.UpdateContactInfoNote("      ", (int)Languages.en);
+            var contactInfoNote = new ZooInfoController.ContactInfoNoteResult
+            {
+                ContactInfoNote = "      "
+            };
+
+            ZooInfoController.UpdateContactInfoNote(contactInfoNote, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateContactInfoNoteWrongAboutUsEmpty()
         {
-            ZooInfoController.UpdateContactInfoNote("", (int)Languages.en);
+            var contactInfoNote = new ZooInfoController.ContactInfoNoteResult
+            {
+                ContactInfoNote = ""
+            };
+
+            ZooInfoController.UpdateContactInfoNote(contactInfoNote, (int)Languages.en);
         }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
         public void UpdateContactInfoNoteLangaugeNotExist()
         {
-            ZooInfoController.UpdateContactInfoNote("This is the new note!", nonExistantLangauge);
+            var contactInfoNote = new ZooInfoController.ContactInfoNoteResult
+            {
+                ContactInfoNote = "This is the new note!"
+            };
+
+            ZooInfoController.UpdateContactInfoNote(contactInfoNote, nonExistantLangauge);
         }
 
         #endregion

@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
     private LinearLayout newsFeedLinearLayout;
     private Menu langMenu;
-    private NewsFeed[] feed;
+    private WallFeed[] feed;
     private Map<String, String> LanguageMap;
     private String[] newsFeedList;
 
@@ -94,13 +94,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
 
-                feed = (NewsFeed[]) response;
+                feed = (WallFeed[]) response;
 
                 //feed wall initiation
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
-                for (NewsFeed s: feed) {
+                for (WallFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
                     tv.setTextColor(getResources().getColor(R.color.black));

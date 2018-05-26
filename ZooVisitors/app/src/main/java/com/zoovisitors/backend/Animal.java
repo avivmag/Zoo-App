@@ -87,7 +87,6 @@ public class Animal implements java.io.Serializable{
         return language;
     }
 
-
     public class PersonalStories implements java.io.Serializable{
         @SerializedName("id")
         private int id;
@@ -97,9 +96,10 @@ public class Animal implements java.io.Serializable{
         private String story;
         @SerializedName("encId")
         private int encId;
-        @SerializedName("pictureUrl")
-        private String pictureUrl;
-        private Drawable drawable;
+        @SerializedName("pictureData")
+        private Byte[] markerData;
+
+        private Drawable markerDrawable;
 
         public int getId() {
             return id;
@@ -117,16 +117,12 @@ public class Animal implements java.io.Serializable{
             return encId;
         }
 
-        public String getPictureUrl() {
-            return pictureUrl;
+        public Byte[] getMarkerData() {
+            return markerData;
         }
 
-        public Drawable getDrawable() {
-            return drawable;
-        }
-
-        public void setDrawable(Drawable drawable) {
-            this.drawable = drawable;
+        public Drawable getMarkerDrawable() {
+            return markerDrawable;
         }
     }
 }

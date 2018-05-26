@@ -20,7 +20,7 @@
         updateOpeningHour:      function (openingHour)                      { return httpService.httpPost({ url: [openingHoursBaseUrl, 'update'], body: openingHour }); },
         deleteOpeningHour:      function (openingHourId)                    { return httpService.httpDelete({ url: [openingHoursBaseUrl, 'delete', openingHourId] }); },
         getOpeningHourNote:     function (language)                         { return httpService.httpGet({ url: [openingHoursBaseUrl, 'openingHourNote', language] }); },
-        updateOpeningHourNote:  function (openingHourNote, language)        { return httpService.httpPost({ url: [openingHoursBaseUrl, 'update', openingHourNote, language] }); }
+        updateOpeningHourNote:  function (openingHourNote, language)        { return httpService.httpPost({ url: [openingHoursBaseUrl, 'update', language], body: openingHourNote }); }
     };
 
     var contactInfo     = {
@@ -28,7 +28,7 @@
         updateContactInfo:      function (contactInfo)                      { return httpService.httpPost({ url: [contactInfosBaseUrl, 'update'], body: contactInfo }); },
         deleteContactInfo:      function (contactInfoId)                    { return httpService.httpDelete({ url: [contactInfosBaseUrl, 'delete', contactInfoId] }); },
         getContactInfoNote:     function (language)                         { return httpService.httpGet({ url: [contactInfosBaseUrl, 'contactInfoNote', language] }); },
-        updateContactInfoNote:  function (contactInfoNote, language)        { return httpService.httpPost({ url: [contactInfosBaseUrl, 'update', contactInfoNote, language] }); }
+        updateContactInfoNote:  function (contactInfoNote, language)        { return httpService.httpPost({ url: [contactInfosBaseUrl, 'update', language], body: contactInfoNote }); }
     };
     var specialEvents   = {
         getAllSpecialEvents:    function (language)                         { return httpService.httpGet({ url: [specialEventsBaseUrl, 'all', language] }); },
@@ -43,7 +43,7 @@
     };
     var aboutInfo     = {
         getAboutInfo:           function (language)                         { return httpService.httpGet({ url: [aboutInfoBaseUrl, 'info', language] }); },
-        updateAboutInfo:        function (aboutInfo, language)              { return httpService.httpPost({ url: [aboutInfoBaseUrl, 'update', aboutInfo, language] }); }
+        updateAboutInfo:        function (aboutInfo, language)              { return httpService.httpPost({ url: [aboutInfoBaseUrl, 'update', language], body: aboutInfo }); }
     };
 
     var zooInfoService = {
