@@ -38,7 +38,7 @@
     };
     var feedWall        = {
         getAllFeeds:            function (language)                         { return httpService.httpGet({ url: [wallFeedBaseUrl, 'all', language] }); },
-        updateFeed:             function (wallFeed)                         { return httpService.httpPost({ url: [wallFeedBaseUrl, 'update', wallFeed.isPushMessage, wallFeed.isFeedWall], body: wallFeed }); },
+        updateFeed:             function (wallFeed)                         { return httpService.httpPost({ url: [wallFeedBaseUrl, 'update', wallFeed.isPushMessage, wallFeed.isFeedWall, wallFeed.pushRecipients], body: wallFeed }); },
         deleteFeed:             function (wallFeedId)                       { return httpService.httpDelete({ url: [wallFeedBaseUrl, 'delete', wallFeedId] }); }
     };
     var aboutInfo     = {
