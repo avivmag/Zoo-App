@@ -62,7 +62,7 @@ namespace NegevZoo.Controllers
         /// remove the device from the notification list.
         /// </summary>
         /// <param name="deviceId">The device to delete.</param>
-        [HttpPost]
+        [HttpGet]
         [Route("notification/unsubscribe/{deviceId}")]
         public void UnsubscribeDevice(string deviceId)
         {
