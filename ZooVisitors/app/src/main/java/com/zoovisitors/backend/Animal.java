@@ -3,6 +3,8 @@ package com.zoovisitors.backend;
 /**
  * Created by Gili on 12/01/2018.
  */
+import android.graphics.drawable.Drawable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Animal implements java.io.Serializable{
@@ -97,6 +99,7 @@ public class Animal implements java.io.Serializable{
         private int encId;
         @SerializedName("pictureUrl")
         private String pictureUrl;
+        private Drawable drawable;
 
         public int getId() {
             return id;
@@ -116,6 +119,14 @@ public class Animal implements java.io.Serializable{
 
         public String getPictureUrl() {
             return pictureUrl;
+        }
+
+        public Drawable getDrawable() {
+            return drawable;
+        }
+
+        public void setDrawable(Drawable drawable) {
+            this.drawable = drawable;
         }
     }
 }

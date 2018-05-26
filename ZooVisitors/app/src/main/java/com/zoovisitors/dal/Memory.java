@@ -953,10 +953,10 @@ public class Memory {
             points[i] = locationToPoint(locations[i]);
         }
         Arrays.sort(points, (p1, p2) -> Double.compare(p1.getX(),p2.getX()));
-//        for (Point point :
-//                points) {
-//            Log.e("AVIV", point.toString());
-//        }
+        for (Point point :
+                points) {
+            Log.e("AVIV", point.toString());
+        }
         return points;
     }
 
