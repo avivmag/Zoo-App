@@ -59,7 +59,7 @@ public class pricesFragment extends Fragment {
                 popTitle.setText(getContext().getResources().getString(R.string.population));
                 popTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
                 popTitle.setWidth(cellWidth);
-                popTitle.setPadding(0,5,0,5);
+                popTitle.setPadding(0,10,0,10);
 
                 //price
                 TextViewTitle priceTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);

@@ -1,13 +1,9 @@
 package com.zoovisitors.pl;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.VideoView;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
@@ -17,7 +13,6 @@ import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.bl.callbacks.FunctionInterface;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -135,17 +130,6 @@ public class LoadingScreen extends BaseActivity {
             });
         });
 
-//        tasks.add(() -> {
-//            changeLanguage();
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            increasePercentage();
-//            doneSignal.countDown();
-//        });
-
         makeTasks();
 
 
@@ -161,46 +145,23 @@ public class LoadingScreen extends BaseActivity {
 
     private void changeLanguage() {
         if (GlobalVariables.firstEnter == 0) {
-//            String lan = "";
-//            switch (GlobalVariables.language){
-//                case 1: //Hebrew
-//                    lan = "iw";
-//                    break;
-//                case 2: //English
-//                    lan = "en";
-//                    break;
-//                case 3: //Arabic
-//                    lan = "ar";
-//                    break;
-//                case 4: //Russian
-//                    lan = "ru";
-//                    break;
-//            }
-//            Locale myLocale = new Locale(lan);
-//            Resources res = getResources();
-//            DisplayMetrics dm = res.getDisplayMetrics();
-//            Configuration conf = res.getConfiguration();
-//            conf.locale = myLocale;
-//            res.updateConfiguration(conf, dm);
-//        }
-//        else{
+
             switch (Locale.getDefault().getLanguage()){
                 case "he": //Hebrew
                     GlobalVariables.language = 1;
-//                    GlobalVariables.appCompatActivity.setLocale(LanguageMap.get("Hebrew"));
                     break;
                 case "en": //English
                     GlobalVariables.language = 2;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
                 case "ar": //Arabic
                     GlobalVariables.language = 3;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
                 case "ru": //Russian
                     GlobalVariables.language = 4;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
+                    default:
+                        GlobalVariables.language = 1;
+                        break;
             }
             GlobalVariables.firstEnter++;
         }
