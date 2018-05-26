@@ -41,5 +41,4 @@ public class BaseActivity extends AppCompatActivity {
 
         parent.setBackgroundResource(color);
     }
-
 }

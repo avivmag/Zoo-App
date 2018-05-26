@@ -29,7 +29,9 @@
             }
 
             $scope.addAboutUs           = function (aboutUs, languageId) {
-                zooInfoService.aboutInfo.updateAboutInfo(aboutUs, languageId).then(
+                var aboutUsObj          = { aboutUs: aboutUs };
+
+                zooInfoService.aboutInfo.updateAboutInfo(aboutUsObj, languageId).then(
                     () => utilitiesService.utilities.alert('התוכן נשמר בהצלחה'),
                     () => utilitiesService.utilities.alert('אירעה שגיאה בעת שמירת התוכן'));
             }

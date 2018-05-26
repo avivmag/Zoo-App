@@ -112,7 +112,9 @@
             }
 
             $scope.addOpeningHourNote           = function (openingHourNote, languageId) {
-                zooInfoService.openingHours.updateOpeningHourNote(openingHourNote, languageId).then(
+                var openingHourNoteObj          = { openingHourNote: openingHourNote };
+
+                zooInfoService.openingHours.updateOpeningHourNote(openingHourNoteObj, languageId).then(
                     () => utilitiesService.utilities.alert('התוכן נשמר בהצלחה'),
                     () => utilitiesService.utilities.alert('אירעה שגיאה בעת שמירת התוכן'));
             }

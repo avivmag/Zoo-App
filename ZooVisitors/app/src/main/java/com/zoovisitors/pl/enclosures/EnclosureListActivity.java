@@ -32,11 +32,13 @@ public class EnclosureListActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setActionBar(R.color.greenIcon);
         setContentView(R.layout.activity_enclosure_list);
+        setActionBar(R.color.greenIcon);
+
+        //get all enclosures
         GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+
             @Override
             public void onSuccess(Object response) {
                 final Enclosure[] enclosures = (Enclosure[]) response;
@@ -47,7 +49,6 @@ public class EnclosureListActivity extends BaseActivity {
                 recycleViewEnc.setLayoutManager(layoutManagerEnc);
                 adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
                 recycleViewEnc.setAdapter(adapterEnc);
-
 
                 GlobalVariables.bl.getAllAnimals(new GetObjectInterface() {
                     @Override

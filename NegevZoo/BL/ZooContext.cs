@@ -2748,9 +2748,11 @@ namespace BL
             //get all the recurring events in hebrew
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
             Logger.GetInstance(false).WriteLine("Package received");
-            
+
             //get the current time
-            var currentTime = DateTime.Now.ToLocalTime();
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             Console.WriteLine(currentTime);
             Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
@@ -3177,10 +3179,10 @@ namespace BL
             var mapInfo             = this.GetMapSettings();
             var wallFeeds           = this.GetAllWallFeeds(language);
             var openingHours        = this.GetAllOpeningHours(language);
-            var openingHoursNote    = this.GetOpeningHourNote(language);
+            var openingHoursNote    = this.GetOpeningHourNote(language).FirstOrDefault();
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
-            var contactInfoNote     = this.GetContactInfoNote(language);
+            var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
             var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
 
             var contactInfoResult   = new
