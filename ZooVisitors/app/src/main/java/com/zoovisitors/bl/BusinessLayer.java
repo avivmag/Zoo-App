@@ -19,12 +19,16 @@ public interface BusinessLayer {
     void getOpeningHours(final GetObjectInterface goi);
     void getAboutUs(final GetObjectInterface goi);
     void getContactInfo(final GetObjectInterface goi);
-    void updateIfInPark(boolean isInPark, final GetObjectInterface goi);
     void getPersonalStories(final GetObjectInterface goi);
 
     //notification
-    void sendDeviceId();
+    void updateIfInPark(boolean isInPark, final GetObjectInterface goi);
+    void unsubscribeToNotification(final GetObjectInterface goi);
 
+    //Images
     void getImage(String url, int width, int height, GetObjectInterface goi);
     void getImageFullUrl(String url, int width, int height, GetObjectInterface goi);
+
+    //Audio
+    void getAudio(String url, final GetObjectInterface goi);
 }

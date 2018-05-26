@@ -12,7 +12,7 @@ namespace BL.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace BL.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("777829984351")]
+        [global::System.Configuration.DefaultSettingValueAttribute("609324310256")]
         public string senderId {
             get {
                 return ((string)(this["senderId"]));
@@ -34,11 +34,29 @@ namespace BL.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("AAAAtRpHqF8:APA91bHQd7MJTMz-_dNhAU-kfLCJO-WYZAuqAQ2u4Z0evwW9K69DWcAXHoW5rPkr71LU_" +
-            "6SEkRUY2Op95qwNe8gkkZtCWQDDQwJf7TMJrrB8dYmdhu6s0doCjokrWxXngPgAcXeLTcMS")]
+        [global::System.Configuration.DefaultSettingValueAttribute("AAAAjd6PHvA:APA91bHWjiP-lc4O7qVxZUklPCKJU6PIw5hj9Tjy2Gpye8FJI1CaKa0IGIRL_uIZywWLT" +
+            "fqQq6V3V3WzJUhmNcnZ-oKYmxUGfDjLIVVWxzdR72fBjLBDRpL5l6ITtThI0hjSoI9LMDUn")]
         public string serverKey {
             get {
                 return ((string)(this["serverKey"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\Locations.csv")]
+        public string LocationFilePath {
+            get {
+                return ((string)(this["LocationFilePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\Points.pt")]
+        public string PointsFilePath {
+            get {
+                return ((string)(this["PointsFilePath"]));
             }
         }
     }

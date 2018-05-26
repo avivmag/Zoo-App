@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 public class PersonalPopUp extends BaseActivity {
@@ -26,7 +27,8 @@ public class PersonalPopUp extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_pop_up);
-        image = (Bitmap) getIntent().getParcelableExtra("image");
+        String url = getIntent().getStringExtra("url");
+        image = Memory.urlToBitmapMap.get(url);
         clickedAnimal = getIntent().getExtras();
         animal = (Animal.PersonalStories) clickedAnimal.getSerializable("animal");
         DisplayMetrics dm = new DisplayMetrics();

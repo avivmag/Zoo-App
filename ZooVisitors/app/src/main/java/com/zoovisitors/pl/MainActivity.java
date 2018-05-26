@@ -18,20 +18,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.support.v7.app.ActionBar;
+import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.pl.customViews.TextViewOutline;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-
 import com.zoovisitors.pl.customViews.buttonCustomView;
 
 import java.util.HashMap;
@@ -48,53 +46,45 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        ActionBar ab = getSupportActionBar();
-
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(false);
-        ab.setIcon(R.mipmap.logo);
-
-
-
-
         //TODO: TESTING LOADING
         Log.e("TESTENC", GlobalVariables.testEnc[0].getName());
 
         Log.e("TESTOP", GlobalVariables.testOp[0].getDay());
 
-
         super.onCreate(savedInstanceState);
+        setActionBar(R.color.blueIcon);
         setContentView(R.layout.activity_main);
-//        GlobalVariables.appCompatActivity = this;
-//        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//        GlobalVariables.deviceId = telephonyManager.getDeviceId();
-        //changeToHebrew();
 
-        //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
-        GlobalVariables.bl.sendDeviceId();
+        GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                Toast.makeText(GlobalVariables.appCompatActivity, "Token has been send", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                Toast.makeText(GlobalVariables.appCompatActivity, "TOKEN NOT SEND", Toast.LENGTH_LONG).show();
+            }
+        });
 
         //Set design for each button
         buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);
-        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures);
+        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures, 20, R.color.white, 20, 150);
 
         buttonCustomView otherInfoButton = (buttonCustomView) findViewById(R.id.otherInfoButton);
-        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info);
+        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info, 20, R.color.white, 20, 150);
 
         buttonCustomView personalButton= (buttonCustomView) findViewById(R.id.personalStoriesButton);
-        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal);
+        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal, 20, R.color.white, 20, 150);
 
         buttonCustomView mapButton = (buttonCustomView) findViewById(R.id.mapButton);
-        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map);
+        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map, 20, R.color.white, 20, 150);
 
         buttonCustomView wazebutton = (buttonCustomView) findViewById(R.id.wazeButton);
-        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav);
+        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav, 20, R.color.white, 20, 150);
 
         buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
-        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule);
-
-
+        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule, 20, R.color.white, 20, 150);
 
 
         LanguageMap = new HashMap<String, String>();
@@ -141,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFailure(Object response) {
-                Log.e("FEED", "Cant get feed");
+                Log.e("FEED", "Can't get feed");
             }
         });
 
@@ -226,6 +216,9 @@ public class MainActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
+        MenuItem notification = menu.findItem(R.id.notifications);
+        notification.setChecked(true);
+
         MenuItem subm = menu.findItem(R.id.language);
         langMenu = subm.getSubMenu();
         MenuItem hebItem = langMenu.getItem(1);
@@ -265,17 +258,42 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.notifications:
                 item.setChecked(!item.isChecked());
+                if (GlobalVariables.notifications) {
+                    GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: Off", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    GlobalVariables.notifications = false;
+                }
+                else {
+                    GlobalVariables.bl.updateIfInPark(false, new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+                    GlobalVariables.notifications = true;
+                }
                 //TODO: send to the server to cancel/add notifications
                 return true;
-//            case R.id.language_arb:
-//                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -325,7 +343,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
     private boolean isAppInstalled(Context context, String packageName) {
         try {
             context.getPackageManager().getApplicationInfo(packageName, 0);
@@ -347,25 +364,15 @@ public class MainActivity extends BaseActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        Intent refresh = new Intent(this, MainActivity.class);
-        startActivity(refresh);
-        finish();
+        Intent intent = new Intent(this, LoadingScreen.class);
+        startActivity(intent);
     }
 
     @Override
     public void onBackPressed() {
-        System.exit(0);
-        super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
-//    private void designButton(int id, int background, int image, int text){
-//        buttonCustomView button = (buttonCustomView) findViewById(id);
-//        button.setBackgroundColor(background);
-//        TextView iconText = (TextView) findViewById(button.getTextId());
-//        ImageView iconImage = (ImageView) findViewById(button.getImageId());
-//
-//        iconText.setTextSize(20);
-//        iconText.setText(text);
-//
-//        iconImage.setImageResource(image);
-//    }
 }

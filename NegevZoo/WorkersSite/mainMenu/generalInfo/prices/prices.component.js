@@ -1,5 +1,5 @@
-﻿app.controller('zooPricesCtrl', ['$scope', '$mdDialog', 'zooInfoService',
-    function zooPricesController($scope, $mdDialog, zooInfoService) {
+﻿app.controller('zooPricesCtrl', ['$scope', '$mdDialog', 'zooInfoService', 'utilitiesService',
+    function zooPricesController($scope, $mdDialog, zooInfoService, utilitiesService) {
         $scope.isLoading            = true;
 
         initializeComponent();
@@ -36,7 +36,12 @@
             };
 
             $scope.addPrice             = function (price) {
+                if (!checkPrice(price)) {
+                    return;
+                }
+
                 $scope.isLoading        = true;
+                
                 var successContent      = price.isNew ? 'המחיר נוסף בהצלחה!' : 'המחיר עודכן בהצלחה!';
                 var failContent         = price.isNew ? 'התרחשה שגיאה בעת שמירת המחיר' : 'התרחשה שגיאה בעת עדכון המחיר';
 
@@ -103,6 +108,26 @@
                             .ok('סגור')
                     );
                 });
+        }
+
+        function checkPrice(price) {
+            if (!price) {
+                return false;
+            }
+
+            if (!angular.isDefined(price.population) || price.population === '') {
+                utilitiesService.utilities.alert('אנא בחר אוכלוסייה');
+
+                return false;
+            }
+
+            if (price.pricePop === undefined || !angular.isNumber(price.pricePop) || price.pricePop < 0) {
+                utilitiesService.utilities.alert('אנא בחר מחיר חוקי(גדול או שווה ל 0)');
+
+                return false;
+            }
+
+            return true;
         }
 }])
 .directive('zooPrices', function () {

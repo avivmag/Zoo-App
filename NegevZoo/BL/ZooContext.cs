@@ -105,7 +105,8 @@ namespace BL
                                        Story                = ed.story,
                                        Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
                                        Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
-                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray()
+                                       RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray(),
+                                       AudioUrl             = ed.audioUrl                                       
                                    };
 
             return enclosureResults.ToArray();
@@ -416,6 +417,7 @@ namespace BL
                 oldEnc.language = enclosureDetail.language;
                 oldEnc.name = enclosureDetail.name;
                 oldEnc.story = enclosureDetail.story;
+                oldEnc.audioUrl = enclosureDetail.audioUrl;
             }
         }
         
@@ -1082,6 +1084,7 @@ namespace BL
                 oldDetails.family       = animalDetails.family;
                 oldDetails.distribution = animalDetails.distribution;
                 oldDetails.category     = animalDetails.category;
+                oldDetails.audioUrl     = animalDetails.audioUrl;
             }
         }
 
@@ -1353,7 +1356,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray();
+            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray().OrderBy(oh => oh.day);
 
             List<OpeningHourResult> opHoursResults = new List<OpeningHourResult>();
 
@@ -1755,7 +1758,8 @@ namespace BL
         /// <param name="feed">The wallfeed to add or update</param>
         /// <param name="isPush">represents if the feed should be send as push notification</param>
         /// <param name="isWallFeed">represents if the feed should be added to the wall feed</param>
-        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed)
+        /// <param name="pushRecipients">represenets the push recipients (all or online).</param>
+        public void UpdateWallFeed(WallFeed feed, bool isPush, bool isWallFeed, string pushRecipients = null)
         {
             //validate WallFeed attributs
             //0. Exists
@@ -1801,7 +1805,8 @@ namespace BL
 
                 wallFeeds.Add(feed);
             }
-            else //update a feed wall
+            //update a feed wall
+            else if (isWallFeed)
             {
                 WallFeed oldFeed = wallFeeds.SingleOrDefault(wf => wf.id == feed.id);
 
@@ -1825,7 +1830,14 @@ namespace BL
 
             if (isPush)
             {
-                SendNotificationsAllDevices(feed.title, feed.info);
+                if (pushRecipients == "all")
+                {
+                    SendNotificationsAllDevices(feed.title, feed.info);
+                }
+                else if (pushRecipients == "online")
+                {
+                    SendNotificationsOnlineDevices(feed.title, feed.info);
+                }
             }
         }
 
@@ -2080,9 +2092,11 @@ namespace BL
         }
 
         private const int MAX_DISTANCE_OF_ROUTE_FLAT = 50 * 50;
+        
         // maximum len on x is around 50, the 30 is estimation for the other road. I better change
         // one day so it will support different latlng/xy ratio
         private const int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
+        
         /// <summary>
         /// This method intitiates the map with the given parameters. 
         /// </summary>
@@ -2096,9 +2110,11 @@ namespace BL
         /// <param name="point2Longitude"> This variable represents the longitude of a point in the map</param>
         /// <param name="point2XLocation"> This variable represents the location of the longitude on the map picture</param>
         /// <param name="point2YLocation"> This variable represents the location of the latitude on the map picture</param>
-        public void InitMapSettings(string locationsFilePath, string pointsFilePath, double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
+        public void InitMapSettings(double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
         {
-            List<LocationMap> locations = ExtractLocationsFromCSVFile(locationsFilePath);
+            List<LocationMap> locations = ExtractLocationsFromCSVFile(Properties.Settings.Default.LocationFilePath);
+            //File.Delete(Properties.Settings.Default.LocationFilePath);
+
             double alpha = getAlpha(point1Latitude, point1Longitude, point1XLocation, point1YLocation, point2Latitude, point2Longitude, point2XLocation, point2YLocation);
             
             double xLongitudeRatio  = getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation);
@@ -2109,8 +2125,8 @@ namespace BL
             double maxLatitude      = locations.Select(location => location.Latitude).Max();
             double minLongitude     = locations.Select(location => location.Longitude).Min();
             double maxLongitude     = locations.Select(location => location.Longitude).Max();
-            PointMap[] points = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
-            var allRoutes = zooDB.GetAllRoutes();
+            PointMap[] points       = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
+            var routesToAdd         = new List<Route>();
 
             // store the routes
             for (int curr = 0; curr < points.Length; curr++)
@@ -2121,7 +2137,7 @@ namespace BL
                                 < MAX_DISTANCE_OF_ROUTE_FLAT; off++)
                 {
                     if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
-                        allRoutes.Add(new Route
+                        routesToAdd.Add(new Route
                         {
                             primaryLeft = points[curr].X,
                             primaryRight = points[curr].Y,
@@ -2132,8 +2148,23 @@ namespace BL
                 }
             }
             
-            //add the map info to the db.
-            zooDB.GetAllMapInfos().Add(new MapInfo
+            // Remove deprecated routes from the database.
+            zooDB.GetAllRoutes().RemoveRange(zooDB.GetAllRoutes());
+
+            // Add new routes to the database. 
+            zooDB.GetAllRoutes().AddRange(routesToAdd);
+
+            // Update the map info.
+            var mapInfos = zooDB.GetAllMapInfos();
+
+            var mapInfo = zooDB.GetAllMapInfos().FirstOrDefault();
+
+            if (mapInfo != default(MapInfo))
+            {
+                mapInfos.Remove(mapInfo);
+            }
+
+            mapInfos.Add(new MapInfo
             {
                 zooLocationLongitude    = point1Longitude,
                 zooLocationLatitude     = point1Latitude,
@@ -2178,7 +2209,7 @@ namespace BL
                 points[i] = locationToPoint(locations[i], point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
             }
 
-            Array.Sort(points, (p1, p2) => p1.X.CompareTo(p2.Y));
+            Array.Sort(points, (p1, p2) => p1.X.CompareTo(p2.X));
             return points;
         }
 
@@ -2764,7 +2795,13 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    notification = new { title, body, sound = "default", vibrate = true, background = true }
+                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
+                    data = new
+                    {
+                        Title   = title,
+                        Body    = body,
+                        Window  = "com.zoovisitors.pl.map.MapActivity"
+                    }
                 };
 
                 var jsonBody = JsonConvert.SerializeObject(data);
@@ -2772,7 +2809,7 @@ namespace BL
                 using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/send"))
                 {
                     httpRequest.Headers.TryAddWithoutValidation("Authorization", serverKey);
-                    httpRequest.Headers.TryAddWithoutValidation("Sender", senderId);
+                    httpRequest.Headers.TryAddWithoutValidation("Content-Type", "application/json");
                     httpRequest.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
                     using (var httpClient = new HttpClient())
@@ -2867,23 +2904,25 @@ namespace BL
             //init variables
             string line;
             List<LocationMap> locations = new List<LocationMap>();
-            var locationsFileReader = new StreamReader(locationsFilePath);
 
-            //while there is a line to read
-            while ((line = locationsFileReader.ReadLine()) != null)
+            using (var locationsFileReader = new StreamReader(locationsFilePath))
             {
-                //seperate the line
-                string[] values = Regex.Split(line, ",");
+                //while there is a line to read
+                while ((line = locationsFileReader.ReadLine()) != null)
+                {
+                    //seperate the line
+                    string[] values = Regex.Split(line, ",");
 
-                // parse the string to int
-                double latitude = Double.Parse(values[0]);
-                double longitude = Double.Parse(values[1]);
+                    // parse the string to int
+                    double latitude = Double.Parse(values[0]);
+                    double longitude = Double.Parse(values[1]);
 
-                //create a new point that represented with a Pair object.
-                locations.Add(new LocationMap(latitude, longitude));
+                    //create a new point that represented with a Pair object.
+                    locations.Add(new LocationMap(latitude, longitude));
+                }
+
+                return locations;
             }
-
-            return locations;
         }
         
         #endregion
@@ -3034,8 +3073,9 @@ namespace BL
         /// </summary>
         /// <param name="httpRequest">The requested files.</param>
         /// <param name="relativePath">the path.</param>
+        /// <param name="isPicture">Indicated whether the file is a picture file.</param>
         /// <returns>An array of the uploaded images path.</returns>
-        public JArray FileUpload(HttpRequest httpRequest, string relativePath)
+        public JArray FileUpload(HttpRequest httpRequest, string relativePath, bool isPicture = true)
         {
             var fileNames           = new List<String>();
 
@@ -3050,13 +3090,16 @@ namespace BL
 
                 postedFile.SaveAs(filePath);
 
-                if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                if (isPicture)
                 {
-                    SaveAsIcon(filePath);
-                }
-                else
-                {
-                    Save(filePath);
+                    if (relativePath.Contains("misc") || relativePath.Contains("marker"))
+                    {
+                        SaveAsIcon(filePath);
+                    }
+                    else
+                    {
+                        Save(filePath);
+                    }
                 }
 
                 fileNames.Add(fileName);
@@ -3090,6 +3133,86 @@ namespace BL
             postedFile.SaveAs(filePath);
 
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
+        }
+
+        public object GetAllInfo(int language)
+        {
+            // Get the enclosures.
+            var enclosures = this.GetAllEnclosureResults(language);
+
+            // Add the marker data.
+            foreach (var e in enclosures)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + e.MarkerIconUrl);
+                if (!String.IsNullOrWhiteSpace(e.MarkerIconUrl) && File.Exists(filePath))
+                {
+                    e.MarkerData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the stories.
+            var animalStories = this.GetAllAnimalStoriesResults(language);
+
+            // Add the story data.
+            foreach (var story in animalStories)
+            {
+                var filePath = HttpContext.Current.Server.MapPath(@"~/" + story.PictureUrl);
+                if (!String.IsNullOrWhiteSpace(story.PictureUrl) && File.Exists(filePath))
+                {
+                    story.pictureData = File.ReadAllBytes(filePath);
+                }
+            }
+
+            // Get the markers.
+            var miscMarkers = this.GetAllMarkers().Select(mm =>
+            new
+            {
+                mm.id,
+                mm.latitude,
+                mm.longitude,
+                IconData = mm.iconUrl != null && File.Exists(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) ? File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + mm.iconUrl)) : null
+            });
+
+            var mapData             = File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/" + this.GetMapUrl().First()));
+            var mapInfo             = this.GetMapSettings();
+            var wallFeeds           = this.GetAllWallFeeds(language);
+            var openingHours        = this.GetAllOpeningHours(language);
+            var openingHoursNote    = this.GetOpeningHourNote(language);
+            var prices              = this.GetAllPrices(language);
+            var contactInfo         = this.GetAllContactInfos(language);
+            var contactInfoNote     = this.GetContactInfoNote(language);
+            var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
+
+            var contactInfoResult   = new
+            {
+                contactInfo,
+                contactInfoNote
+            };
+
+            var openingHoursResult  = new
+            {
+                openingHours,
+                openingHoursNote
+            };
+
+            var mapResult           = new
+            {
+                mapData,
+                mapInfo
+            };
+
+            return new
+            {
+                enclosures,
+                animalStories,
+                miscMarkers,
+                mapResult,
+                wallFeeds,
+                contactInfoResult,
+                openingHoursResult,
+                prices,
+                aboutUs
+            };
         }
 
         #endregion

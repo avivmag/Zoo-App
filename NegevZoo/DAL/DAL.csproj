@@ -110,7 +110,8 @@
     <Compile Include="Models\MapResult.cs" />
     <Compile Include="Models\MapSettingsResult.cs" />
     <Compile Include="Models\OpeningHourResult.cs" />
-    <Compile Include="Models\PointMap.cs" />    <Compile Include="Models\LocationMap.cs" />
+    <Compile Include="Models\PointMap.cs" />
+    <Compile Include="Models\LocationMap.cs" />
     <Compile Include="Models\RecurringEventResult.cs" />
     <Compile Include="NegevZooDB.Context.cs">
       <AutoGen>True</AutoGen>

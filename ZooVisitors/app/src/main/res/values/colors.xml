@@ -8,6 +8,7 @@
     <color name="grayNegev">#E1D9CC</color>
     <color name="brownNegev">#5b4a40</color>
     <color name="blueTitle">#3B45C5</color>
+    <color name="transparent">#00000000</color>
 
     <color name="notificationBorderColor">#55000000</color>
 

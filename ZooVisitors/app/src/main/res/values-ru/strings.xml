@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">נגב ZOO</string>
+    //preferences
+    <string name="notifications">Уведомления</string>
+    <string name="language">Язык</string>
+    <string name="language_eng">English</string>
+    <string name="language_heb">עברית</string>
+    <string name="language_arb">عربى</string>
+    <string name="language_rus">русский</string>
+    //main menu buttons
+    <string name="watch_all_feed">Показать все</string>
+    <string name="our_enclosures">Наши выставки</string>
+    <string name="schedule">Календарь</string>
+    <string name="map">Карта</string>
+    <string name="other_info">Дополнительная информация</string>
+    <string name="nav">Путеводитель по зоопарку</string>
+
+    <!-- Animal Activity -->
+    <string name="title_activity_animal">Наши животные</string>
+    <string name="about_animal">О наших животных</string>
+    <string name="about_species">Информация о видах животных</string>
+    <string name="category">Класс:</string>
+    <string name="series">Отряд:</string>
+    <string name="family">Семейство:</string>
+    <string name="distribution">Местообитание:</string>
+    <string name="reproduction">Размножение:</string>
+    <string name="food">Пища:</string>
+    <string name="shareOnFacebook">Распространить в Facebook</string>
+    <string name="showOnMap">Показать на карте</string>
+
+
+    <!-- General Info -->
+    <string name="title_activity_general_info">Общие сведения:</string>
+    <string name="contact_info">Связаться с нами</string>
+    <string name="prices">Цены на билеты</string>
+    <string name="opening_hours">Часы работы</string>
+    <string name="about_us">О нас</string>
+    <string name="contact_us_headline">Связаться с нами:</string>
+    <string name="opening_hours_headline">Часы работы:</string>
+    <string name="prices_headline">Цены на билеты:</string>
+    <string name="searchPlaceHolder">Введите название животного</string>
+    <string name="choose_route">Выберите маршрут</string>
+
+    <!-- Schedule -->
+    <string name="todays_event">На сегодня запланировано</string>
+    <string name="preservation">Охранный статус</string>
+    <string name="facebook_app_id">1991264511112012</string>
+
+    <string name="personal">Личные истории</string>
+    <!--Gps provider dialog-->
+    <string name="gps_no_permission_dialog_title">Разрешить местоположение</string>
+    <string name="gps_no_permission_dialog_message">Отмена местоположения не позволит аппликации работать корректно</string>
+    <string name="gps_no_permission_dialog_approve">Разрешить местоположение</string>
+    <string name="gps_no_permission_dialog_disapprove">Отменить местоположение</string>
+    <string name="gps_no_activated_dialog_activate_needed">Пожалуйста, включите функцию GPS</string>
+    <string name="gps_no_activated_dialog_open_settings">Откройте настройки</string>
+    <string name="gps_no_activated_dialog_do_not_open_settings">Отмена</string>
+    <string name="gps_no_activated_dialog_title">Функция GPS</string>
+
+    <string name="no_data">Нет сведений</string>
+
+    <string name="whoLives">Кто здесь живет?:</string>
+    <string name="assets">Фото и видео:</string>
+
+    <string name="days">Дни</string>
+    <string name="hours">Часы</string>
+
+    <string name="turn_the_volume">הגבר את עוצמת השמע</string>
+</resources>

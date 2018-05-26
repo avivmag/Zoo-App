@@ -23,16 +23,21 @@
     <string name="title_activity_animal">AnimalActivity</string>
     <string name="about_animal">About our animals</string>
     <string name="about_species">About the species</string>
-    <string name="category">Category:</string>
+    <string name="preservation">Preservation:</string>
+    <string name="doesnt_know">Preservation state unknown</string>
+    <string name="category">Class:</string>
     <string name="series">Series:</string>
     <string name="family">Family:</string>
     <string name="distribution">Distribution:</string>
     <string name="reproduction">Reproduction:</string>
-    <string name="food">Food:</string>
+    <string name="food">Nutrition:</string>
+    <string name="interesting">Something Interesting</string>
     <string name="searchPlaceHolder">Type enclosure or animal</string>
     <string name="shareOnFacebook">Share on facebook</string>
     <string name="showOnMap">Show on map</string>
     <string name="title_activity_general_info">GeneralInfoActivity</string>
+    <string name="about_enc">About the Enclosure:</string>
+    <string name="next_event">Next Event:</string>
 
     <!-- General Info -->
     <string name="contact_info">Contact Info</string>
@@ -47,7 +52,7 @@
     <!-- Schedule -->
     <string name="todays_event">Today\'s events</string>
     <string name="choose_route">Choose a route</string>
-    <string name="preservation">Preservation</string>
+
     <string name="facebook_app_id">1991264511112012</string>
 
 
@@ -70,4 +75,6 @@
 
     <string name="days">Days</string>
     <string name="hours">Hours</string>
+
+    <string name="turn_the_volume">Please turn the volume up</string>
 </resources>

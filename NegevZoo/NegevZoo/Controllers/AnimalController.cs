@@ -471,7 +471,8 @@ namespace NegevZoo.Controllers
         /// <returns>action result of the operation. </returns>
         [HttpPost]
         [Route("animals/upload/{path}")]
-        public JArray AnimalsFileUpload(String path)
+        [Route("animals/upload/{path}/{isPicture}")]
+        public JArray AnimalsFileUpload(String path, bool isPicture = true)
         {
             if (String.IsNullOrWhiteSpace(path))
             {
@@ -491,7 +492,7 @@ namespace NegevZoo.Controllers
                 {
                     if (ValidateSessionId(db))
                     {
-                        return db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/');
+                        return db.FileUpload(httpRequest, @"~/assets/animals/" + path + '/', isPicture);
                     }
                     else
                     {

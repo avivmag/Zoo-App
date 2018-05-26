@@ -11,23 +11,58 @@
 
             $scope.updateMarkers            = function () {
                 $scope.newMarker = { isNew: true };
+                
                 mapService.getMiscMarkers().then(
                     function (data) {
                         $scope.markers      = data.data;
                         $scope.isLoading    = false;
                     },
                     function () {
-                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים')
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                         
                         $scope.isLoading    = false;
                     });
             };
 
             $scope.addMarker                = function(marker) {
+                markerUploadQuery       = uploadIcon($scope.markerPic, marker);
+
+                if (!angular.isDefined(markerUploadQuery)) {
+                    utilitiesService.utilities.alert('אנא בחר תמונה לאייקון השונות');
+
+                    return;
+                }
+
+                if (marker.longitude === undefined || marker.latitude === undefined) {
+                    utilitiesService.utilities.alert('אנא בחר מיקום לאייקון על המפה');
+
+                    return;
+                }
+
                 $scope.isLoading        = true;
-                
+
                 var successContent      = marker.isNew ? 'האייקון נוסף בהצלחה!' : 'האייקון עודכן בהצלחה!';
                 var failContent         = marker.isNew === 'create' ? 'התרחשה שגיאה בעת שמירת האייקון' : 'התרחשה שגיאה בעת עדכון האייקון';
+
+                $q.all([markerUploadQuery]).then(
+                    () => {
+                        mapService.updateMiscMarker(marker).then(
+                            function (response) {
+                                utilitiesService.utilities.alert(successContent);
+
+                                $scope.updateMarkers();
+                            },
+                            function () {
+                                utilitiesService.utilities.alert(failContent);
+    
+                                $scope.isLoading = false;
+                            });
+                    },
+                    () => {
+                        utilitiesService.utilities.alert(failContent);
+
+                        $isLoading = false;
+                    });
             };
 
             $scope.addMap                   = function(map) {
@@ -87,8 +122,6 @@
             if (!angular.isDefined(icon) || icon === null) {
                 return;
             }
-
-            $scope.isLoading        = true;
 
             var uploadUrl           = 'map/misc/upload';
 

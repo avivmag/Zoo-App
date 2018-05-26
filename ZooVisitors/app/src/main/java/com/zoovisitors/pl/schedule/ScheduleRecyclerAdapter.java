@@ -1,6 +1,7 @@
 package com.zoovisitors.pl.schedule;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.dal.Memory;
 
 /**
  * Created by Gili on 10/03/2018.
@@ -61,11 +63,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
             @Override
             public void onSuccess(Object response) {
                 viewHolder.image.setImageBitmap((Bitmap) response);
+                Memory.urlToBitmapMap.put(schedulers[position].getImageUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
-                Log.e("IMAGE", (String) response);
+
+                Memory.urlToBitmapMap.put(schedulers[position].getImageUrl(), BitmapFactory.decodeResource(
+                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });
 

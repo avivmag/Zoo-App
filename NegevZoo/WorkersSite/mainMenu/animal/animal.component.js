@@ -56,6 +56,10 @@
             };
 
             $scope.addAnimal        = function(animal) {
+                if (!checkAnimal(animal)) {
+                    return;
+                }
+
                 $scope.isLoading            = true;
                     var successContent      = !$scope.isEdit ? 'החיה נוספה בהצלחה!' : 'החיה עודכנה בהצלחה!';
                     var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת החיה' : 'התרחשה שגיאה בעת עדכון החיה';
@@ -113,19 +117,81 @@
                     var successContent      = $scope.page === 'create' ? 'החיה נוספה בהצלחה!' : 'החיה עודכנה בהצלחה!';
                     var failContent         = $scope.page === 'create' ? 'התרחשה שגיאה בעת שמירת החיה' : 'התרחשה שגיאה בעת עדכון החיה';
 
-                    animalService.updateAnimalDetail(animalDetail).then(
-                        function () {
-                            utilitiesService.utilities.alert(successContent);
+                    var audioUploadQuery    = uploadAudioFile(animalDetail);
 
-                            $scope.isLoading = false;
+                    $q.all([audioUploadQuery]).then(
+                        () => {
+                            animalService.updateAnimalDetail(animalDetail).then(
+                                function () {
+                                    utilitiesService.utilities.alert(successContent);
+
+                                    delete $scope.audio;
+
+                                    $scope.isLoading = false;
+                                },
+                                function () {
+                                    utilitiesService.utilities.alert(failContent);
+
+                                    $scope.isLoading = false;
+                                });
                         },
-                        function () {
-                            utilitiesService.utilities.alert(failContent);
-
-                            $scope.isLoading = false;
-                        });
+                        () => utilitiesService.utilities.alert(failContent));
             }
+
+            $scope.playSound                = function(audioFile) {
+                if (!$scope.audio) {
+                    $scope.audio = new Audio($scope.baseURL + audioFile);
+                }
+                
+                if ($scope.audio.paused) {
+                    $scope.audio.play();
+                }
+                else {
+                    $scope.audio.pause();
+                    $scope.audio.currentTime    = 0;
+                }
+            };
         };
+
+        function checkAnimal(animal) {
+            if (!animal) {
+                return false;
+            }
+
+            if (!angular.isDefined(animal.name) || animal.name == '') {
+                utilitiesService.utilities.alert('אנא בחר שם לחיה');
+
+                return false;
+            }
+
+            if (!angular.isDefined(animal.preservation)) {
+                utilitiesService.utilities.alert('אנא בחר רמת שימור לחיה');
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function uploadAudioFile(animalDetail) {
+            if (!angular.isDefined(animalDetail.animalAudioFile) || animalDetail.animalAudioFile === null) {
+                return;
+            }
+
+            $scope.isLoading        = true;
+
+            var uploadUrl           = 'animals/upload/audio/false';
+
+            var fileUploadQuery     = fileUpload.uploadFileToUrl(animalDetail.animalAudioFile, uploadUrl).then(
+                (success)   => {
+                    animalDetail.audioUrl    = success.data[0];
+                },
+                ()          => {
+                    utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                });
+
+            return fileUploadQuery;
+        }
 
         function uploadProfilePicture (picture, animal) {
             if (!angular.isDefined(picture)) {
