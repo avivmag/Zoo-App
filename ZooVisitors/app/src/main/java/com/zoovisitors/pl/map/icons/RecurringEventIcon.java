@@ -5,7 +5,7 @@ import android.view.View;
 import com.zoovisitors.pl.map.MapView;
 
 public class RecurringEventIcon extends TextIcon {
-    private static final float ALPHA_CHANGE = 0.05f;
+    private static final float ALPHA_CHANGE = 0.03f;
     private static final float MINIMAL_IMAGE_ALPHA = 0.2f;
     private static final float MAXIMAL_IMAGE_ALPHA = 1f;
 
@@ -17,7 +17,7 @@ public class RecurringEventIcon extends TextIcon {
     public void setText(String text) {
         updateViewText(text);
         updateViewWidthHeight();
-        updateIconPosition();
+//        updateIconPosition();
     }
 
     float lastAlpha = MAXIMAL_IMAGE_ALPHA;

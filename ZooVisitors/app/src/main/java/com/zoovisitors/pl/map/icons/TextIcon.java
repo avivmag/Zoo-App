@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.map.icons;
 
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -29,10 +30,11 @@ public abstract class TextIcon extends Icon {
         textView = new TextView(mapView.getContext());
         this.view = textView;
         textView.setTextSize(TEXT_VIEW_TEXT_SIZE);
+        textView.setTextColor(mapView.getResources().getColor(R.color.mapGetToKnowMeText));
         gd = new GradientDrawable();
-        gd.setColor(ContextCompat.getColor(mapView.getContext(), R.color.orangeNegev));
+        gd.setColor(ContextCompat.getColor(mapView.getContext(), R.color.mapGetToKnowMeBackground));
         gd.setCornerRadius(5);
-        gd.setStroke(5, ContextCompat.getColor(mapView.getContext(), R.color.orangeNegev));
+//        gd.setStroke(5, ContextCompat.getColor(mapView.getContext(), R.color.mapGetToKnowMeBackground));
         textView.setOnTouchListener((View.OnTouchListener) additionalData[0]);
 
         textView.setBackground(gd);
@@ -43,11 +45,18 @@ public abstract class TextIcon extends Icon {
             textView.setText(text);
         });
     }
+
     protected void updateViewWidthHeight() {
         textView.post(() -> {
             textView.measure(0, 0);
-            width = (int) (textView.getMeasuredWidth()/mapView.getmScaleFactor());
-            height = (int) (textView.getMeasuredHeight()/mapView.getmScaleFactor());
+            width = (int) (textView.getMeasuredWidth() / mapView.getmScaleFactor());
+            height = (int) (textView.getMeasuredHeight() / mapView.getmScaleFactor());
+            ((ViewGroup.MarginLayoutParams) textView.getLayoutParams()).setMargins(
+                    (int) ((left - width / 2) * mapView.getmScaleFactor() + mapView.getmPosX()),
+                    (int) ((top - height / 2) * mapView.getmScaleFactor() + mapView.getmPosY()),
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+            textView.setTextSize(TEXT_VIEW_TEXT_SIZE * mapView.getmScaleFactor());
         });
     }
     public void updateIconPosition() {
@@ -57,7 +66,9 @@ public abstract class TextIcon extends Icon {
                     (int) ((top - height / 2) * mapView.getmScaleFactor() + mapView.getmPosY()),
                     Integer.MAX_VALUE,
                     Integer.MAX_VALUE);
-            textView.setTextSize(TEXT_VIEW_TEXT_SIZE * mapView.getmScaleFactor());
+            textView.post(() -> {
+                textView.setTextSize(TEXT_VIEW_TEXT_SIZE * mapView.getmScaleFactor());
+            });
         }
     }
 }

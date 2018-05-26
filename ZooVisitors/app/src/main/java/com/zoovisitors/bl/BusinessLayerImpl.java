@@ -99,21 +99,21 @@ public class BusinessLayerImpl implements BusinessLayer {
             public void onSuccess(String response) {
                 Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
 
-                // TODO: fake recurring events here, need to update the json somehow
-                // TODO: I should add three days to the real recurring events
-                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
-                for (int i = 0; i < enc.length; i++) {
-                    enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-                            Enclosure.RecurringEvent.createRecurringEvent(1,
-                                    "",
-                                    (currentTime + 5 * 1000) % (7*24*60*60*1000),
-                                    (currentTime + 10 * 1000) % (7*24*60*60*1000), "האכלה"),
-                            Enclosure.RecurringEvent.createRecurringEvent(2,
-                                    "",
-                                    (currentTime + 15 * 1000) % (7*24*60*60*1000),
-                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), "פיפי בפינה")
-                    });
-                }
+//                // TODO: fake recurring events here, need to update the json somehow
+//                // TODO: I should add three days to the real recurring events
+//                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
+//                for (int i = 0; i < enc.length; i++) {
+//                    enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
+//                            Enclosure.RecurringEvent.createRecurringEvent(1,
+//                                    "",
+//                                    (currentTime + 5 * 1000) % (7*24*60*60*1000),
+//                                    (currentTime + 10 * 1000) % (7*24*60*60*1000), "האכלה"),
+//                            Enclosure.RecurringEvent.createRecurringEvent(2,
+//                                    "",
+//                                    (currentTime + 15 * 1000) % (7*24*60*60*1000),
+//                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), "פיפי בפינה")
+//                    });
+//                }
 
                 if (enc.length <= 0)
                     goi.onFailure("No Data in the server");
