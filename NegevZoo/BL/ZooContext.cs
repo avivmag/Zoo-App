@@ -2748,9 +2748,11 @@ namespace BL
             //get all the recurring events in hebrew
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
             Logger.GetInstance(false).WriteLine("Package received");
-            
+
             //get the current time
-            var currentTime = DateTime.Now.ToLocalTime();
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             Console.WriteLine(currentTime);
             Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
