@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -14,7 +13,7 @@ import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.ContactInfo;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
-import com.zoovisitors.backend.NewsFeed;
+import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
@@ -23,9 +22,6 @@ import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.cl.network.ResponseInterface;
 import com.zoovisitors.dal.InternalStorage;
-
-import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by Gili on 13/01/2018.
@@ -189,12 +185,12 @@ public class BusinessLayerImpl implements BusinessLayer {
 
             @Override
             public void onSuccess(String response) {
-                NewsFeed[] newsFeed = gson.fromJson(response, NewsFeed[].class);
+                WallFeed[] wallFeed = gson.fromJson(response, WallFeed[].class);
 
-                if (newsFeed.length <= 0)
+                if (wallFeed.length <= 0)
                     goi.onFailure("No Data in the server");
                 else
-                    goi.onSuccess(newsFeed);
+                    goi.onSuccess(wallFeed);
             }
 
             @Override
