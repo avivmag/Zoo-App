@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
@@ -49,25 +51,19 @@ public class MainActivity extends BaseActivity {
 
         Log.e("TESTOP", GlobalVariables.testOp[0].getDay());
 
-
         super.onCreate(savedInstanceState);
         setActionBar(R.color.blueIcon);
         setContentView(R.layout.activity_main);
-//        GlobalVariables.appCompatActivity = this;
-//        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//        GlobalVariables.deviceId = telephonyManager.getDeviceId();
-        //changeToHebrew();
 
-        //GlobalVariables.bl = new BussinesLayerImplTestForPartialData(GlobalVariables.appCompatActivity);
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-
+                Toast.makeText(GlobalVariables.appCompatActivity, "Token has been send", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Object response) {
-
+                Toast.makeText(GlobalVariables.appCompatActivity, "TOKEN NOT SEND", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -89,8 +85,6 @@ public class MainActivity extends BaseActivity {
 
         buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
         scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule, 20, R.color.white, 20, 150);
-
-
 
 
         LanguageMap = new HashMap<String, String>();
@@ -137,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFailure(Object response) {
-                Log.e("FEED", "Cant get feed");
+                Log.e("FEED", "Can't get feed");
             }
         });
 
@@ -222,6 +216,9 @@ public class MainActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
+        MenuItem notification = menu.findItem(R.id.notifications);
+        notification.setChecked(true);
+
         MenuItem subm = menu.findItem(R.id.language);
         langMenu = subm.getSubMenu();
         MenuItem hebItem = langMenu.getItem(1);
@@ -266,11 +263,37 @@ public class MainActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.notifications:
                 item.setChecked(!item.isChecked());
+                if (GlobalVariables.notifications) {
+                    GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: Off", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    GlobalVariables.notifications = false;
+                }
+                else {
+                    GlobalVariables.bl.updateIfInPark(false, new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+                    GlobalVariables.notifications = true;
+                }
                 //TODO: send to the server to cancel/add notifications
                 return true;
-//            case R.id.language_arb:
-//                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -341,9 +364,8 @@ public class MainActivity extends BaseActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        Intent refresh = new Intent(this, MainActivity.class);
-        startActivity(refresh);
-        finish();
+        Intent intent = new Intent(this, LoadingScreen.class);
+        startActivity(intent);
     }
 
     @Override

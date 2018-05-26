@@ -3,6 +3,7 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.animals.AnimalActivity;
 
 import java.util.ArrayList;
@@ -85,11 +87,15 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
             @Override
             public void onSuccess(Object response) {
                 viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
+                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
+                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), BitmapFactory.decodeResource(
+                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
+
             }
         });
     }

@@ -1,11 +1,15 @@
 package com.zoovisitors.cl.notifications;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -25,31 +29,31 @@ import java.util.Set;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
-    @Override
-    public void onMessageReceived(RemoteMessage remoteMessage){
-        Intent intent = null;
-        try {
-            Log.e("CLASS", remoteMessage.getData().get("Window"));
-            intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
-        } catch (ClassNotFoundException e) {
-            intent = new Intent(this, MainActivity.class);
-        }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setContentTitle(remoteMessage.getData().get("Title"));
-        notificationBuilder.setContentText(remoteMessage.getData().get("Body"));
-        notificationBuilder.setAutoCancel(true);
-        //set the sound of the notification
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        notificationBuilder.setSound(alarmSound);
-        notificationBuilder.setSmallIcon(R.mipmap.logo);
-        notificationBuilder.setContentIntent(pendingIntent);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notificationBuilder.build());
-    }
+    private NotificationManager notifManager;
+//    @Override
+//    public void onMessageReceived(RemoteMessage remoteMessage){
+//        Intent intent = null;
+//        try {
+//            Log.e("CLASS", remoteMessage.getData().get("Window"));
+//            intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
+//        } catch (ClassNotFoundException e) {
+//            intent = new Intent(this, MainActivity.class);
+//        }
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
+//        notificationBuilder.setContentTitle(remoteMessage.getData().get("Title"));
+//        notificationBuilder.setContentText(remoteMessage.getData().get("Body"));
+//        notificationBuilder.setAutoCancel(true);
+//        //set the sound of the notification
+//        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//
+//        notificationBuilder.setSound(alarmSound);
+//        notificationBuilder.setSmallIcon(R.mipmap.logo);
+//        notificationBuilder.setContentIntent(pendingIntent);
+//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.notify(0, notificationBuilder.build());
+//    }
 
     public static void sendSelfNotification(Class onClickGo, String headline, String message){
         Intent intent = new Intent(GlobalVariables.appCompatActivity, onClickGo);
@@ -67,4 +71,80 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) GlobalVariables.appCompatActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
     }
-}
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+            final int NOTIFY_ID = 1002;
+
+            // There are hardcoding only for show it's just strings
+            String name = "my_package_channel";
+            String id = "my_package_channel_1"; // The user-visible name of the channel.
+            String description = "my_package_first_channel"; // The user-visible description of the channel.
+
+            Intent intent;
+            PendingIntent pendingIntent;
+            NotificationCompat.Builder builder;
+
+            if (notifManager == null) {
+                notifManager =
+                        (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+                if (mChannel == null) {
+                    mChannel = new NotificationChannel(id, name, importance);
+                    mChannel.setDescription(description);
+                    mChannel.enableVibration(true);
+                    mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    notifManager.createNotificationChannel(mChannel);
+                }
+                builder = new NotificationCompat.Builder(this, id);
+
+                try {
+                    Log.e("CLASS", remoteMessage.getData().get("Window"));
+                    intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
+                } catch (ClassNotFoundException e) {
+                    intent = new Intent(this, MainActivity.class);
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                builder.setContentTitle(remoteMessage.getData().get("Title"))  // required
+                        .setSmallIcon(R.mipmap.logo) // required
+                        .setContentText(remoteMessage.getData().get("Body"))  // required
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setColor(getResources().getColor(R.color.orangeNegev))
+                        .setContentIntent(pendingIntent)
+                        .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            } else {
+
+                builder = new NotificationCompat.Builder(this);
+
+                try {
+                    Log.e("CLASS", remoteMessage.getData().get("Window"));
+                    intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
+                } catch (ClassNotFoundException e) {
+                    intent = new Intent(this, MainActivity.class);
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                builder.setContentTitle(remoteMessage.getData().get("Title"))                           // required
+                        .setSmallIcon(R.mipmap.logo) // required
+                        .setContentText(remoteMessage.getData().get("Body"))  // required
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
+                        .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                        .setColor(getResources().getColor(R.color.orangeNegev))
+                        .setLights(getResources().getColor(R.color.orangeNegev), 2000, 1000)
+                        .setPriority(Notification.PRIORITY_HIGH);
+            } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            Notification notification = builder.build();
+            notifManager.notify(NOTIFY_ID, notification);
+        }
+    }

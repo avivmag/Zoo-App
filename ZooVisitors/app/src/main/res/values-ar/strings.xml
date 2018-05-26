@@ -1,67 +1,69 @@
 <resources>
     <string name="app_name">נגב ZOO</string>
     //preferences
-    <string name="notifications">התראות</string>
-    <string name="language">שפה</string>
+    <string name="notifications">تنبيهات</string>
+    <string name="language">لغة</string>
     <string name="language_eng">English</string>
     <string name="language_heb">עברית</string>
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
     //main menu buttons
-    <string name="watch_all_feed">הצג הכל</string>
-    <string name="our_enclosures">המתחמים שלנו</string>
-    <string name="schedule">לוח שנה</string>
-    <string name="map">מפה</string>
-    <string name="other_info">מידע נוסף</string>
-    <string name="nav">נווט אלינו</string>
+    <string name="watch_all_feed">اعرض الكل</string>
+    <string name="our_enclosures">مجمعاتنا</string>
+    <string name="schedule">تقويم</string>
+    <string name="map">خريطة</string>
+    <string name="other_info">معلومات أخرى</string>
+    <string name="nav">انتقل الينا</string>
 
     <!-- Animal Activity -->
-    <string name="title_activity_animal">החיות שלנו</string>
-    <string name="about_animal">על החיות שלנו</string>
-    <string name="about_species">על המין</string>
-    <string name="category">קטגוריה:</string>
-    <string name="series">סדרה:</string>
-    <string name="family">משפחה:</string>
-    <string name="distribution">תפוצה:</string>
-    <string name="reproduction">רבייה:</string>
-    <string name="food">אוכל:</string>
-    <string name="shareOnFacebook">שתף בפייסבוק</string>
-    <string name="showOnMap">הראה במפה</string>
+    <string name="title_activity_animal">حيواناتنا</string>
+    <string name="about_animal">عن حيواناتنا</string>
+    <string name="about_species">عن اصنافنا</string>
+    <string name="category">قسم:</string>
+    <string name="series">سلسلة:</string>
+    <string name="family">عائلة:</string>
+    <string name="distribution">الانتشار وبيوت التنمية:</string>
+    <string name="reproduction">تربية:</string>
+    <string name="food">غذاء:</string>
+    <string name="shareOnFacebook">شارك على الفيسبوك</string>
+    <string name="showOnMap">اظهار على الخريطة</string>
 
 
     <!-- General Info -->
-    <string name="title_activity_general_info">מידע כללי:</string>
-    <string name="contact_info">יצירת קשר</string>
-    <string name="prices">מחירון</string>
-    <string name="opening_hours">שעות פתיחה</string>
-    <string name="about_us">עלינו</string>
-    <string name="contact_us_headline">דרכי התקשרות:</string>
-    <string name="opening_hours_headline">זמני פתיחה:</string>
-    <string name="prices_headline">מחירון:</string>
-    <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
-    <string name="choose_route">בחר מסלול</string>
+    <string name="title_activity_general_info">معلومات عامه:</string>
+    <string name="contact_info">اتصل بنا</string>
+    <string name="prices">أسعار</string>
+    <string name="opening_hours">ساعات العمل</string>
+    <string name="about_us">عنا</string>
+    <string name="contact_us_headline">اتصل بنا:</string>
+    <string name="opening_hours_headline">ساعات العمل:</string>
+    <string name="prices_headline">أسعار:</string>
+    <string name="searchPlaceHolder">اكتب مجمع او حيوان</string>
+    <string name="choose_route">اختر مسار</string>
 
     <!-- Schedule -->
-    <string name="todays_event">אירועי היום</string>
-    <string name="preservation">מצב שימור</string>
+    <string name="todays_event">احداث اليوم</string>
+    <string name="preservation">مستوى الحفظ</string>
     <string name="facebook_app_id">1991264511112012</string>
 
-    <string name="personal">סיפורים אישיים</string>
+    <string name="personal">قصص شخصية</string>
     <!--Gps provider dialog-->
-    <string name="gps_no_permission_dialog_title">הרשאת מיקום</string>
-    <string name="gps_no_permission_dialog_message">ביטול הרשאה למיקום המכשיר יבטל חלק מתכונות האפליקציה</string>
-    <string name="gps_no_permission_dialog_approve">אפשר מיקום</string>
-    <string name="gps_no_permission_dialog_disapprove">אל תאפשר מיקום</string>
-    <string name="gps_no_activated_dialog_activate_needed">אנא הדליקו את שירות מיקומי המכשיר</string>
-    <string name="gps_no_activated_dialog_open_settings">פתח הגדרות</string>
-    <string name="gps_no_activated_dialog_do_not_open_settings">ביטול</string>
-    <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
+    <string name="gps_no_permission_dialog_title">المصادقه على الموقع</string>
+    <string name="gps_no_permission_dialog_message">الغاء المصادقه على موقع الجهاز يؤدي الى تعطيل بعض ميزات التطبيق</string>
+    <string name="gps_no_permission_dialog_approve">السماح بالموقع</string>
+    <string name="gps_no_permission_dialog_disapprove">لا تسمح بالموقع</string>
+    <string name="gps_no_activated_dialog_activate_needed">يرجى تشغيل خدمة موقع الجهاز</string>
+    <string name="gps_no_activated_dialog_open_settings">افتح الاعدادات</string>
+    <string name="gps_no_activated_dialog_do_not_open_settings">الغاء</string>
+    <string name="gps_no_activated_dialog_title">اعدادات موقع الجهاز</string>
 
-    <string name="no_data">אין מידע</string>
+    <string name="no_data">لا يوجد معلومات</string>
 
-    <string name="whoLives">מי גר כאן:</string>
-    <string name="assets">תמונות וסרטונים:</string>
+    <string name="whoLives">من يسكن معنا:</string>
+    <string name="assets">صور وفيديوهات:</string>
 
-    <string name="days">ימים</string>
-    <string name="hours">שעות</string>
+    <string name="days">أيام</string>
+    <string name="hours">ساعات</string>
+
+    <string name="turn_the_volume">הגבר את עוצמת השמע</string>
 </resources>

@@ -3,8 +3,10 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.dal.Memory;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -42,18 +45,6 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
         public ViewHolder(View itemView){
             super(itemView);
-//            List<Integer> imagesList = new ArrayList<Integer>();
-//            for (String image : enclosuresImages) {
-////                AppCompatActivity tempActivity = new AppCompatActivity();
-//                imagesList.add(GlobalVariables.appCompatActivity.getResources().getIdentifier(image, "mipmap", GlobalVariables.appCompatActivity.getPackageName()));
-//
-//            }
-//
-//            int[] ret = new int[imagesList.size()];
-//            for(int i = 0;i < ret.length;i++)
-//                ret[i] = imagesList.get(i);
-//
-//            images = ret;
 
             enclosure_card_image = (ImageView) itemView.findViewById(R.id.enc_card_image);
             enclosureName = (TextView) itemView.findViewById(R.id.enclosure_card_text);
@@ -86,19 +77,19 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        viewHolder.enclosureName.setText(enclosures[i].getName());
         GlobalVariables.bl.getImage(enclosures[i].getPictureUrl(), 500, 500, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                viewHolder.enclosureName.setText(enclosures[i].getName());
-//                GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(GlobalVariables.appCompatActivity, null);
-//                layoutParams.setMargins(0,0,0,5);
-//                viewHolder.enclosure_card_image.setLayoutParams(layoutParams);
                 viewHolder.enclosure_card_image.setImageBitmap((Bitmap) response);
+                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.enclosure_card_image.setImageResource(R.mipmap.no_image_available);
+                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), BitmapFactory.decodeResource(
+                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });
     }

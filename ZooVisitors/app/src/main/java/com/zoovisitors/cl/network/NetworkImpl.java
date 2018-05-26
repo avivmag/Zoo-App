@@ -2,6 +2,7 @@ package com.zoovisitors.cl.network;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
@@ -12,6 +13,8 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.zoovisitors.GlobalVariables;
+
+import java.io.IOException;
 
 /**
  * Created by aviv on 08-Jan-18.
@@ -97,5 +100,18 @@ public class NetworkImpl implements NetworkInterface {
                 });
         // Access the RequestQueue through your singleton class.
         queue.add(request);
+    }
+
+    @Override
+    public void postAudio(String innerUrl, ResponseInterface<MediaPlayer> responseInterface) {
+        String url = "http://" + GlobalVariables.ServerAddress + "/" + innerUrl;
+        MediaPlayer mp = new MediaPlayer();
+        try {
+            mp.setDataSource(url);
+            responseInterface.onSuccess(mp);
+        } catch (IOException e) {
+            responseInterface.onFailure("IOException on setDataSource");
+        }
+
     }
 }
