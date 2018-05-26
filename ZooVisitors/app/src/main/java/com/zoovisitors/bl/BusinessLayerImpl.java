@@ -3,6 +3,8 @@ package com.zoovisitors.bl;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -321,21 +323,6 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-//    @Override
-//    public void sendDeviceId() {
-//        ni.post("/" + "?deviceID=" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
-//            @Override
-//            public void onSuccess(String response) {
-//                Log.e("DeviceID","Succeed sending");
-//            }
-//
-//            @Override
-//            public void onFailure(String response) {
-//                Log.e("DeviceID","cannot send to server");
-//            }
-//        });
-//    }
-
     public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
         ni.postImageWithoutPrefix(url, width, height, new ResponseInterface<Bitmap>() {
             @Override
@@ -354,6 +341,36 @@ public class BusinessLayerImpl implements BusinessLayer {
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
+                goi.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
+            }
+        });
+    }
+
+    @Override
+    public void unsubscribeToNotification(final GetObjectInterface goi) {
+        ni.post("notification/unsubscribe/" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                goi.onSuccess("Unsubscribe success");
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure("Unsubscribe failed");
+            }
+        });
+    }
+
+    @Override
+    public void getAudio(String url, GetObjectInterface goi) {
+        ni.postAudio(url, new ResponseInterface<MediaPlayer>() {
+            @Override
+            public void onSuccess(MediaPlayer response) {
                 goi.onSuccess(response);
             }
 

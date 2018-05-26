@@ -32,7 +32,6 @@ public class PersonalStoriesActivity extends BaseActivity {
         GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-//                personalStories = ()
                 adapter = new PersonalStoriesRecyclerAdapter((Animal.PersonalStories[]) response);
                 recycleView.setAdapter(adapter);
             }

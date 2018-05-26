@@ -14,16 +14,14 @@ public class GlobalVariables {
     public static String ServerAddress = "negevzoo.sytes.net:50" +
             (DEBUG ? "555/" : "000/");
     public static String LOG_TAG = "zoovisitors";
-    public static int language = 1; //Hebrew
+    public static int language;
     public static AppCompatActivity appCompatActivity;
     public static BusinessLayer bl;
     public static int firstEnter = 0;
     public static AppCompatActivity foregroundActivity;
     public static String firebaseToken;
     public static String deviceId;
-//
-//    public static String facebookAppId = "591313814575886";
-
+    public static boolean notifications = true;
 
     public static OpeningHours[] testOp;
     public static Enclosure[] testEnc;
