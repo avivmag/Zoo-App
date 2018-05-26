@@ -13,6 +13,7 @@ import com.zoovisitors.R;
 
 @SuppressLint("AppCompatCustomView")
 public class TextViewRegularText extends TextView {
+    private int textAlignment;
     public TextViewRegularText(Context context) {
         super(context);
     }
@@ -25,13 +26,18 @@ public class TextViewRegularText extends TextView {
         super(context, attrs, defStyleAttr);
     }
 
+    public TextViewRegularText(Context context, int textAlignment){
+        super(context);
+        this.textAlignment = textAlignment;
+    }
+
     @Override
     public void onDraw(Canvas canvas)
     {
         setTextColor(getResources().getColor(R.color.black));
         setTextSize(20);
         setIncludeFontPadding(false);
-        setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
+        setTextAlignment(textAlignment==0 ? TEXT_ALIGNMENT_TEXT_START : textAlignment);
         super.onDraw(canvas);
     }
 }

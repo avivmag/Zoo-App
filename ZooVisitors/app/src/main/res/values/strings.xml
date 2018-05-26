@@ -41,6 +41,7 @@
     <string name="title_activity_general_info">מידע כללי:</string>
     <string name="contact_info">יצירת קשר</string>
     <string name="prices">מחירון</string>
+    <string name="population">אוכלוסיה</string>
     <string name="opening_hours">שעות פתיחה</string>
     <string name="about_us">עלינו</string>
     <string name="contact_us_headline">דרכי התקשרות:</string>

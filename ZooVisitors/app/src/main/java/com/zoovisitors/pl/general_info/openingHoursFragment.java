@@ -39,21 +39,21 @@ public class openingHoursFragment extends Fragment {
                 int textSize = 14;
                 ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.aligator);
 
-                TextView tv1 = (TextView) rootView.findViewById(
-                        R.id.firstColInfoTbl);
-
-                TextView tv2 = (TextView) rootView.findViewById(
-                        R.id.secColInfoTbl);
-
-                if (GlobalVariables.language == 1) {
-                    tv1.setText(getResources().getString(R.string.hours));
-                    tv2.setText(getResources().getString(R.string.days));
-                }
-                else
-                {
-                    tv1.setText(getResources().getString(R.string.days));
-                    tv2.setText(getResources().getString(R.string.hours));
-                }
+//                TextView tv1 = (TextView) rootView.findViewById(
+//                        R.id.firstColInfoTbl);
+//
+//                TextView tv2 = (TextView) rootView.findViewById(
+//                        R.id.secColInfoTbl);
+//
+//                if (GlobalVariables.language == 1) {
+//                    tv1.setText(getResources().getString(R.string.hours));
+//                    tv2.setText(getResources().getString(R.string.days));
+//                }
+//                else
+//                {
+//                    tv1.setText(getResources().getString(R.string.days));
+//                    tv2.setText(getResources().getString(R.string.hours));
+//                }
 
                 //Build the table for the opening hours
                 for (OpeningHours oh : openingHours) {
