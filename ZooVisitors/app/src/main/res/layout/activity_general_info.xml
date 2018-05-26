@@ -11,20 +11,15 @@
         android:id="@+id/linear_general_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/grayNegev"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="0dp">
+        android:orientation="vertical">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/generalInfoTab"
             style="@style/MyCustomTabLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/brownNegev">
+            android:background="@color/brownIcon"
+            >
 
             <android.support.design.widget.TabItem
                 android:id="@+id/general_info"
