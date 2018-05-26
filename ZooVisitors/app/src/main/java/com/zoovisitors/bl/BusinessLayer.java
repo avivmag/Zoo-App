@@ -23,8 +23,12 @@ public interface BusinessLayer {
 
     //notification
     void updateIfInPark(boolean isInPark, final GetObjectInterface goi);
-//    void sendDeviceId();
+    void unsubscribeToNotification(final GetObjectInterface goi);
 
+    //Images
     void getImage(String url, int width, int height, GetObjectInterface goi);
     void getImageFullUrl(String url, int width, int height, GetObjectInterface goi);
+
+    //Audio
+    void getAudio(String url, final GetObjectInterface goi);
 }

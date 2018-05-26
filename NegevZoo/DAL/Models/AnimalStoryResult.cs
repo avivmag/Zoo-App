@@ -14,5 +14,6 @@ namespace DAL.Models
         public long EncId { get; set; }
         public string PictureUrl { get; set; }
         public long Language { get; set; }
+        public byte[] pictureData { get; set; }
     }
 }

@@ -18,5 +18,6 @@ namespace DAL
         public long language { get; set; }
         public string name { get; set; }
         public string story { get; set; }
+        public string audioUrl { get; set; }
     }
 }

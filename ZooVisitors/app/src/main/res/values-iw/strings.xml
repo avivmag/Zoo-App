@@ -68,4 +68,6 @@
 
     <string name="days">ימים</string>
     <string name="hours">שעות</string>
+
+    <string name="turn_the_volume">הגבר את עוצמת השמע</string>
 </resources>

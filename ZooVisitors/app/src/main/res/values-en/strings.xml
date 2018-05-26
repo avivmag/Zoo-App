@@ -76,4 +76,6 @@
 
     <string name="days">Days</string>
     <string name="hours">Hours</string>
+
+    <string name="turn_the_volume">Please turn the volume up</string>
 </resources>

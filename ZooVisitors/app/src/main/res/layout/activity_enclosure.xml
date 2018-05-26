@@ -27,12 +27,27 @@
                     android:textColor="@android:color/white"
                     android:textSize="30sp"/>
 
-                <ImageView
-                    android:id="@+id/enclosureImage"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="123dp"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@color/cardview_light_background" />
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/enclosureImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="123dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@color/cardview_light_background" />
+
+                    <ImageView
+                        android:id="@+id/enclosure_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginBottom="41dp"
+                        android:layout_marginEnd="53dp"
+                        android:scaleType="fitXY"/>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/enclosureClosestEventLayout"
