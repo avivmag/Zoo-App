@@ -38,6 +38,7 @@ public class LoadingScreen extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        changeLanguage();
 
         //hiding the action bar in this activity
         android.support.v7.app.ActionBar AB= getSupportActionBar();
@@ -78,6 +79,47 @@ public class LoadingScreen extends BaseActivity {
                 public void onSuccess(Object response) {
                     GlobalVariables.testEnc = (Enclosure[]) response;
                     try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    increasePercentage();
+                    doneSignal.countDown();
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    GlobalVariables.language = 1;
+                    Log.e("Can't make task", (String) response);
+                    GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            GlobalVariables.testEnc = (Enclosure[]) response;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            increasePercentage();
+                            GlobalVariables.language = 3;
+                            doneSignal.countDown();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Log.e("Can't make task", (String) response);
+                        }
+                    });
+                }
+            });
+        });
+
+        tasks.add(() -> {
+            GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    GlobalVariables.testOp = (OpeningHours []) response;
+                    try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -93,37 +135,16 @@ public class LoadingScreen extends BaseActivity {
             });
         });
 
-        tasks.add(() -> {
-            GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    GlobalVariables.testOp = (OpeningHours []) response;
-                    try {
-                        Thread.sleep(4000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    increasePercentage();
-                    doneSignal.countDown();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Log.e("Can't make task", (String) response);
-                }
-            });
-        });
-
-        tasks.add(() -> {
-            changeToHebrew();
-            try {
-                Thread.sleep(8000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            increasePercentage();
-            doneSignal.countDown();
-        });
+//        tasks.add(() -> {
+//            changeLanguage();
+//            try {
+//                Thread.sleep(3000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            increasePercentage();
+//            doneSignal.countDown();
+//        });
 
         makeTasks();
 
@@ -138,15 +159,50 @@ public class LoadingScreen extends BaseActivity {
     }
 
 
-    private void changeToHebrew() {
+    private void changeLanguage() {
         if (GlobalVariables.firstEnter == 0) {
+//            String lan = "";
+//            switch (GlobalVariables.language){
+//                case 1: //Hebrew
+//                    lan = "iw";
+//                    break;
+//                case 2: //English
+//                    lan = "en";
+//                    break;
+//                case 3: //Arabic
+//                    lan = "ar";
+//                    break;
+//                case 4: //Russian
+//                    lan = "ru";
+//                    break;
+//            }
+//            Locale myLocale = new Locale(lan);
+//            Resources res = getResources();
+//            DisplayMetrics dm = res.getDisplayMetrics();
+//            Configuration conf = res.getConfiguration();
+//            conf.locale = myLocale;
+//            res.updateConfiguration(conf, dm);
+//        }
+//        else{
+            switch (Locale.getDefault().getLanguage()){
+                case "he": //Hebrew
+                    GlobalVariables.language = 1;
+//                    GlobalVariables.appCompatActivity.setLocale(LanguageMap.get("Hebrew"));
+                    break;
+                case "en": //English
+                    GlobalVariables.language = 2;
+//                    setLocale(LanguageMap.get("Arabic"));
+                    break;
+                case "ar": //Arabic
+                    GlobalVariables.language = 3;
+//                    setLocale(LanguageMap.get("Arabic"));
+                    break;
+                case "ru": //Russian
+                    GlobalVariables.language = 4;
+//                    setLocale(LanguageMap.get("Arabic"));
+                    break;
+            }
             GlobalVariables.firstEnter++;
-            Locale myLocale = new Locale("iw");
-            Resources res = getResources();
-            DisplayMetrics dm = res.getDisplayMetrics();
-            Configuration conf = res.getConfiguration();
-            conf.locale = myLocale;
-            res.updateConfiguration(conf, dm);
         }
     }
 

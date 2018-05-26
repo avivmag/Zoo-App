@@ -1,11 +1,14 @@
 package com.zoovisitors.pl.enclosures;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 
 import com.zoovisitors.R;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 import java.util.ArrayList;
@@ -25,19 +28,25 @@ public class EnclosureAssetsPopUp extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enclosure_assets_popup);
 
-        int arraySize = 0;
-        getIntent().getIntExtra("arraySize", arraySize);
-        imagesInAsset = new ArrayList<Bitmap>();
-        for (int i=0; i<arraySize; i++) {
-            byte[] byteArray = getIntent().getByteArrayExtra("image" + i);
-            Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.5));
 
-//            imagesInAsset.add(getIntent().getParcelableExtra("images" + i));
-            imagesInAsset.add(bmp);
+        Intent intent = getIntent();
+        int arraySize = 0, pos = 0;
+        arraySize = intent.getIntExtra("arraySize",0);
+        pos = intent.getIntExtra("pos", 0);
+        imagesInAsset = new ArrayList<Bitmap>();
+        for (int i=0; i < arraySize; i++) {
+            String url = intent.getStringExtra("imageUrl" + i);
+            imagesInAsset.add(Memory.urlToBitmapMap.get(url));
         }
 
         viewPager = (ViewPager) findViewById(R.id.enclosure_assets_viewpager);
-        enclosureAssetsSwipeAdapter = new EnclosureAssetsSwipeAdapter(imagesInAsset);
+        enclosureAssetsSwipeAdapter = new EnclosureAssetsSwipeAdapter(imagesInAsset, pos, this);
         viewPager.setAdapter(enclosureAssetsSwipeAdapter);
+        viewPager.setCurrentItem(pos);
     }
 }

@@ -1,6 +1,7 @@
 package com.zoovisitors.pl.animals;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 
@@ -41,11 +43,14 @@ public class AnimalActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 animalImage.setImageBitmap((Bitmap) response);
+                Memory.urlToBitmapMap.put(animal.getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 animalImage.setImageResource(R.mipmap.no_image_available);
+                Memory.urlToBitmapMap.put(animal.getPictureUrl(), BitmapFactory.decodeResource(
+                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });
 

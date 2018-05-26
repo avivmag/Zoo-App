@@ -2,6 +2,7 @@ package com.zoovisitors.pl.personalStories;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListRecyclerAdapter;
 
@@ -82,6 +84,7 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
             public void onSuccess(Object response) {
                 viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
                 images[i] = (Bitmap) response;
+                Memory.urlToBitmapMap.put(personalStories[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
@@ -90,6 +93,8 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
                 viewHolder.animal_card_image.setLayoutParams(layoutParams);
                 viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
                 images[i] = null;
+                Memory.urlToBitmapMap.put(personalStories[i].getPictureUrl(), BitmapFactory.decodeResource(
+                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });
 

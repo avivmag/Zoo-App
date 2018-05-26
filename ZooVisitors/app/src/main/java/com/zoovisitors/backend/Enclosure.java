@@ -32,6 +32,12 @@ public class Enclosure implements java.io.Serializable{
     private PictureEnc[] pictures;
     @SerializedName("videos")
     private VideoEnc[] videos;
+    @SerializedName("audioUrl")
+    private String audioUrl;
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
 
     public PictureEnc[] getPictures() {
         return pictures;
