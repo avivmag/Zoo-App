@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;

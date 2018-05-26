@@ -1,39 +1,41 @@
 package com.zoovisitors.pl;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.VideoView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.backend.OpeningHours;
+import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.callbacks.FunctionInterface;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.FunctionInterface;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
 
-import java.util.ArrayList;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends BaseActivity {
     private final static int HUNDRED = 100;
-
-    private boolean endAllThreads = false;
     private CountDownLatch doneSignal;
-    private VideoView videoview;
     private List<FunctionInterface> tasks;
 
     //progress bar fields
     private double progressPercentage;
     private ProgressBarCustomView pb;
+    private static long total = 0;
+    private static int lengthOfFile = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,191 +55,133 @@ public class LoadingScreen extends BaseActivity {
         Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
         progressPercentage = 0;
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
-        pb.setProgressPrecentage((int) progressPercentage);
 
-        tasks = new ArrayList<>();
+        GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                goToMain();
+                //TODO: AVIV: Response is the whole data
+            }
+
+            @Override
+            public void onFailure(Object response) {
+                new AlertDialog.Builder(LoadingScreen.this)
+                        .setTitle("")
+                        .setMessage((String) response)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                if (whichButton == dialog.BUTTON_POSITIVE){
+                                    System.exit(0);
+                                }
+                            }}).show();
 
 
-//        videoview = (VideoView) findViewById(R.id.loading_video);
-//        videoview.setTranslationX(-525f);
-//        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                mp.setLooping(true);
-//            }
-//        });
-//        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.loading);
-//        videoview.setVideoURI(uri);
-//        videoview.start();
+            }
 
-
-
-
-        tasks.add(() -> {
-            GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    GlobalVariables.testEnc = (Enclosure[]) response;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    increasePercentage();
-                    doneSignal.countDown();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    GlobalVariables.language = 1;
-                    Log.e("Can't make task", (String) response);
-                    GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-                        @Override
-                        public void onSuccess(Object response) {
-                            GlobalVariables.testEnc = (Enclosure[]) response;
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            increasePercentage();
-                            GlobalVariables.language = 3;
-                            doneSignal.countDown();
-                        }
-
-                        @Override
-                        public void onFailure(Object response) {
-                            Log.e("Can't make task", (String) response);
-                        }
-                    });
-                }
-            });
+            @Override
+            public void onUpdate(Object response) {
+                pb.post(() -> pb.setProgressPrecentage((Integer) response));
+            }
         });
-
-        tasks.add(() -> {
-            GlobalVariables.bl.getOpeningHours(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    GlobalVariables.testOp = (OpeningHours []) response;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    increasePercentage();
-                    doneSignal.countDown();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Log.e("Can't make task", (String) response);
-                }
-            });
-        });
-
-//        tasks.add(() -> {
-//            changeLanguage();
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            increasePercentage();
-//            doneSignal.countDown();
-//        });
-
-        makeTasks();
-
-
 
     }
-
 
     private void goToMain(){
         Intent loadingIntent = new Intent(LoadingScreen.this, MainActivity.class);
         startActivity(loadingIntent);
     }
 
-
     private void changeLanguage() {
         if (GlobalVariables.firstEnter == 0) {
-//            String lan = "";
-//            switch (GlobalVariables.language){
-//                case 1: //Hebrew
-//                    lan = "iw";
-//                    break;
-//                case 2: //English
-//                    lan = "en";
-//                    break;
-//                case 3: //Arabic
-//                    lan = "ar";
-//                    break;
-//                case 4: //Russian
-//                    lan = "ru";
-//                    break;
-//            }
-//            Locale myLocale = new Locale(lan);
-//            Resources res = getResources();
-//            DisplayMetrics dm = res.getDisplayMetrics();
-//            Configuration conf = res.getConfiguration();
-//            conf.locale = myLocale;
-//            res.updateConfiguration(conf, dm);
-//        }
-//        else{
             switch (Locale.getDefault().getLanguage()){
                 case "he": //Hebrew
                     GlobalVariables.language = 1;
-//                    GlobalVariables.appCompatActivity.setLocale(LanguageMap.get("Hebrew"));
                     break;
                 case "en": //English
                     GlobalVariables.language = 2;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
                 case "ar": //Arabic
                     GlobalVariables.language = 3;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
                 case "ru": //Russian
                     GlobalVariables.language = 4;
-//                    setLocale(LanguageMap.get("Arabic"));
                     break;
             }
             GlobalVariables.firstEnter++;
         }
     }
 
-
-    private void makeTasks(){
-        doneSignal = new CountDownLatch(tasks.size());
-        for (FunctionInterface f : tasks){
-            Thread task = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    f.whatToDo();
-                }
-            });
-            task.start();
-        }
-
-        Thread task = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    doneSignal.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                goToMain();
-            }
-        });
-        task.start();
-    }
-
-    private synchronized void increasePercentage(){
-        progressPercentage++;
-        Log.e("PERC", "" + ((int) ((progressPercentage/(double) tasks.size()) * HUNDRED)));
-//        Log.e("PERC", "" + )
-        pb.post(()-> {pb.setProgressPrecentage((int) ((progressPercentage/(double) tasks.size()) * HUNDRED));});
-//        pb.post(()-> {pb.setProgressPrecentage();});
-    }
+//    /**
+//     * Async Task to download file from URL
+//     */
+//    private class DownloadFile extends AsyncTask<String, Integer, String> {
+//
+//        private ProgressDialog progressDialog;
+//        private String fileName;
+//        private String folder;
+//        private boolean isDownloaded;
+//
+//        /**
+//         * Before starting background thread
+//         * Show Progress Bar Dialog
+//         */
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        /**
+//         * Downloading file in background thread
+//         */
+//        @Override
+//        protected String doInBackground(String... f_url) {
+//            int count;
+//            try {
+//                URL url = new URL(f_url[0]);
+//                URLConnection connection = url.openConnection();
+//                connection.connect();
+//                // getting file length
+//                lengthOfFile = connection.getContentLength();
+//
+//
+//                // input stream to read file - with 8k buffer
+//                InputStream input = new BufferedInputStream(url.openStream(), 1024 * 1024 * 10);
+//
+//                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+//
+//                byte data[] = new byte[1024];
+//
+//                total = 0;
+//                String strAllData = "";
+//                while ((count = input.read(data)) != -1) {
+//                    total += count;
+//                    strAllData += new String(data, 0, count);
+//                    publishProgress((int) ((total * 100) / lengthOfFile));
+//                }
+//                input.close();
+//                return "Downloaded";
+//
+//            } catch (Exception e) {
+//                Log.e("Error: ", e.getMessage());
+//            }
+//
+//            return "Something went 1wrong";
+//        }
+//
+//        /**
+//         * Updating progress bar
+//         */
+//        @Override
+//        protected void onProgressUpdate(Integer... val) {
+//            pb.post(() -> pb.setProgressPrecentage(val[0]));
+//        }
+//
+//
+//        @Override
+//        protected void onPostExecute(String message) {
+//            goToMain();
+//        }
+//    }
 }

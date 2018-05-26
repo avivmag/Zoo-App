@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.NewsFeed;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
@@ -45,12 +45,7 @@ public class MainActivity extends BaseActivity {
     private String[] newsFeedList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        //TODO: TESTING LOADING
-        Log.e("TESTENC", GlobalVariables.testEnc[0].getName());
-
-        Log.e("TESTOP", GlobalVariables.testOp[0].getDay());
-
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setActionBar(R.color.blueIcon);
         setContentView(R.layout.activity_main);

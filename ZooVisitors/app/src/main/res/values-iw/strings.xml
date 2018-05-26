@@ -69,4 +69,8 @@
     <string name="hours">שעות</string>
 
     <string name="turn_the_volume">הגבר את עוצמת השמע</string>
+
+    <string name="init_bad">מצטערים אבל ישנה בעיה. אנא סגרו את האפלייקציה ופתחו אותה שוב</string>
+
+    <string name="confirm">אישור</string>
 </resources>
