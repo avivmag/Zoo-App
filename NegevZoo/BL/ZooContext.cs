@@ -2684,10 +2684,14 @@ namespace BL
 
             var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
 
+            // Get the current time.
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             //check if the device already exists
             if (device != null)
             {
-                device.lastPing = DateTime.Now;
+                device.lastPing = currentTime;
             }
             else
             {
@@ -2695,7 +2699,7 @@ namespace BL
                 {
                     deviceId = deviceId,
                     insidePark = (sbyte)(insidePark? 1 : 0),
-                    lastPing = DateTime.Now
+                    lastPing = currentTime
                 };
 
                 zooDB.GetAllDevices().Add(device);
@@ -2737,7 +2741,11 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsOnlineDevices(string title, string body)
         {
-            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
+            // Get the current time
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
+            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.AddMinutes(30) > currentTime).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
