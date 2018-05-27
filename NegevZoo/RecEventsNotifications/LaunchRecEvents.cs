@@ -203,9 +203,9 @@ namespace RecEventsNotifications
     }
 
     [RunInstaller(true)]
-    public class SpadesInstaller : System.Configuration.Install.Installer
+    public class RecurringEventsInstaller : System.Configuration.Install.Installer
     {
-        public SpadesInstaller()
+        public RecurringEventsInstaller()
         {
             ServiceProcessInstaller process = new ServiceProcessInstaller();
 
