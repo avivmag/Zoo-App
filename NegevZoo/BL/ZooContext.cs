@@ -393,6 +393,8 @@ namespace BL
                 throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists.");
             }
 
+            enclosureDetail.story = enclosureDetail.story ?? String.Empty;
+
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
             EnclosureDetail oldEnc = enclosuresDetails.SingleOrDefault(en => en.encId == enclosureDetail.encId && en.language == enclosureDetail.language);
