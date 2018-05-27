@@ -29,4 +29,40 @@ public class DataFromServer {
     private Price[] prices;
     @SerializedName("aboutUs")
     private String aboutUs;
+
+    public Enclosure[] getEnclosures() {
+        return enclosures;
+    }
+
+    public Animal.PersonalStories[] getAnimalStories() {
+        return animalStories;
+    }
+
+    public Misc[] getMiscMarkers() {
+        return miscMarkers;
+    }
+
+    public MapResult getMapResult() {
+        return mapResult;
+    }
+
+    public WallFeed[] getWallFeeds() {
+        return wallFeeds;
+    }
+
+    public ContactInfoResult getContactInfoResult() {
+        return contactInfoResult;
+    }
+
+    public OpeningHoursResult getOpeningHoursResult() {
+        return openingHoursResult;
+    }
+
+    public Price[] getPrices() {
+        return prices;
+    }
+
+    public String getAboutUs() {
+        return aboutUs;
+    }
 }

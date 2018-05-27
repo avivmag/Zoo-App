@@ -9,7 +9,7 @@ public class ContactInfoResult {
     @SerializedName("contactInfoNote")
     private String contactInfoNote;
 
-    private class ContactInfo {
+    public class ContactInfo {
         @SerializedName("via")
         private String via;
         @SerializedName("address")
@@ -21,5 +21,13 @@ public class ContactInfoResult {
         public String getAddress() {
             return address;
         }
+    }
+
+    public ContactInfo[] getContactInfo() {
+        return contactInfo;
+    }
+
+    public String getContactInfoNote() {
+        return contactInfoNote;
     }
 }

@@ -1,5 +1,7 @@
 package com.zoovisitors.bl;
 
+import android.graphics.drawable.Drawable;
+
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.callbacks.UpdateInterface;
 
@@ -35,4 +37,7 @@ public interface BusinessLayer {
 
     //All data
     void getAllDataInit(final UpdateInterface updateInterface);
+
+    void insertStringandDrawable(String s, Drawable d);
+    Drawable getDrawableByString(String s);
 }

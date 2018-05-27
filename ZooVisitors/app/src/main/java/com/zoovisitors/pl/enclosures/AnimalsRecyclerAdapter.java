@@ -16,7 +16,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.animals.AnimalActivity;
 
 /**

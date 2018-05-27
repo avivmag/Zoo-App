@@ -2,13 +2,12 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 
 import com.zoovisitors.R;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 import java.util.ArrayList;

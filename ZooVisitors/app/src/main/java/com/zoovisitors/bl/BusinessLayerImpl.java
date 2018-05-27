@@ -3,6 +3,7 @@ package com.zoovisitors.bl;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -10,11 +11,11 @@ import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.AboutUs;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.backend.ContactInfo;
+import com.zoovisitors.backend.ContactInfoResult;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
+import com.zoovisitors.backend.OpeningHoursResult;
 import com.zoovisitors.backend.WallFeed;
-import com.zoovisitors.backend.OpeningHours;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
@@ -22,6 +23,7 @@ import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.backend.callbacks.ResponseInterface;
+import com.zoovisitors.dal.DataFromServer;
 import com.zoovisitors.dal.InternalStorage;
 
 /**
@@ -32,7 +34,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     private NetworkInterface ni;
     private InternalStorage is;
     private Gson gson;
-    private String json;
+    private Memory memory;
 
     public BusinessLayerImpl(Activity activity) {
         ni = new NetworkImpl(activity);
@@ -40,6 +42,7 @@ public class BusinessLayerImpl implements BusinessLayer {
         gson = new Gson();
     }
 
+    //TODO: GILI change Strings (No data in the server) to R.string...
 
     @Override
     public void getAnimals(int id, final GetObjectInterface goi) {
@@ -62,10 +65,6 @@ public class BusinessLayerImpl implements BusinessLayer {
                 goi.onFailure("Can't get animals from the server");
             }
         });
-
-
-
-        //getJson("animals/1");
     }
 
     @Override
@@ -90,11 +89,15 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     @Override
     public void getEnclosures(final GetObjectInterface goi) {
-        ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onSuccess(String response) {
-                Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
+        Enclosure[] enclosures = memory.getEnclosures();
+        if (enclosures != null)
+            goi.onSuccess(enclosures);
+        else {
+            ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onSuccess(String response) {
+                    Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
 
 //                // TODO: fake recurring events here, need to update the json somehow
 //                // TODO: I should add three days to the real recurring events
@@ -112,37 +115,47 @@ public class BusinessLayerImpl implements BusinessLayer {
 //                    });
 //                }
 
-                if (enc.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(enc);
-            }
+                    if (enc.length <= 0)
+                        goi.onFailure("No Data in the server");
+                    else{
+                        memory.setEnclosures(enc);
+                        goi.onSuccess(enc);
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get enclosures from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get enclosures from server");
+                }
+            });
+        }
     }
 
     @Override
     public void getMisc(final GetObjectInterface goi) {
-        ni.post("misc/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Misc[] misc = gson.fromJson(response, Misc[].class);
+        Misc[] misc = memory.getMiscMarkers();
+        if (misc != null)
+            goi.onSuccess(misc);
+        else {
+            ni.post("misc/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    Misc[] misc = gson.fromJson(response, Misc[].class);
 
-                if (misc.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(misc);
-            }
+                    if (misc.length <= 0)
+                        goi.onFailure("No Data in the server");
+                    else {
+                        memory.setMiscMarkers(misc);
+                        goi.onSuccess(misc);
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get misc from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get misc from server");
+                }
+            });
+        }
     }
 
 //    @Override
@@ -181,24 +194,30 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     @Override
     public void getNewsFeed(final GetObjectInterface goi) {
+        WallFeed[] wallFeed = memory.getWallFeeds();
+        if (wallFeed != null)
+            goi.onSuccess(wallFeed);
+        else {
+            ni.post("Wallfeed/all/" + GlobalVariables.language, new ResponseInterface<String>() {
 
-        ni.post("Wallfeed/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    WallFeed[] wallFeed = gson.fromJson(response, WallFeed[].class);
 
-            @Override
-            public void onSuccess(String response) {
-                WallFeed[] wallFeed = gson.fromJson(response, WallFeed[].class);
+                    if (wallFeed.length <= 0)
+                        goi.onFailure("No Data in the server");
+                    else {
+                        memory.setWallFeeds(wallFeed);
+                        goi.onSuccess(wallFeed);
+                    }
+                }
 
-                if (wallFeed.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(wallFeed);
-            }
-
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get feed from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get feed from server");
+                }
+            });
+        }
     }
 
     @Override
@@ -222,102 +241,136 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     @Override
     public void getPrices(final GetObjectInterface goi) {
-        ni.post("prices/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Price[] prices = gson.fromJson(response, Price[].class);
+        Price[] prices = memory.getPrices();
+        if (prices != null)
+            goi.onSuccess(prices);
+        else {
+            ni.post("prices/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    Price[] prices = gson.fromJson(response, Price[].class);
 
-                if (prices.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(prices);
-            }
+                    if (prices.length <= 0)
+                        goi.onFailure("No Data in the server");
+                    else{
+                        memory.setPrices(prices);
+                        goi.onSuccess(prices);
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get prices from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get prices from server");
+                }
+            });
+        }
     }
 
     @Override
     public void getOpeningHours(final GetObjectInterface goi) {
-        ni.post("OpeningHours/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                OpeningHours[] openingHours = gson.fromJson(response, OpeningHours[].class);
+        OpeningHoursResult openingHours = memory.getOpeningHoursResult();
+        if (openingHours != null) {
+            goi.onSuccess(openingHours);
+        }
+        else {
+            ni.post("OpeningHours/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    OpeningHoursResult openingHours = gson.fromJson(response, OpeningHoursResult.class);
+                    if (openingHours == null)
+                        goi.onFailure("No Data in the server");
+                    else
+                        memory.setOpeningHoursResult(openingHours);
+                        goi.onSuccess(openingHours);
+                }
 
-                if (openingHours.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(openingHours);
-            }
-
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get opening hours from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get opening hours from server");
+                }
+            });
+        }
     }
 
     @Override
     public void getAboutUs(final GetObjectInterface goi) {
-        ni.post("about/info/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                AboutUs[] aboutUs = gson.fromJson(response, AboutUs[].class);
+        String aboutUsString = memory.getAboutUs();
+        if (aboutUsString != null)
+            goi.onSuccess(aboutUsString);
+        else {
+            ni.post("about/info/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    AboutUs aboutUs = gson.fromJson(response, AboutUs.class);
 
-                if (aboutUs.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(aboutUs);
-            }
+                    if (aboutUs == null)
+                        goi.onFailure("No Data in the server");
+                    else{
+                        memory.setAboutUs(aboutUs.getAboutUs());
+                        goi.onSuccess(aboutUs.getAboutUs());
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get abous us from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get abous us from server");
+                }
+            });
+        }
     }
 
     @Override
     public void getContactInfo(final GetObjectInterface goi) {
-        ni.post("ContactInfos/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                ContactInfo[] contactInfo = gson.fromJson(response, ContactInfo[].class);
+        ContactInfoResult contactInfoResults = memory.getContactInfoResult();
+        if (contactInfoResults != null)
+            goi.onSuccess(contactInfoResults);
+        else {
+            ni.post("ContactInfos/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    ContactInfoResult contactInfo = gson.fromJson(response, ContactInfoResult.class);
 
-                if (contactInfo.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(contactInfo);
-            }
+                    if (contactInfo == null)
+                        goi.onFailure("No Data in the server");
+                    else {
+                        memory.setContactInfoResult(contactInfoResults);
+                        goi.onSuccess(contactInfo);
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get contact info from server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get contact info from server");
+                }
+            });
+        }
     }
 
     @Override
-    public void getPersonalStories(final GetObjectInterface goi){
-        ni.post("animals/story/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Animal.PersonalStories[] animals = gson.fromJson(response, Animal.PersonalStories[].class);
+    public void getPersonalStories(final GetObjectInterface goi) {
+        Animal.PersonalStories[] personalStories = memory.getAnimalStories();
+        if (personalStories != null) {
+            goi.onSuccess(personalStories);
+        } else {
+            ni.post("animals/story/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    Animal.PersonalStories[] animals = gson.fromJson(response, Animal.PersonalStories[].class);
 
-                if (animals.length <= 0)
-                    goi.onFailure("No Data in the server");
-                else
-                    goi.onSuccess(animals);
-            }
+                    if (animals.length <= 0)
+                        goi.onFailure("No Data in the server");
+                    else {
+                        memory.setAnimalStories(animals);
+                        goi.onSuccess(animals);
+                    }
+                }
 
-            @Override
-            public void onFailure(String response) {
-                goi.onFailure("Can't get personal stories from the server");
-            }
-        });
+                @Override
+                public void onFailure(String response) {
+                    goi.onFailure("Can't get personal stories from the server");
+                }
+            });
+        }
     }
 
     public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
@@ -383,6 +436,12 @@ public class BusinessLayerImpl implements BusinessLayer {
         ni.getInitDataString("app/all/" + GlobalVariables.language, new UpdateInterface() {
             @Override
             public void onSuccess(Object response) {
+                DataFromServer dataFromServer = gson.fromJson((String) response, DataFromServer.class);
+                memory = new Memory(dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
+                        dataFromServer.getMiscMarkers(), dataFromServer.getMapResult(), dataFromServer.getWallFeeds(),
+                        dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
+                        dataFromServer.getPrices(), dataFromServer.getAboutUs());
+
                 updateInterface.onSuccess(response);
             }
 
@@ -397,5 +456,15 @@ public class BusinessLayerImpl implements BusinessLayer {
             }
         });
 
+    }
+
+    @Override
+    public void insertStringandDrawable(String s, Drawable d) {
+        memory.setStringAndDrawable(s, d);
+    }
+
+    @Override
+    public Drawable getDrawableByString(String s) {
+        return memory.getDrawableByString(s);
     }
 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.ContactInfo;
+import com.zoovisitors.backend.ContactInfoResult;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.customViews.TextViewTitle;
 
@@ -39,7 +39,7 @@ public class contactInfoFragment extends Fragment {
 
             @Override
             public void onSuccess(Object response) {
-                ContactInfo[] contactInfos = (ContactInfo[]) response;
+                ContactInfoResult contactInfos = (ContactInfoResult) response;
 
                 TableLayout contactInfoTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
 
@@ -85,7 +85,7 @@ public class contactInfoFragment extends Fragment {
                 contactInfoTable.addView(titleLayout);
 
                 //Build the table for the info
-                for (ContactInfo ci : contactInfos) {
+                for (ContactInfoResult.ContactInfo ci : contactInfos.getContactInfo()) {
                     LinearLayout rowLayout = new LinearLayout(getContext());
                     rowLayout.setOrientation(LinearLayout.HORIZONTAL);
                     LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

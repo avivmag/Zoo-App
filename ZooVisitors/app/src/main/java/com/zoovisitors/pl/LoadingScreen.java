@@ -1,7 +1,6 @@
 package com.zoovisitors.pl;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,16 +11,10 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.backend.callbacks.FunctionInterface;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
 
 public class LoadingScreen extends BaseActivity {
-    private final static int HUNDRED = 100;
-    private CountDownLatch doneSignal;
-    private List<FunctionInterface> tasks;
 
     //progress bar fields
     private ProgressBarCustomView pb;
@@ -40,15 +33,12 @@ public class LoadingScreen extends BaseActivity {
         GlobalVariables.appCompatActivity = this;
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-        //TODO: Delete this when sending device id to the server
-        Log.e("TOKEN", "token " + GlobalVariables.firebaseToken);
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
 
         GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
             @Override
             public void onSuccess(Object response) {
                 goToMain();
-                //TODO: AVIV: Response is the whole data
             }
 
             @Override

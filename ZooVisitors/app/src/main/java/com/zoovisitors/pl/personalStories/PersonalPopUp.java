@@ -1,7 +1,9 @@
 package com.zoovisitors.pl.personalStories;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,7 +11,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 public class PersonalPopUp extends BaseActivity {
@@ -21,14 +23,14 @@ public class PersonalPopUp extends BaseActivity {
     private TextView animalName;
     private TextView animalStory;
     private ImageView animalPic;
-    private Bitmap image;
+    private Drawable image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_pop_up);
         String url = getIntent().getStringExtra("url");
-        image = Memory.urlToBitmapMap.get(url);
+        image = GlobalVariables.bl.getDrawableByString(url);
         clickedAnimal = getIntent().getExtras();
         animal = (Animal.PersonalStories) clickedAnimal.getSerializable("animal");
         DisplayMetrics dm = new DisplayMetrics();
@@ -45,7 +47,7 @@ public class PersonalPopUp extends BaseActivity {
         animalStory.setText(animal.getStory());
 
         if (image != null)
-            animalPic.setImageBitmap(image);
+            animalPic.setImageDrawable(image);
         else
             animalPic.setImageResource(R.mipmap.no_image_available);
 
