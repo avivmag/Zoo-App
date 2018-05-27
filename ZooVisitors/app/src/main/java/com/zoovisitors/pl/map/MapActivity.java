@@ -1,6 +1,5 @@
 package com.zoovisitors.pl.map;
 
-import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,7 +25,7 @@ import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 
 import java.util.Arrays;
 import java.util.Set;

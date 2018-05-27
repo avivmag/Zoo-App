@@ -12,7 +12,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.OpeningHours;
+import com.zoovisitors.backend.OpeningHoursResult;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
@@ -35,7 +35,8 @@ public class openingHoursFragment extends Fragment {
 
             @Override
             public void onSuccess(Object response) {
-                OpeningHours[] openingHours = (OpeningHours[]) response;
+                OpeningHoursResult openingHoursResult = (OpeningHoursResult) response;
+
 
                 TableLayout openingHoursTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
 
@@ -81,7 +82,7 @@ public class openingHoursFragment extends Fragment {
                 openingHoursTable.addView(titleLayout);
 
                 //Build the table for the opening hours
-                for (OpeningHours oh : openingHours) {
+                for (OpeningHoursResult.OpeningHours oh : openingHoursResult.getOpeningHours()) {
                     LinearLayout rowLayout = new LinearLayout(getContext());
                     rowLayout.setOrientation(LinearLayout.HORIZONTAL);
                     LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

@@ -13,7 +13,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 
 /**
  * Created by Gili on 10/03/2018.

@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity {
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
                 for (WallFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
-                    tv.setText(s.getStory());
+                    tv.setText(s.getInfo());
                     tv.setTextColor(getResources().getColor(R.color.black));
                     tv.setTextSize(18);
                     LinearLayout lineBorder = new LinearLayout(GlobalVariables.appCompatActivity);
@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity {
 
                 newsFeedList = new String[feed.length];
                 for (int i=0; i<feed.length; i++){
-                    newsFeedList[i] = feed[i].getStory();
+                    newsFeedList[i] = feed[i].getInfo();
                 }
 
                 scrollView.post(new Runnable() {

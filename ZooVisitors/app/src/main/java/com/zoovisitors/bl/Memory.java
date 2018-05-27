@@ -1,9 +1,18 @@
-package com.zoovisitors.dal;
+package com.zoovisitors.bl;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.ContactInfoResult;
+import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.MapResult;
+import com.zoovisitors.backend.Misc;
+import com.zoovisitors.backend.OpeningHoursResult;
+import com.zoovisitors.backend.Price;
+import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 
@@ -13,7 +22,33 @@ import java.util.Map;
 
 public class Memory {
 
-//    static {
+    private Enclosure[] enclosures;
+    private Animal.PersonalStories[] animalStories;
+    private Misc[] miscMarkers;
+    private MapResult mapResult;
+    private WallFeed[] wallFeeds;
+    private ContactInfoResult contactInfoResult;
+    private OpeningHoursResult openingHoursResult;
+    private Price[] prices;
+    private String aboutUs;
+
+    public Memory(Enclosure[] enclosures, Animal.PersonalStories[] animalStories,
+                  Misc[] miscMarkers, MapResult mapResult, WallFeed[] wallFeeds,
+                  ContactInfoResult contactInfoResult, OpeningHoursResult openingHoursResult,
+                  Price[] prices, String aboutUs) {
+        this.enclosures = enclosures;
+        this.animalStories = animalStories;
+        this.miscMarkers = miscMarkers;
+        this.mapResult = mapResult;
+        this.wallFeeds = wallFeeds;
+        this.contactInfoResult = contactInfoResult;
+        this.openingHoursResult = openingHoursResult;
+        this.prices = prices;
+        this.aboutUs = aboutUs;
+        this.stringToDrawableMap = new HashMap<>();
+    }
+
+    //    static {
 //        for (Point point:
 //        points) {
 //            routes.put(point, new HashSet<>());
@@ -25,6 +60,15 @@ public class Memory {
 //    }
 
     public static Map<String, Bitmap> urlToBitmapMap = new HashMap<String, Bitmap>();
+    private Map<String, Drawable> stringToDrawableMap;
+
+    public void setStringAndDrawable(String s, Drawable d){
+        stringToDrawableMap.put(s,d);
+    }
+
+    public Drawable getDrawableByString(String s){
+        return stringToDrawableMap.get(s);
+    }
 
     private static Location[] locations = {
             new Location(31.25806349,34.74502552),
@@ -1023,5 +1067,76 @@ public class Memory {
         );
     }
 
+    public Enclosure[] getEnclosures() {
+        return enclosures;
+    }
+
+    public Animal.PersonalStories[] getAnimalStories() {
+        return animalStories;
+    }
+
+    public Misc[] getMiscMarkers() {
+        return miscMarkers;
+    }
+
+    public MapResult getMapResult() {
+        return mapResult;
+    }
+
+    public WallFeed[] getWallFeeds() {
+        return wallFeeds;
+    }
+
+    public ContactInfoResult getContactInfoResult() {
+        return contactInfoResult;
+    }
+
+    public OpeningHoursResult getOpeningHoursResult() {
+        return openingHoursResult;
+    }
+
+    public Price[] getPrices() {
+        return prices;
+    }
+
+    public String getAboutUs() {
+        return aboutUs;
+    }
+
+    public void setEnclosures(Enclosure[] enclosures) {
+        this.enclosures = enclosures;
+    }
+
+    public void setAnimalStories(Animal.PersonalStories[] animalStories) {
+        this.animalStories = animalStories;
+    }
+
+    public void setMiscMarkers(Misc[] miscMarkers) {
+        this.miscMarkers = miscMarkers;
+    }
+
+    public void setMapResult(MapResult mapResult) {
+        this.mapResult = mapResult;
+    }
+
+    public void setWallFeeds(WallFeed[] wallFeeds) {
+        this.wallFeeds = wallFeeds;
+    }
+
+    public void setContactInfoResult(ContactInfoResult contactInfoResult) {
+        this.contactInfoResult = contactInfoResult;
+    }
+
+    public void setOpeningHoursResult(OpeningHoursResult openingHoursResult) {
+        this.openingHoursResult = openingHoursResult;
+    }
+
+    public void setPrices(Price[] prices) {
+        this.prices = prices;
+    }
+
+    public void setAboutUs(String aboutUs) {
+        this.aboutUs = aboutUs;
+    }
 }
 
