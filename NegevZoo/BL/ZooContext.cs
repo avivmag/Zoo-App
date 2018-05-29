@@ -15,6 +15,7 @@ using DAL.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using System.Drawing.Imaging;
 
 namespace BL
 {
@@ -2928,10 +2929,28 @@ namespace BL
                 return locations;
             }
         }
-        
+
         #endregion
 
         #region Images
+
+        /// <summary>
+        /// Gets an image encoder by the given format.
+        /// </summary>
+        /// <param name="format">The format which the returned encoder will be for.</param>
+        /// <returns>Image encoder for the given format.</returns>
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// Resizes an image.
@@ -3016,25 +3035,38 @@ namespace BL
         private void Save(string filePath)
         {
             // Get the image from file.
-            var image = new Bitmap(filePath);
-
-            // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
-            if (image.Height > 480 || image.Width > 480)
+            using (var image = new Bitmap(filePath))
             {
-                // Sets the image orientation to default value.
-                SetOrientationToDefault(image);
+                // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
+                if (image.Height > 480 || image.Width > 480)
+                {
+                    // Sets the image orientation to default value.
+                    SetOrientationToDefault(image);
 
-                // Resize the image.
-                var resizedImage            = ResizeImage(image, size: 480.0, keepResolution: true);
+                    // Resize the image.
+                    using (var resizedImage = ResizeImage(image, size: 480.0, keepResolution: true))
+                    {
+                        ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
-                // Dispose the original image file desc.
-                image.Dispose();
+                        // Create an Encoder object based on the GUID  
+                        // for the Quality parameter category.  
+                        System.Drawing.Imaging.Encoder myEncoder =  
+                            System.Drawing.Imaging.Encoder.Quality;  
 
-                // Save the new resized image.
-                resizedImage.Save(filePath);
+                        // Create an EncoderParameters object.  
+                        // An EncoderParameters object has an array of EncoderParameter  
+                        // objects. In this case, there is only one  
+                        // EncoderParameter object in the array.  
+                        EncoderParameters myEncoderParameters = new EncoderParameters(1);  
 
-                // Dispose the resized image file desc.
-                resizedImage.Dispose();
+                        EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);  
+                        myEncoderParameters.Param[0] = myEncoderParameter;
+
+                        image.Dispose();
+
+                        resizedImage.Save(filePath, jpgEncoder, myEncoderParameters);
+                    }
+                }
             }
         }
 
