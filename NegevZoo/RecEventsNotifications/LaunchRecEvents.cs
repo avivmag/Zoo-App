@@ -10,23 +10,23 @@ namespace RecEventsNotifications
 {
     public class LaunchRecEventsBase : System.ServiceProcess.ServiceBase
     {
-        private ManualResetEvent m_shutdownEvent;
-        private Thread m_thread;
+        private ManualResetEvent shutdownEvent;
+        private Thread thread;
 
         protected override void OnStart(string[] args)
         {
-            // create our threadstart object to wrap our delegate method
-            ThreadStart ts = new ThreadStart(this.Run);
+            // Create the threadstart object to wrap our delegate method.
+            ThreadStart threadStart = new ThreadStart(this.Run);
 
             // create the manual reset event and
             // set it to an initial state of unsignaled
-            m_shutdownEvent = new ManualResetEvent(false);
+            shutdownEvent           = new ManualResetEvent(false);
 
             // create the worker thread
-            m_thread = new Thread(ts);
+            thread                  = new Thread(threadStart);
 
             // go ahead and start the worker thread
-            m_thread.Start();
+            thread.Start();
 
             // call the base class so it has a chance
             // to perform any work it needs to
@@ -35,21 +35,21 @@ namespace RecEventsNotifications
 
         protected override void OnStop()
         {
-            // signal the event to shutdown
-            m_shutdownEvent.Set();
+            // Signal the event to shutdown.
+            shutdownEvent.Set();
 
-            // wait for the thread to stop giving it 10 seconds
-            m_thread.Join(10000);
+            // Wait for the thread to stop giving it 2 seconds.
+            thread.Join(2000);
 
-            // call the base class 
+            // Call the base class stop.
             base.OnStop();
         }
 
         private void Run()
         {
-            //set the starting time to zero and the time between the operation to 10 minuits
-            var periodTimeSpan = TimeSpan.FromMinutes(10);
-            var startTimeSpan = TimeSpan.Zero;
+            // Set the starting time to zero and the time between the operation to 10 minutes.
+            var periodTimeSpan  = TimeSpan.FromMinutes(10);
+            var startTimeSpan   = TimeSpan.Zero;
 
             // Create an IPC wait handle with a unique identifier.
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "CF2D4313-33DE-489D-9721-6AFF69841DEA", out bool createdNew);
