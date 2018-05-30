@@ -9,6 +9,7 @@
     tools:layout_editor_absoluteY="56dp">
 
     <LinearLayout
+        android:id="@+id/main_activity_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@mipmap/main_background"

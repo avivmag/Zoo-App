@@ -43,7 +43,6 @@ public class MainActivity extends BaseActivity {
     private Menu langMenu;
     private WallFeed[] feed;
     private Map<String, String> LanguageMap;
-//    private NewsFeed[] newsFeedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -51,8 +50,8 @@ public class MainActivity extends BaseActivity {
         //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
 
-//        getSupportActionBar().hide();
-        setActionBarTransparentColor();
+        getSupportActionBar().hide();
+//        setActionBarTransparentColor();
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {

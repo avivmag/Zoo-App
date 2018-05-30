@@ -21,12 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnclosureListActivity extends BaseActivity {
-//    private RecyclerView recycleViewEnc;
-//    private RecyclerView.LayoutManager layoutManagerEnc;
-//    private RecyclerView.Adapter adapterEnc;
-//    private RecyclerView recycleViewAnim;
-//    private RecyclerView.LayoutManager layoutManagerAnim;
-//    private RecyclerView.Adapter adapterAnim;
     //screen attributes
     private int layoutWidth;
     private LinearLayout.LayoutParams params;
@@ -305,7 +299,7 @@ public class EnclosureListActivity extends BaseActivity {
     }
 
     private CustomRelativeLayout getAnCard(Animal animal) {
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(), layoutWidth);
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
         card.init();
 
         card.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +318,7 @@ public class EnclosureListActivity extends BaseActivity {
     }
 
     private CustomRelativeLayout getEncCard(Enclosure enc) {
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),enc.getPictureUrl(), enc.getName(), layoutWidth);
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),enc.getPictureUrl(), enc.getName(),null, layoutWidth);
         card.init();
 
         card.setOnClickListener(new View.OnClickListener() {
