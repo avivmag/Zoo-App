@@ -84,13 +84,13 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
             @Override
             public void onSuccess(Object response) {
                 viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(animals[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(animals[i].getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
 
             }

@@ -40,7 +40,7 @@ import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.map.MapActivity;
-import com.zoovisitors.pl.customViews.buttonCustomView;
+import com.zoovisitors.pl.customViews.ButtonCustomView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,13 +129,13 @@ public class EnclosureActivity extends BaseActivity {
                     audioClick();
                 });
                 encImage = (Bitmap) response;
-                Memory.urlToBitmapMap.put(enclosure.getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(enclosure.getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 enclosureImageView.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(enclosure.getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(enclosure.getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });
@@ -196,7 +196,7 @@ public class EnclosureActivity extends BaseActivity {
 
 
         //initialize the facebook and show on map buttons
-        buttonCustomView facebookShare = (buttonCustomView) findViewById(R.id.shareOnFacebook);
+        ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
         facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 0, 125);
 
         callbackManager = CallbackManager.Factory.create();
@@ -266,7 +266,7 @@ public class EnclosureActivity extends BaseActivity {
         });
 
 
-        buttonCustomView showOnMapButton = (buttonCustomView) findViewById(R.id.showOnMap);
+        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
         showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 0, 125);
 
         showOnMapButton.setOnClickListener(
@@ -351,7 +351,7 @@ public class EnclosureActivity extends BaseActivity {
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     assetsLayout.addView(imageView);
                     imagesInAsset.add((Bitmap) response);
-                    Memory.urlToBitmapMap.put(pe.getPictureUrl(), (Bitmap) response);
+                    GlobalVariables.bl.insertStringandBitmap(pe.getPictureUrl(), (Bitmap) response);
                     assetsPopUp.putExtra("imageUrl" + index, pe.getPictureUrl());
                     imageViewIntegerMap.put(imageView, index);
                     index++;

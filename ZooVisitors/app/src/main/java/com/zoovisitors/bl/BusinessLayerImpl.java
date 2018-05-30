@@ -3,6 +3,7 @@ package com.zoovisitors.bl;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -442,6 +443,11 @@ public class BusinessLayerImpl implements BusinessLayer {
                         dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
 
+                for (Animal.PersonalStories p : memory.getAnimalStories()){
+                    byte[] bitmapData = p.getPictureData().getBytes();;
+                    p.setPersonalPicture(BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length));
+                }
+
                 updateInterface.onSuccess(response);
             }
 
@@ -459,12 +465,12 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public void insertStringandDrawable(String s, Drawable d) {
-        memory.setStringAndDrawable(s, d);
+    public void insertStringandBitmap(String s, Bitmap d) {
+        memory.setStringAndBitmap(s, d);
     }
 
     @Override
-    public Drawable getDrawableByString(String s) {
-        return memory.getDrawableByString(s);
+    public Bitmap getBitmapByString(String s) {
+        return memory.getBitmapByString(s);
     }
 }

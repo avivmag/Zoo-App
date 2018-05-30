@@ -10,7 +10,7 @@ public class Misc implements java.io.Serializable{
     @SerializedName("longtitude")
     private int markerX;
     @SerializedName("iconData")
-    private Byte[] iconData;
+    private String iconData;
 
     private Drawable markerDrawable;
 
@@ -23,7 +23,7 @@ public class Misc implements java.io.Serializable{
         return markerX;
     }
 
-    public Byte[] getIconData() {
+    public String getIconData() {
         return iconData;
     }
 

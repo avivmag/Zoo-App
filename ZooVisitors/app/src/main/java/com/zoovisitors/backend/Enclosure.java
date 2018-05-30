@@ -35,7 +35,7 @@ public class Enclosure implements java.io.Serializable{
     @SerializedName("audioUrl")
     private String audioUrl;
     @SerializedName("markerData")
-    private Byte[] markerData;
+    private String markerData;
 
     private Drawable markerDrawable;
 
@@ -135,11 +135,11 @@ public class Enclosure implements java.io.Serializable{
         this.audioUrl = audioUrl;
     }
 
-    public Byte[] getMarkerData() {
+    public String getMarkerData() {
         return markerData;
     }
 
-    public void setMarkerData(Byte[] markerData) {
+    public void setMarkerData(String markerData) {
         this.markerData = markerData;
     }
 

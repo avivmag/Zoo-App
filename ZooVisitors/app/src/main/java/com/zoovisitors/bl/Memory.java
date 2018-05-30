@@ -1,7 +1,6 @@
 package com.zoovisitors.bl;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -45,7 +44,7 @@ public class Memory {
         this.openingHoursResult = openingHoursResult;
         this.prices = prices;
         this.aboutUs = aboutUs;
-        this.stringToDrawableMap = new HashMap<>();
+        this.stringToBitmapMap = new HashMap<>();
     }
 
     //    static {
@@ -59,15 +58,15 @@ public class Memory {
 //        }
 //    }
 
-    public static Map<String, Bitmap> urlToBitmapMap = new HashMap<String, Bitmap>();
-    private Map<String, Drawable> stringToDrawableMap;
+    //private Map<String, Bitmap> stringToBitmapMap = new HashMap<String, Bitmap>();
+    private Map<String, Bitmap> stringToBitmapMap;
 
-    public void setStringAndDrawable(String s, Drawable d){
-        stringToDrawableMap.put(s,d);
+    public void setStringAndBitmap(String s, Bitmap d){
+        stringToBitmapMap.put(s,d);
     }
 
-    public Drawable getDrawableByString(String s){
-        return stringToDrawableMap.get(s);
+    public Bitmap getBitmapByString(String s){
+        return stringToBitmapMap.get(s);
     }
 
     private static Location[] locations = {

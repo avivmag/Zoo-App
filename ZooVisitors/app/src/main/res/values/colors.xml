@@ -23,4 +23,8 @@
     <color name="lightBlueIcon">#9EA0DF</color>
     <color name="brownIcon">#C57550</color>
     <color name="lightBrownIcon">#DF926F</color>
+
+    <color name="buttonBackground">#88fdfdfe</color>
+    <color name="buttonTextColor">#534c44</color>
+
 </resources>

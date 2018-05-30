@@ -43,13 +43,13 @@ public class AnimalActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 animalImage.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(animal.getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(animal.getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 animalImage.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(animal.getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(animal.getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });

@@ -24,13 +24,14 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.WallFeed;
+import com.zoovisitors.pl.customViews.MainButtonCustomView;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-import com.zoovisitors.pl.customViews.buttonCustomView;
+import com.zoovisitors.pl.customViews.ButtonCustomView;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,9 +48,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setActionBar(R.color.blueIcon);
+        //setActionBar(R.color.blueIcon);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().hide();
+        //setActionBarTransparentColor();
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -63,23 +66,23 @@ public class MainActivity extends BaseActivity {
         });
 
         //Set design for each button
-        buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);
-        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures, 20, R.color.white, 20, 150);
+        MainButtonCustomView encButton = (MainButtonCustomView) findViewById(R.id.enclosureListButton);
+        encButton.mainDesignButton(R.mipmap.enc_button, R.string.our_enclosures);
 
-        buttonCustomView otherInfoButton = (buttonCustomView) findViewById(R.id.otherInfoButton);
-        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info, 20, R.color.white, 20, 150);
+        MainButtonCustomView otherInfoButton = (MainButtonCustomView) findViewById(R.id.otherInfoButton);
+        otherInfoButton.designButton(R.mipmap.enc_button, R.string.other_info, 20, R.color.white, 20, 150);
 
-        buttonCustomView personalButton= (buttonCustomView) findViewById(R.id.personalStoriesButton);
-        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal, 20, R.color.white, 20, 150);
+        MainButtonCustomView personalButton = (MainButtonCustomView) findViewById(R.id.personalStoriesButton);
+        personalButton.designButton(R.mipmap.enc_button, R.string.personal, 20, R.color.white, 20, 150);
 
-        buttonCustomView mapButton = (buttonCustomView) findViewById(R.id.mapButton);
-        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map, 20, R.color.white, 20, 150);
+        MainButtonCustomView mapButton = (MainButtonCustomView) findViewById(R.id.mapButton);
+        mapButton.designButton(R.mipmap.enc_button, R.string.map, 20, R.color.white, 20, 150);
 
-        buttonCustomView wazebutton = (buttonCustomView) findViewById(R.id.wazeButton);
-        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav, 20, R.color.white, 20, 150);
+        MainButtonCustomView wazebutton = (MainButtonCustomView) findViewById(R.id.wazeButton);
+        wazebutton.designButton(R.mipmap.enc_button, R.string.nav, 20, R.color.white, 20, 150);
 
-        buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
-        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule, 20, R.color.white, 20, 150);
+        MainButtonCustomView scheduleButton = (MainButtonCustomView) findViewById(R.id.scheduleButton);
+        scheduleButton.designButton(R.mipmap.enc_button, R.string.schedule, 20, R.color.white, 20, 150);
 
 
         LanguageMap = new HashMap<String, String>();
@@ -287,7 +290,6 @@ public class MainActivity extends BaseActivity {
                     });
                     GlobalVariables.notifications = true;
                 }
-                //TODO: send to the server to cancel/add notifications
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

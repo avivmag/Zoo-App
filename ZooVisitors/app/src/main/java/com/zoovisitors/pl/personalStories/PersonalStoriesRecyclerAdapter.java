@@ -2,7 +2,6 @@ package com.zoovisitors.pl.personalStories;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.bl.Memory;
 
 /**
  * Created by Gili on 11/04/2018.
@@ -76,9 +73,9 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
 
         viewHolder.animalName.setText(personalStories[i].getName());
 
-        if (personalStories[i].getMarkerDrawable() != null){
-            viewHolder.animal_card_image.setImageDrawable(personalStories[i].getMarkerDrawable());
-            GlobalVariables.bl.insertStringandDrawable(personalStories[i].getStory(), personalStories[i].getMarkerDrawable());
+        if (personalStories[i].getPersonalPicture() != null){
+            viewHolder.animal_card_image.setImageBitmap(personalStories[i].getPersonalPicture());
+            GlobalVariables.bl.insertStringandBitmap(personalStories[i].getStory(), personalStories[i].getPersonalPicture());
         }
         else{
             LinearLayout.LayoutParams layoutParams = new  LinearLayout.LayoutParams(imageWidth, imageWidth);
