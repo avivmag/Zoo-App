@@ -1,6 +1,7 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -8,6 +9,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.RelativeLayout;
 
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.Misc;
 import com.zoovisitors.pl.map.icons.MiscIcon;
 import com.zoovisitors.pl.map.icons.VisitorIcon;
 import com.zoovisitors.pl.map.icons.ZooMapIcon;
@@ -77,8 +79,8 @@ public class MapView extends RelativeLayout {
                         (float) screenWidth / primaryImageWidth,
                         (float) screenHeight / primaryImageHeight
                 );
-        mPosX = screenWidth / 2 - getmScaleFactor() *zooMapIcon.width / 2;
-        mPosY = screenHeight / 2 - getmScaleFactor() *zooMapIcon.height / 2;
+        mPosX = screenWidth / 2 - getmScaleFactor() * zooMapIcon.width / 2;
+        mPosY = screenHeight / 2 - getmScaleFactor() * zooMapIcon.height / 2;
     }
 
     public MapView(Context context) {
@@ -127,9 +129,9 @@ public class MapView extends RelativeLayout {
         );
     }
 
-    public void SetInitialValues() {
-        zooMapIcon = new ZooMapIcon(this, null);
-        visitorIcon = new VisitorIcon(this, null);
+    public void SetInitialValues(Bitmap zooMapBitmap) {
+        zooMapIcon = new ZooMapIcon(this, new Object[] {zooMapBitmap});
+        visitorIcon = new VisitorIcon(this);
     }
 
     @Override
@@ -173,7 +175,7 @@ public class MapView extends RelativeLayout {
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
-                setMPos(x,y);
+                setMPos(x, y);
                 mLastScaleFactor = getmScaleFactor();
 
                 zooMapIcon.updateIconPosition();
@@ -221,27 +223,31 @@ public class MapView extends RelativeLayout {
 
     private void setMPos(float deltaX, float deltaY) {
         primaryImageMargin = Math.max(PRIMARY_IMAGE_INITIAL_MARGIN,
-                        Math.max(
-                                (int)((screenHeight/getmScaleFactor() - zooMapIcon.height)/2),
-                                (int)((screenWidth/getmScaleFactor() - zooMapIcon.width)/2)
-                        )
+                Math.max(
+                        (int) ((screenHeight / getmScaleFactor() - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / getmScaleFactor() - zooMapIcon.width) / 2)
+                )
         );
 
         mPosX =
                 Math.max(
                         Math.min(
-                                (getmPosX() - mLastTouchX) * getmScaleFactor() / mLastScaleFactor + deltaX,
-                                getmScaleFactor() * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
+                                (getmPosX() - mLastTouchX) * getmScaleFactor() / mLastScaleFactor
+                                        + deltaX,
+                                getmScaleFactor() * (zooMapIcon.left - zooMapIcon.width / 2 +
+                                        primaryImageMargin)
                         ),
-                        screenWidth - getmScaleFactor() *(zooMapIcon.width + primaryImageMargin)
+                        screenWidth - getmScaleFactor() * (zooMapIcon.width + primaryImageMargin)
                 );
         mPosY =
                 Math.max(
                         Math.min(
-                                (getmPosY() - mLastTouchY) * getmScaleFactor() / mLastScaleFactor + deltaY,
-                                getmScaleFactor() * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
+                                (getmPosY() - mLastTouchY) * getmScaleFactor() / mLastScaleFactor
+                                        + deltaY,
+                                getmScaleFactor() * (zooMapIcon.top - zooMapIcon.height / 2 +
+                                        primaryImageMargin)
                         ),
-                        screenHeight - getmScaleFactor() *(zooMapIcon.height + primaryImageMargin)
+                        screenHeight - getmScaleFactor() * (zooMapIcon.height + primaryImageMargin)
                 );
 
     }
@@ -271,13 +277,12 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    public void addEnclosure(Enclosure enclosure, Drawable resource, int left, int top) {
-        enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, resource, left,
-                top, timer, timerFastRunnables, timerSlowRunnables));
+    public void addEnclosure(Enclosure enclosure) {
+        enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, timer, timerFastRunnables, timerSlowRunnables));
     }
 
-    public void addMiscIcon(Drawable resource, int left, int top) {
-        miscIcons.add(new MiscIcon(this, resource, left, top));
+    public void addMiscIcon(Misc misc) {
+        miscIcons.add(new MiscIcon(this, misc.getMarkerBitmap(), misc.getMarkerX(), misc.getMarkerY()));
     }
 
     public void ShowVisitorIcon() {

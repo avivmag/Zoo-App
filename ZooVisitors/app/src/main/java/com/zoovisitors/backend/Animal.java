@@ -4,11 +4,10 @@ package com.zoovisitors.backend;
  * Created by Gili on 12/01/2018.
  */
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Animal implements java.io.Serializable{
+public class Animal implements java.io.Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -99,7 +98,6 @@ public class Animal implements java.io.Serializable{
         private int encId;
         @SerializedName("pictureData")
         private String pictureData;
-
         private Bitmap personalPicture;
 
         public int getId() {
@@ -129,5 +127,9 @@ public class Animal implements java.io.Serializable{
         public void setPersonalPicture(Bitmap personalPicture) {
             this.personalPicture = personalPicture;
         }
+
+//        public void setPersonalPicture(Bitmap personalPicture) {
+//            this.personalPicture = personalPicture;
+//        }
     }
 }

@@ -2,14 +2,11 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * Created by Gili on 13/01/2018.
  */
 
-public class WallFeed implements Serializable{
+public class WallFeed {
     // Aviv Note: be aware this maybe java.sql.date, and not the current java.util.date...
     @SerializedName("created")
     private String created;
@@ -34,5 +31,4 @@ public class WallFeed implements Serializable{
     public String getTitle() {
         return title;
     }
-
 }

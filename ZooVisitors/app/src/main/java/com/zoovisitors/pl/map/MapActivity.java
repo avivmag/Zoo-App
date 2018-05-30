@@ -17,6 +17,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
@@ -36,12 +37,10 @@ public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private MapView mapView;
-    private BusinessLayer bl;
+    private MapResult mapData;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
-    private Enclosure[] enclosures;
-    private Animal.PersonalStories[] animalStories;
     private TranslateAnimation translateAnimationYOut, translateAnimationYIn;
     private LinearLayout getToKnowMeLayout;
     private TextView getToKnowMeTv;
@@ -59,28 +58,51 @@ public class MapActivity extends ProviderBasedActivity
         actionBar.hide();
         mapView = findViewById(R.id.map_view_layout);
         getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
-
-        initializeAnimations();
-
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
         getToKnowMeIb = findViewById(R.id.map_get_to_know_me_imagebutton);
         getToKnowMeIb.setBackgroundColor(Color.TRANSPARENT);
+        initializeAnimations();
 
-        bl = new BusinessLayerImpl(this);
-        mapDS = new DataStructure(Memory.getPoints(),
-                Memory.ZOO_ENTRANCE_LOCATION,
-                Memory.ZOO_ENTRANCE_POINT,
-                Memory.getXLongitudeRatio(),
-                Memory.getYLatitudeRatio(),
-                Memory.getSinAlpha(),
-                Memory.getCosAlpha(),
-                Memory.minLatitude,
-                Memory.maxLatitude,
-                Memory.minLongitude,
-                Memory.maxLongitude
+        mapData = GlobalVariables.bl.getMapResult();
+//                // TODO: remove dummies
+//                enclosures[0].setClosestPointX(425);
+//                enclosures[0].setClosestPointY(356);
+////                enclosures[0].setClosestPointX(164);
+////                enclosures[0].setClosestPointY(601);
+//                enclosures[1].setClosestPointX(164);
+//                enclosures[1].setClosestPointY(601);
+////                enclosures[2].setClosestPointX(1210);
+////                enclosures[2].setClosestPointY(935);
+
+        mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
+                new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
+                        .getZooLocationLongitude()),
+                new Point(mapData.getMapInfo().getZooPointX(), mapData.getMapInfo().getZooPointY()),
+                mapData.getMapInfo().getxLongitudeRatio(),
+                mapData.getMapInfo().getyLatitudeRatio(),
+                mapData.getMapInfo().getSinAlpha(),
+                mapData.getMapInfo().getCosAlpha(),
+                mapData.getMapInfo().getMinLatitude(),
+                mapData.getMapInfo().getMaxLatitude(),
+                mapData.getMapInfo().getMinLongitude(),
+                mapData.getMapInfo().getMaxLongitude()
         );
-        mapView.SetInitialValues();
-        setNetworkDataProvider();
+        Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
+        mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap());
+        for (Enclosure enc :
+                enclosures) {
+            if(enc.getMarkerBitmap() != null) {
+                mapView.addEnclosure(enc);
+            }
+        }
+        for (Misc misc :
+                GlobalVariables.bl.getMiscs()) {
+            if(misc.getMarkerBitmap() != null) {
+                mapView.addMiscIcon(misc);
+                Log.e("AVIV", "misc " + misc.getMarkerX() + ":" + misc.getMarkerY());
+            }
+        }
+        mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
 
     private void initializeAnimations() {
@@ -93,116 +115,6 @@ public class MapActivity extends ProviderBasedActivity
                 GET_TO_KNOW_ME_ANIMATION_START_Y);
         translateAnimationYOut.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
         translateAnimationYOut.setFillAfter(true);
-    }
-
-    private CountDownLatch cdl;
-
-    private void setNetworkDataProvider() {
-        cdl = new CountDownLatch(2);
-        bl.getEnclosures(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                enclosures = (Enclosure[]) response;
-                // TODO: remove dummies
-                enclosures[0].setClosestPointX(425);
-                enclosures[0].setClosestPointY(356);
-//                enclosures[0].setClosestPointX(164);
-//                enclosures[0].setClosestPointY(601);
-                enclosures[1].setClosestPointX(164);
-                enclosures[1].setClosestPointY(601);
-//                enclosures[2].setClosestPointX(1210);
-//                enclosures[2].setClosestPointY(935);
-                getEnclosureIconsAndSetImagesOnMap(enclosures);
-                cdl.countDown();
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                Log.e(GlobalVariables.LOG_TAG, response.toString());
-            }
-        });
-
-        bl.getMisc(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                getMiscIconsAndSetImagesOnMap((Misc[]) response);
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                Log.e(GlobalVariables.LOG_TAG, response.toString());
-            }
-        });
-
-        GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                animalStories = (Animal.PersonalStories[]) response;
-                Log.e("AVIV", Arrays.toString((Animal.PersonalStories[]) response));
-                cdl.countDown();
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                Log.e(GlobalVariables.LOG_TAG, response.toString());
-            }
-        });
-
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    cdl.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                mapDS.addAnimalStoriesToPoints(enclosures, animalStories);
-            }
-        }.start();
-    }
-
-    private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
-        for (int i = 0; i < miscs.length; i++) {
-            final int finalI = i;
-
-            //TODO:AVIV :: miscs[i].getMarkerIconUrl()
-            bl.getImage("", 0, 0, new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            //TODO: Aviv
-                            0,0);
-                            //miscs[finalI].getMarkerLongtitude(),
-                            //miscs[finalI].getMarkerLatitude());
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Log.e(GlobalVariables.LOG_TAG, response.toString());
-                }
-            });
-        }
-    }
-
-    private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
-        for (int i = 0; i < enclosures.length; i++) {
-            final int finalI = i;
-            //TODO: Aviv :: enclosures[i].getMarkerIconUrl()
-            bl.getImage("", 0, 0, new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    mapView.addEnclosure(enclosures[finalI],
-                            new BitmapDrawable(getResources(), (Bitmap) response),
-                            enclosures[finalI].getMarkerX(),
-                            enclosures[finalI].getMarkerY());
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Log.e(GlobalVariables.LOG_TAG, response.toString());
-                }
-            });
-        }
     }
 
     private boolean needToShowIcon = true;
@@ -222,10 +134,10 @@ public class MapActivity extends ProviderBasedActivity
             Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG)
                     .show();
 
-            if (location.getLatitude() < Memory.minLatitude - MAX_MARGIN ||
-                    location.getLatitude() > Memory.maxLatitude + MAX_MARGIN ||
-                    location.getLongitude() < Memory.minLongitude - MAX_MARGIN ||
-                    location.getLongitude() > Memory.maxLongitude + MAX_MARGIN) {
+            if (location.getLatitude() < mapData.getMapInfo().getMinLatitude() - MAX_MARGIN ||
+                    location.getLatitude() > mapData.getMapInfo().getMaxLatitude() + MAX_MARGIN ||
+                    location.getLongitude() < mapData.getMapInfo().getMinLongitude() - MAX_MARGIN ||
+                    location.getLongitude() > mapData.getMapInfo().getMaxLongitude() + MAX_MARGIN) {
                 movementInProgress.set(false);
                 return;
             }

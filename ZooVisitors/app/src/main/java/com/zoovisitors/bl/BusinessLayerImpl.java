@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Base64;
 import android.util.Log;
@@ -15,6 +14,7 @@ import com.zoovisitors.backend.AboutUs;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.ContactInfoResult;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.OpeningHoursResult;
 import com.zoovisitors.backend.WallFeed;
@@ -90,6 +90,11 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
+    public Enclosure[] getEnclosures() {
+        return memory.getEnclosures();
+    }
+
+    @Override
     public void getEnclosures(final GetObjectInterface goi) {
         Enclosure[] enclosures = memory.getEnclosures();
         if (enclosures != null)
@@ -134,31 +139,36 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public void getMisc(final GetObjectInterface goi) {
-        Misc[] misc = memory.getMiscMarkers();
-        if (misc != null)
-            goi.onSuccess(misc);
-        else {
-            ni.post("misc/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-                @Override
-                public void onSuccess(String response) {
-                    Misc[] misc = gson.fromJson(response, Misc[].class);
-
-                    if (misc.length <= 0)
-                        goi.onFailure("No Data in the server");
-                    else {
-                        memory.setMiscMarkers(misc);
-                        goi.onSuccess(misc);
-                    }
-                }
-
-                @Override
-                public void onFailure(String response) {
-                    goi.onFailure("Can't get misc from server");
-                }
-            });
-        }
+    public Misc[] getMiscs() {
+        return memory.getMiscMarkers();
     }
+
+//    @Override
+//    public void getMisc(final GetObjectInterface goi) {
+//        Misc[] misc = memory.getMiscMarkers();
+//        if (misc != null)
+//            goi.onSuccess(misc);
+//        else {
+//            ni.post("misc/all/" + GlobalVariables.language, new ResponseInterface<String>() {
+//                @Override
+//                public void onSuccess(String response) {
+//                    Misc[] misc = gson.fromJson(response, Misc[].class);
+//
+//                    if (misc.length <= 0)
+//                        goi.onFailure("No Data in the server");
+//                    else {
+//                        memory.setMiscMarkers(misc);
+//                        goi.onSuccess(misc);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(String response) {
+//                    goi.onFailure("Can't get misc from server");
+//                }
+//            });
+//        }
+//    }
 
 //    @Override
 //    public void getRecurringEvents(final GetObjectInterface goi) {
@@ -349,8 +359,14 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
+    public Animal.PersonalStories[] getPersonalStories() {
+        return memory.getAnimalStories();
+    }
+
+    @Override
     public void getPersonalStories(final GetObjectInterface goi) {
         Animal.PersonalStories[] personalStories = memory.getAnimalStories();
+        // TODO: No need to send a call to the server
         if (personalStories != null) {
             goi.onSuccess(personalStories);
         } else {
@@ -444,12 +460,6 @@ public class BusinessLayerImpl implements BusinessLayer {
                         dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
 
-                for (Animal.PersonalStories p : memory.getAnimalStories()){
-                    byte [] encodeByte=Base64.decode(p.getPictureData(), Base64.DEFAULT);
-                    Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                    p.setPersonalPicture(bitmap);
-                }
-
                 updateInterface.onSuccess(response);
             }
 
@@ -474,5 +484,10 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public Bitmap getBitmapByString(String s) {
         return memory.getBitmapByString(s);
+    }
+
+    @Override
+    public MapResult getMapResult() {
+        return memory.getMapResult();
     }
 }

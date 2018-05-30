@@ -37,28 +37,30 @@ public class EnclosureIconsHandler {
     private List<Runnable> timerFastRunnables;
     private List<Runnable> timerSlowRunnables;
 
-    public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Drawable enclosureIconResource,
-                                 int left, int top, Timer timer, List<Runnable> timerFastRunnables,
-                                 List<Runnable> timerSlowRunnables) {
+    public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Timer
+            timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables) {
         this.timerFastRunnables = timerFastRunnables;
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
         onTouchListener = createOnTouchListener(enclosure);
-        enclosureIcon = new EnclosureIcon(mapView, enclosureIconResource, onTouchListener, left, top);
+        enclosureIcon = new EnclosureIcon(mapView, enclosure.getMarkerBitmap(), onTouchListener,
+                enclosure.getMarkerX(),
+                enclosure.getMarkerY());
 
         recurringEventCountDownIcon = new RecurringEventCountDownIcon(mapView,
                 onTouchListener,
-                left,
-                top);
+                enclosure.getMarkerX(),
+                enclosure.getMarkerY());
         recurringEventIcon = new RecurringEventIcon(mapView,
                 onTouchListener,
-                left,
-                top);
+                enclosure.getMarkerX(),
+                enclosure.getMarkerY());
 
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
-            recurringEventCountDownIcon.top -= enclosureIcon.height / 2 + recurringEventCountDownIcon.textView.getLineHeight();
+            recurringEventCountDownIcon.top -= enclosureIcon.height / 2 +
+                    recurringEventCountDownIcon.textView.getLineHeight();
             recurringEventIcon.top = recurringEventCountDownIcon.top;
         });
 
@@ -76,10 +78,10 @@ public class EnclosureIconsHandler {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction())
-                {
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_UP:
-                        Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
+                        Intent intent = new Intent(GlobalVariables.appCompatActivity,
+                                EnclosureActivity.class);
                         Bundle clickedEnclosure = new Bundle();
 
                         clickedEnclosure.putSerializable("enc", enclosure);
@@ -101,26 +103,35 @@ public class EnclosureIconsHandler {
      */
     public void scheduleRecurringTasks() {
         long currentTime = getTimeAdjustedToWeekTime();
-        if(recurringEventsHandler.isEmpty())
+        if (recurringEventsHandler.isEmpty())
             return;
         Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent();
         recurringEventIcon.setText(recurringEvent.getTitle());
         // means the text should not be shown yet
         if (recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME > currentTime) {
-            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
-        } else if (recurringEvent.getStartTime() > currentTime) { // means we should be at the middle of the text timer ticking
+            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() -
+                    RECURRING_EVENT_TIMER_ELAPSE_TIME - currentTime);
+        } else if (recurringEvent.getStartTime() > currentTime) { // means we should be at the
+            // middle of the text timer ticking
             scheduleTextIcon(recurringEvent.getStartTime(), 0);
-        } else if (currentTime >= recurringEvent.getEndTime()) { // means we are after the event time, we delay the time until the week will pass and to the starting minus Wait interval
-            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() - RECURRING_EVENT_TIMER_ELAPSE_TIME + SEVEN_DAYS - currentTime);
+        } else if (currentTime >= recurringEvent.getEndTime()) { // means we are after the event
+            // time, we delay the time until the week will pass and to the starting minus Wait
+            // interval
+            scheduleTextIcon(recurringEvent.getStartTime(), recurringEvent.getStartTime() -
+                    RECURRING_EVENT_TIMER_ELAPSE_TIME + SEVEN_DAYS - currentTime);
         }
 
         // means that we shouldn't show the image yet
         if (recurringEvent.getStartTime() > currentTime) {
-            scheduleRecurringEventIcon(recurringEvent.getEndTime(), recurringEvent.getStartTime() - currentTime);
-        } else if (recurringEvent.getEndTime() > currentTime && currentTime >= recurringEvent.getStartTime()) { // means the event is on
+            scheduleRecurringEventIcon(recurringEvent.getEndTime(), recurringEvent.getStartTime()
+                    - currentTime);
+        } else if (recurringEvent.getEndTime() > currentTime && currentTime >= recurringEvent
+                .getStartTime()) { // means the event is on
             scheduleRecurringEventIcon(recurringEvent.getEndTime(), 0);
-        } else { // really low percent it will happen, only if between the time it was called and until it started, the event was finished.
-            scheduleRecurringEventIcon(recurringEvent.getEndTime(), recurringEvent.getStartTime() + SEVEN_DAYS - currentTime);
+        } else { // really low percent it will happen, only if between the time it was called and
+            // until it started, the event was finished.
+            scheduleRecurringEventIcon(recurringEvent.getEndTime(), recurringEvent.getStartTime()
+                    + SEVEN_DAYS - currentTime);
         }
     }
 
@@ -157,8 +168,9 @@ public class EnclosureIconsHandler {
                                            @Override
                                            public void run() {
                                                long currentTime = getTimeAdjustedToWeekTime();
-                                               if(currentTime < startTime){
-                                                   recurringEventCountDownIcon.setTime(startTime - currentTime);
+                                               if (currentTime < startTime) {
+                                                   recurringEventCountDownIcon.setTime(startTime
+                                                           - currentTime);
                                                } else {
                                                    recurringEventCountDownIcon.hide();
                                                    timerSlowRunnables.remove(this);
