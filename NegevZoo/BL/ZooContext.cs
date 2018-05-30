@@ -788,7 +788,8 @@ namespace BL
                 Reproduction = details?.reproduction,
                 Series = details?.series,
                 PictureUrl = an.pictureUrl,
-                Language = details == null ? GetHebewLanguage() : details.language
+                Language = details == null ? GetHebewLanguage() : details.language,
+                AudioUrl = details?.audioUrl
             };
 
             return animalResult;
