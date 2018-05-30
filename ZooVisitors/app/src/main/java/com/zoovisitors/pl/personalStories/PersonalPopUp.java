@@ -29,7 +29,7 @@ public class PersonalPopUp extends BaseActivity {
 //        Animal.PersonalStories animal = (Animal.PersonalStories) getIntent().getExtras().getSerializable("animal");
         int storyIndex = (int) getIntent().getExtras().getSerializable("animal");
 
-
+        // TODO: no need to send callback
         GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {

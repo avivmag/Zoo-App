@@ -2,13 +2,11 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 /**
  * Created by Gili on 10/03/2018.
  */
 
-public class Schedule implements Serializable {
+public class Schedule {
     @SerializedName("id")
     private int id;
     @SerializedName("title")
@@ -21,7 +19,6 @@ public class Schedule implements Serializable {
     private String endTime;
     @SerializedName("imageUrl")
     private String imageUrl;
-
 
     public int getId() {
         return id;
@@ -44,5 +41,4 @@ public class Schedule implements Serializable {
     public String getImageUrl() {
         return imageUrl;
     }
-
 }
