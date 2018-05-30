@@ -1,21 +1,23 @@
 package com.zoovisitors.pl.personalStories;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 public class PersonalStoriesActivity extends BaseActivity {
 
-    private RecyclerView recycleView;
-    private RecyclerView.Adapter adapter;
-
+    private int layoutWidth;
+    private Animal.PersonalStories[] stories;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,16 +26,34 @@ public class PersonalStoriesActivity extends BaseActivity {
         //set the action bar.
         setActionBar(R.color.lightGreenIcon);
 
-        //initialize the recycle with two columns.
-        recycleView = findViewById(R.id.personal_animal_recycler);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        recycleView.setLayoutManager(layoutManager);
+        //calculate the screen width.
+        int screenSize = getResources().getDisplayMetrics().widthPixels;
+        layoutWidth = screenSize/2;
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layoutWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.width = layoutWidth;
+
+        LinearLayout firstCol = findViewById(R.id.first_column_story);
+        firstCol.setLayoutParams(params);
+
+        LinearLayout secondCol = findViewById(R.id.second_column_story);
+        secondCol.setLayoutParams(params);
 
         GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
+
             @Override
             public void onSuccess(Object response) {
-                adapter = new PersonalStoriesRecyclerAdapter((Animal.PersonalStories[]) response);
-                recycleView.setAdapter(adapter);
+                stories = ((Animal.PersonalStories[]) response);
+                CustomRelativeLayout card;
+                for (int i = 0; i < stories.length/2; i++){
+                    card = getCard(i);
+                    firstCol.addView(card);
+                }
+
+                for (int i = stories.length/2; i < stories.length; i++){
+                    card = getCard(i);
+                    secondCol.addView(card);
+                }
             }
 
             @Override
@@ -41,5 +61,23 @@ public class PersonalStoriesActivity extends BaseActivity {
                 ((TextView) findViewById(R.id.personal_text_no_data)).setText((String) response);
             }
         });
+    }
+
+    private CustomRelativeLayout getCard(int storyIndex) {
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),stories[storyIndex].getPersonalPicture(), stories[storyIndex].getName(), layoutWidth);
+        card.init();
+
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
+                Bundle clickedAnimal = new Bundle();
+                clickedAnimal.putSerializable("animal", storyIndex);
+                intent.putExtras(clickedAnimal);
+                startActivity(intent);
+            }
+        });
+
+        return card;
     }
 }

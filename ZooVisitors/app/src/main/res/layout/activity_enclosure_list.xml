@@ -9,10 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="44dp"
-        tools:ignore="MissingConstraints">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,6 +23,8 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:gravity="start"
+                android:focusable="false"
+                android:iconifiedByDefault="false"
                 android:queryHint="@string/searchPlaceHolder" />
         </LinearLayout>
 
@@ -35,27 +34,92 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/enclosure_recycle"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:id="@+id/enclosure_list_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    tools:orientation="horizontal">
+                    android:gravity="center_horizontal">
 
-                </android.support.v7.widget.RecyclerView>
+                    <LinearLayout
+                        android:id="@+id/first_column_enc_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp"
+                        >
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/animal_recycle_enc_list"
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/second_column_enc_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp"
+                        >
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/animals_list_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:orientation="vertical"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
 
+                    <LinearLayout
+                        android:id="@+id/first_column_animals_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp"
+                        >
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/second_column_animals_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp"
+                        >
+
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/enclosure_recycle"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--tools:orientation="horizontal">-->
+
+                <!--</android.support.v7.widget.RecyclerView>-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/animal_recycle_enc_list"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical"-->
+                    <!--tools:orientation="vertical"-->
+                    <!--android:layout_weight="1"/>-->
+
+            <!--</LinearLayout>-->
         </ScrollView>
 
 

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -444,9 +445,9 @@ public class BusinessLayerImpl implements BusinessLayer {
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
 
                 for (Animal.PersonalStories p : memory.getAnimalStories()){
-                    byte[] bitmapData = p.getPictureData().getBytes();
-
-                    p.setPersonalPicture(BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length));
+                    byte [] encodeByte=Base64.decode(p.getPictureData(), Base64.DEFAULT);
+                    Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                    p.setPersonalPicture(bitmap);
                 }
 
                 updateInterface.onSuccess(response);

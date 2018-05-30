@@ -72,7 +72,8 @@
             android:name=".pl.personalStories.PersonalStoriesActivity"
             android:theme="@style/CustomTheme"/>
             <!--android:theme="@style/AppTheme.NoActionBar" />-->
-        <activity android:name=".pl.general_info.WatchAll" />
+        <activity android:name=".pl.general_info.WatchAll"
+            android:theme="@style/AppTheme.PopUp"></activity>
         <activity android:name=".pl.personalStories.PersonalPopUp"
             android:theme="@style/AppTheme.PopUp"></activity>
 

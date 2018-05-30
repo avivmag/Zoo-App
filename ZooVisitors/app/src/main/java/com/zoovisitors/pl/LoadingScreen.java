@@ -34,6 +34,7 @@ public class LoadingScreen extends BaseActivity {
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
+        pb.setProgressPrecentage(0);
 
         GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
             @Override

@@ -1,27 +1,22 @@
 package com.zoovisitors.pl.animals;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class AnimalActivity extends BaseActivity {
 
-    private Animal animal;
     private Map<Integer, Integer> conservationNumToPicture;
 
     @Override
@@ -31,35 +26,26 @@ public class AnimalActivity extends BaseActivity {
         setContentView(R.layout.activity_animal);
 
         //get the animal entity.
-        animal = (Animal) getIntent().getExtras().getSerializable("animal");
+        Animal animal = (Animal) getIntent().getExtras().getSerializable("animal");
 
-        //initialize the animal's name textView
-        TextView animalNameTextView = (TextView) findViewById(R.id.animal_name_text_view);
-        animalNameTextView.setText(animal.getName());
+        //calculate the screen width.
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int layoutWidth = Double.valueOf(screenWidth/1.5).intValue();
 
-        //initialize the animal's image
-        ImageView animalImage = (ImageView) findViewById(R.id.animal_image);
-        GlobalVariables.bl.getImage(animal.getPictureUrl(), animalImage.getWidth(), animalImage.getHeight(), new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                animalImage.setImageBitmap((Bitmap) response);
-                GlobalVariables.bl.insertStringandBitmap(animal.getPictureUrl(), (Bitmap) response);
-            }
+        //initialize the animal header
+        CustomRelativeLayout animalHeader = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(),animal.getName(),layoutWidth);
+        animalHeader.init();
 
-            @Override
-            public void onFailure(Object response) {
-                animalImage.setImageResource(R.mipmap.no_image_available);
-                GlobalVariables.bl.insertStringandBitmap(animal.getPictureUrl(), BitmapFactory.decodeResource(
-                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
-            }
-        });
+        LinearLayout animalMainLayout = findViewById(R.id.linear_animal_activity);
+        animalMainLayout.addView(animalHeader,0);
+
 
         //initialize the preservation section
         initializeConversationMap();
 
         ImageView preservation = findViewById(R.id.preservation_image_view);
 
-        if (animal.getPreservation() == 7){ //means that the preservation is unknown
+        if (animal.getPreservation() == 7 || animal.getPreservation() <= 1){ //means that the preservation is unknown
             LinearLayout animalConservationLayout = findViewById(R.id.animal_conservation_layout);
 
             animalConservationLayout.removeView(preservation);
@@ -125,40 +111,17 @@ public class AnimalActivity extends BaseActivity {
         //initialize animal interesting
         TextView interesting = findViewById(R.id.animal_interesting_text);
         interesting.setText(animal.getInteresting());
-
-//        // Find the view pager that will allow the user to swipe between fragments
-//        final ViewPager viewPager = (ViewPager) findViewById(R.id.animal_viewpager);
-//
-//        // Create an adapter that knows which fragment should be shown on each page
-//        AnimalFragmentAdapter adapter = new AnimalFragmentAdapter(this, getSupportFragmentManager());
-//        adapter.setAnimal(animal);
-////        adapter.setSpecies(species.getAbout());
-//
-//        // Set the adapter onto the view pager
-//        viewPager.setAdapter(adapter);
-//
-//        // Give the TabLayout the ViewPager
-//        final TabLayout tabLayout = (TabLayout) findViewById(R.id.animalTab);
-//        tabLayout.setupWithViewPager(viewPager);
-//        tabLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                tabLayout.setupWithViewPager(viewPager);
-//            }
-//        });
-//        tabLayout.getTabAt(0).setText(getResources().getText(R.string.about_animal));
-//        tabLayout.getTabAt(1).setText(getResources().getText(R.string.about_species));
     }
 
     // this method initialize the hash mao of the conservation section.
     private void initializeConversationMap() {
         conservationNumToPicture = new HashMap<>();
-        conservationNumToPicture.put(1, R.mipmap.conservation8); //extinct - probably won't be in use
-        conservationNumToPicture.put(2, R.mipmap.conservation6); //ExtinctWildlife
-        conservationNumToPicture.put(3, R.mipmap.conservation5); //CriticallyEndangered
+        conservationNumToPicture.put(8, R.mipmap.conservation8); //extinct - probably won't be in use
+        conservationNumToPicture.put(6, R.mipmap.conservation6); //ExtinctWildlife
+        conservationNumToPicture.put(5, R.mipmap.conservation5); //CriticallyEndangered
         conservationNumToPicture.put(4, R.mipmap.conservation4); //Endangered
-        conservationNumToPicture.put(5, R.mipmap.conservation3); //Vulnerable
-        conservationNumToPicture.put(6, R.mipmap.conservation2); //NearThreatened
-        conservationNumToPicture.put(7, R.mipmap.conservation1); //LeastConcern
+        conservationNumToPicture.put(3, R.mipmap.conservation3); //Vulnerable
+        conservationNumToPicture.put(2, R.mipmap.conservation2); //NearThreatened
+        conservationNumToPicture.put(1, R.mipmap.conservation1); //LeastConcern
     }
 }

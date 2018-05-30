@@ -10,7 +10,8 @@ namespace DAL
     {
         he = 1,
         en = 2,
-        ar = 3
+        ar = 3,
+        ru = 4
     };
 
     public enum AvailableMinutes

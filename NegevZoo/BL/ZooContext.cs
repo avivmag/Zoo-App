@@ -64,12 +64,13 @@ namespace BL
             }
 
             //pull all the data
-            var enclosures          = zooDB.GetAllEnclosures().ToArray();
-            var enclosureDetails    = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
-            var recEvents           = zooDB.GetAllRecuringEvents().ToArray();
-            var encVideos           = zooDB.GetAllEnclosureVideos().ToArray();
-            var encPicture          = zooDB.GetAllEnclosurePictures().ToArray();
-
+            var enclosures              = zooDB.GetAllEnclosures().ToArray();
+            var enclosureDetails        = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
+            var enclosureDetailsHebrew  = zooDB.GetAllEnclosureDetails().Where(e => e.language == (long)Languages.he).ToArray();
+            var recEvents               = zooDB.GetAllRecuringEvents().Where(e => e.language == language).ToArray();
+            var encVideos               = zooDB.GetAllEnclosureVideos().ToArray();
+            var encPicture              = zooDB.GetAllEnclosurePictures().ToArray();
+            
             //create RecuringEventResults to the application
             var recEventsDet = new List<RecurringEventsResult>();
             foreach(RecurringEvent rec in recEvents)
@@ -88,26 +89,29 @@ namespace BL
 
             //create EnclosureResults from all the data of the enclosures
             var enclosureResults = from e in enclosures
-                                   join ed in enclosureDetails on e.id equals ed.encId
+                                   join ed in enclosureDetails on e.id equals ed.encId into edj
                                    join vid in encVideos on e.id equals vid.enclosureId into encVid
                                    join pic in encPicture on e.id equals pic.enclosureId into encPic
                                    join eve in recEventsDet on e.id equals eve.EnclosureId into recEve
+                                   join edh in enclosureDetailsHebrew on e.id equals edh.encId into edhj
+                                   from edjr in edj.DefaultIfEmpty()
+                                   from edhr in edhj
                                    select new EnclosureResult
                                    {
                                        Id                   = e.id,
-                                       Language             = ed.language,
+                                       Language             = language,
                                        MarkerIconUrl        = e.markerIconUrl,
                                        MarkerX              = e.markerX,
                                        MarkerY              = e.markerY,
                                        MarkerClosestPointX  = e.markerClosestPointX,
                                        MarkerClosestPointY  = e.markerClosestPointY,
                                        PictureUrl           = e.pictureUrl,
-                                       Name                 = ed.name,
-                                       Story                = ed.story,
+                                       Name                 = edjr != null ? edjr.name : edhr.name,
+                                       Story                = edjr != null ? edjr.story : edhr.story,
                                        Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
                                        Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
                                        RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray(),
-                                       AudioUrl             = ed.audioUrl                                       
+                                       AudioUrl             = edjr != null ? edjr.audioUrl : edhr.audioUrl
                                    };
 
             return enclosureResults.ToArray();
@@ -700,26 +704,29 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            var animals = zooDB.GetAllAnimals();
-            var animalsDetails = zooDB.GetAllAnimalsDetails();
+            var animals         = zooDB.GetAllAnimals();
+            var animalsDetails  = zooDB.GetAllAnimalsDetails();
 
             var animalResults = from a in animals
-                                join ad in animalsDetails on new { a.id, language = (long)language } equals new { id = ad.animalId, ad.language }
+                                join ad in animalsDetails on new { a.id, language = (long)language } equals new { id = ad.animalId, ad.language } into adj
+                                join adh in animalsDetails on new { a.id, language = (long)Languages.he } equals new { id = adh.animalId, adh.language } into adhj
+                                from adhjr in adhj
+                                from adjr in adj.DefaultIfEmpty()
                                 select new AnimalResult
                                 {
-                                    Id              = a.id,
-                                    Name            = ad.name,
-                                    Interesting     = ad.interesting,
-                                    EncId           = a.enclosureId,
-                                    Category        = ad.category,
-                                    Series          = ad.series,
-                                    Family          = ad.family,
-                                    Distribution     = ad.distribution,
-                                    Reproduction    = ad.reproduction,
-                                    Food            = ad.food,
-                                    Preservation    = a.preservation,
-                                    PictureUrl      = a.pictureUrl,
-                                    Language        = ad.language
+                                    Id = a.id,
+                                    Name = adjr != null ? adjr.name : adhjr.name,
+                                    Interesting = adjr != null ? adjr.interesting : adhjr.interesting,
+                                    EncId = a.enclosureId,
+                                    Category = adjr != null ? adjr.category : adhjr.category,
+                                    Series = adjr != null ? adjr.series : adhjr.series,
+                                    Family = adjr != null ? adjr.family : adhjr.family,
+                                    Distribution = adjr != null ? adjr.distribution : adhjr.distribution,
+                                    Reproduction = adjr != null ? adjr.reproduction : adhjr.reproduction,
+                                    Food = adjr != null ? adjr.food : adhjr.food,
+                                    Preservation = a.preservation,
+                                    PictureUrl = a.pictureUrl,
+                                    Language = language
                                 };
 
             return animalResults.ToArray();

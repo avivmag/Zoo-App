@@ -6,9 +6,9 @@
     android:id="@+id/settings_menu_item">
     <item
         android:id="@+id/notifications"
-        android:title="@string/notifications"
-        android:checkable="true">
-    </item>
+        android:checkable="true"
+        android:onClick="onClickNotification"
+        android:title="@string/notifications"></item>
     <item android:id="@+id/language"
         android:title="@string/language" >
         <!-- "language" submenu -->

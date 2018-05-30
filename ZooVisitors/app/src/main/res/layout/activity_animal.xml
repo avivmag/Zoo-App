@@ -1,270 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="0dp"
     tools:context="com.zoovisitors.pl.animals.AnimalActivity">
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:id="@+id/linear_animal_activity"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:layoutDirection="locale"
-        >
+        android:layout_height="match_parent">
 
-        <com.zoovisitors.pl.customViews.TextViewOutline
-            android:id="@+id/animal_name_text_view"
+
+        <LinearLayout
+            android:id="@+id/linear_animal_activity"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layoutDirection="locale"
             android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"/>
-
-        <ImageView
-            android:id="@+id/animal_image"
-            android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:background="@color/transparent"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-        />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            android:id="@+id/animal_conservation_layout"
-
             >
 
-            <com.zoovisitors.pl.customViews.TextViewTitle
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/preservation"
-                />
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                android:id="@+id/animal_conservation_layout"
+                >
 
-            <ImageView
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/preservation"
+                    />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:id="@+id/preservation_image_view"
+                    android:layout_gravity="center|end"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:id="@+id/preservation_image_view"
-                android:layout_gravity="center|end"
-                android:paddingBottom="2dp"
-                />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                android:id="@+id/animal_category_layout"
+                >
 
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category"
+                    android:paddingBottom="2dp"
+                    android:paddingEnd="3dp"
+                    />
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_category_text"
+                    android:paddingBottom="2dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                android:id="@+id/animal_series_layout"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/series"
+                    android:paddingBottom="2dp"
+                    android:paddingEnd="3dp"/>
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_series_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                android:id="@+id/animal_family_layout"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/family"
+                    android:paddingBottom="2dp"
+                    android:paddingEnd="3dp"/>
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_family_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distribution"
+                    android:paddingBottom="2dp"/>
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_distribution_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/food"
+                    android:paddingBottom="2dp"
+                    />
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_food_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reproduction"
+                    android:paddingBottom="2dp"/>
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_reproduction_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:background="@drawable/up_down_border"
+                >
+
+                <com.zoovisitors.pl.customViews.TextViewTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/interesting"
+                    android:paddingBottom="2dp"/>
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/animal_interesting_text"
+                    android:paddingBottom="2dp"
+                    />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            android:id="@+id/animal_category_layout"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/category"
-                android:paddingBottom="2dp"
-                android:paddingEnd="3dp"
-                />
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_category_text"
-                android:paddingBottom="2dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            android:id="@+id/animal_series_layout"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series"
-                android:paddingBottom="2dp"
-                android:paddingEnd="3dp"/>
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_series_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            android:id="@+id/animal_family_layout"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/family"
-                android:paddingBottom="2dp"
-                android:paddingEnd="3dp"/>
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_family_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/distribution"
-                android:paddingBottom="2dp"/>
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_distribution_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/food"
-                android:paddingBottom="2dp"
-                />
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_food_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/reproduction"
-                android:paddingBottom="2dp"/>
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_reproduction_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:background="@drawable/up_down_border"
-            >
-
-            <com.zoovisitors.pl.customViews.TextViewTitle
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/interesting"
-                android:paddingBottom="2dp"/>
-
-            <com.zoovisitors.pl.customViews.TextViewRegularText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/animal_interesting_text"
-                android:paddingBottom="2dp"
-                />
-
-        </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-            <!--<android.support.design.widget.TabItem-->
-                <!--android:id="@+id/about_species"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/about_species" />-->
-
-
-        <!--<ImageView-->
-            <!--android:id="@+id/animal_image"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="218dp"-->
-            <!--android:baselineAligned="false" />-->
-
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/animal_viewpager"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@android:color/white"-->
-            <!--tools:layout_editor_absoluteX="8dp"-->
-            <!--tools:layout_editor_absoluteY="463dp">-->
-
-        <!--</android.support.v4.view.ViewPager>-->
-
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
