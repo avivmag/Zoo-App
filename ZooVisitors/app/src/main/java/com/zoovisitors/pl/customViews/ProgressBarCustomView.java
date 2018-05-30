@@ -49,9 +49,12 @@ public class ProgressBarCustomView extends LinearLayout {
         setOrientation(VERTICAL);
         rootView = inflate(context, R.layout.progress_bar_layout, this);
         progressText = (TextView) rootView.findViewById(R.id.progress_text);
+        progressText.setTextSize(20);
+        progressText.setTextColor(getResources().getColor(R.color.black));
         pb = (ProgressBar) rootView.findViewById(R.id.progress_progress);
         pb.getProgressDrawable().setColorFilter(
                 getResources().getColor(R.color.orangeNegev), android.graphics.PorterDuff.Mode.SRC_IN);
+        pb.setLayoutDirection(LAYOUT_DIRECTION_RTL);
 //        pb.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.orangeNegev)));
     }
 

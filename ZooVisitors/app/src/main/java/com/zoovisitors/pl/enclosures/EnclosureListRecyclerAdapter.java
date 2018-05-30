@@ -81,13 +81,13 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
             @Override
             public void onSuccess(Object response) {
                 viewHolder.enclosure_card_image.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(enclosures[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.enclosure_card_image.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(enclosures[i].getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });

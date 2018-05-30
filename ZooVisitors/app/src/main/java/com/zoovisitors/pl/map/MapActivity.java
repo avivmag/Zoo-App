@@ -164,12 +164,16 @@ public class MapActivity extends ProviderBasedActivity
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
         for (int i = 0; i < miscs.length; i++) {
             final int finalI = i;
-            bl.getImage(miscs[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
+
+            //TODO:AVIV :: miscs[i].getMarkerIconUrl()
+            bl.getImage("", 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            miscs[finalI].getMarkerLongtitude(),
-                            miscs[finalI].getMarkerLatitude());
+                            //TODO: Aviv
+                            0,0);
+                            //miscs[finalI].getMarkerLongtitude(),
+                            //miscs[finalI].getMarkerLatitude());
                 }
 
                 @Override
@@ -183,7 +187,8 @@ public class MapActivity extends ProviderBasedActivity
     private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
         for (int i = 0; i < enclosures.length; i++) {
             final int finalI = i;
-            bl.getImage(enclosures[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
+            //TODO: Aviv :: enclosures[i].getMarkerIconUrl()
+            bl.getImage("", 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addEnclosure(enclosures[finalI],

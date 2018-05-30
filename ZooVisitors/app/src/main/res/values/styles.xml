@@ -20,7 +20,7 @@
 
     <style name="ButtonNegevZooStyle">
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">

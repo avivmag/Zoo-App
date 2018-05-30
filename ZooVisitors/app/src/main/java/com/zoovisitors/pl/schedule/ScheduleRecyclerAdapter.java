@@ -62,13 +62,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
             @Override
             public void onSuccess(Object response) {
                 viewHolder.image.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(schedulers[position].getImageUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(schedulers[position].getImageUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
-
-                Memory.urlToBitmapMap.put(schedulers[position].getImageUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(schedulers[position].getImageUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });

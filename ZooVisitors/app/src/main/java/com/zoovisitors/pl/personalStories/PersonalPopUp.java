@@ -23,14 +23,14 @@ public class PersonalPopUp extends BaseActivity {
     private TextView animalName;
     private TextView animalStory;
     private ImageView animalPic;
-    private Drawable image;
+    private Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_pop_up);
         String url = getIntent().getStringExtra("url");
-        image = GlobalVariables.bl.getDrawableByString(url);
+        image = GlobalVariables.bl.getBitmapByString(url);
         clickedAnimal = getIntent().getExtras();
         animal = (Animal.PersonalStories) clickedAnimal.getSerializable("animal");
         DisplayMetrics dm = new DisplayMetrics();
@@ -47,9 +47,8 @@ public class PersonalPopUp extends BaseActivity {
         animalStory.setText(animal.getStory());
 
         if (image != null)
-            animalPic.setImageDrawable(image);
+            animalPic.setImageBitmap(image);
         else
             animalPic.setImageResource(R.mipmap.no_image_available);
-
     }
 }

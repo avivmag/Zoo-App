@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MapResult {
     @SerializedName("mapData")
-    private Byte[] mapData;
+    private String mapData;
     @SerializedName("mapInfo")
     private MapInfo mapInfo;
 
@@ -34,7 +34,7 @@ public class MapResult {
         @SerializedName("maxLongitude")
         private double maxLongitude;
         @SerializedName("routes")
-        private Route routes;
+        private Route[] routes;
 
         public double getZooLocationLongitude() {
             return zooLocationLongitude;
