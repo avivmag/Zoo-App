@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.zoovisitors.pl.customViews.CustomRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@drawable/cell_border_shape"
+        android:layout_margin="5dip"
+        >
+
+        <ImageView
+            android:id="@+id/custom_animal_personal_story_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:id="@+id/place_holder"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_alignParentBottom="true"
+            />
+
+        <TextView
+            android:id="@+id/custom_animal_personal_story_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/map_get_to_know_me_gradient"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            />
+
+    </com.zoovisitors.pl.customViews.CustomRelativeLayout>
+</android.support.constraint.ConstraintLayout>

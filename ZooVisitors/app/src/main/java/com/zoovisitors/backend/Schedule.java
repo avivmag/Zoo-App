@@ -2,11 +2,13 @@ package com.zoovisitors.backend;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Gili on 10/03/2018.
  */
 
-public class Schedule {
+public class Schedule implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("title")

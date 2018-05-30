@@ -38,10 +38,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<com.zoovisitor
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.schedule_card_title);
-            event = (TextView) itemView.findViewById(R.id.schedule_card_desc);
-            date = (TextView) itemView.findViewById(R.id.schedule_card_date);
-            image = (ImageView) itemView.findViewById(R.id.enc_card_image);
+//            title = (TextView) itemView.findViewById(R.id.schedule_card_title);
+//            event = (TextView) itemView.findViewById(R.id.schedule_card_desc);
+//            date = (TextView) itemView.findViewById(R.id.schedule_card_date);
+//            image = (ImageView) itemView.findViewById(R.id.enc_card_image);
         }
     }
 
