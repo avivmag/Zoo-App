@@ -2297,8 +2297,8 @@ namespace BL
             var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
                 {
                     iconUrl     = enc.markerIconUrl,
-                    latitude    = (float)enc.markerX.Value,
-                    longitude   = (float)enc.markerY.Value
+                    longitude   = (float)enc.markerX.Value,
+                    latitude    = (float)enc.markerY.Value
                     //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 
