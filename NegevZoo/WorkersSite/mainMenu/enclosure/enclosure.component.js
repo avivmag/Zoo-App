@@ -107,8 +107,8 @@
             $scope.openMap                  = function(ev, selectedEnclosure) {
                 mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl').then(function(clickPosition) {
                     if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerY       = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
-                        selectedEnclosure.markerX       = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
+                        selectedEnclosure.markerX       = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                        selectedEnclosure.markerY       = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
                     }
                 });
             }
@@ -371,7 +371,8 @@
                     return false;
             }
 
-            if (enclosure.markerX !== undefined && enclosure.markerY !== undefined &&
+            if ((enclosure.markerX !== undefined && enclosure.markerX !== null) && 
+                (enclosure.markerY !== undefined && enclosure.markerY !== null) &&
                 (enclosure.markerIconUrl === undefined || enclosure.markerIconUrl === null)) {
                     utilitiesService.utilities.alert('אין לבחור מיקום מתחם ללא העלאת אייקון.');
 
