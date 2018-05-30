@@ -2726,14 +2726,14 @@ namespace BL
         /// <param name="deviceId">The device to delete.</param>
         public void UnsubscribeDevice(string deviceId)
         {
-            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId);
 
             if (device == null)
             {
                 throw new ArgumentException("Wrong input. There is no such device with such id");
             }
 
-            zooDB.GetAllDevices().Remove(device);
+            zooDB.GetAllDevices().RemoveRange(device);
         }
 
         /// <summary>
