@@ -27,7 +27,6 @@ public interface BusinessLayer {
      * Returns the miscs that has been loaded in the load screen
      */
     Misc[] getMiscs();
-    //    void getRecurringEvents(final GetObjectInterface goi);
     void getNewsFeed(final GetObjectInterface goi);
     void getSchedule(final GetObjectInterface goi);
     void getPrices(final GetObjectInterface goi);

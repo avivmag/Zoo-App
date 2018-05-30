@@ -99,7 +99,6 @@ public class MapActivity extends ProviderBasedActivity
                 GlobalVariables.bl.getMiscs()) {
             if(misc.getMarkerBitmap() != null) {
                 mapView.addMiscIcon(misc);
-                Log.e("AVIV", "misc " + misc.getMarkerX() + ":" + misc.getMarkerY());
             }
         }
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());

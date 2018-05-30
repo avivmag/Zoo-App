@@ -143,53 +143,6 @@ public class BusinessLayerImpl implements BusinessLayer {
         return memory.getMiscMarkers();
     }
 
-//    @Override
-//    public void getMisc(final GetObjectInterface goi) {
-//        Misc[] misc = memory.getMiscMarkers();
-//        if (misc != null)
-//            goi.onSuccess(misc);
-//        else {
-//            ni.post("misc/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-//                @Override
-//                public void onSuccess(String response) {
-//                    Misc[] misc = gson.fromJson(response, Misc[].class);
-//
-//                    if (misc.length <= 0)
-//                        goi.onFailure("No Data in the server");
-//                    else {
-//                        memory.setMiscMarkers(misc);
-//                        goi.onSuccess(misc);
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(String response) {
-//                    goi.onFailure("Can't get misc from server");
-//                }
-//            });
-//        }
-//    }
-
-//    @Override
-//    public void getRecurringEvents(final GetObjectInterface goi) {
-//        ni.post("recurringEvents/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-//            @Override
-//            public void onSuccess(String response) {
-//                RecurringEvent[] re = gson.fromJson(response, RecurringEvent[].class);
-//
-//                if (re.length <= 0)
-//                    goi.onFailure("No Data in the server");
-//                else
-//                    goi.onSuccess(re);
-//            }
-//
-//            @Override
-//            public void onFailure(String response) {
-//                goi.onFailure("Can't get misc from server");
-//            }
-//        });
-//    }
-
     public void getImage(String url, int width, int height, GetObjectInterface goi) {
             ni.postImage(url, width, height, new ResponseInterface<Bitmap>() {
                 @Override
