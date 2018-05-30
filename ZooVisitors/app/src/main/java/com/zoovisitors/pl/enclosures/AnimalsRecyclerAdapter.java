@@ -15,12 +15,9 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.animals.AnimalActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -87,13 +84,13 @@ public class AnimalsRecyclerAdapter extends RecyclerView.Adapter<AnimalsRecycler
             @Override
             public void onSuccess(Object response) {
                 viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(animals[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(animals[i].getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(animals[i].getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
 
             }

@@ -6,16 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.NewsFeed;
+import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
 
-import org.w3c.dom.Text;
-
 public class WatchAll extends BaseActivity {
 
-    private NewsFeed[] allNewsFeed;
+    private WallFeed[] allNewsFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +28,11 @@ public class WatchAll extends BaseActivity {
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.8));
 
         //get all the news feed
-        allNewsFeed = (NewsFeed[]) getIntent().getExtras().getSerializable("NewsFeed");
+        allNewsFeed = (WallFeed[]) getIntent().getExtras().getSerializable("NewsFeed");
 
         LinearLayout allNewsFeedList = findViewById(R.id.allNewsFeedList);
 
-        for (NewsFeed feed: allNewsFeed) {
+        for (WallFeed feed: allNewsFeed) {
             //initiate the feed layout
             LinearLayout feedLayout = new LinearLayout(getBaseContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -49,7 +47,7 @@ public class WatchAll extends BaseActivity {
 
             //initiate the text TextView
             TextViewRegularText regularText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
-            regularText.setText(feed.getStory());
+            regularText.setText(feed.getInfo());
 
             feedLayout.addView(titleText);
             feedLayout.addView(regularText);

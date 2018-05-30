@@ -1,10 +1,10 @@
-package com.zoovisitors.bl.callbacks;
+package com.zoovisitors.backend.callbacks;
 
 /**
- * Created by Gili on 14/01/2018.
+ * Created by Gili on 26/05/2018.
  */
 
-public interface GetObjectInterface {
+public interface UpdateInterface {
     /**
      * will be called when calling was a success
      * @param response
@@ -16,4 +16,10 @@ public interface GetObjectInterface {
      * @param response
      */
     void onFailure(Object response);
+
+    /**
+     * will be called when calling was an update
+     * @param response
+     */
+    void onUpdate(Object response);
 }

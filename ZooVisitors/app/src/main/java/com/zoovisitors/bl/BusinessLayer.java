@@ -1,6 +1,10 @@
 package com.zoovisitors.bl;
 
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.UpdateInterface;
 
 /**
  * Created by Gili on 13/01/2018.
@@ -31,4 +35,10 @@ public interface BusinessLayer {
 
     //Audio
     void getAudio(String url, final GetObjectInterface goi);
+
+    //All data
+    void getAllDataInit(final UpdateInterface updateInterface);
+
+    void insertStringandBitmap(String s, Bitmap d);
+    Bitmap getBitmapByString(String s);
 }

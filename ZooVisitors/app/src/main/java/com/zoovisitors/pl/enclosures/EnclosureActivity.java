@@ -2,7 +2,6 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -34,15 +33,15 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.RecurringEventsHandler;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.customViews.TextViewTitle;
 import com.zoovisitors.pl.map.MapActivity;
-import com.zoovisitors.pl.customViews.buttonCustomView;
+import com.zoovisitors.pl.customViews.ButtonCustomView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +64,6 @@ public class EnclosureActivity extends BaseActivity {
     private Animal[] animals;
     private GridLayout assetsLayout;
     private RecurringEventsHandler recurringEventsHandler;
-
     private List<Bitmap> imagesInAsset;
 
     //facebook fields
@@ -80,7 +78,6 @@ public class EnclosureActivity extends BaseActivity {
     private MediaPlayer mp;
     private boolean isPLAYING;
     private ImageView audioImage;
-    private boolean isThereAudio;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -131,28 +128,33 @@ public class EnclosureActivity extends BaseActivity {
         encMainLayout.addView(encHeader,0);
 
         //initialize audio
-//        if (enclosure.getAudioUrl() == null){
-//            audioImage = null;
-//        }
-//        else{
-//            GlobalVariables.bl.getAudio(enclosure.getAudioUrl(), new GetObjectInterface() {
-//                @Override
-//                public void onSuccess(Object response) {
-//                    mp = (MediaPlayer) response;
-//                    audioImage = findViewById(R.id.enclosure_audio);
-//                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(90, 90);
-//                    audioImage.setLayoutParams(lp);
-//                    audioImage.setImageResource(R.mipmap.audio);
-//                    audioImage.setOnClickListener(v -> {
-//                        audioClick();
-//                    });
-//                }
-//                @Override
-//                public void onFailure(Object response) {
-//                    audioImage = null;
-//                }
-//            });
-//        }
+        if (enclosure.getAudioUrl() == null){
+            audioImage = null;
+        }
+        else{
+            GlobalVariables.bl.getAudio(enclosure.getAudioUrl(), new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    audioImage = new ImageView(getBaseContext());
+                    LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    imageParams.width = layoutWidth/4;
+                    imageParams.height = layoutWidth/4;
+
+                    audioImage.setLayoutParams(imageParams);
+                    audioImage.setImageResource(R.mipmap.audio);
+                    encHeader.addView(audioImage);
+                    mp = (MediaPlayer) response;
+                    audioImage.setOnClickListener(v -> {
+                        audioClick();
+                    });
+                }
+                @Override
+                public void onFailure(Object response) {
+                    audioImage = null;
+                }
+            });
+        }
 
         //initialize the closest event section
         LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
@@ -185,7 +187,7 @@ public class EnclosureActivity extends BaseActivity {
 
 
         //initialize the facebook and show on map buttons
-        buttonCustomView facebookShare = findViewById(R.id.shareOnFacebook);
+        ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
         facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 0, 125);
 
         callbackManager = CallbackManager.Factory.create();
@@ -255,7 +257,7 @@ public class EnclosureActivity extends BaseActivity {
         });
 
 
-        buttonCustomView showOnMapButton = findViewById(R.id.showOnMap);
+        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
         showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 0, 125);
 
         showOnMapButton.setOnClickListener(
@@ -375,7 +377,7 @@ public class EnclosureActivity extends BaseActivity {
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     assetsLayout.addView(imageView);
                     imagesInAsset.add((Bitmap) response);
-                    Memory.urlToBitmapMap.put(pe.getPictureUrl(), (Bitmap) response);
+                    GlobalVariables.bl.insertStringandBitmap(pe.getPictureUrl(), (Bitmap) response);
                     assetsPopUp.putExtra("imageUrl" + index, pe.getPictureUrl());
                     imageViewIntegerMap.put(imageView, index);
                     index++;

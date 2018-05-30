@@ -22,15 +22,16 @@ import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.backend.NewsFeed;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.WallFeed;
+import com.zoovisitors.pl.customViews.MainButtonCustomView;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-import com.zoovisitors.pl.customViews.buttonCustomView;
+import com.zoovisitors.pl.customViews.ButtonCustomView;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -40,21 +41,18 @@ public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
     private LinearLayout newsFeedLinearLayout;
     private Menu langMenu;
-    private NewsFeed[] feeds;
+    private WallFeed[] feed;
     private Map<String, String> LanguageMap;
 //    private NewsFeed[] newsFeedList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        //TODO: TESTING LOADING
-        Log.e("TESTENC", GlobalVariables.testEnc[0].getName());
-
-        Log.e("TESTOP", GlobalVariables.testOp[0].getDay());
-
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setActionBar(R.color.blueIcon);
+        //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
 
+//        getSupportActionBar().hide();
+        setActionBarTransparentColor();
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -68,23 +66,23 @@ public class MainActivity extends BaseActivity {
         });
 
         //Set design for each button
-        buttonCustomView encButton = (buttonCustomView) findViewById(R.id.enclosureListButton);
-        encButton.designButton(R.color.greenIcon, R.mipmap.enc, R.string.our_enclosures, 20, R.color.white, 20, 150);
+        MainButtonCustomView encButton = (MainButtonCustomView) findViewById(R.id.enclosureListButton);
+        encButton.mainDesignButton(R.mipmap.enc_button, R.string.our_enclosures);
 
-        buttonCustomView otherInfoButton = (buttonCustomView) findViewById(R.id.otherInfoButton);
-        otherInfoButton.designButton(R.color.brownIcon, R.mipmap.info, R.string.other_info, 20, R.color.white, 20, 150);
+        MainButtonCustomView otherInfoButton = (MainButtonCustomView) findViewById(R.id.otherInfoButton);
+        otherInfoButton.designButton(R.mipmap.enc_button, R.string.other_info, 20, R.color.white, 20, 150);
 
-        buttonCustomView personalButton= (buttonCustomView) findViewById(R.id.personalStoriesButton);
-        personalButton.designButton(R.color.lightGreenIcon, R.mipmap.personal, R.string.personal, 20, R.color.white, 20, 150);
+        MainButtonCustomView personalButton = (MainButtonCustomView) findViewById(R.id.personalStoriesButton);
+        personalButton.designButton(R.mipmap.enc_button, R.string.personal, 20, R.color.white, 20, 150);
 
-        buttonCustomView mapButton = (buttonCustomView) findViewById(R.id.mapButton);
-        mapButton.designButton(R.color.lightBlueIcon, R.mipmap.map, R.string.map, 20, R.color.white, 20, 150);
+        MainButtonCustomView mapButton = (MainButtonCustomView) findViewById(R.id.mapButton);
+        mapButton.designButton(R.mipmap.enc_button, R.string.map, 20, R.color.white, 20, 150);
 
-        buttonCustomView wazebutton = (buttonCustomView) findViewById(R.id.wazeButton);
-        wazebutton.designButton(R.color.lightBrownIcon, R.mipmap.waze_icon, R.string.nav, 20, R.color.white, 20, 150);
+        MainButtonCustomView wazebutton = (MainButtonCustomView) findViewById(R.id.wazeButton);
+        wazebutton.designButton(R.mipmap.enc_button, R.string.nav, 20, R.color.white, 20, 150);
 
-        buttonCustomView scheduleButton = (buttonCustomView) findViewById(R.id.scheduleButton);
-        scheduleButton.designButton(R.color.blueIcon, R.mipmap.schedule, R.string.schedule, 20, R.color.white, 20, 150);
+        MainButtonCustomView scheduleButton = (MainButtonCustomView) findViewById(R.id.scheduleButton);
+        scheduleButton.designButton(R.mipmap.enc_button, R.string.schedule, 20, R.color.white, 20, 150);
 
 
         LanguageMap = new HashMap<String, String>();
@@ -99,15 +97,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
 
-                feeds = (NewsFeed[]) response;
+                feed = (WallFeed[]) response;
 
                 //feed wall initiation
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
-                for (NewsFeed s: feeds) {
+
+                for (WallFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
-                    tv.setText(s.getStory());
+                    tv.setText(s.getInfo());
                     tv.setTextColor(getResources().getColor(R.color.black));
                     tv.setTextSize(18);
                     LinearLayout lineBorder = new LinearLayout(GlobalVariables.appCompatActivity);
@@ -116,9 +115,10 @@ public class MainActivity extends BaseActivity {
                     newsFeedLinearLayout.addView(lineBorder);
                 }
 
-//                newsFeedList = new NewsFeed[feed.length];
+
+//                newsFeedList = new String[feed.length];
 //                for (int i=0; i<feed.length; i++){
-//                    newsFeedList[i] = feed[i];
+//                    newsFeedList[i] = feed[i].getInfo();
 //                }
 
                 scrollView.post(new Runnable() {
@@ -139,14 +139,14 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.feedWallButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (feeds == null){
-                    feeds = new NewsFeed[]{new NewsFeed("NO NEWS FEED","")};
+                if (feed == null){
+                    feed = new WallFeed[]{new WallFeed("NO NEWS FEED","")};
                 }
-                Log.e("NEWS", feeds[0].getTitle());
+                Log.e("NEWS", feed[0].getTitle());
 
                 Intent watchAll = new Intent(GlobalVariables.appCompatActivity, WatchAll.class);
                 Bundle newsFeedBundle = new Bundle();
-                newsFeedBundle.putSerializable("NewsFeed", feeds);
+                newsFeedBundle.putSerializable("NewsFeed", feed);
                 watchAll.putExtras(newsFeedBundle);
                 startActivity(watchAll);
             }
@@ -293,7 +293,6 @@ public class MainActivity extends BaseActivity {
                     });
                     GlobalVariables.notifications = true;
                 }
-                //TODO: send to the server to cancel/add notifications
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

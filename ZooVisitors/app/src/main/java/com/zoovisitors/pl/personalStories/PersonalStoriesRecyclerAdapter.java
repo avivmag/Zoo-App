@@ -2,7 +2,6 @@ package com.zoovisitors.pl.personalStories;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,13 +14,6 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
-import com.zoovisitors.pl.animals.AnimalActivity;
-import com.zoovisitors.pl.enclosures.EnclosureListRecyclerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gili on 11/04/2018.
@@ -55,7 +47,7 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
                     Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
                     Bundle clickedAnimal = new Bundle();
                     clickedAnimal.putSerializable("animal", personalStories[pos]);
-                    intent.putExtra("url", personalStories[pos].getPictureUrl());
+                    intent.putExtra("url", personalStories[pos].getStory());
                     intent.putExtras(clickedAnimal);
                     GlobalVariables.appCompatActivity.startActivity(intent);
                 }
@@ -81,26 +73,15 @@ public class PersonalStoriesRecyclerAdapter extends RecyclerView.Adapter<Persona
 
         viewHolder.animalName.setText(personalStories[i].getName());
 
-        GlobalVariables.bl.getImage(personalStories[i].getPictureUrl(), imageWidth, imageWidth, new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                viewHolder.animal_card_image.setImageBitmap((Bitmap) response);
-                images[i] = (Bitmap) response;
-                Memory.urlToBitmapMap.put(personalStories[i].getPictureUrl(), (Bitmap) response);
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                LinearLayout.LayoutParams layoutParams = new  LinearLayout.LayoutParams(imageWidth, imageWidth);
-                viewHolder.animal_card_image.setLayoutParams(layoutParams);
-                viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
-                images[i] = null;
-                Memory.urlToBitmapMap.put(personalStories[i].getPictureUrl(), BitmapFactory.decodeResource(
-                        GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
-            }
-        });
-
-
+        if (personalStories[i].getPersonalPicture() != null){
+            viewHolder.animal_card_image.setImageBitmap(personalStories[i].getPersonalPicture());
+            GlobalVariables.bl.insertStringandBitmap(personalStories[i].getStory(), personalStories[i].getPersonalPicture());
+        }
+        else{
+            LinearLayout.LayoutParams layoutParams = new  LinearLayout.LayoutParams(imageWidth, imageWidth);
+            viewHolder.animal_card_image.setLayoutParams(layoutParams);
+            viewHolder.animal_card_image.setImageResource(R.mipmap.no_image_available);
+        }
     }
 
     @Override

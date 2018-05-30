@@ -1,19 +1,19 @@
-package com.zoovisitors.cl.network;
+package com.zoovisitors.backend.callbacks;
 
 /**
- * Created by aviv on 08-Jan-18.
+ * Created by Gili on 14/01/2018.
  */
 
-public interface ResponseInterface<T> {
+public interface GetObjectInterface {
     /**
      * will be called when calling was a success
      * @param response
      */
-    void onSuccess(T response);
+    void onSuccess(Object response);
 
     /**
      * will be called when calling was a failure
      * @param response
      */
-    void onFailure(String response);
+    void onFailure(Object response);
 }

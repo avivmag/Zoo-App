@@ -10,14 +10,14 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 public class PersonalStoriesActivity extends BaseActivity {
 
     private int layoutWidth;
-
+    private Animal.PersonalStories[] stories;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +43,15 @@ public class PersonalStoriesActivity extends BaseActivity {
 
             @Override
             public void onSuccess(Object response) {
-                Animal.PersonalStories[] stories = ((Animal.PersonalStories[]) response);
+                stories = ((Animal.PersonalStories[]) response);
                 CustomRelativeLayout card;
                 for (int i = 0; i < stories.length/2; i++){
-                    card = getCard(stories[i]);
+                    card = getCard(i);
                     firstCol.addView(card);
                 }
 
                 for (int i = stories.length/2; i < stories.length; i++){
-                    card = getCard(stories[i]);
+                    card = getCard(i);
                     secondCol.addView(card);
                 }
             }
@@ -63,8 +63,8 @@ public class PersonalStoriesActivity extends BaseActivity {
         });
     }
 
-    private CustomRelativeLayout getCard(Animal.PersonalStories story) {
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),story.getPictureUrl(), story.getName(), layoutWidth);
+    private CustomRelativeLayout getCard(int storyIndex) {
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),stories[storyIndex].getPersonalPicture(), stories[storyIndex].getName(), layoutWidth);
         card.init();
 
         card.setOnClickListener(new View.OnClickListener() {
@@ -72,10 +72,9 @@ public class PersonalStoriesActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
                 Bundle clickedAnimal = new Bundle();
-                clickedAnimal.putSerializable("animal", story);
-                intent.putExtra("url", story.getPictureUrl());
+                clickedAnimal.putSerializable("animal", storyIndex);
                 intent.putExtras(clickedAnimal);
-                GlobalVariables.appCompatActivity.startActivity(intent);
+                startActivity(intent);
             }
         });
 

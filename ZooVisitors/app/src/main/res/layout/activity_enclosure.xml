@@ -79,7 +79,7 @@
                     android:layout_marginLeft="5dp"
                     >
 
-                    <com.zoovisitors.pl.customViews.buttonCustomView
+                    <com.zoovisitors.pl.customViews.ButtonCustomView
                         android:id="@+id/shareOnFacebook"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -88,7 +88,7 @@
                         android:gravity="center"
                         />
 
-                    <com.zoovisitors.pl.customViews.buttonCustomView
+                    <com.zoovisitors.pl.customViews.ButtonCustomView
                         android:id="@+id/showOnMap"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

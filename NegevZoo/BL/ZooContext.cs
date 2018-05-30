@@ -15,6 +15,7 @@ using DAL.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using System.Drawing.Imaging;
 
 namespace BL
 {
@@ -392,6 +393,8 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Enclosure detail id doesn't exists.");
             }
+
+            enclosureDetail.story = enclosureDetail.story ?? String.Empty;
 
             var enclosuresDetails = zooDB.GetAllEnclosureDetails();
 
@@ -2682,10 +2685,14 @@ namespace BL
 
             var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
 
+            // Get the current time.
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             //check if the device already exists
             if (device != null)
             {
-                device.lastPing = DateTime.Now;
+                device.lastPing = currentTime;
             }
             else
             {
@@ -2693,7 +2700,7 @@ namespace BL
                 {
                     deviceId = deviceId,
                     insidePark = (sbyte)(insidePark? 1 : 0),
-                    lastPing = DateTime.Now
+                    lastPing = currentTime
                 };
 
                 zooDB.GetAllDevices().Add(device);
@@ -2735,7 +2742,11 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsOnlineDevices(string title, string body)
         {
-            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.Date.CompareTo(DateTime.Now.Date) == 0 && d.lastPing.AddMinutes(30) > DateTime.UtcNow.ToLocalTime()).ToList();
+            // Get the current time
+            var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
+            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.AddMinutes(30) > currentTime).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
@@ -2926,10 +2937,28 @@ namespace BL
                 return locations;
             }
         }
-        
+
         #endregion
 
         #region Images
+
+        /// <summary>
+        /// Gets an image encoder by the given format.
+        /// </summary>
+        /// <param name="format">The format which the returned encoder will be for.</param>
+        /// <returns>Image encoder for the given format.</returns>
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// Resizes an image.
@@ -3014,25 +3043,38 @@ namespace BL
         private void Save(string filePath)
         {
             // Get the image from file.
-            var image = new Bitmap(filePath);
-
-            // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
-            if (image.Height > 480 || image.Width > 480)
+            using (var image = new Bitmap(filePath))
             {
-                // Sets the image orientation to default value.
-                SetOrientationToDefault(image);
+                // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
+                if (image.Height > 480 || image.Width > 480)
+                {
+                    // Sets the image orientation to default value.
+                    SetOrientationToDefault(image);
 
-                // Resize the image.
-                var resizedImage            = ResizeImage(image, size: 480.0, keepResolution: true);
+                    // Resize the image.
+                    using (var resizedImage = ResizeImage(image, size: 480.0, keepResolution: true))
+                    {
+                        ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
-                // Dispose the original image file desc.
-                image.Dispose();
+                        // Create an Encoder object based on the GUID  
+                        // for the Quality parameter category.  
+                        System.Drawing.Imaging.Encoder myEncoder =  
+                            System.Drawing.Imaging.Encoder.Quality;  
 
-                // Save the new resized image.
-                resizedImage.Save(filePath);
+                        // Create an EncoderParameters object.  
+                        // An EncoderParameters object has an array of EncoderParameter  
+                        // objects. In this case, there is only one  
+                        // EncoderParameter object in the array.  
+                        EncoderParameters myEncoderParameters = new EncoderParameters(1);  
 
-                // Dispose the resized image file desc.
-                resizedImage.Dispose();
+                        EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);  
+                        myEncoderParameters.Param[0] = myEncoderParameter;
+
+                        image.Dispose();
+
+                        resizedImage.Save(filePath, jpgEncoder, myEncoderParameters);
+                    }
+                }
             }
         }
 
@@ -3179,10 +3221,10 @@ namespace BL
             var mapInfo             = this.GetMapSettings();
             var wallFeeds           = this.GetAllWallFeeds(language);
             var openingHours        = this.GetAllOpeningHours(language);
-            var openingHoursNote    = this.GetOpeningHourNote(language);
+            var openingHoursNote    = this.GetOpeningHourNote(language).FirstOrDefault();
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
-            var contactInfoNote     = this.GetContactInfoNote(language);
+            var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
             var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
 
             var contactInfoResult   = new

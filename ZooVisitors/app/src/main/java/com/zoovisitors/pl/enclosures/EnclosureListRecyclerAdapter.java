@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +15,8 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.bl.Memory;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -82,13 +81,13 @@ public class EnclosureListRecyclerAdapter extends RecyclerView.Adapter<Enclosure
             @Override
             public void onSuccess(Object response) {
                 viewHolder.enclosure_card_image.setImageBitmap((Bitmap) response);
-                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), (Bitmap) response);
+                GlobalVariables.bl.insertStringandBitmap(enclosures[i].getPictureUrl(), (Bitmap) response);
             }
 
             @Override
             public void onFailure(Object response) {
                 viewHolder.enclosure_card_image.setImageResource(R.mipmap.no_image_available);
-                Memory.urlToBitmapMap.put(enclosures[i].getPictureUrl(), BitmapFactory.decodeResource(
+                GlobalVariables.bl.insertStringandBitmap(enclosures[i].getPictureUrl(), BitmapFactory.decodeResource(
                         GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
             }
         });

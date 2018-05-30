@@ -1,6 +1,5 @@
 package com.zoovisitors.pl.map;
 
-import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,10 +22,10 @@ import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.BusinessLayer;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -165,12 +164,16 @@ public class MapActivity extends ProviderBasedActivity
     private void getMiscIconsAndSetImagesOnMap(Misc[] miscs) {
         for (int i = 0; i < miscs.length; i++) {
             final int finalI = i;
-            bl.getImage(miscs[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
+
+            //TODO:AVIV :: miscs[i].getMarkerIconUrl()
+            bl.getImage("", 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addMiscIcon(new BitmapDrawable(getResources(), (Bitmap) response),
-                            miscs[finalI].getMarkerLongtitude(),
-                            miscs[finalI].getMarkerLatitude());
+                            //TODO: Aviv
+                            0,0);
+                            //miscs[finalI].getMarkerLongtitude(),
+                            //miscs[finalI].getMarkerLatitude());
                 }
 
                 @Override
@@ -184,7 +187,8 @@ public class MapActivity extends ProviderBasedActivity
     private void getEnclosureIconsAndSetImagesOnMap(Enclosure[] enclosures) {
         for (int i = 0; i < enclosures.length; i++) {
             final int finalI = i;
-            bl.getImage(enclosures[i].getMarkerIconUrl(), 0, 0, new GetObjectInterface() {
+            //TODO: Aviv :: enclosures[i].getMarkerIconUrl()
+            bl.getImage("", 0, 0, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
                     mapView.addEnclosure(enclosures[finalI],

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,12 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        app:srcCompat="@mipmap/swan" />
+        app:srcCompat="@mipmap/loading_background" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/loading_logo" />
 
     <com.zoovisitors.pl.customViews.ProgressBarCustomView
         android:id="@+id/loading_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foregroundGravity="center" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="83dp"
+        android:layout_marginTop="335dp"
+        android:foregroundGravity="center">
 
-</FrameLayout>
+    </com.zoovisitors.pl.customViews.ProgressBarCustomView>
+
+</RelativeLayout>

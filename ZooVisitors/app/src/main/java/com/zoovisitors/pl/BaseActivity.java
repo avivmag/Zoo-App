@@ -41,4 +41,8 @@ public class BaseActivity extends AppCompatActivity {
 
         parent.setBackgroundResource(color);
     }
+
+    public void setActionBarTransparentColor(){
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
 }

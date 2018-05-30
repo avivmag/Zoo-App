@@ -12,7 +12,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;

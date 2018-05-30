@@ -16,8 +16,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
-import com.zoovisitors.bl.callbacks.GetObjectInterface;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
@@ -104,13 +103,13 @@ public class ScheduleActivity extends BaseActivity {
                         public void onSuccess(Object response) {
                             image.setImageBitmap((Bitmap) response);
 //                            viewHolder.image.setImageBitmap();
-                            Memory.urlToBitmapMap.put(s.getImageUrl(), (Bitmap) response);
+                            GlobalVariables.bl.insertStringandBitmap(s.getImageUrl(), (Bitmap) response);
                         }
 
                         @Override
                         public void onFailure(Object response) {
 
-                            Memory.urlToBitmapMap.put(s.getImageUrl(), BitmapFactory.decodeResource(
+                            GlobalVariables.bl.insertStringandBitmap(s.getImageUrl(), BitmapFactory.decodeResource(
                                     GlobalVariables.appCompatActivity.getResources(), R.mipmap.no_image_available));
                         }
                     });

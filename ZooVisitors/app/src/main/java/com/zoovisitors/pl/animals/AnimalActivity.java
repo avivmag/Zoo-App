@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
@@ -16,7 +17,6 @@ import java.util.Map;
 
 public class AnimalActivity extends BaseActivity {
 
-    private Animal animal;
     private Map<Integer, Integer> conservationNumToPicture;
 
     @Override
@@ -26,7 +26,7 @@ public class AnimalActivity extends BaseActivity {
         setContentView(R.layout.activity_animal);
 
         //get the animal entity.
-        animal = (Animal) getIntent().getExtras().getSerializable("animal");
+        Animal animal = (Animal) getIntent().getExtras().getSerializable("animal");
 
         //calculate the screen width.
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
@@ -38,6 +38,7 @@ public class AnimalActivity extends BaseActivity {
 
         LinearLayout animalMainLayout = findViewById(R.id.linear_animal_activity);
         animalMainLayout.addView(animalHeader,0);
+
 
         //initialize the preservation section
         initializeConversationMap();
@@ -110,29 +111,6 @@ public class AnimalActivity extends BaseActivity {
         //initialize animal interesting
         TextView interesting = findViewById(R.id.animal_interesting_text);
         interesting.setText(animal.getInteresting());
-
-//        // Find the view pager that will allow the user to swipe between fragments
-//        final ViewPager viewPager = (ViewPager) findViewById(R.id.animal_viewpager);
-//
-//        // Create an adapter that knows which fragment should be shown on each page
-//        AnimalFragmentAdapter adapter = new AnimalFragmentAdapter(this, getSupportFragmentManager());
-//        adapter.setAnimal(animal);
-////        adapter.setSpecies(species.getAbout());
-//
-//        // Set the adapter onto the view pager
-//        viewPager.setAdapter(adapter);
-//
-//        // Give the TabLayout the ViewPager
-//        final TabLayout tabLayout = (TabLayout) findViewById(R.id.animalTab);
-//        tabLayout.setupWithViewPager(viewPager);
-//        tabLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                tabLayout.setupWithViewPager(viewPager);
-//            }
-//        });
-//        tabLayout.getTabAt(0).setText(getResources().getText(R.string.about_animal));
-//        tabLayout.getTabAt(1).setText(getResources().getText(R.string.about_species));
     }
 
     // this method initialize the hash mao of the conservation section.

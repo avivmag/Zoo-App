@@ -2,13 +2,13 @@ package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.dal.Memory;
+import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class EnclosureAssetsPopUp extends BaseActivity {
         imagesInAsset = new ArrayList<Bitmap>();
         for (int i=0; i < arraySize; i++) {
             String url = intent.getStringExtra("imageUrl" + i);
-            imagesInAsset.add(Memory.urlToBitmapMap.get(url));
+            imagesInAsset.add(GlobalVariables.bl.getBitmapByString(url));
         }
 
         viewPager = (ViewPager) findViewById(R.id.enclosure_assets_viewpager);
