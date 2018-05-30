@@ -64,12 +64,13 @@ namespace BL
             }
 
             //pull all the data
-            var enclosures          = zooDB.GetAllEnclosures().ToArray();
-            var enclosureDetails    = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
-            var recEvents           = zooDB.GetAllRecuringEvents().ToArray();
-            var encVideos           = zooDB.GetAllEnclosureVideos().ToArray();
-            var encPicture          = zooDB.GetAllEnclosurePictures().ToArray();
-
+            var enclosures              = zooDB.GetAllEnclosures().ToArray();
+            var enclosureDetails        = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
+            var enclosureDetailsHebrew  = zooDB.GetAllEnclosureDetails().Where(e => e.language == (long)Languages.he).ToArray();
+            var recEvents               = zooDB.GetAllRecuringEvents().Where(e => e.language == language).ToArray();
+            var encVideos               = zooDB.GetAllEnclosureVideos().ToArray();
+            var encPicture              = zooDB.GetAllEnclosurePictures().ToArray();
+            
             //create RecuringEventResults to the application
             var recEventsDet = new List<RecurringEventsResult>();
             foreach(RecurringEvent rec in recEvents)
@@ -88,26 +89,29 @@ namespace BL
 
             //create EnclosureResults from all the data of the enclosures
             var enclosureResults = from e in enclosures
-                                   join ed in enclosureDetails on e.id equals ed.encId
+                                   join ed in enclosureDetails on e.id equals ed.encId into edj
                                    join vid in encVideos on e.id equals vid.enclosureId into encVid
                                    join pic in encPicture on e.id equals pic.enclosureId into encPic
                                    join eve in recEventsDet on e.id equals eve.EnclosureId into recEve
+                                   join edh in enclosureDetailsHebrew on e.id equals edh.encId into edhj
+                                   from edjr in edj.DefaultIfEmpty()
+                                   from edhr in edhj
                                    select new EnclosureResult
                                    {
                                        Id                   = e.id,
-                                       Language             = ed.language,
+                                       Language             = language,
                                        MarkerIconUrl        = e.markerIconUrl,
                                        MarkerX              = e.markerX,
                                        MarkerY              = e.markerY,
                                        MarkerClosestPointX  = e.markerClosestPointX,
                                        MarkerClosestPointY  = e.markerClosestPointY,
                                        PictureUrl           = e.pictureUrl,
-                                       Name                 = ed.name,
-                                       Story                = ed.story,
+                                       Name                 = edjr != null ? edjr.name : edhr.name,
+                                       Story                = edjr != null ? edjr.story : edhr.story,
                                        Videos               = encVid.Where(ev => ev.enclosureId == e.id).ToArray(),
                                        Pictures             = encPic.Where(ep => ep.enclosureId == e.id).ToArray(),
                                        RecEvents            = recEve.Where(re => re.EnclosureId == e.id).ToArray(),
-                                       AudioUrl             = ed.audioUrl                                       
+                                       AudioUrl             = edjr != null ? edjr.audioUrl : edhr.audioUrl
                                    };
 
             return enclosureResults.ToArray();
