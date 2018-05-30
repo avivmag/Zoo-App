@@ -59,14 +59,14 @@ namespace DAL
         public abstract DbSet<AnimalStory> GetAllAnimalStories();
 
         public abstract DbSet<AnimalStoryDetail> GetAllAnimalStoryDetails();
+
         #endregion
 
         #region Cache
 
-        protected abstract List<TEntity> GetFromCache<TEntity>() where TEntity : class;
+        public abstract List<T> GetFromCache<T>(DbSet<T> table) where T : class;
 
-        protected abstract void SetInCache<TEntity>(List<TEntity> entity) where TEntity : class;
-        
+        public abstract void RemoveFromCache(string key);
         #endregion
     }
 }
