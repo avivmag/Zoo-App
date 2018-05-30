@@ -628,6 +628,12 @@ namespace BL
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
             }
 
+            //4. exists animal story.
+            if (zooDB.GetAllAnimalStories().Any(story => story.enclosureId == id))
+            {
+                throw new InvalidOperationException("There are animal stories that are related to this enclosure.");
+            }
+
             var toRemove = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id).ToList();
 
             zooDB.GetAllEnclosureDetails().RemoveRange(toRemove);
