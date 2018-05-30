@@ -728,7 +728,8 @@ namespace BL
                                     Food = adjr != null ? adjr.food : adhjr.food,
                                     Preservation = a.preservation,
                                     PictureUrl = a.pictureUrl,
-                                    Language = language
+                                    Language = language,
+                                    AudioUrl = adjr != null ? adjr.audioUrl : adhjr.audioUrl
                                 };
 
             return animalResults.ToArray();
