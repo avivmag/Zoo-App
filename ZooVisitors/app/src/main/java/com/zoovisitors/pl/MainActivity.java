@@ -52,6 +52,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
+
         isNotificationChecked = true;
         getSupportActionBar().hide();
         setActionBarTransparentColor();

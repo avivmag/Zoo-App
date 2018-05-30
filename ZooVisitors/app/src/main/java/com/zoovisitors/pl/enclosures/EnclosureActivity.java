@@ -65,6 +65,7 @@ public class EnclosureActivity extends BaseActivity {
     private GridLayout assetsLayout;
     private RecurringEventsHandler recurringEventsHandler;
     private List<Bitmap> imagesInAsset;
+    private CustomRelativeLayout encHeader;
 
     //facebook fields
     private CallbackManager callbackManager;
@@ -74,10 +75,6 @@ public class EnclosureActivity extends BaseActivity {
     private int index;
     private Map<ImageView, Integer> imageViewIntegerMap;
 
-    //Audio
-    private MediaPlayer mp;
-    private boolean isPLAYING;
-    private ImageView audioImage;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,8 +86,6 @@ public class EnclosureActivity extends BaseActivity {
         enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-
-        isPLAYING = false;
 
         imagesInAsset = new ArrayList<Bitmap>();
 
@@ -118,43 +113,11 @@ public class EnclosureActivity extends BaseActivity {
         int layoutWidth = Double.valueOf(screenWidth/1.5).intValue();
 
         //initialize enclosure header
-        CustomRelativeLayout encHeader = new CustomRelativeLayout(getBaseContext(), enclosure.getPictureUrl(), enclosure.getName(), layoutWidth);
+        encHeader = new CustomRelativeLayout(getBaseContext(), enclosure.getPictureUrl(), enclosure.getName(), enclosure.getAudioUrl() ,layoutWidth);
         encHeader.init();
-        encHeader.setOnClickListener(v -> {
-                    audioClick();
-                });
 
         LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
         encMainLayout.addView(encHeader,0);
-
-        //initialize audio
-        if (enclosure.getAudioUrl() == null){
-            audioImage = null;
-        }
-        else{
-            GlobalVariables.bl.getAudio(enclosure.getAudioUrl(), new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    audioImage = new ImageView(getBaseContext());
-                    LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                    imageParams.width = layoutWidth/4;
-                    imageParams.height = layoutWidth/4;
-
-                    audioImage.setLayoutParams(imageParams);
-                    audioImage.setImageResource(R.mipmap.audio);
-                    encHeader.addView(audioImage);
-                    mp = (MediaPlayer) response;
-                    audioImage.setOnClickListener(v -> {
-                        audioClick();
-                    });
-                }
-                @Override
-                public void onFailure(Object response) {
-                    audioImage = null;
-                }
-            });
-        }
 
         //initialize the closest event section
         LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
@@ -184,7 +147,6 @@ public class EnclosureActivity extends BaseActivity {
 
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
-
 
         //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
@@ -272,9 +234,6 @@ public class EnclosureActivity extends BaseActivity {
             enclosureStoryText.setText(enclosure.getStory());
         }
 
-        //initialize the 'who live here' section
-        //Cards and Recycle of the animals
-
         LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
         for (Animal an: animals) {
             CustomRelativeLayout animalCard = getAnCard(an);
@@ -301,7 +260,7 @@ public class EnclosureActivity extends BaseActivity {
         int screenSize = getResources().getDisplayMetrics().widthPixels;
         int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
 
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(), layoutWidth);
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
         card.init();
 
         card.setOnClickListener(v -> {
@@ -314,31 +273,6 @@ public class EnclosureActivity extends BaseActivity {
             });
 
         return card;
-    }
-
-    private void audioClick() {
-        if (!isPLAYING && audioImage != null) {
-            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-            int volume_level = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-            if (volume_level < 9)
-                Toast.makeText(this, getResources().getString(R.string.turn_the_volume), Toast.LENGTH_LONG).show();
-            isPLAYING = true;
-            audioImage.setImageResource(R.mipmap.no_audio);
-            try {
-                mp.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mp.start();
-        } else {
-            if (audioImage != null) {
-                isPLAYING = false;
-                mp.stop();
-                if (audioImage != null)
-                    audioImage.setImageResource(R.mipmap.audio);
-            }
-        }
     }
 
     @Override
@@ -472,6 +406,12 @@ public class EnclosureActivity extends BaseActivity {
                 });
             }
         }, DELAY, PERIOD);
+    }
+
+    @Override
+    protected void onPause() {
+        encHeader.stopAudio();
+        super.onPause();
     }
 }
 
