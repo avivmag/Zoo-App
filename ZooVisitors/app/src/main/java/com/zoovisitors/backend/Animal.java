@@ -29,6 +29,8 @@ public class Animal implements java.io.Serializable{
     private String reproduction;
     @SerializedName("food")
     private String food;
+    @SerializedName("audioUrl")
+    private String audioUrl;
     @SerializedName("preservation")
     private int preservation;
     @SerializedName("pictureUrl")
@@ -87,6 +89,8 @@ public class Animal implements java.io.Serializable{
     public int getLanguage() {
         return language;
     }
+
+    public String getAudioUrl() { return audioUrl; }
 
     public class PersonalStories implements java.io.Serializable{
         @SerializedName("id")

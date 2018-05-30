@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
@@ -18,6 +17,7 @@ import java.util.Map;
 public class AnimalActivity extends BaseActivity {
 
     private Map<Integer, Integer> conservationNumToPicture;
+    private CustomRelativeLayout animalHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class AnimalActivity extends BaseActivity {
         int layoutWidth = Double.valueOf(screenWidth/1.5).intValue();
 
         //initialize the animal header
-        CustomRelativeLayout animalHeader = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(),animal.getName(),layoutWidth);
+        animalHeader = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl() ,animal.getName(), animal.getAudioUrl() ,layoutWidth);
         animalHeader.init();
 
         LinearLayout animalMainLayout = findViewById(R.id.linear_animal_activity);
@@ -123,5 +123,11 @@ public class AnimalActivity extends BaseActivity {
         conservationNumToPicture.put(3, R.mipmap.conservation3); //Vulnerable
         conservationNumToPicture.put(2, R.mipmap.conservation2); //NearThreatened
         conservationNumToPicture.put(1, R.mipmap.conservation1); //LeastConcern
+    }
+
+    @Override
+    protected void onPause() {
+        animalHeader.stopAudio();
+        super.onPause();
     }
 }
