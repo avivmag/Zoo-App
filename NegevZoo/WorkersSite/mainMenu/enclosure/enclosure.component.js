@@ -371,7 +371,8 @@
                     return false;
             }
 
-            if (enclosure.markerX !== undefined && enclosure.markerY !== undefined &&
+            if ((enclosure.markerX !== undefined && enclosure.markerX !== null) && 
+                (enclosure.markerY !== undefined && enclosure.markerY !== null) &&
                 (enclosure.markerIconUrl === undefined || enclosure.markerIconUrl === null)) {
                     utilitiesService.utilities.alert('אין לבחור מיקום מתחם ללא העלאת אייקון.');
 

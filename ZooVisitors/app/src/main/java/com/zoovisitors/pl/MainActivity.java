@@ -15,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ public class MainActivity extends BaseActivity {
     private Menu langMenu;
     private WallFeed[] feed;
     private Map<String, String> LanguageMap;
+    private boolean isNotificationChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -50,18 +53,24 @@ public class MainActivity extends BaseActivity {
         //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
 
+        isNotificationChecked = true;
         getSupportActionBar().hide();
-//        setActionBarTransparentColor();
+        setActionBarTransparentColor();
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                Toast.makeText(GlobalVariables.appCompatActivity, "Token has been send", Toast.LENGTH_LONG).show();
+                //Toast.makeText(GlobalVariables.appCompatActivity, "Token has been send", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Object response) {
-                Toast.makeText(GlobalVariables.appCompatActivity, "TOKEN NOT SEND", Toast.LENGTH_LONG).show();
+                //Toast.makeText(GlobalVariables.appCompatActivity, "TOKEN NOT SEND", Toast.LENGTH_LONG).show();
             }
+        });
+
+
+        ((Button) findViewById(R.id.three_dots)).setOnClickListener(v->{
+            showPopup(v);
         });
 
         //Set design for each button
@@ -211,37 +220,6 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-
-        MenuItem notification = menu.findItem(R.id.notifications);
-        notification.setChecked(true);
-
-        MenuItem subm = menu.findItem(R.id.language);
-        langMenu = subm.getSubMenu();
-        MenuItem hebItem = langMenu.getItem(1);
-        MenuItem engItem = langMenu.getItem(0);
-        MenuItem arbItem = langMenu.getItem(2);
-        MenuItem rusItem = langMenu.getItem(3);
-        switch (GlobalVariables.language){
-            case 1:
-                hebItem.setChecked(true);
-                break;
-            case 2:
-                engItem.setChecked(true);
-                break;
-            case 3:
-                arbItem.setChecked(true);
-                break;
-            case 4:
-                rusItem.setChecked(true);
-                break;
-        }
-        return true;
-    }
-
     private void startAutoScrolling(){
 
         int jumpSteps = newsFeedLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
@@ -258,11 +236,11 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void  onClickNotification(MenuItem item){
         switch (item.getItemId()) {
             case R.id.notifications:
-                item.setChecked(!item.isChecked());
+                //item.setChecked(!item.isChecked());
+                isNotificationChecked = !isNotificationChecked;
                 if (GlobalVariables.notifications) {
                     GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
                         @Override
@@ -292,9 +270,6 @@ public class MainActivity extends BaseActivity {
                     });
                     GlobalVariables.notifications = true;
                 }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -373,5 +348,37 @@ public class MainActivity extends BaseActivity {
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        Menu menu = popup.getMenu();
+        inflater.inflate(R.menu.main_menu, menu);
+
+
+        MenuItem notification = menu.findItem(R.id.notifications);
+        notification.setChecked(isNotificationChecked);
+        MenuItem subm = menu.findItem(R.id.language);
+        langMenu = subm.getSubMenu();
+        MenuItem hebItem = langMenu.getItem(1);
+        MenuItem engItem = langMenu.getItem(0);
+        MenuItem arbItem = langMenu.getItem(2);
+        MenuItem rusItem = langMenu.getItem(3);
+        switch (GlobalVariables.language){
+            case 1:
+                hebItem.setChecked(true);
+                break;
+            case 2:
+                engItem.setChecked(true);
+                break;
+            case 3:
+                arbItem.setChecked(true);
+                break;
+            case 4:
+                rusItem.setChecked(true);
+                break;
+        }
+        popup.show();
     }
 }

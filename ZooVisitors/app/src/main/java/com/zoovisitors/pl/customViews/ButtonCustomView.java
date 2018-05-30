@@ -17,7 +17,7 @@ import com.zoovisitors.R;
  * Created by Gili on 11/04/2018.
  */
 
-public class ButtonCustomView extends RelativeLayout {
+public class ButtonCustomView extends LinearLayout {
 
     View rootView;
     TextView iconText;
@@ -41,11 +41,9 @@ public class ButtonCustomView extends RelativeLayout {
 
     private void init (Context context, @Nullable AttributeSet set){
         rootView = inflate(context, R.layout.icon_layout, this);
-        iconText = (TextView) rootView.findViewById(R.id.icon_text);
-//        iconText.setId(generateViewId());
-        iconImage = (ImageView) rootView.findViewById(R.id.icon_image);
-//        iconImage.setId(generateViewId());
-        iconTransImage = (ImageView) rootView.findViewById(R.id.icon_image_text);
+        iconText = rootView.findViewById(R.id.icon_text);
+        iconImage = rootView.findViewById(R.id.icon_image);
+        iconTransImage =  rootView.findViewById(R.id.icon_image_text);
     }
 
     public int getTextId(){
@@ -56,47 +54,19 @@ public class ButtonCustomView extends RelativeLayout {
         return iconImage.getId();
     }
 
-    public void designButton(int background, int image, int text, int text_size, int text_color, int image_bottom_margin, int button_size){
-
+    public void designButton(int background, int image, int text, int text_size, int text_color, int button_size){
+        setOrientation(VERTICAL);
         iconText.setTextSize(text_size);
         iconText.setText(text);
         iconText.setTextColor(getResources().getColor(text_color));
 
         iconImage.setImageResource(image);
         LayoutParams layoutParams = new LayoutParams(button_size, button_size);
-        //layoutParams. = Gravity.CENTER;
-        layoutParams.bottomMargin = image_bottom_margin;
+        layoutParams.setMargins(0,5,0,5);
         iconImage.setLayoutParams(layoutParams);
         setBackgroundColor(getResources().getColor(background));
-        iconImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        iconImage.setOnClickListener(v -> {
                 rootView.performClick();
-            }
         });
-    }
-
-    public void mainDesignButton(int image, int text){
-
-        iconText.setTextSize(18);
-        iconText.setText(text);
-        iconText.setTextColor(getResources().getColor(R.color.buttonTextColor));
-
-        //LayoutParams imageLayoutParams = new LayoutParams(400, 900);
-        //imageLayoutParams.gravity = Gravity.CENTER;
-        //imageLayoutParams.bottomMargin = 20;
-        //iconImage.setLayoutParams(imageLayoutParams);
-        //iconImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        iconImage.setImageResource(image);
-        iconImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rootView.performClick();
-            }
-        });
-
-        //iconTransImage.setBackgroundColor(getResources().getColor(R.color.buttonBackground));
-        //LayoutParams imageTextlayoutParams = new LayoutParams(200, 200);
-        //iconTransImage.setLayoutParams(imageTextlayoutParams);
     }
 }

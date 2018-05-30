@@ -150,7 +150,7 @@ public class EnclosureActivity extends BaseActivity {
 
         //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
-        facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 0, 125);
+        facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 125);
 
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -201,7 +201,7 @@ public class EnclosureActivity extends BaseActivity {
             });
 
             SharePhoto sharePhoto = new SharePhoto.Builder()
-                    .setBitmap(encImage)
+                    .setBitmap(GlobalVariables.bl.getBitmapByString(enclosure.getPictureUrl()))
                     .build();
 
             if (ShareDialog.canShow(SharePhotoContent.class)) {
@@ -215,13 +215,12 @@ public class EnclosureActivity extends BaseActivity {
 
 
         ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
-        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 0, 125);
+        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
 
         showOnMapButton.setOnClickListener(
                 v -> {
                     Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
                     startActivity(intent);
-
                 }
         );
 

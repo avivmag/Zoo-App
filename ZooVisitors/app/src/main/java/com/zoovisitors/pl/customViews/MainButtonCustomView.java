@@ -37,7 +37,7 @@ public class MainButtonCustomView extends RelativeLayout {
     }
 
     private void init (Context context, @Nullable AttributeSet set){
-        rootView = inflate(context, R.layout.icon_layout2, this);
+        rootView = inflate(context, R.layout.menu_icon_layout, this);
         iconText = (TextView) rootView.findViewById(R.id.icon_text);
 //        iconText.setId(generateViewId());
         iconImage = (ImageView) rootView.findViewById(R.id.icon_image);
