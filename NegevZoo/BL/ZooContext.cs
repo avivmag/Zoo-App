@@ -64,13 +64,14 @@ namespace BL
             }
 
             //pull all the data
-            var enclosures              = zooDB.GetAllEnclosures().ToArray();
-            var enclosureDetails        = zooDB.GetAllEnclosureDetails().Where(e => e.language == language).ToArray();
-            var enclosureDetailsHebrew  = zooDB.GetAllEnclosureDetails().Where(e => e.language == (long)Languages.he).ToArray();
-            var recEvents               = zooDB.GetAllRecuringEvents().Where(e => e.language == language).ToArray();
-            var encVideos               = zooDB.GetAllEnclosureVideos().ToArray();
-            var encPicture              = zooDB.GetAllEnclosurePictures().ToArray();
-            
+
+            var enclosures              = zooDB.GetFromCache(zooDB.GetAllEnclosures());
+            var enclosureDetails        = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == language).ToArray();
+            var recEvents               = zooDB.GetFromCache(zooDB.GetAllRecuringEvents());
+            var encVideos               = zooDB.GetFromCache(zooDB.GetAllEnclosureVideos());
+            var encPicture              = zooDB.GetFromCache(zooDB.GetAllEnclosurePictures());
+            var enclosureDetailsHebrew  = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == (long)Languages.he).ToArray();
+
             //create RecuringEventResults to the application
             var recEventsDet = new List<RecurringEventsResult>();
             foreach(RecurringEvent rec in recEvents)
@@ -123,7 +124,7 @@ namespace BL
         /// <returns>The enclosures types .</returns>
         public IEnumerable<Enclosure> GetAllEnclosures()
         {
-            return zooDB.GetAllEnclosures();
+            return zooDB.GetFromCache(zooDB.GetAllEnclosures());
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace BL
         /// <returns>The enclosure details in all the languages.</returns>
         public IEnumerable<EnclosureDetail> GetEnclosureDetailsById(int encId)
         {
-            return zooDB.GetAllEnclosureDetails().Where(e => e.encId == encId);
+            return zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.encId == encId);
         }
 
         /// <summary>
@@ -149,14 +150,14 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            var enc = zooDB.GetAllEnclosures().SingleOrDefault(e => e.id == encId);
+            var enc = zooDB.GetFromCache(zooDB.GetAllEnclosures()).SingleOrDefault(e => e.id == encId);
 
             if(enc == null)
             {
                 throw new ArgumentException("Wrong input. enclosure id doesn't exists");
             }
 
-            return zooDB.GetAllRecuringEvents().Where(re => re.language == language && re.enclosureId == encId).ToList();
+            return zooDB.GetFromCache(zooDB.GetAllRecuringEvents()).Where(re => re.language == language && re.enclosureId == encId).ToList();
         }
 
         /// <summary>
@@ -172,7 +173,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllEnclosurePictures().Where(e => e.enclosureId == encId);
+            return zooDB.GetFromCache(zooDB.GetAllEnclosurePictures()).Where(e => e.enclosureId == encId);
         }
 
         /// <summary>
@@ -188,7 +189,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The enclosure doesn't exists");
             }
 
-            return zooDB.GetAllEnclosureVideos().Where(e => e.enclosureId == encId);
+            return zooDB.GetFromCache(zooDB.GetAllEnclosureVideos()).Where(e => e.enclosureId == encId);
         }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllRecuringEvents().Where(gr => gr.language == language);
+            return zooDB.GetFromCache(zooDB.GetAllRecuringEvents()).Where(gr => gr.language == language);
         }
 
         /// <summary>
@@ -704,8 +705,9 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            var animals         = zooDB.GetAllAnimals();
-            var animalsDetails  = zooDB.GetAllAnimalsDetails();
+
+            var animals         = zooDB.GetFromCache(zooDB.GetAllAnimals());
+            var animalsDetails  = zooDB.GetFromCache(zooDB.GetAllAnimalsDetails());
 
             var animalResults = from a in animals
                                 join ad in animalsDetails on new { a.id, language = (long)language } equals new { id = ad.animalId, ad.language } into adj
@@ -726,7 +728,8 @@ namespace BL
                                     Food = adjr != null ? adjr.food : adhjr.food,
                                     Preservation = a.preservation,
                                     PictureUrl = a.pictureUrl,
-                                    Language = language
+                                    Language = language,
+                                    AudioUrl = adjr != null ? adjr.audioUrl : adhjr.audioUrl
                                 };
 
             return animalResults.ToArray();
@@ -762,13 +765,13 @@ namespace BL
                 throw new ArgumentException("Wrong input. animal id doesn't exsits");
             }
 
-            AnimalDetail details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == language);
+            AnimalDetail details = zooDB.GetFromCache(zooDB.GetAllAnimalsDetails()).SingleOrDefault(ad => ad.animalId == id && ad.language == language);
 
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (details == null)
             {
                 var hebrewLang = GetHebewLanguage();
-                details = zooDB.GetAllAnimalsDetails().SingleOrDefault(ad => ad.animalId == id && ad.language == hebrewLang);
+                details = zooDB.GetFromCache(zooDB.GetAllAnimalsDetails()).SingleOrDefault(ad => ad.animalId == id && ad.language == hebrewLang);
             }
 
             var animalResult = new AnimalResult
@@ -785,7 +788,8 @@ namespace BL
                 Reproduction = details?.reproduction,
                 Series = details?.series,
                 PictureUrl = an.pictureUrl,
-                Language = details == null ? GetHebewLanguage() : details.language
+                Language = details == null ? GetHebewLanguage() : details.language,
+                AudioUrl = details?.audioUrl
             };
 
             return animalResult;
@@ -839,8 +843,8 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            var animalStories = zooDB.GetAllAnimalStories();
-            var animalStoriesDetails = zooDB.GetAllAnimalStoryDetails();
+            var animalStories           = zooDB.GetFromCache(zooDB.GetAllAnimalStories());
+            var animalStoriesDetails    = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails());
 
             var animalStoryResults = from ans in animalStories
                                     join ansd in animalStoriesDetails on new { ans.id, language } equals new { id = ansd.animalStoryId, ansd.language }
@@ -870,20 +874,20 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            AnimalStory ans = zooDB.GetAllAnimalStories().SingleOrDefault(a => a.id == animalStoryId);
+            AnimalStory ans = zooDB.GetFromCache(zooDB.GetAllAnimalStories()).SingleOrDefault(a => a.id == animalStoryId);
 
             if (ans == null)
             {
                 throw new ArgumentException("Wrong input. AnimalStory id doesn't exsits");
             }
 
-            AnimalStoryDetail storyDetails = zooDB.GetAllAnimalStoryDetails().SingleOrDefault(ansd => ansd.animalStoryId== animalStoryId && ansd.language == language);
+            AnimalStoryDetail storyDetails = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).SingleOrDefault(ansd => ansd.animalStoryId== animalStoryId && ansd.language == language);
 
             //in case that there isn't data in the wanted language than taking the hebrew data.
             if (storyDetails == null)
             {
                 var hebrewLang = GetHebewLanguage();
-                storyDetails = zooDB.GetAllAnimalStoryDetails().SingleOrDefault(ansd => ansd.animalStoryId == animalStoryId && ansd.language == hebrewLang);
+                storyDetails = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).SingleOrDefault(ansd => ansd.animalStoryId == animalStoryId && ansd.language == hebrewLang);
             }
 
             var animalStoryResult = new AnimalStoryResult
@@ -905,7 +909,7 @@ namespace BL
         /// <returns>The animals types.</returns>
         public IEnumerable<Animal> GetAllAnimals()
         {
-            return zooDB.GetAllAnimals();
+            return zooDB.GetFromCache(zooDB.GetAllAnimals());
         }
 
         /// <summary>
@@ -922,7 +926,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The animal id doesn't exists");
             }
 
-            return zooDB.GetAllAnimalsDetails().Where(an => an.animalId == animalId);
+            return zooDB.GetFromCache(zooDB.GetAllAnimalsDetails()).Where(an => an.animalId == animalId);
         }
         
         /// <summary>
@@ -971,7 +975,7 @@ namespace BL
         /// <returns>All AnimalStory types.</returns>
         public IEnumerable<AnimalStory> GetAllAnimalStories()
         {
-            return zooDB.GetAllAnimalStories();
+            return zooDB.GetFromCache(zooDB.GetAllAnimalStories());
         }
 
         /// <summary>
@@ -988,7 +992,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. The AnimalStory id doesn't exists");
             }
 
-            return zooDB.GetAllAnimalStoryDetails().Where(ansd => ansd.animalStoryId == animalStoryId);
+            return zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).Where(ansd => ansd.animalStoryId == animalStoryId);
         }
 
         /// <summary>
@@ -1247,6 +1251,7 @@ namespace BL
             zooDB.GetAllAnimalStoryDetails().RemoveRange(detailsToDelete);
             zooDB.GetAllAnimalStories().Remove(animalStory);
         }
+        
         #endregion
 
         #region Zoo Info
@@ -1267,7 +1272,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetAllPrices().Where(p => p.language == language).ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllPrices()).Where(p => p.language == language).ToArray();
         }
         
         /// <summary>
@@ -1366,7 +1371,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            var openingHours = zooDB.GetAllOpeningHours().Where(oh => oh.language == language).ToArray().OrderBy(oh => oh.day);
+            var openingHours = zooDB.GetFromCache(zooDB.GetAllOpeningHours()).Where(oh => oh.language == language).ToArray().OrderBy(oh => oh.day);
 
             List<OpeningHourResult> opHoursResults = new List<OpeningHourResult>();
 
@@ -1374,11 +1379,11 @@ namespace BL
             {
                 opHoursResults.Add(new OpeningHourResult
                 {
-                    Id = oh.id,
-                    Day = Enum.GetName(typeof(Days), oh.day),
-                    EndTime = oh.endTime,
-                    StartTime = oh.startTime,
-                    Language = oh.language
+                    Id              = oh.id,
+                    Day             = Enum.GetName(typeof(Days), oh.day),
+                    EndTime         = oh.endTime,
+                    StartTime       = oh.startTime,
+                    Language        = oh.language
                 });
             }
 
@@ -1392,7 +1397,8 @@ namespace BL
         public IEnumerable<OpeningHour> GetAllOpeningHoursType()
         {
             var hebrewLanguage = GetHebewLanguage();
-            return zooDB.GetAllOpeningHours().Where(oh => oh.language == hebrewLanguage).ToArray();
+
+            return zooDB.GetFromCache(zooDB.GetAllOpeningHours()).Where(oh => oh.language == hebrewLanguage).ToArray();
         }
 
         /// <summary>
@@ -1542,7 +1548,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetAllContactInfos().Where(ci => ci.language == language).ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllContactInfos()).Where(ci => ci.language == language).ToArray();
         }
         
         /// <summary>
@@ -1643,7 +1649,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
 
-            return zooDB.GetAllSpecialEvents().Where(se => se.language == language).ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllSpecialEvents()).Where(se => se.language == language).ToArray();
         }
         
         /// <summary>
@@ -1759,7 +1765,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetAllWallFeeds().Where(e => e.language == language).ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllWallFeeds()).Where(e => e.language == language).ToArray();
         }
 
         /// <summary>
@@ -1884,7 +1890,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetGeneralInfo()
+            return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.aboutUs)
                 .ToArray();
@@ -1942,7 +1948,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetGeneralInfo()
+            return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.openingHoursNote)
                 .ToArray();
@@ -1985,7 +1991,7 @@ namespace BL
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetGeneralInfo()
+            return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.contactInfoNote)
                 .ToArray();
@@ -2040,7 +2046,7 @@ namespace BL
         {
             var language = GetAllLanguages().SingleOrDefault(l => l.name == "עברית").id;
 
-            return zooDB.GetGeneralInfo()
+            return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.mapBackgroundUrl)
                 .ToArray();
@@ -2056,7 +2062,7 @@ namespace BL
         /// <returns> All the existing languages.</returns>
         public IEnumerable<Language> GetAllLanguages()
         {
-            return zooDB.GetAllLanguages();
+            return zooDB.GetFromCache(zooDB.GetAllLanguages());
         }
 
         #endregion
@@ -2073,7 +2079,7 @@ namespace BL
         /// <returns> MapSettingResult with all the attributes</returns>
         public MapSettingsResult GetMapSettings()
         {
-            var allSettings = zooDB.GetAllMapInfos();
+            var allSettings = zooDB.GetFromCache(zooDB.GetAllMapInfos());
 
             if (allSettings.Count() == 0)
             {
@@ -2372,7 +2378,7 @@ namespace BL
         /// <returns>The users.</returns>
         public IEnumerable<User> GetAllUsers()
         {
-            return zooDB.GetAllUsers().ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllUsers()).ToArray();
         }
 
         /// <summary>
@@ -2673,7 +2679,7 @@ namespace BL
         /// </summary>
         public IEnumerable<Device> GetAllDevices()
         {
-            return zooDB.GetAllDevices();
+            return zooDB.GetFromCache(zooDB.GetAllDevices());
         }
 
         /// <summary>
@@ -2720,14 +2726,14 @@ namespace BL
         /// <param name="deviceId">The device to delete.</param>
         public void UnsubscribeDevice(string deviceId)
         {
-            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId);
 
             if (device == null)
             {
                 throw new ArgumentException("Wrong input. There is no such device with such id");
             }
 
-            zooDB.GetAllDevices().Remove(device);
+            zooDB.GetAllDevices().RemoveRange(device);
         }
 
         /// <summary>
@@ -2851,7 +2857,7 @@ namespace BL
 
         private bool ValidLanguage(int language)
         {
-            return zooDB.GetAllLanguages().SingleOrDefault(l => l.id == language) != null;
+            return zooDB.GetFromCache(zooDB.GetAllLanguages()).SingleOrDefault(l => l.id == language) != null;
         }
         
         private long GetHebewLanguage()
@@ -3270,6 +3276,15 @@ namespace BL
 
         public void Dispose()
         {
+            var test = zooDB.ChangeTracker.Entries();
+
+            var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
+            
+            foreach (var entry in entries)
+            {
+                zooDB.RemoveFromCache(entry.GetType().FullName);
+            }
+
             zooDB.SaveChanges();
         }
     }

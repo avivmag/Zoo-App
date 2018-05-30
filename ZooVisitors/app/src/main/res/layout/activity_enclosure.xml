@@ -45,8 +45,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/next_event"
-                        />
+                        android:text="@string/next_event" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -55,16 +54,30 @@
                         android:orientation="horizontal"
                         >
 
-                        <com.zoovisitors.pl.customViews.TextViewRegularText
-                            android:id="@+id/closesEventText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingEnd="5dp"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <com.zoovisitors.pl.customViews.TextViewRegularText
+                                android:id="@+id/closestEventTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingEnd="5dp"
+                                android:textSize="18sp" />
+
+                            <com.zoovisitors.pl.customViews.TextViewRegularText
+                                android:id="@+id/closestEventDesc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingEnd="5dp" />
+                        </LinearLayout>
 
                         <com.zoovisitors.pl.customViews.TextViewRegularText
                             android:id="@+id/closestEventTimer"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp" />
                     </LinearLayout>
 
                 </LinearLayout>

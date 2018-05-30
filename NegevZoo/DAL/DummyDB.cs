@@ -83,12 +83,12 @@ namespace DAL
             }
         }
 
-        protected override List<TEntity> GetFromCache<TEntity>()
+        public override List<T> GetFromCache<T>(DbSet<T> table)
         {
             return null;
         }
 
-        protected override void SetInCache<TEntity>(List<TEntity> entity)
+        public override void RemoveFromCache(string entity)
         {
         }
 

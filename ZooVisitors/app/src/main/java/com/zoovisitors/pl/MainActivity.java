@@ -33,7 +33,6 @@ import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-import com.zoovisitors.pl.customViews.ButtonCustomView;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -50,7 +49,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
         isNotificationChecked = true;
         getSupportActionBar().hide();
@@ -121,12 +119,6 @@ public class MainActivity extends BaseActivity {
                     newsFeedLinearLayout.addView(tv);
                     newsFeedLinearLayout.addView(lineBorder);
                 }
-
-
-//                newsFeedList = new String[feed.length];
-//                for (int i=0; i<feed.length; i++){
-//                    newsFeedList[i] = feed[i].getInfo();
-//                }
 
                 scrollView.post(new Runnable() {
                     @Override
