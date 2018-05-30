@@ -444,7 +444,8 @@ public class BusinessLayerImpl implements BusinessLayer {
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
 
                 for (Animal.PersonalStories p : memory.getAnimalStories()){
-                    byte[] bitmapData = p.getPictureData().getBytes();;
+                    byte[] bitmapData = p.getPictureData().getBytes();
+
                     p.setPersonalPicture(BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length));
                 }
 
