@@ -3227,7 +3227,7 @@ namespace BL
             }
 
             // Get the markers.
-            var miscMarkers = this.GetAllMarkers().Select(mm =>
+            var miscMarkers = this.GetMiscMarkers().Select(mm =>
             new
             {
                 mm.id,
