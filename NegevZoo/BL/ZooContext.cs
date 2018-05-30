@@ -700,26 +700,29 @@ namespace BL
             {
                 throw new ArgumentException("Wrong input. Wrong language.");
             }
-            var animals = zooDB.GetAllAnimals();
-            var animalsDetails = zooDB.GetAllAnimalsDetails();
+            var animals         = zooDB.GetAllAnimals();
+            var animalsDetails  = zooDB.GetAllAnimalsDetails();
 
             var animalResults = from a in animals
-                                join ad in animalsDetails on new { a.id, language = (long)language } equals new { id = ad.animalId, ad.language }
+                                join ad in animalsDetails on new { a.id, language = (long)language } equals new { id = ad.animalId, ad.language } into adj
+                                join adh in animalsDetails on new { a.id, language = (long)Languages.he } equals new { id = adh.animalId, adh.language } into adhj
+                                from adhjr in adhj
+                                from adjr in adj.DefaultIfEmpty()
                                 select new AnimalResult
                                 {
-                                    Id              = a.id,
-                                    Name            = ad.name,
-                                    Interesting     = ad.interesting,
-                                    EncId           = a.enclosureId,
-                                    Category        = ad.category,
-                                    Series          = ad.series,
-                                    Family          = ad.family,
-                                    Distribution     = ad.distribution,
-                                    Reproduction    = ad.reproduction,
-                                    Food            = ad.food,
-                                    Preservation    = a.preservation,
-                                    PictureUrl      = a.pictureUrl,
-                                    Language        = ad.language
+                                    Id = a.id,
+                                    Name = adjr != null ? adjr.name : adhjr.name,
+                                    Interesting = adjr != null ? adjr.interesting : adhjr.interesting,
+                                    EncId = a.enclosureId,
+                                    Category = adjr != null ? adjr.category : adhjr.category,
+                                    Series = adjr != null ? adjr.series : adhjr.series,
+                                    Family = adjr != null ? adjr.family : adhjr.family,
+                                    Distribution = adjr != null ? adjr.distribution : adhjr.distribution,
+                                    Reproduction = adjr != null ? adjr.reproduction : adhjr.reproduction,
+                                    Food = adjr != null ? adjr.food : adhjr.food,
+                                    Preservation = a.preservation,
+                                    PictureUrl = a.pictureUrl,
+                                    Language = language
                                 };
 
             return animalResults.ToArray();
