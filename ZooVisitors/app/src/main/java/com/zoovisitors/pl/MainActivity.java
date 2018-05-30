@@ -43,16 +43,16 @@ public class MainActivity extends BaseActivity {
     private Menu langMenu;
     private WallFeed[] feed;
     private Map<String, String> LanguageMap;
-    private String[] newsFeedList;
+//    private NewsFeed[] newsFeedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //setActionBar(R.color.blueIcon);
+        //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().hide();
-        //setActionBarTransparentColor();
+//        getSupportActionBar().hide();
+        setActionBarTransparentColor();
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity {
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
+
                 for (WallFeed s: feed) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getInfo());
@@ -114,10 +115,11 @@ public class MainActivity extends BaseActivity {
                     newsFeedLinearLayout.addView(lineBorder);
                 }
 
-                newsFeedList = new String[feed.length];
-                for (int i=0; i<feed.length; i++){
-                    newsFeedList[i] = feed[i].getInfo();
-                }
+
+//                newsFeedList = new String[feed.length];
+//                for (int i=0; i<feed.length; i++){
+//                    newsFeedList[i] = feed[i].getInfo();
+//                }
 
                 scrollView.post(new Runnable() {
                     @Override
@@ -137,13 +139,14 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.feedWallButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent watchAll = new Intent(MainActivity.this, WatchAll.class);
-                Bundle newsFeedBundle = new Bundle();
-                if (newsFeedList == null){
-                    newsFeedList = new String[]{"NO NEWS FEED"};
+                if (feed == null){
+                    feed = new WallFeed[]{new WallFeed("NO NEWS FEED","")};
                 }
-                Log.e("NEWS", newsFeedList[0]);
-                newsFeedBundle.putSerializable("newsFeed", newsFeedList);
+                Log.e("NEWS", feed[0].getTitle());
+
+                Intent watchAll = new Intent(GlobalVariables.appCompatActivity, WatchAll.class);
+                Bundle newsFeedBundle = new Bundle();
+                newsFeedBundle.putSerializable("NewsFeed", feed);
                 watchAll.putExtras(newsFeedBundle);
                 startActivity(watchAll);
             }
