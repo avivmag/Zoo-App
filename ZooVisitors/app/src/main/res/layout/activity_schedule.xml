@@ -14,12 +14,20 @@
             android:layout_height="wrap_content"
             android:text="@string/todays_event" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/schedule_recycle"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="5dp">
 
-        </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:id="@+id/schedule_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+            </LinearLayout>
+        </ScrollView>
 
         <TextView
             android:id="@+id/error_sched_text"

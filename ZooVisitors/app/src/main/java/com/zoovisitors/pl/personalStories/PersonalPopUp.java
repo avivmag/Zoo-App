@@ -1,53 +1,43 @@
 package com.zoovisitors.pl.personalStories;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
-import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.BaseActivity;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 public class PersonalPopUp extends BaseActivity {
-
-    private int width;
-    private int height;
-    private Animal.PersonalStories animal;
-    private Bundle clickedAnimal;
-    private TextView animalName;
-    private TextView animalStory;
-    private ImageView animalPic;
-    private Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_pop_up);
-        String url = getIntent().getStringExtra("url");
-        image = Memory.urlToBitmapMap.get(url);
-        clickedAnimal = getIntent().getExtras();
-        animal = (Animal.PersonalStories) clickedAnimal.getSerializable("animal");
+
+        //get the clicked personal story
+        Animal.PersonalStories animal = (Animal.PersonalStories) getIntent().getExtras().getSerializable("animal");
+
+        //calculate the window size
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        width = dm.widthPixels;
-        height = dm.heightPixels;
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.8));
 
-        animalName = (TextView) findViewById(R.id.personal_animal_name);
-        animalStory = (TextView) findViewById(R.id.personal_story);
-        animalPic = (ImageView) findViewById(R.id.personal_animal_pic);
+        //calculate the image size
+        int layoutWidth = width/2;
 
-        animalName.setText(animal.getName());
+        //initiate the story header
+        CustomRelativeLayout storyHeader = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(), layoutWidth);
+        storyHeader.init();
+
+        LinearLayout personalStoryLayout = findViewById(R.id.personal_story_layout);
+        personalStoryLayout.addView(storyHeader,0);
+
+        //initiate the story text
+        TextView animalStory = findViewById(R.id.personal_story);
         animalStory.setText(animal.getStory());
-
-        if (image != null)
-            animalPic.setImageBitmap(image);
-        else
-            animalPic.setImageResource(R.mipmap.no_image_available);
-
     }
 }

@@ -40,9 +40,9 @@ public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
     private LinearLayout newsFeedLinearLayout;
     private Menu langMenu;
-    private NewsFeed[] feed;
+    private NewsFeed[] feeds;
     private Map<String, String> LanguageMap;
-    private String[] newsFeedList;
+//    private NewsFeed[] newsFeedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +99,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
 
-                feed = (NewsFeed[]) response;
+                feeds = (NewsFeed[]) response;
 
                 //feed wall initiation
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
-                for (NewsFeed s: feed) {
+                for (NewsFeed s: feeds) {
                     TextView tv = new TextView(GlobalVariables.appCompatActivity);
                     tv.setText(s.getStory());
                     tv.setTextColor(getResources().getColor(R.color.black));
@@ -116,10 +116,10 @@ public class MainActivity extends BaseActivity {
                     newsFeedLinearLayout.addView(lineBorder);
                 }
 
-                newsFeedList = new String[feed.length];
-                for (int i=0; i<feed.length; i++){
-                    newsFeedList[i] = feed[i].getStory();
-                }
+//                newsFeedList = new NewsFeed[feed.length];
+//                for (int i=0; i<feed.length; i++){
+//                    newsFeedList[i] = feed[i];
+//                }
 
                 scrollView.post(new Runnable() {
                     @Override
@@ -139,13 +139,14 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.feedWallButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent watchAll = new Intent(MainActivity.this, WatchAll.class);
-                Bundle newsFeedBundle = new Bundle();
-                if (newsFeedList == null){
-                    newsFeedList = new String[]{"NO NEWS FEED"};
+                if (feeds == null){
+                    feeds = new NewsFeed[]{new NewsFeed("NO NEWS FEED","")};
                 }
-                Log.e("NEWS", newsFeedList[0]);
-                newsFeedBundle.putSerializable("newsFeed", newsFeedList);
+                Log.e("NEWS", feeds[0].getTitle());
+
+                Intent watchAll = new Intent(GlobalVariables.appCompatActivity, WatchAll.class);
+                Bundle newsFeedBundle = new Bundle();
+                newsFeedBundle.putSerializable("NewsFeed", feeds);
                 watchAll.putExtras(newsFeedBundle);
                 startActivity(watchAll);
             }
