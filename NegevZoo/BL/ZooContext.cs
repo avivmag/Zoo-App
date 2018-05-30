@@ -67,7 +67,7 @@ namespace BL
 
             var enclosures              = zooDB.GetFromCache(zooDB.GetAllEnclosures());
             var enclosureDetails        = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == language).ToArray();
-            var recEvents               = zooDB.GetFromCache(zooDB.GetAllRecuringEvents());
+            var recEvents               = zooDB.GetFromCache(zooDB.GetAllRecuringEvents()).Where(re => re.language == language).ToArray();
             var encVideos               = zooDB.GetFromCache(zooDB.GetAllEnclosureVideos());
             var encPicture              = zooDB.GetFromCache(zooDB.GetAllEnclosurePictures());
             var enclosureDetailsHebrew  = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == (long)Languages.he).ToArray();
