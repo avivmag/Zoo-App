@@ -38,7 +38,7 @@ public class TextViewTitle extends TextView {
     public void onDraw(Canvas canvas)
     {
         setTextColor(getResources().getColor(R.color.black));
-        setTextSize(20);
+        setTextSize(18);
         setIncludeFontPadding(false);
         setPaintFlags(getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setTypeface(null, Typeface.BOLD);

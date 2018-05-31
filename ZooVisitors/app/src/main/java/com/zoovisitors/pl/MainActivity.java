@@ -210,7 +210,13 @@ public class MainActivity extends BaseActivity {
         });
 
         //initiates the watch all News Feed button
-        findViewById(R.id.feedWallButton).setOnClickListener(v -> {
+        Button feedWallButton = findViewById(R.id.feedWallButton);
+
+        if (GlobalVariables.language == 4){
+            feedWallButton.setTextSize(12);
+        }
+
+        feedWallButton.setOnClickListener(v -> {
             if (feed == null){
                 feed = new WallFeed[] {new WallFeed("NO NEWS FEED","")};
             }

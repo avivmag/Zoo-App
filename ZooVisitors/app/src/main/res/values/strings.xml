@@ -11,8 +11,10 @@
 
     //main menu buttons
     <string name="watch_all_feed">הצג הכל</string>
+    <string name="news_feed">קיר עדכונים:</string>
     <string name="our_enclosures">המתחמים שלנו</string>
     <string name="schedule">לוח שנה</string>
+    <string name="today_rec_events">אירועי היום:</string>
     <string name="map">מפה</string>
     <string name="other_info">מידע נוסף</string>
     <string name="nav">נווט אלינו</string>
@@ -27,6 +29,8 @@
     <string name="category">מחלקה:</string>
     <string name="series">סדרה:</string>
     <string name="family">משפחה:</string>
+    <string name="whoLives">מי גר כאן:</string>
+    <string name="assets">תמונות וסרטונים:</string>
     <string name="distribution">תפוצה: דרום אמריקה</string>
     <string name="reproduction">רבייה:</string>
     <string name="food">תזונה:</string>
@@ -70,8 +74,6 @@
 
     <string name="no_data">אין מידע</string>
 
-    <string name="whoLives"><u><b>מי גר כאן:</b></u></string>
-    <string name="assets"><u><b>תמונות וסרטונים:</b></u></string>
 
     <string name="turn_the_volume">הגבר את עוצמת השמע</string>
 
@@ -80,7 +82,6 @@
     <string name="confirm">אישור</string>
 
     <string name="vertical_ellipsis">&#8942;</string>
-
 
 
     //bold and underline text
