@@ -80,8 +80,8 @@ namespace BL
 
             foreach (RecurringEvent rec in recEvents)
             {
-                var startTimeSeconds    = (int)Math.Floor((milliesInDay * rec.day) + rec.startTime.TotalMilliseconds);
-                var endTimeSeconds      = (int)Math.Floor((milliesInDay * rec.day) + rec.endTime.TotalMilliseconds);
+                var startTimeSeconds    = (int)Math.Floor((milliesInDay * (rec.day - 1)) + rec.startTime.TotalMilliseconds);
+                var endTimeSeconds      = (int)Math.Floor((milliesInDay * (rec.day - 1)) + rec.endTime.TotalMilliseconds);
 
                 recEventsDet.Add(new RecurringEventsResult
                 {
