@@ -594,7 +594,7 @@ namespace BL
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
 
-                if (allRecurringEvents.ToList().Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (allRecurringEvents.ToList().Any(re => re.enclosureId == recEvent.enclosureId && re.id != recEvent.id && ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }
