@@ -100,6 +100,29 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
+        /// Returns all recurring events for the given language.
+        /// </summary>
+        /// <param name="language">The language of the recurring events.</param>
+        /// <returns>All recurring events for that language.</returns>
+        [HttpGet]
+        [Route("enclosures/recurring/{language}")]
+        public IEnumerable<RecurringEvent> GetAllRecurringEvents(int language = 1)
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    return db.GetAllRecurringEvents(language);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "langauge" + language);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
         /// Gets the enclosure's recurring events by it's encId.
         /// </summary>
         /// <param name="language">The data language</param>
