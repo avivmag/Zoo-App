@@ -72,18 +72,25 @@ namespace BL
             var encPicture              = zooDB.GetFromCache(zooDB.GetAllEnclosurePictures());
             var enclosureDetailsHebrew  = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == (long)Languages.he).ToArray();
 
+            // Initialize total seconds in a day.
+            var secondsInDay            = 60 * 60 * 24;
+            
             //create RecuringEventResults to the application
             var recEventsDet = new List<RecurringEventsResult>();
-            foreach(RecurringEvent rec in recEvents)
+
+            foreach (RecurringEvent rec in recEvents)
             {
+                var startTimeSeconds    = (int)Math.Floor((secondsInDay * rec.day) + rec.startTime.TotalSeconds);
+                var endTimeSeconds      = (int)Math.Floor((secondsInDay * rec.day) + rec.endTime.TotalSeconds);
+
                 recEventsDet.Add(new RecurringEventsResult
                 {
                     Id          = rec.id,
                     Title       = rec.title,
                     Description = rec.description,
                     EnclosureId = rec.enclosureId,
-                    StartTime   = Convert.ToInt64(rec.startTime.TotalMilliseconds * (rec.day%10)),
-                    EndTime     = Convert.ToInt64(rec.endTime.TotalMilliseconds * (rec.day % 10)),
+                    StartTime   = startTimeSeconds,
+                    EndTime     = endTimeSeconds,
                     Language    = rec.language
                 });
             }
