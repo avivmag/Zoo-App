@@ -13,8 +13,10 @@
 
     <!-- main menu buttons -->
     <string name="watch_all_feed">watch all</string>
+    <string name="news_feed">News Feed:</string>
     <string name="our_enclosures">Our Enclosures</string>
     <string name="schedule">Schedule</string>
+    <string name="today_rec_events">Today\'s Events</string>
     <string name="map">Map</string>
     <string name="other_info">Other Info</string>
     <string name="nav">Navigate to us</string>

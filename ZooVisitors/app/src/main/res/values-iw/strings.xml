@@ -9,8 +9,10 @@
     <string name="language_rus">русский</string>
     //main menu buttons
     <string name="watch_all_feed">הצג הכל</string>
+    <string name="news_feed">קיר עדכונים:</string>
     <string name="our_enclosures">המתחמים שלנו</string>
     <string name="schedule">לוח שנה</string>
+    <string name="today_rec_events">אירועי היום:</string>
     <string name="map">מפה</string>
     <string name="other_info">מידע נוסף</string>
     <string name="nav">נווט אלינו</string>

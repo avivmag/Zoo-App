@@ -35,7 +35,7 @@ public class TextViewRegularText extends TextView {
     public void onDraw(Canvas canvas)
     {
         setTextColor(getResources().getColor(R.color.black));
-        setTextSize(20);
+        setTextSize(16);
         setIncludeFontPadding(false);
         setTextAlignment(textAlignment==0 ? TEXT_ALIGNMENT_TEXT_START : textAlignment);
 

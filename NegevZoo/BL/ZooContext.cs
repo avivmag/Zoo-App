@@ -72,18 +72,25 @@ namespace BL
             var encPicture              = zooDB.GetFromCache(zooDB.GetAllEnclosurePictures());
             var enclosureDetailsHebrew  = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == (long)Languages.he).ToArray();
 
+            // Initialize total seconds in a day.
+            var milliesInDay            = 60 * 60 * 24 * 1000;
+            
             //create RecuringEventResults to the application
             var recEventsDet = new List<RecurringEventsResult>();
-            foreach(RecurringEvent rec in recEvents)
+
+            foreach (RecurringEvent rec in recEvents)
             {
+                var startTimeSeconds    = (int)Math.Floor((milliesInDay * (rec.day - 1)) + rec.startTime.TotalMilliseconds);
+                var endTimeSeconds      = (int)Math.Floor((milliesInDay * (rec.day - 1)) + rec.endTime.TotalMilliseconds);
+
                 recEventsDet.Add(new RecurringEventsResult
                 {
                     Id          = rec.id,
                     Title       = rec.title,
                     Description = rec.description,
                     EnclosureId = rec.enclosureId,
-                    StartTime   = Convert.ToInt64(rec.startTime.TotalMilliseconds * (rec.day%10)),
-                    EndTime     = Convert.ToInt64(rec.endTime.TotalMilliseconds * (rec.day % 10)),
+                    StartTime   = startTimeSeconds,
+                    EndTime     = endTimeSeconds,
                     Language    = rec.language
                 });
             }
@@ -552,7 +559,7 @@ namespace BL
             }
 
             //4. check the day
-            if (Enum.ToObject(typeof(Days), recEvent.day) == null || recEvent.day / 10 != (recEvent.language - 1))
+            if (recEvent.day < 1 || recEvent.day > 7)
             {
                 throw new ArgumentException("Wrong input. The day is not defined");
             }
@@ -587,7 +594,7 @@ namespace BL
                     throw new ArgumentException("Wrong input. RecurringEvent doesn't exists");
                 }
 
-                if (allRecurringEvents.ToList().Any(re => re.enclosureId == recEvent.enclosureId && ValidateTime(re, recEvent)))
+                if (allRecurringEvents.ToList().Any(re => re.enclosureId == recEvent.enclosureId && re.id != recEvent.id && ValidateTime(re, recEvent)))
                 {
                     throw new ArgumentException("Wrong input while updating enclosure video. The enclosure vido url already exists");
                 }

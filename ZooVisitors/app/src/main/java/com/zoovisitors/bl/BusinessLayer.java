@@ -23,6 +23,7 @@ public interface BusinessLayer {
      */
     Enclosure[] getEnclosures();
     void getEnclosures(final GetObjectInterface goi);
+    void getAllRecEvents (final GetObjectInterface goi);
     /**
      * Returns the miscs that has been loaded in the load screen
      */
