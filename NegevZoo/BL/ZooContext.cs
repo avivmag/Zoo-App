@@ -552,7 +552,7 @@ namespace BL
             }
 
             //4. check the day
-            if (Enum.ToObject(typeof(Days), recEvent.day) == null || recEvent.day / 10 != (recEvent.language - 1))
+            if (recEvent.day < 1 || recEvent.day > 7)
             {
                 throw new ArgumentException("Wrong input. The day is not defined");
             }
