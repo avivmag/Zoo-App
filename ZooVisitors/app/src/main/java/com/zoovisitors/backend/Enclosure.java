@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by Gili on 12/01/2018.
  */
 
-public class Enclosure implements Serializable{
+public class Enclosure implements java.io.Serializable{
     @SerializedName("id")
     private int id;
     @SerializedName("name")
