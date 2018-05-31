@@ -4,10 +4,12 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 
 /**
@@ -19,7 +21,11 @@ public class MainButtonCustomView extends RelativeLayout {
     View rootView;
     TextView iconText;
     ImageView iconImage;
-    ImageView iconTransImage;
+
+    private int imageId;
+    private int height;
+    private String buttonText;
+    private OnClickListener listener;
 
     public MainButtonCustomView(Context context) {
         super(context);
@@ -36,64 +42,48 @@ public class MainButtonCustomView extends RelativeLayout {
         init(context, attrs);
     }
 
+    public MainButtonCustomView(Context context, int imageId, String buttonText, int height, OnClickListener listener) {
+        super(context);
+
+        this.height = height;
+        this.buttonText = buttonText;
+        this.imageId = imageId;
+        this.listener = listener;
+
+        init(context, null);
+    }
+
     private void init (Context context, @Nullable AttributeSet set){
+        //get the root view
         rootView = inflate(context, R.layout.menu_icon_layout, this);
-        iconText = (TextView) rootView.findViewById(R.id.icon_text);
-//        iconText.setId(generateViewId());
-        iconImage = (ImageView) rootView.findViewById(R.id.icon_image);
-//        iconImage.setId(generateViewId());
-        iconTransImage = (ImageView) rootView.findViewById(R.id.icon_image_text);
-    }
+        rootView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height*12/10 ));
 
-    public int getTextId(){
-        return iconText.getId();
-    }
+        //initiates iconText
+        iconText = rootView.findViewById(R.id.icon_text);
+        LayoutParams textParams = (LayoutParams) iconText.getLayoutParams();
 
-    public int getImageId(){
-        return iconImage.getId();
-    }
+        textParams.height = height*2/3;
+        textParams.width = height*10/6;
+        iconText.setLayoutParams(textParams);
+        iconText.setText(buttonText);
+        if (listener != null)
+            iconText.setOnClickListener(listener);
+        //if it's russian than it's to long
+        if (GlobalVariables.language == 4){
+           iconText.setTextSize(12);
+        }
 
-    public void designButton(int image, int text, int text_size, int text_color, int image_bottom_margin, int button_size){
+        iconImage = rootView.findViewById(R.id.icon_image);
+        LayoutParams iconParams = (LayoutParams) iconImage.getLayoutParams();
 
-        iconText.setTextSize(text_size);
-        iconText.setText(text);
-        iconText.setTextColor(getResources().getColor(text_color));
+        iconParams.height = height*5/2;
+        iconParams.width = height*5/4;
 
-        iconImage.setImageResource(image);
-        LayoutParams layoutParams = new LayoutParams(button_size, button_size);
-        //layoutParams. = Gravity.CENTER;
-        layoutParams.bottomMargin = image_bottom_margin;
-//        iconImage.setLayoutParams(layoutParams);
-//        setBackgroundColor(getResources().getColor(background));
-        iconImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rootView.performClick();
-            }
-        });
-    }
+        iconImage.setLayoutParams(iconParams);
 
-    public void mainDesignButton(int image, int text){
+        iconImage.setImageResource(imageId);
+        if (listener != null)
+            iconImage.setOnClickListener(listener);
 
-        iconText.setTextSize(18);
-        iconText.setText(text);
-        iconText.setTextColor(getResources().getColor(R.color.buttonTextColor));
-
-        //LayoutParams imageLayoutParams = new LayoutParams(400, 900);
-        //imageLayoutParams.gravity = Gravity.CENTER;
-        //imageLayoutParams.bottomMargin = 20;
-        //iconImage.setLayoutParams(imageLayoutParams);
-        //iconImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        iconImage.setImageResource(image);
-        iconImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rootView.performClick();
-            }
-        });
-
-        //iconTransImage.setBackgroundColor(getResources().getColor(R.color.buttonBackground));
-        //LayoutParams imageTextlayoutParams = new LayoutParams(200, 200);
-        //iconTransImage.setLayoutParams(imageTextlayoutParams);
     }
 }
