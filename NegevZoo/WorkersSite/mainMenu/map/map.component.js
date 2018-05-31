@@ -25,13 +25,7 @@
             };
 
             $scope.addMarker                = function(marker, isExists) {
-                markerUploadQuery       = uploadIcon($scope.markerPic, marker);
-
-                if (!isExists && !angular.isDefined(markerUploadQuery)) {
-                    utilitiesService.utilities.alert('אנא בחר תמונה לאייקון השונות');
-
-                    return;
-                }
+                markerUploadQuery = uploadIcon($scope.markerPic, marker);
 
                 if (marker.longitude === undefined || marker.latitude === undefined) {
                     utilitiesService.utilities.alert('אנא בחר מיקום לאייקון על המפה');
@@ -104,17 +98,24 @@
             }
 
             $scope.openMap                  = function(ev, marker, save) {
-                mapViewService.showMap(ev, marker, 'iconUrl').then(function(clickPosition) {
-                    if (angular.isDefined(clickPosition)) {
-                        marker.longitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
-                        marker.latitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
-                    
-                        if (save) {
-                            $scope.markerPic = null;
-                            $scope.addMarker(marker, true);
-                        }
-                    }
-                });
+                var promises = [uploadIcon($scope.markerPic, marker)];
+
+                $q.all(promises).then(
+                    () => {
+                        $scope.isLoading = false;
+                        
+                        mapViewService.showMap(ev, marker, 'iconUrl', 'longitude', 'latitude').then(function(clickPosition) {
+                            if (angular.isDefined(clickPosition)) {
+                                marker.longitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
+                                marker.latitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
+                            
+                                if (save) {
+                                    $scope.markerPic = null;
+                                    $scope.addMarker(marker, true);
+                                }
+                            }
+                        });
+                    });
             }
         }
 
@@ -123,16 +124,20 @@
                 return;
             }
 
-            var uploadUrl           = 'map/misc/upload';
+            $scope.isLoading = true;
+            
+            var uploadUrl               = 'map/misc/upload';
 
-            var fileUploadQuery     = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
+            var fileUploadQuery         = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
                 (success)   => {
-                    marker.iconUrl              = success.data[0];
+                    marker.iconUrl      = success.data[0];
 
-                    $scope.iconPic              = null;
+                    $scope.markerPic    = null;
                 },
                 ()          => {
                     utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+
+                    $scope.markerPic    = null;
                 });
 
             return fileUploadQuery;

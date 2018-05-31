@@ -105,14 +105,21 @@
             }
             
             $scope.openMap                  = function(ev, selectedEnclosure) {
-                mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl').then(function(clickPosition) {
-                    if (angular.isDefined(clickPosition)) {
-                        selectedEnclosure.markerX       = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
-                        selectedEnclosure.markerY       = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
-                    }
-                });
+                var promises = [uploadIcon($scope.iconPic, selectedEnclosure)];
+
+                $q.all(promises).then(
+                    () => {
+                        $scope.isLoading = false;
+                        
+                        mapViewService.showMap(ev, selectedEnclosure, 'markerIconUrl', 'markerX', 'markerY').then(function(clickPosition) {
+                            if (angular.isDefined(clickPosition)) {
+                                selectedEnclosure.markerX       = Math.floor(clickPosition.width * clickPosition.ratio);
+                                selectedEnclosure.markerY       = Math.floor(clickPosition.height * clickPosition.ratio);
+                            }
+                        });
+                    });
             }
-            
+
             $scope.addEnclosure             = function(enclosure) {
                 $scope.isLoading            = true;
                     var successContent      = !$scope.isEdit ? 'המתחם נוסף בהצלחה!' : 'המתחם עודכן בהצלחה!';
@@ -194,8 +201,6 @@
                             });
                         },
                         () => utilitiesService.utilities.alert(failContent));
-
-                    
             }
 
             $scope.addEnclosureVideo        = function(selectedEnclosure, videoUrl) {

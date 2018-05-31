@@ -12,3 +12,13 @@
     ng-show="!isLoading"
     ng-style="marker.markerStyle"
     ng-src="{{ marker.src }}" />
+
+<img ng-show="selectedObjectDone"
+     ng-style="selectedObject.markerStyle"
+     ng-src="{{ baseURL + selectedObject[selectedUrlProp] }}" />
+
+<md-toolbar ng-show="!isLoading">
+    <div layout="row" layout-align="start center">
+        <md-button class="md-raised md-primary" ng-click="close(clickPosition)">שמור מיקום</md-button>
+    </div>
+</md-toolbar>    

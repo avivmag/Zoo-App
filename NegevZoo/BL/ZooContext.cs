@@ -2986,8 +2986,14 @@ namespace BL
         /// <param name="nWidth">new width.</param>
         /// <param name="nHeight">new height.</param>
         /// <returns>A resized image.</returns>
-        private Bitmap ResizeImage(Bitmap b, int? nWidth = null, int? nHeight = null, double? size = null, bool? keepResolution = null)
+        private Bitmap ResizeImage(Bitmap b, bool isMisc, int? nWidth = null, int? nHeight = null, double? size = null, bool? keepResolution = null)
         {
+            // If the bitmap is considered a misc, do not resize.
+            if (isMisc)
+            {
+                return new Bitmap(b);
+            }
+
             if (keepResolution == true && size.HasValue)
             {
                 var originalWidth   = b.Width;
@@ -3059,40 +3065,36 @@ namespace BL
         /// Saves the image.
         /// </summary>
         /// <param name="filePath">The file path to save.</param>
-        private void Save(string filePath)
+        private void Save(string filePath, bool isMisc)
         {
             // Get the image from file.
             using (var image = new Bitmap(filePath))
             {
-                // If the image has passed 480x480 dimensions, resize it up to 480 in max dimension.
-                if (image.Height > 480 || image.Width > 480)
+                // Sets the image orientation to default value.
+                SetOrientationToDefault(image);
+
+                // Resize the image.
+                using (var resizedImage = ResizeImage(image, size: 480.0, keepResolution: true, isMisc: isMisc))
                 {
-                    // Sets the image orientation to default value.
-                    SetOrientationToDefault(image);
+                    ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
-                    // Resize the image.
-                    using (var resizedImage = ResizeImage(image, size: 480.0, keepResolution: true))
-                    {
-                        ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                    // Create an Encoder object based on the GUID  
+                    // for the Quality parameter category.  
+                    System.Drawing.Imaging.Encoder myEncoder =  
+                        System.Drawing.Imaging.Encoder.Quality;  
 
-                        // Create an Encoder object based on the GUID  
-                        // for the Quality parameter category.  
-                        System.Drawing.Imaging.Encoder myEncoder =  
-                            System.Drawing.Imaging.Encoder.Quality;  
+                    // Create an EncoderParameters object.  
+                    // An EncoderParameters object has an array of EncoderParameter  
+                    // objects. In this case, there is only one  
+                    // EncoderParameter object in the array.  
+                    EncoderParameters myEncoderParameters = new EncoderParameters(1);  
 
-                        // Create an EncoderParameters object.  
-                        // An EncoderParameters object has an array of EncoderParameter  
-                        // objects. In this case, there is only one  
-                        // EncoderParameter object in the array.  
-                        EncoderParameters myEncoderParameters = new EncoderParameters(1);  
+                    EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);  
+                    myEncoderParameters.Param[0] = myEncoderParameter;
 
-                        EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);  
-                        myEncoderParameters.Param[0] = myEncoderParameter;
+                    image.Dispose();
 
-                        image.Dispose();
-
-                        resizedImage.Save(filePath, jpgEncoder, myEncoderParameters);
-                    }
+                    resizedImage.Save(filePath, jpgEncoder, myEncoderParameters);
                 }
             }
         }
@@ -3104,31 +3106,20 @@ namespace BL
         private void SaveAsIcon(string filePath)
         {
             // Get the image from file.
-            var image = new Bitmap(filePath);
+            using (var image = new Bitmap(filePath))
+            {
+                // Sets the image orientation to default value.
+                SetOrientationToDefault(image);
 
-            // Sets the image orientation to default value.
-            SetOrientationToDefault(image);
+                using (var resizedImage = new Bitmap(image))
+                {
+                    // Dispose the original image file desc.
+                    image.Dispose();
 
-            // Resize the image.
-            var resizedImage            = ResizeImage(image, 84, 84);
-
-            var resizedImageWebServer   = ResizeImage(image, 24, 24);
-
-            // Dispose the original image file desc.
-            image.Dispose();
-
-            // Save the new resized image.
-            resizedImage.Save(filePath);
-
-            var filePathExtension = filePath.Substring(filePath.IndexOf('.'));
-            var webServerFilePath = filePath.Substring(0, filePath.IndexOf('.')) + "_webServer" + filePathExtension;
-
-            resizedImageWebServer.Save(webServerFilePath);
-
-            resizedImageWebServer.Dispose();
-
-            // Dispose the resized image file desc.
-            resizedImage.Dispose();
+                    // Save the new resized image.
+                    resizedImage.Save(filePath);
+                }
+            }
         }
         
         /// <summary>
@@ -3157,11 +3148,11 @@ namespace BL
                 {
                     if (relativePath.Contains("misc") || relativePath.Contains("marker"))
                     {
-                        SaveAsIcon(filePath);
+                        Save(filePath, true);
                     }
                     else
                     {
-                        Save(filePath);
+                        Save(filePath, false);
                     }
                 }
 
