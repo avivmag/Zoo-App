@@ -36,7 +36,6 @@ import com.zoovisitors.pl.general_info.WatchAll;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
-import com.zoovisitors.pl.customViews.ButtonCustomView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -60,7 +59,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //setActionBar(R.color.transparent);
         setContentView(R.layout.activity_main);
 
         isNotificationChecked = true;

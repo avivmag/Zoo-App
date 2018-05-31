@@ -62,72 +62,75 @@ public class contactInfoFragment extends Fragment {
                     titleLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                 }
 
-                //way title
-                TextViewTitle wayTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
-                wayTitle.setText(getContext().getResources().getString(R.string.contact_info));
-                wayTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                wayTitle.setWidth(cellWidth);
-                wayTitle.setPadding(0,10,0,10);
 
-                //address title
-                TextViewTitle addressTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
+                if (contactInfos.getContactInfo() != null) {
+                    ////
+                    //way title
+                    TextViewTitle wayTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
+                    wayTitle.setText(getContext().getResources().getString(R.string.contact_info));
+                    wayTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                    wayTitle.setWidth(cellWidth);
+                    wayTitle.setPadding(0, 10, 0, 10);
 
-                addressTitle.setText(getContext().getResources().getString(R.string.conatct_address));
-                addressTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                addressTitle.setWidth(cellWidth);
-                addressTitle.setPadding(0,10,0,10);
+                    //address title
+                    TextViewTitle addressTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
 
-                //add the titles to the linear layout
-                titleLayout.addView(wayTitle);
-                titleLayout.addView(addressTitle);
+                    addressTitle.setText(getContext().getResources().getString(R.string.conatct_address));
+                    addressTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                    addressTitle.setWidth(cellWidth);
+                    addressTitle.setPadding(0, 10, 0, 10);
 
-                //add the linear layout to the table
-                contactInfoTable.addView(titleLayout);
+                    //add the titles to the linear layout
+                    titleLayout.addView(wayTitle);
+                    titleLayout.addView(addressTitle);
 
-                //Build the table for the info
-                for (ContactInfoResult.ContactInfo ci : contactInfos.getContactInfo()) {
-                    LinearLayout rowLayout = new LinearLayout(getContext());
-                    rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    rowLayout.setLayoutParams(rowParams);
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                    //add the linear layout to the table
+                    contactInfoTable.addView(titleLayout);
+
+                    //Build the table for the info
+                    for (ContactInfoResult.ContactInfo ci : contactInfos.getContactInfo()) {
+                        LinearLayout rowLayout = new LinearLayout(getContext());
+                        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        rowLayout.setLayoutParams(rowParams);
+                        if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        } else {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                        }
+
+                        //via cell
+                        TextView viaColumn = new TextView(getContext()); //column of the via
+                        viaColumn.setText(ci.getVia());
+                        viaColumn.setTextSize(12);
+                        viaColumn.setTextColor(getResources().getColor(R.color.black));
+                        viaColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        viaColumn.setWidth(cellWidth);
+                        viaColumn.setHeight(120);
+                        viaColumn.setPadding(0, 10, 0, 10);
+                        viaColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        viaColumn.setIncludeFontPadding(false);
+                        viaColumn.setGravity(Gravity.CENTER);
+
+
+                        //address cell
+                        TextView addressColumn = new TextView(getContext()); //column of the address
+                        addressColumn.setText("" + ci.getAddress());
+                        addressColumn.setTextSize(12);
+                        addressColumn.setTextColor(getResources().getColor(R.color.black));
+                        addressColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        addressColumn.setWidth(cellWidth);
+                        addressColumn.setHeight(120);
+                        addressColumn.setPadding(0, 10, 0, 10);
+                        addressColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        addressColumn.setIncludeFontPadding(false);
+                        addressColumn.setGravity(Gravity.CENTER);
+
+                        rowLayout.addView(viaColumn);
+                        rowLayout.addView(addressColumn);
+
+                        contactInfoTable.addView(rowLayout);
                     }
-                    else{
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                    }
-
-                    //via cell
-                    TextView viaColumn = new TextView(getContext()); //column of the via
-                    viaColumn.setText(ci.getVia());
-                    viaColumn.setTextSize(12);
-                    viaColumn.setTextColor(getResources().getColor(R.color.black));
-                    viaColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    viaColumn.setWidth(cellWidth);
-                    viaColumn.setHeight(120);
-                    viaColumn.setPadding(0,10,0,10);
-                    viaColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    viaColumn.setIncludeFontPadding(false);
-                    viaColumn.setGravity(Gravity.CENTER);
-
-
-                    //address cell
-                    TextView addressColumn = new TextView(getContext()); //column of the address
-                    addressColumn.setText("" + ci.getAddress());
-                    addressColumn.setTextSize(12);
-                    addressColumn.setTextColor(getResources().getColor(R.color.black));
-                    addressColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    addressColumn.setWidth(cellWidth);
-                    addressColumn.setHeight(120);
-                    addressColumn.setPadding(0,10,0,10);
-                    addressColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    addressColumn.setIncludeFontPadding(false);
-                    addressColumn.setGravity(Gravity.CENTER);
-
-                    rowLayout.addView(viaColumn);
-                    rowLayout.addView(addressColumn);
-
-                    contactInfoTable.addView(rowLayout);
                 }
             }
 

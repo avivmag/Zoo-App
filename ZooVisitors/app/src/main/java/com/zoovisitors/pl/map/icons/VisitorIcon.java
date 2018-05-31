@@ -12,8 +12,8 @@ import static android.view.View.VISIBLE;
 public class VisitorIcon extends ImageIcon {
     private final String VISITOR_ICON = "visitor_icon";
 
-    public VisitorIcon(MapView mapView, Object[] additionalData) {
-        super(mapView, additionalData, 0, 0, false);
+    public VisitorIcon(MapView mapView) {
+        super(mapView, null, 0, 0, false);
     }
 
     @Override

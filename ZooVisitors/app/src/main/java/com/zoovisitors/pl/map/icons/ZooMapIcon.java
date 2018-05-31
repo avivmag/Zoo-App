@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.map.icons;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
 
@@ -22,25 +23,8 @@ public class ZooMapIcon extends ImageIcon {
     @Override
     void setView() {
         ImageView imageView = new ImageView(mapView.getContext());
-        int resourceId = mapView.getResources().getIdentifier(ZOO_MAP, "mipmap", mapView.getContext()
-                .getPackageName());
-        imageView.setImageResource(resourceId);
+        imageView.setImageBitmap((Bitmap) additionalData[0]);
         imageView.setBackgroundColor(Color.TRANSPARENT);
         this.view = imageView;
-
-        //TODO: get image from server
-//                GlobalVariables.bl.getImage("assets/map/zoo_map.jpg", 5000, 5000, new
-// GetObjectInterface() {
-//                    @Override
-//                    public void onSuccess(Object response) {
-//                        view.setImageBitmap((Bitmap) response);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Object response) {
-//
-//                    }
-//                });
-
     }
 }

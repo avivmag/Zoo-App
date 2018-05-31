@@ -1,5 +1,6 @@
 package com.zoovisitors.backend;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import com.google.gson.annotations.SerializedName;
@@ -36,8 +37,7 @@ public class Enclosure implements java.io.Serializable{
     private String audioUrl;
     @SerializedName("markerData")
     private String markerData;
-
-    private Drawable markerDrawable;
+    private Bitmap markerBitmap;
 
     public int getId() {
         return id;
@@ -135,12 +135,16 @@ public class Enclosure implements java.io.Serializable{
         this.audioUrl = audioUrl;
     }
 
-    public String getMarkerData() {
-        return markerData;
+    public Bitmap getMarkerBitmap() {
+        return markerBitmap;
     }
 
-    public void setMarkerData(String markerData) {
-        this.markerData = markerData;
+    public void setMarkerBitmap(Bitmap markerBitmap) {
+        this.markerBitmap = markerBitmap;
+    }
+
+    public String getMarkerData() {
+        return markerData;
     }
 
     public static class RecurringEvent implements Serializable{
