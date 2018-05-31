@@ -58,63 +58,65 @@ public class pricesFragment extends Fragment {
                     titleLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                 }
 
-                //population title
-                TextViewTitle popTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
-                popTitle.setText(getContext().getResources().getString(R.string.population));
-                popTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                popTitle.setWidth(cellWidth);
-                popTitle.setPadding(0,10,0,10);
 
-                //price
-                TextViewTitle priceTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
+                if (prices != null) {
+                    //population title
+                    TextViewTitle popTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
+                    popTitle.setText(getContext().getResources().getString(R.string.population));
+                    popTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                    popTitle.setWidth(cellWidth);
+                    popTitle.setPadding(0, 10, 0, 10);
 
-                priceTitle.setText(getContext().getResources().getString(R.string.prices));
-                priceTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                priceTitle.setWidth(cellWidth);
-                priceTitle.setPadding(0,10,0,10);
+                    //price
+                    TextViewTitle priceTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
 
-                titleLayout.addView(popTitle);
-                titleLayout.addView(priceTitle);
+                    priceTitle.setText(getContext().getResources().getString(R.string.prices));
+                    priceTitle.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                    priceTitle.setWidth(cellWidth);
+                    priceTitle.setPadding(0, 10, 0, 10);
 
-                pricesTable.addView(titleLayout);
+                    titleLayout.addView(popTitle);
+                    titleLayout.addView(priceTitle);
 
-                //Build the rest of the prices table
-                for (Price p : prices) {
-                    LinearLayout rowLayout = new LinearLayout(getContext());
-                    rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    rowLayout.setLayoutParams(rowParams);
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                    pricesTable.addView(titleLayout);
+
+                    //Build the rest of the prices table
+                    for (Price p : prices) {
+                        LinearLayout rowLayout = new LinearLayout(getContext());
+                        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        rowLayout.setLayoutParams(rowParams);
+                        if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        } else {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                        }
+                        rowLayout.setBaselineAligned(false);
+                        rowLayout.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+
+                        //pop cell
+                        TextViewRegularText popColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the population
+                        popColumn.setText(p.getPopulation());
+                        popColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        popColumn.setWidth(cellWidth);
+                        popColumn.setHeight(150);
+                        popColumn.setPadding(0, 10, 0, 10);
+                        popColumn.setGravity(Gravity.CENTER);
+
+                        //price cell
+                        TextViewRegularText priceColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the prices
+                        priceColumn.setText("" + p.getPricePop() + "₪");
+                        priceColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        priceColumn.setWidth(cellWidth);
+                        priceColumn.setHeight(150);
+                        priceColumn.setPadding(0, 10, 0, 10);
+                        priceColumn.setGravity(Gravity.CENTER);
+
+                        rowLayout.addView(popColumn);
+                        rowLayout.addView(priceColumn);
+
+                        pricesTable.addView(rowLayout);
                     }
-                    else{
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                    }
-                    rowLayout.setBaselineAligned(false);
-                    rowLayout.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-
-                    //pop cell
-                    TextViewRegularText popColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the population
-                    popColumn.setText(p.getPopulation());
-                    popColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    popColumn.setWidth(cellWidth);
-                    popColumn.setHeight(150);
-                    popColumn.setPadding(0,10,0,10);
-                    popColumn.setGravity(Gravity.CENTER);
-
-                    //price cell
-                    TextViewRegularText priceColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the prices
-                    priceColumn.setText("" + p.getPricePop() + "₪");
-                    priceColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    priceColumn.setWidth(cellWidth);
-                    priceColumn.setHeight(150);
-                    priceColumn.setPadding(0,10,0,10);
-                    priceColumn.setGravity(Gravity.CENTER);
-
-                    rowLayout.addView(popColumn);
-                    rowLayout.addView(priceColumn);
-
-                    pricesTable.addView(rowLayout);
                 }
             }
 

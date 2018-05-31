@@ -17,6 +17,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.ContactInfoResult;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
+import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
 
 /**
@@ -64,7 +65,6 @@ public class contactInfoFragment extends Fragment {
 
 
                 if (contactInfos.getContactInfo() != null) {
-                    ////
                     //way title
                     TextViewTitle wayTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
                     wayTitle.setText(getContext().getResources().getString(R.string.contact_info));
@@ -132,6 +132,9 @@ public class contactInfoFragment extends Fragment {
                         contactInfoTable.addView(rowLayout);
                     }
                 }
+
+                TextViewRegularText noteText = rootView.findViewById(R.id.info_note_text);
+                noteText.setText(contactInfos.getContactInfoNote());
             }
 
             @Override

@@ -34,6 +34,20 @@
                 android:layout_height="wrap_content">
             </TableLayout>
 
+            <LinearLayout
+                android:id="@+id/info_note_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <com.zoovisitors.pl.customViews.TextViewRegularText
+                    android:id="@+id/info_note_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>
