@@ -445,4 +445,20 @@ public class BusinessLayerImpl implements BusinessLayer {
     public MapResult getMapResult() {
         return memory.getMapResult();
     }
+
+    @Override
+    public void getAllRecEvents(GetObjectInterface goi) {
+        ni.post("enclosures/recurring/" + GlobalVariables.language, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Enclosure.RecurringEventString[] recurringEvents = gson.fromJson(response, Enclosure.RecurringEventString[].class);
+                goi.onSuccess(recurringEvents);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
+            }
+        });
+    }
 }
