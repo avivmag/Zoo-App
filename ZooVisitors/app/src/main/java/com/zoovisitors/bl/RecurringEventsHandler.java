@@ -62,7 +62,7 @@ public class RecurringEventsHandler {
      * @param time from server
      * @return our time
      */
-    public String getTime(long time){
+    public static String getTime(long time){
         String timeText = "";
         timeText += getHours(time) + ":";
         timeText += getMinutes(time) + ":";

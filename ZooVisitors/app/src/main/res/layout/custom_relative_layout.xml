@@ -7,6 +7,7 @@
     >
 
     <com.zoovisitors.pl.customViews.CustomRelativeLayout
+        android:id="@+id/main_custom_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -38,6 +39,13 @@
             android:gravity="center_horizontal"
             android:textColor="@color/white"
             android:textSize="18sp"
+            />
+
+        <ImageView
+            android:id="@+id/custom_audio_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             />
 
     </com.zoovisitors.pl.customViews.CustomRelativeLayout>

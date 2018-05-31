@@ -1,19 +1,18 @@
 package com.zoovisitors.backend;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Misc implements java.io.Serializable{
+public class Misc {
     @SerializedName("latitude")
     private int markerY;
-    @SerializedName("longtitude")
+    @SerializedName("longitude")
     private int markerX;
     @SerializedName("iconData")
-    private String iconData;
-
-    private Drawable markerDrawable;
-
+    private String markerData;
+    private Bitmap markerBitmap;
 
     public int getMarkerY() {
         return markerY;
@@ -23,11 +22,15 @@ public class Misc implements java.io.Serializable{
         return markerX;
     }
 
-    public String getIconData() {
-        return iconData;
+    public String getMarkerData() {
+        return markerData;
     }
 
-    public Drawable getMarkerDrawable() {
-        return markerDrawable;
+    public Bitmap getMarkerBitmap() {
+        return markerBitmap;
+    }
+
+    public void setMarkerBitmap(Bitmap markerBitmap) {
+        this.markerBitmap = markerBitmap;
     }
 }

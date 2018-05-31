@@ -24,10 +24,10 @@
                     });
             };
 
-            $scope.addMarker                = function(marker) {
+            $scope.addMarker                = function(marker, isExists) {
                 markerUploadQuery       = uploadIcon($scope.markerPic, marker);
 
-                if (!angular.isDefined(markerUploadQuery)) {
+                if (!isExists && !angular.isDefined(markerUploadQuery)) {
                     utilitiesService.utilities.alert('אנא בחר תמונה לאייקון השונות');
 
                     return;
@@ -111,7 +111,7 @@
                     
                         if (save) {
                             $scope.markerPic = null;
-                            $scope.addMarker(marker);
+                            $scope.addMarker(marker, true);
                         }
                     }
                 });

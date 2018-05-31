@@ -37,10 +37,12 @@ import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
+import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.customViews.ButtonCustomView;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,21 +58,17 @@ public class EnclosureActivity extends BaseActivity {
     private GridLayout assetsLayout;
     private RecurringEventsHandler recurringEventsHandler;
     private List<Bitmap> imagesInAsset;
+    private CustomRelativeLayout encHeader;
 
     //facebook fields
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private Target target;
-    private Bitmap encImage;
     private int index;
     private Map<ImageView, Integer> imageViewIntegerMap;
 
-    //Audio
-    private MediaPlayer mp;
-    private boolean isPLAYING;
-    private ImageView audioImage;
 
-    private final long DAY_TIME_LONG = 0;
+    private final long DAY_TIME_LONG = 24 * 60 * 60;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -79,11 +77,20 @@ public class EnclosureActivity extends BaseActivity {
         Bundle clickedEnclosure = getIntent().getExtras();
         index = 0;
         imageViewIntegerMap = new HashMap<>();
-        enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
+        final int encIndex = (int) clickedEnclosure.getSerializable("enc");
+        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosure = ((Enclosure[]) response) [encIndex];
+            }
+
+            @Override
+            public void onFailure(Object response) {
+
+            }
+        });
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-
-        isPLAYING = false;
 
         imagesInAsset = new ArrayList<Bitmap>();
 
@@ -109,11 +116,8 @@ public class EnclosureActivity extends BaseActivity {
         int layoutWidth = Double.valueOf(screenWidth/1.5).intValue();
 
         //initialize enclosure header
-        CustomRelativeLayout encHeader = new CustomRelativeLayout(getBaseContext(), enclosure.getPictureUrl(), enclosure.getName(), layoutWidth);
+        encHeader = new CustomRelativeLayout(getBaseContext(), enclosure.getPictureUrl(), enclosure.getName(), enclosure.getAudioUrl() ,layoutWidth);
         encHeader.init();
-        encHeader.setOnClickListener(v -> {
-                    audioClick();
-                });
 
         LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
         encMainLayout.addView(encHeader,0);
@@ -134,45 +138,6 @@ public class EnclosureActivity extends BaseActivity {
             LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
-
-        //initialize audio
-        if (enclosure.getAudioUrl() == null){
-            audioImage = null;
-        }
-        else{
-            GlobalVariables.bl.getAudio(enclosure.getAudioUrl(), new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    audioImage = new ImageView(getBaseContext());
-                    LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                    imageParams.width = layoutWidth/4;
-                    imageParams.height = layoutWidth/4;
-
-                    audioImage.setLayoutParams(imageParams);
-                    audioImage.setImageResource(R.mipmap.audio);
-                    encHeader.addView(audioImage);
-                    mp = (MediaPlayer) response;
-                    audioImage.setOnClickListener(v -> {
-                        audioClick();
-                    });
-                }
-                @Override
-                public void onFailure(Object response) {
-                    audioImage = null;
-                }
-            });
-        }
-
-//        // if there are recurring events add them and start the timer.
-//        if (enclosure.getRecurringEvents().length > 0) {
-//            closestEventTitle = (TextView) findViewById(R.id.closesEventText);
-//            closestEventTimer = (TextView) findViewById(R.id.closestEventTimer);
-//        } else { //else remove them from the main layout so it won't appear.
-//            LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
-//            encMainLayout.removeView(enclosureClosestEventLayout);
-//        }
-
 
         //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
@@ -259,7 +224,6 @@ public class EnclosureActivity extends BaseActivity {
             TextView enclosureStoryText = findViewById(R.id.enc_story_text);
             enclosureStoryText.setText(enclosure.getStory());
         }
-
         //initialize the 'who live here' section
         //Cards and Recycle of the animals
         LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
@@ -281,14 +245,13 @@ public class EnclosureActivity extends BaseActivity {
             addImagesToAssets(assetWidth, assetHeight);
             addVideosToAssets(assetWidth, assetHeight);
         }
-
     }
 
     private CustomRelativeLayout getAnCard(Animal animal) {
         int screenSize = getResources().getDisplayMetrics().widthPixels;
         int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
 
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(), layoutWidth);
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
         card.init();
 
         card.setOnClickListener(v -> {
@@ -301,41 +264,6 @@ public class EnclosureActivity extends BaseActivity {
             });
 
         return card;
-    }
-
-    private void audioClick() {
-        if (!isPLAYING && audioImage != null) {
-            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-            int volume_level = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-            if (volume_level < 9)
-                Toast.makeText(this, getResources().getString(R.string.turn_the_volume), Toast.LENGTH_LONG).show();
-            isPLAYING = true;
-            audioImage.setImageResource(R.mipmap.no_audio);
-            try {
-                mp.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mp.start();
-        } else {
-            if (audioImage != null) {
-                isPLAYING = false;
-                mp.stop();
-                if (audioImage != null)
-                    audioImage.setImageResource(R.mipmap.audio);
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     private void addImagesToAssets(int width, int height) {
@@ -405,16 +333,40 @@ public class EnclosureActivity extends BaseActivity {
     }
 
     private void handleClosestEvent() {
+
         RecurringEventsHandler recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
         Enclosure.RecurringEvent nextRecurringEvent = recurringEventsHandler.getNextRecuringEvent();
-        TextView closestEventTitle = (TextView) findViewById(R.id.closestEventTitle);
-        TextView closestEventDesc = (TextView) findViewById(R.id.closestEventDesc);
-        TextView closestEventTimer = (TextView) (TextView) findViewById(R.id.closestEventTimer);
-        closestEventTitle.setText(nextRecurringEvent.getTitle());
-        closestEventDesc.setText(nextRecurringEvent.getDescription());
-        closestEventTimer.setText("");
+        Log.e("EPoch Start", "" + nextRecurringEvent.getStartTime());
+        Log.e("EPoch Now", "" + System.currentTimeMillis());
+        if (nextRecurringEvent.getStartTime() - System.currentTimeMillis() <= DAY_TIME_LONG){
+            TextViewRegularText closestEventTitle = findViewById(R.id.closestEventTitle);
+            TextViewRegularText closestEventDesc = findViewById(R.id.closestEventDesc);
+            TextViewRegularText closestEventTimer = findViewById(R.id.closestEventTimer);
+            closestEventTitle.setText(nextRecurringEvent.getTitle());
+            closestEventDesc.setText(nextRecurringEvent.getDescription());
+
+            Date expiry = new Date(nextRecurringEvent.getStartTime() * 1000);
+
+            Log.e("EPoch Expiry", expiry.toString());
+
+            closestEventTimer.setText("ddddddddddddddd");
+        }
+        else{
+            LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
+            LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
+            encMainLayout.removeView(enclosureClosestEventLayout);
+        }
 
 
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        if (encHeader != null)
+            encHeader.stopAudio();
+        super.onPause();
     }
 }
 

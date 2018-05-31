@@ -67,7 +67,7 @@ namespace BL
 
             var enclosures              = zooDB.GetFromCache(zooDB.GetAllEnclosures());
             var enclosureDetails        = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == language).ToArray();
-            var recEvents               = zooDB.GetFromCache(zooDB.GetAllRecuringEvents());
+            var recEvents               = zooDB.GetFromCache(zooDB.GetAllRecuringEvents()).Where(re => re.language == language).ToArray();
             var encVideos               = zooDB.GetFromCache(zooDB.GetAllEnclosureVideos());
             var encPicture              = zooDB.GetFromCache(zooDB.GetAllEnclosurePictures());
             var enclosureDetailsHebrew  = zooDB.GetFromCache(zooDB.GetAllEnclosureDetails()).Where(e => e.language == (long)Languages.he).ToArray();
@@ -626,6 +626,12 @@ namespace BL
             if (zooDB.GetAllRecuringEvents().Any(re => re.enclosureId == id))
             {
                 throw new InvalidOperationException("Threre are recurring events that related to this enclosure");
+            }
+
+            //4. exists animal story.
+            if (zooDB.GetAllAnimalStories().Any(story => story.enclosureId == id))
+            {
+                throw new InvalidOperationException("There are animal stories that are related to this enclosure.");
             }
 
             var toRemove = zooDB.GetAllEnclosureDetails().Where(ed => ed.encId == enclosure.id).ToList();
@@ -2291,8 +2297,8 @@ namespace BL
             var enclosureMarkers = enclosuresWithMarkers.Select(enc => new MiscMarker
                 {
                     iconUrl     = enc.markerIconUrl,
-                    latitude    = (float)enc.markerX.Value,
-                    longitude   = (float)enc.markerY.Value
+                    longitude   = (float)enc.markerX.Value,
+                    latitude    = (float)enc.markerY.Value
                     //TODO:: Talk with gili if enc Id should be returned (and miscId shouldn't!!)
                 });
 
@@ -3221,7 +3227,7 @@ namespace BL
             }
 
             // Get the markers.
-            var miscMarkers = this.GetAllMarkers().Select(mm =>
+            var miscMarkers = this.GetMiscMarkers().Select(mm =>
             new
             {
                 mm.id,
