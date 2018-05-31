@@ -29,11 +29,16 @@ public class OpeningHoursResult {
         }
 
         public String getStartTime() {
-            return startTime;
+            return fixHoursToShow(startTime);
         }
 
         public String getEndTime() {
-            return endTime;
+            return fixHoursToShow(endTime);
+        }
+
+        private String fixHoursToShow(String date){
+            date = date.substring(0, date.length()-3);
+            return date;
         }
     }
 }
