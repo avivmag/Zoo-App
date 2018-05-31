@@ -43,7 +43,6 @@ public class ButtonCustomView extends LinearLayout {
         rootView = inflate(context, R.layout.icon_layout, this);
         iconText = rootView.findViewById(R.id.icon_text);
         iconImage = rootView.findViewById(R.id.icon_image);
-        iconTransImage =  rootView.findViewById(R.id.icon_image_text);
     }
 
     public int getTextId(){
