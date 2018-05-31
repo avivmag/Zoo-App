@@ -1,5 +1,6 @@
 package com.zoovisitors.pl;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -13,12 +14,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,9 +38,16 @@ import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 import com.zoovisitors.pl.customViews.ButtonCustomView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
 
 public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
@@ -56,6 +66,10 @@ public class MainActivity extends BaseActivity {
         isNotificationChecked = true;
         getSupportActionBar().hide();
         setActionBarTransparentColor();
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+
         GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -73,68 +87,122 @@ public class MainActivity extends BaseActivity {
             showPopup(v);
         });
 
-        //Set design for each button
-        MainButtonCustomView encButton = (MainButtonCustomView) findViewById(R.id.enclosureListButton);
-        encButton.mainDesignButton(R.mipmap.enc_button, R.string.our_enclosures);
 
-        MainButtonCustomView otherInfoButton = (MainButtonCustomView) findViewById(R.id.otherInfoButton);
-        otherInfoButton.designButton(R.mipmap.enc_button, R.string.other_info, 20, R.color.white, 20, 150);
+        //create the buttons layout
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.width = width/2;
 
-        MainButtonCustomView personalButton = (MainButtonCustomView) findViewById(R.id.personalStoriesButton);
-        personalButton.designButton(R.mipmap.enc_button, R.string.personal, 20, R.color.white, 20, 150);
+        LinearLayout firstButtonsLayout = findViewById(R.id.first_buttons_layout);
+        firstButtonsLayout.setLayoutParams(params);
 
-        MainButtonCustomView mapButton = (MainButtonCustomView) findViewById(R.id.mapButton);
-        mapButton.designButton(R.mipmap.enc_button, R.string.map, 20, R.color.white, 20, 150);
+        LinearLayout secondButtonsLayout = findViewById(R.id.second_buttons_layout);
+        secondButtonsLayout.setLayoutParams(params);
 
-        MainButtonCustomView wazebutton = (MainButtonCustomView) findViewById(R.id.wazeButton);
-        wazebutton.designButton(R.mipmap.enc_button, R.string.nav, 20, R.color.white, 20, 150);
+        //initiates the listeners
+        View.OnClickListener encListener = v -> {
+            Intent enclosureIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
+            startActivity(enclosureIntent);
+        };
+        View.OnClickListener otherInfoListener = v -> {
+            Intent otherInfoIntent = new Intent(MainActivity.this, GeneralInfoActivity.class);
+            startActivity(otherInfoIntent);
+        };
+        View.OnClickListener mapListener = v -> {
+            Intent otherInfoIntent = new Intent(MainActivity.this, MapActivity.class);
+            startActivity(otherInfoIntent);
+        };
+        View.OnClickListener scheduleListener = (v -> {
+            Intent otherInfoIntent = new Intent(MainActivity.this, ScheduleActivity.class);
+            startActivity(otherInfoIntent);
+        });
+        View.OnClickListener personalStoryListener = (v -> {
+            Intent otherInfoIntent = new Intent(MainActivity.this, PersonalStoriesActivity.class);
+            startActivity(otherInfoIntent);
+        });
+        View.OnClickListener navigateListener = v -> {
+            if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
+            }
+            else{
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620")));
+            }
 
-        MainButtonCustomView scheduleButton = (MainButtonCustomView) findViewById(R.id.scheduleButton);
-        scheduleButton.designButton(R.mipmap.enc_button, R.string.schedule, 20, R.color.white, 20, 150);
+        };
 
+        //create the buttons
+        int buttonsHeight = height/15*2;
+        MainButtonCustomView encButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.our_enclosures), buttonsHeight, encListener);
+        MainButtonCustomView otherInfoButton = new MainButtonCustomView(getBaseContext(),  R.mipmap.enc_button, getResources().getString(R.string.other_info), buttonsHeight,otherInfoListener);
+        MainButtonCustomView personalButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.personal), buttonsHeight,personalStoryListener);
+        MainButtonCustomView mapButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.map), buttonsHeight,mapListener);
+        MainButtonCustomView wazebutton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.nav), buttonsHeight,navigateListener);
+        MainButtonCustomView scheduleButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.schedule), buttonsHeight,scheduleListener);
+
+        firstButtonsLayout.addView(encButton);
+        secondButtonsLayout.addView(personalButton);
+        firstButtonsLayout.addView(mapButton);
+        secondButtonsLayout.addView(scheduleButton);
+        firstButtonsLayout.addView(wazebutton);
+        secondButtonsLayout.addView(otherInfoButton);
 
         LanguageMap = new HashMap<String, String>();
         //put language in the app according to values/strings/(**)
         LanguageMap.put("Hebrew", "iw");
         LanguageMap.put("English", "en");
         LanguageMap.put("Arabic", "ar");
-        LanguageMap.put("Russian", "rus");
+        LanguageMap.put("Russian", "ru");
 
-        //Scroller initialize
+        //Scroller initialize weed Wall Feeds
         GlobalVariables.bl.getNewsFeed(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-
+                //getting all the feeds.
                 feed = (WallFeed[]) response;
 
-                //feed wall initiation
+                //initates the scroller
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
+                ViewGroup.LayoutParams scrollParams = scrollView.getLayoutParams();
+                scrollParams.width = width*2/3;
+                scrollParams.height = height/5;
+
+                //This override the option to scroll while there is animation.
+                // after the animation ends, scrolling will be enabled.
+                scrollView.setOnTouchListener((v, event) -> true);
+
                 newsFeedLinearLayout = findViewById(R.id.feedWallLayout);
 
                 for (WallFeed s: feed) {
-                    TextView tv = new TextView(GlobalVariables.appCompatActivity);
-                    tv.setText(s.getInfo());
-                    tv.setTextColor(getResources().getColor(R.color.black));
-                    tv.setTextSize(18);
-                    LinearLayout lineBorder = new LinearLayout(GlobalVariables.appCompatActivity);
-                    lineBorder.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 20));
-                    newsFeedLinearLayout.addView(tv);
-                    newsFeedLinearLayout.addView(lineBorder);
+                    //initiates the linear layout of the feed
+                    LinearLayout feedLayout = new LinearLayout(getBaseContext());
+                    feedLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    feedLayout.setOrientation(LinearLayout.VERTICAL);
+                    feedLayout.setBackground(getResources().getDrawable(R.drawable.dashed_bottom_line));
+                    feedLayout.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
+
+                    //initiates the date of the feed
+                    TextView dateText = new TextView(getBaseContext());
+                    dateText.setTextColor(getResources().getColor(R.color.black));
+                    dateText.setTextSize(14);
+                    dateText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    dateText.setText(s.getCreated().substring(0,10));
+
+                    //initiates the title.
+                    TextView infoText = new TextView(getBaseContext());
+                    infoText.setTextColor(getResources().getColor(R.color.black));
+                    infoText.setTextSize(16);
+                    infoText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    infoText.setText(s.getInfo());
+
+                    //add the text to the feed layot
+                    feedLayout.addView(dateText);
+                    feedLayout.addView(infoText);
+
+                    //add the feed layout to the feed list
+                    newsFeedLinearLayout.addView(feedLayout);
                 }
 
-
-//                newsFeedList = new String[feed.length];
-//                for (int i=0; i<feed.length; i++){
-//                    newsFeedList[i] = feed[i].getInfo();
-//                }
-
-                scrollView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startAutoScrolling();
-                    }
-                });
+                scrollView.post(() -> startAutoScrolling());
             }
 
             @Override
@@ -143,81 +211,19 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        //watch all button
-        findViewById(R.id.feedWallButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (feed == null){
-                    feed = new WallFeed[]{new WallFeed("NO NEWS FEED","")};
-                }
-                Log.e("NEWS", feed[0].getTitle());
-
-                Intent watchAll = new Intent(GlobalVariables.appCompatActivity, WatchAll.class);
-                Bundle newsFeedBundle = new Bundle();
-                newsFeedBundle.putSerializable("NewsFeed", feed);
-                watchAll.putExtras(newsFeedBundle);
-                startActivity(watchAll);
+        //initiates the watch all News Feed button
+        findViewById(R.id.feedWallButton).setOnClickListener(v -> {
+            if (feed == null){
+                feed = new WallFeed[] {new WallFeed("NO NEWS FEED","")};
             }
+
+            Intent watchAll = new Intent(getBaseContext(), WatchAll.class);
+            Bundle newsFeedBundle = new Bundle();
+            newsFeedBundle.putSerializable("NewsFeed", feed);
+            watchAll.putExtras(newsFeedBundle);
+            startActivity(watchAll);
         });
 
-        //enclosure button
-        encButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent enclosureIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
-                startActivity(enclosureIntent);
-            }
-        });
-
-        //other info button
-        findViewById(R.id.otherInfoButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent otherInfoIntent = new Intent(MainActivity.this, GeneralInfoActivity.class);
-                startActivity(otherInfoIntent);
-            }
-        });
-
-        //map button
-        findViewById(R.id.mapButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent otherInfoIntent = new Intent(MainActivity.this, MapActivity.class);
-                startActivity(otherInfoIntent);
-            }
-        });
-
-        //ScheduleActivity button
-        findViewById(R.id.scheduleButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent otherInfoIntent = new Intent(MainActivity.this, ScheduleActivity.class);
-                startActivity(otherInfoIntent);
-            }
-        });
-
-        //Personal stories button
-        findViewById(R.id.personalStoriesButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent otherInfoIntent = new Intent(MainActivity.this, PersonalStoriesActivity.class);
-                startActivity(otherInfoIntent);
-            }
-        });
-
-        //waze image
-        findViewById(R.id.wazeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
-                }
-                else{
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620")));
-                }
-
-            }
-        });
     }
 
     private void startAutoScrolling(){
@@ -233,6 +239,30 @@ public class MainActivity extends BaseActivity {
 
         for (int i = 0; i < jumpSteps; i++) {
             animator[i].start();
+        }
+
+        if (jumpSteps > 0){
+            animator[jumpSteps-1].addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    scrollView.setOnTouchListener(null);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    scrollView.setOnTouchListener(null);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
         }
     }
 
