@@ -2,7 +2,6 @@ package com.zoovisitors.cl.gps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,15 +14,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 
 import com.zoovisitors.R;
-import com.zoovisitors.pl.BaseActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.zoovisitors.pl.BaseActivity.PERMISSION_REQUEST_GPS;
 
-public abstract class ProviderBasedActivity extends BaseActivity {
+public abstract class ProviderBasedActivity extends AppCompatActivity {
     private LocationManager lm;
     private LocationListener locationListener;
+    private boolean refusedToTurnOnGPS = false;
 
     public void startProviderActivity() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -74,6 +75,7 @@ public abstract class ProviderBasedActivity extends BaseActivity {
                             ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_GPS);
                         })
                         .setNegativeButton(R.string.gps_no_permission_dialog_disapprove, (dialog, id) -> {
+                            refusedToTurnOnGPS = true;
                         })
                         .show();
             } else {
@@ -101,6 +103,7 @@ public abstract class ProviderBasedActivity extends BaseActivity {
                         this.startActivity(myIntent);
                     })
                     .setNegativeButton(this.getString(R.string.gps_no_activated_dialog_do_not_open_settings), (paramDialogInterface, paramInt) -> {
+                        refusedToTurnOnGPS = true;
                     })
                     .show();
         return true;
@@ -112,20 +115,32 @@ public abstract class ProviderBasedActivity extends BaseActivity {
         startProviderActivity();
     }
 
+    private boolean runningUpdates = false;
     @SuppressLint("MissingPermission")
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
-        if (!handlePermissions() && !handleActivation()) {
+        if (!refusedToTurnOnGPS && !handlePermissions() && !handleActivation() && !runningUpdates) {
+            runningUpdates = true;
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, getMinTime(), getMinDistance(), locationListener);
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         lm.removeUpdates(locationListener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_GPS:
+
+                break;
+        }
     }
 
     public abstract void onLocationChanged(Location location);

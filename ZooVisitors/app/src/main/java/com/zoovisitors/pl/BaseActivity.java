@@ -17,8 +17,6 @@ import android.widget.Toolbar;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 
-import static com.zoovisitors.cl.gps.ProviderBasedActivity.PERMISSION_REQUEST_GPS;
-
 public class BaseActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_GPS = 310;
 
