@@ -62,22 +62,26 @@ public class MainButtonCustomView extends RelativeLayout {
         iconText = rootView.findViewById(R.id.icon_text);
         LayoutParams textParams = (LayoutParams) iconText.getLayoutParams();
 
-        textParams.height = height*2/3;
+        textParams.height = height*3/5;
         textParams.width = height*10/6;
+
+        textParams.bottomMargin = 15;
         iconText.setLayoutParams(textParams);
         iconText.setText(buttonText);
         if (listener != null)
             iconText.setOnClickListener(listener);
+
         //if it's russian than it's to long
         if (GlobalVariables.language == 4){
            iconText.setTextSize(12);
+           ((LayoutParams) iconText.getLayoutParams()).bottomMargin = 0;
         }
 
         iconImage = rootView.findViewById(R.id.icon_image);
         LayoutParams iconParams = (LayoutParams) iconImage.getLayoutParams();
 
-        iconParams.height = height*5/2;
-        iconParams.width = height*5/4;
+        iconParams.height = height;
+        iconParams.width = height*9/8;
 
         iconImage.setLayoutParams(iconParams);
 
