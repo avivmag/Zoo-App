@@ -1,20 +1,18 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
@@ -24,36 +22,29 @@ import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
-import com.zoovisitors.bl.BusinessLayer;
-import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
-import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.personalStories.PersonalPopUp;
 
-import java.util.Arrays;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 220;
     private MapView mapView;
     private MapResult mapData;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
-    private TranslateAnimation translateAnimationYOut, translateAnimationYIn;
     private LinearLayout getToKnowMeLayout;
     private int getToKnowMeIndex = -1;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
-    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 3500; //10 * 1000 ;
+    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000 ;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
-    private final float GET_TO_KNOW_ME_ANIMATION_START_Y = -50f;
-    private final float GET_TO_KNOW_ME_ANIMATION_END_Y = 100f;
+    private int getToKnowMeAnimationDeltaPx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,31 +57,29 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
         getToKnowMeIb = findViewById(R.id.map_get_to_know_me_imagebutton);
         getToKnowMeIb.setBackgroundColor(Color.TRANSPARENT);
-        initializeAnimations();
+        getToKnowMeAnimationDeltaPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                GET_TO_KNOW_ME_ANIMATION_DELTA_DP,
+                getResources().getDisplayMetrics()
+        );
 
-        View.OnTouchListener ocl = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
-                        Bundle clickedAnimal = new Bundle();
-                        clickedAnimal.putSerializable("animalId", getToKnowMeIndex);
-                        intent.putExtras(clickedAnimal);
-                        startActivity(intent);
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        break;
-                }
-
-                return true;
+        getToKnowMeLayout.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
+                    Bundle clickedAnimal = new Bundle();
+                    clickedAnimal.putSerializable("animalId", getToKnowMeIndex);
+                    intent.putExtras(clickedAnimal);
+                    startActivity(intent);
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    break;
             }
-        };
 
-        getToKnowMeLayout.setOnTouchListener(ocl);
+            return true;
+        });
 
         mapData = GlobalVariables.bl.getMapResult();
-
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
                 new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
                         .getZooLocationLongitude()),
@@ -105,12 +94,6 @@ public class MapActivity extends ProviderBasedActivity
                 mapData.getMapInfo().getMaxLongitude()
         );
         Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
-        // TODO: delete this, testing only
-        for (Enclosure enc :
-                enclosures) {
-            enc.setClosestPointX(934);
-            enc.setClosestPointY(1280);
-        }
 
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap());
         for(int i = 0; i<enclosures.length; i++)
@@ -126,34 +109,18 @@ public class MapActivity extends ProviderBasedActivity
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
 
-    private void initializeAnimations() {
-        translateAnimationYIn =
-                new TranslateAnimation(0, 0, GET_TO_KNOW_ME_ANIMATION_START_Y,
-                GET_TO_KNOW_ME_ANIMATION_END_Y);
-        translateAnimationYIn.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
-        translateAnimationYIn.setFillAfter(true);
-
-        translateAnimationYOut = new TranslateAnimation(0, 0, GET_TO_KNOW_ME_ANIMATION_END_Y,
-                GET_TO_KNOW_ME_ANIMATION_START_Y);
-        translateAnimationYOut.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
-        translateAnimationYOut.setFillAfter(true);
-    }
     private boolean needToShowIcon = true;
-    private AtomicBoolean movementInProgress = new AtomicBoolean(false);
+    private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
     @Override
     public void onLocationChanged(android.location.Location location) {
-//        // TODO: remove this
-//        location.setLatitude(31.2591);
-//        location.setLongitude(34.7438);
-        // TODO: remove true
-        if (true || location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
+        // TODO: Tell the user its accuracy is bad
+        if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
                     return;
                 movementInProgress.set(true);
             }
-            //Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG).show();
 
             if (location.getLatitude() < mapData.getMapInfo().getMinLatitude() - MAX_MARGIN ||
                     location.getLatitude() > mapData.getMapInfo().getMaxLatitude() + MAX_MARGIN ||
@@ -172,8 +139,6 @@ public class MapActivity extends ProviderBasedActivity
                 movementInProgress.set(false);
                 return;
             }
-//            // TODO: remove this
-//            calibratedPointAndClosestPointFromPoints = new Point(164,601);
 
             updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
             updateGetToKnowMe();
@@ -229,39 +194,51 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeIndex = animalStory.getId();
         getToKnowMeTv.setText(animalStory.getName());
         getToKnowMeIb.setImageBitmap(animalStory.getPersonalPicture());
-        getToKnowMeLayout.startAnimation(translateAnimationYIn);
-        getToKnowMeLayout.layout(getToKnowMeLayout.getLeft(),
-                (int) (getToKnowMeLayout.getTop() + GET_TO_KNOW_ME_ANIMATION_END_Y - GET_TO_KNOW_ME_ANIMATION_START_Y),
-                getToKnowMeLayout.getRight(),
-                (int) (getToKnowMeLayout.getBottom() + GET_TO_KNOW_ME_ANIMATION_END_Y - GET_TO_KNOW_ME_ANIMATION_START_Y));
+
+        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).topMargin;
+        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).bottomMargin;
+
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams());
+                params.topMargin =
+                        (int) (currentTop + getToKnowMeAnimationDeltaPx * interpolatedTime);
+                params.bottomMargin =
+                        (int) (currentBottom + getToKnowMeAnimationDeltaPx * interpolatedTime);
+                getToKnowMeLayout.setLayoutParams(params);
+            }
+        };
+        a.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
+        getToKnowMeLayout.startAnimation(a);
         isGetToKnowMeShown = true;
     }
 
     private void changeGetToKnowMe(Animal.PersonalStories animalStory) {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                getToKnowMeLayout.clearAnimation();
-                showGetToKnowMe(animalStory);
-            }
-        }, translateAnimationYOut.getDuration());
-//        Log.e("AVIV", "left " + getToKnowMeLayout.getLeft());
-//        Log.e("AVIV", "top " + getToKnowMeLayout.getTop());
-//        Log.e("AVIV", "right " + getToKnowMeLayout.getRight());
-//        Log.e("AVIV", "bottom " + getToKnowMeLayout.getBottom());
-        getToKnowMeLayout.layout(getToKnowMeLayout.getLeft(),
-                (int) (getToKnowMeLayout.getTop() + GET_TO_KNOW_ME_ANIMATION_START_Y - GET_TO_KNOW_ME_ANIMATION_END_Y),
-                getToKnowMeLayout.getRight(),
-                (int) (getToKnowMeLayout.getBottom() + GET_TO_KNOW_ME_ANIMATION_START_Y - GET_TO_KNOW_ME_ANIMATION_END_Y));
-        getToKnowMeLayout.startAnimation(translateAnimationYOut);
+        hideGetToKnowMe();
+        new Handler().postDelayed(() -> {
+            showGetToKnowMe(animalStory);
+        }, GET_TO_KNOW_ME_ANIMATION_TIME);
     }
 
     private void hideGetToKnowMe() {
-        getToKnowMeLayout.startAnimation(translateAnimationYOut);
+        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).topMargin;
+        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).bottomMargin;
+
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams());
+                params.topMargin =
+                        (int) (currentTop - getToKnowMeAnimationDeltaPx * interpolatedTime);
+                params.bottomMargin =
+                        (int) (currentBottom - getToKnowMeAnimationDeltaPx * interpolatedTime);
+                getToKnowMeLayout.setLayoutParams(params);
+            }
+        };
+        a.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
+        getToKnowMeLayout.startAnimation(a);
         isGetToKnowMeShown = false;
-        getToKnowMeLayout.layout(getToKnowMeLayout.getLeft(),
-                (int) (getToKnowMeLayout.getTop() + GET_TO_KNOW_ME_ANIMATION_START_Y - GET_TO_KNOW_ME_ANIMATION_END_Y),
-                getToKnowMeLayout.getRight(),
-                (int) (getToKnowMeLayout.getBottom() + GET_TO_KNOW_ME_ANIMATION_START_Y - GET_TO_KNOW_ME_ANIMATION_END_Y));
     }
 
     @Override
