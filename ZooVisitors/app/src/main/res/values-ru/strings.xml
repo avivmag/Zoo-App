@@ -27,7 +27,17 @@
     <string name="food">Пища:</string>
     <string name="shareOnFacebook">Распространить в Facebook</string>
     <string name="showOnMap">Показать на карте</string>
+    <string name="doesnt_know">מצב שימור לא ידוע</string>
+    <string name="news_feed">קיר עדכונים:</string>
+    <string name="today_rec_events">אירועי היום:</string>
+    <string name="interesting">משהו מעניין עליי:</string>
+    <string name="about_enc">על המתחם:</string>
+    <string name="next_event">אירוע קרוב:</string>
+    <string name="population">אוכלוסיה</string>
 
+    <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
 
     <!-- General Info -->
     <!--contact info-->
@@ -43,6 +53,9 @@
     <string name="prices_headline">Цены на билеты:</string>
     <string name="searchPlaceHolder">Введите название животного</string>
     <string name="choose_route">Выберите маршрут</string>
+    <string name="contact_address">כתובת</string>
+
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
 
     <!-- Schedule -->
     <string name="todays_event">На сегодня запланировано</string>
@@ -60,6 +73,7 @@
     <string name="gps_no_activated_dialog_do_not_open_settings">Отмена</string>
     <string name="gps_no_activated_dialog_title">Функция GPS</string>
 
+
     <string name="no_data">Нет сведений</string>
 
     <string name="whoLives">Кто здесь живет?:</string>
@@ -73,4 +87,6 @@
     <string name="init_bad">מצטערים אבל ישנה בעיה. אנא סגרו את האפלייקציה ופתחו אותה שוב</string>
 
     <string name="confirm">אישור</string>
+
+    <string name="register"><u><b>Copyright</b></u></string>
 </resources>
