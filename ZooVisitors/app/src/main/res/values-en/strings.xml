@@ -1,8 +1,8 @@
 <resources>
 
-    <!--//Main Menu/-->
+    <!--Main Menu-->
     <string name="app_name">Negev Zoo</string>
-    //preferences
+    <!--preferences-->
     <string name="notifications">notifications</string>
     <string name="language">language</string>
     <string name="language_eng">English</string>
@@ -75,8 +75,10 @@
     <string name="gps_no_activated_dialog_activate_needed">Please enable the location service</string>
     <string name="gps_no_activated_dialog_open_settings">Open settings</string>
     <string name="gps_no_activated_dialog_do_not_open_settings">Cancel</string>
-    <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
+    <string name="gps_no_activated_dialog_title">location options</string>
 
+    <!--map-->
+    <string name="map_get_to_know_me_text">Click here to get to know me</string>
 
     <string name="no_data">No data</string>
 

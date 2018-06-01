@@ -31,24 +31,46 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="-50dp"
         android:background="@drawable/map_get_to_know_me_gradient"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="horizontal"
+        android:weightSum="3"
+        android:duplicateParentState="true"
         android:padding="10dp">
-        <!--android:layout_marginTop="20dp"-->
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="2"
+            android:clickable="false"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/map_get_to_know_me_textview"
+                android:layout_height="wrap_content"
+                android:textColor="@color/mapGetToKnowMeText"
+                android:gravity="center"
+                android:clickable="false"
+                android:layout_weight="1"
+                android:layout_width="wrap_content" />
+            <TextView
+                android:id="@+id/map_get_to_know_me_textview2"
+                android:text="@string/map_get_to_know_me_text"
+                android:layout_height="wrap_content"
+                android:textColor="@color/orangeNegev"
+                android:gravity="center"
+                android:clickable="false"
+                android:layout_weight="1"
+                android:layout_width="wrap_content" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/map_get_to_know_me_imagebutton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:clickable="false"
+            android:layout_weight="1"
             android:adjustViewBounds="true" />
-
-        <TextView
-            android:id="@+id/map_get_to_know_me_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test"
-            android:textColor="@color/mapGetToKnowMeText" />
     </LinearLayout>
     <!--</LinearLayout>-->
 

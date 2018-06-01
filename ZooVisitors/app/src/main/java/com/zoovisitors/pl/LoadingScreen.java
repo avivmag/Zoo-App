@@ -63,10 +63,9 @@ public class LoadingScreen extends BaseActivity {
             }
         });
 
-        Log.e("AVIV", "Tryin=g");
         // trigger gps service
-        Intent i= new Intent(getApplicationContext(), GpsService.class);
-        startService(i);
+//        Intent i= new Intent(getApplicationContext(), GpsService.class);
+//        startService(i);
     }
 
     private void goToMain(){

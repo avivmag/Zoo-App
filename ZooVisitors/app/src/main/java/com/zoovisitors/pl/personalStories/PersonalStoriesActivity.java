@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
@@ -18,6 +19,7 @@ public class PersonalStoriesActivity extends BaseActivity {
 
     private int layoutWidth;
     private Animal.PersonalStories[] stories;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,9 +30,10 @@ public class PersonalStoriesActivity extends BaseActivity {
 
         //calculate the screen width.
         int screenSize = getResources().getDisplayMetrics().widthPixels;
-        layoutWidth = screenSize/2;
+        layoutWidth = screenSize / 2;
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layoutWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layoutWidth, ViewGroup
+                .LayoutParams.WRAP_CONTENT);
         params.width = layoutWidth;
 
         LinearLayout firstCol = findViewById(R.id.first_column_story);
@@ -45,13 +48,13 @@ public class PersonalStoriesActivity extends BaseActivity {
             public void onSuccess(Object response) {
                 stories = ((Animal.PersonalStories[]) response);
                 CustomRelativeLayout card;
-                for (int i = 0; i < stories.length/2; i++){
-                    card = getCard(i);
+                for (int i = 0; i < stories.length / 2; i++) {
+                    card = getCard(stories[i]);
                     firstCol.addView(card);
                 }
 
-                for (int i = stories.length/2; i < stories.length; i++){
-                    card = getCard(i);
+                for (int i = stories.length / 2; i < stories.length; i++) {
+                    card = getCard(stories[i]);
                     secondCol.addView(card);
                 }
             }
@@ -63,8 +66,10 @@ public class PersonalStoriesActivity extends BaseActivity {
         });
     }
 
-    private CustomRelativeLayout getCard(int storyIndex) {
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),stories[storyIndex].getPersonalPicture(), stories[storyIndex].getName(), layoutWidth);
+    private CustomRelativeLayout getCard(Animal.PersonalStories story) {
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),
+                story.getPersonalPicture(), story.getName(),
+                layoutWidth);
         card.init();
 
         card.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +77,7 @@ public class PersonalStoriesActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
                 Bundle clickedAnimal = new Bundle();
-                clickedAnimal.putSerializable("animal", storyIndex);
+                clickedAnimal.putSerializable("animalId", story.getId());
                 intent.putExtras(clickedAnimal);
                 startActivity(intent);
             }
