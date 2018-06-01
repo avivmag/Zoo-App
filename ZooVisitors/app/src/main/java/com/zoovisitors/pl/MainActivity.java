@@ -186,15 +186,15 @@ public class MainActivity extends BaseActivity {
                     dateText.setText(s.getCreated().substring(0,10));
 
                     //initiates the title.
-                    TextView infoText = new TextView(getBaseContext());
-                    infoText.setTextColor(getResources().getColor(R.color.black));
-                    infoText.setTextSize(16);
-                    infoText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    infoText.setText(s.getInfo());
+                    TextView titleText = new TextView(getBaseContext());
+                    titleText.setTextColor(getResources().getColor(R.color.black));
+                    titleText.setTextSize(16);
+                    titleText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    titleText.setText(s.getTitle());
 
                     //add the text to the feed layot
                     feedLayout.addView(dateText);
-                    feedLayout.addView(infoText);
+                    feedLayout.addView(titleText);
 
                     //add the feed layout to the feed list
                     newsFeedLinearLayout.addView(feedLayout);
@@ -231,7 +231,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startAutoScrolling(){
-
         int jumpSteps = newsFeedLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
         ObjectAnimator animator[] = new ObjectAnimator[jumpSteps];
 
@@ -246,6 +245,27 @@ public class MainActivity extends BaseActivity {
         }
 
         if (jumpSteps > 0){
+            animator[0].addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
             animator[jumpSteps-1].addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -267,6 +287,7 @@ public class MainActivity extends BaseActivity {
 
                 }
             });
+
         }
     }
 
