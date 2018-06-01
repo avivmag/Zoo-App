@@ -22,7 +22,6 @@ import com.zoovisitors.pl.BaseActivity;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public abstract class ProviderBasedActivity extends BaseActivity {
-    public static final int PERMISSION_REQUEST_GPS = 310;
     private LocationManager lm;
     private LocationListener locationListener;
 
@@ -53,7 +52,6 @@ public abstract class ProviderBasedActivity extends BaseActivity {
     }
 
     /**
-     *
      * @return true if it needs to handle the permission and the general flow should not continue.
      */
     private boolean handlePermissions() {
@@ -88,14 +86,13 @@ public abstract class ProviderBasedActivity extends BaseActivity {
     }
 
     /**
-     *
      * @return true if it needs to handle the activation and the general flow should not continue.
      */
     public boolean handleActivation() {
-        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
             return false;
 
-        if(!isFinishing())
+        if (!isFinishing())
             new AlertDialog.Builder(this)
                     .setTitle(R.string.gps_no_activated_dialog_title)
                     .setMessage(this.getResources().getString(R.string.gps_no_activated_dialog_activate_needed))
@@ -131,21 +128,13 @@ public abstract class ProviderBasedActivity extends BaseActivity {
         lm.removeUpdates(locationListener);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case PERMISSION_REQUEST_GPS:
-//                provider.start(this, getLocationListener());
-                break;
-        }
-    }
-
     public abstract void onLocationChanged(Location location);
+
     public abstract void onProviderEnabled();
+
     public abstract void onProviderDisabled();
+
     public abstract int getMinTime();
+
     public abstract int getMinDistance();
-
-
 }

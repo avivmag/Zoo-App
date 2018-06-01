@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">נגב ZOO</string>
-    //preferences
+    <!--preferences-->
     <string name="notifications">התראות</string>
     <string name="language">שפה</string>
     <string name="language_eng">English</string>
     <string name="language_heb">עברית</string>
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
-    //main menu buttons
+    <!--main menu buttons-->
     <string name="watch_all_feed">הצג הכל</string>
     <string name="news_feed">קיר עדכונים:</string>
     <string name="our_enclosures">המתחמים שלנו</string>
@@ -71,6 +71,9 @@
     <string name="gps_no_activated_dialog_open_settings">פתח הגדרות</string>
     <string name="gps_no_activated_dialog_do_not_open_settings">ביטול</string>
     <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
+
+    <!--map-->
+    <string name="map_get_to_know_me_text">לחץ כאן כדי להכיר אותי</string>
 
     <string name="no_data">אין מידע</string>
 

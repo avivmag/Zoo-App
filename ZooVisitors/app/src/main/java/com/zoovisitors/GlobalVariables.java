@@ -2,6 +2,8 @@ package com.zoovisitors;
 
 import android.support.v7.app.AppCompatActivity;
 import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.cl.gps.GpsService;
+import com.zoovisitors.pl.BaseActivity;
 
 /**
  * Created by aviv on 10-Jan-18.
@@ -16,7 +18,8 @@ public class GlobalVariables {
     public static AppCompatActivity appCompatActivity;
     public static BusinessLayer bl;
     public static int firstEnter = 0;
-    public static AppCompatActivity foregroundActivity;
+    public static BaseActivity foregroundActivity;
     public static String firebaseToken;
     public static boolean notifications = true;
+    public static GpsService gpsService;
 }

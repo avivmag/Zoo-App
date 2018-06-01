@@ -363,7 +363,6 @@ public class DataStructure {
     }
 
     private void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
-        Log.e("AVIV", "onMapPoint " + enclosure.getClosestPointX() + "::" + enclosure.getClosestPointY());
         Point onMapPoint = getPointByXY(enclosure.getClosestPointX(), enclosure
                 .getClosestPointY());
         if(onMapPoint != null) {

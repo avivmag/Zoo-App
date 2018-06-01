@@ -25,9 +25,8 @@ public class PersonalPopUp extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_pop_up);
 
-        //get the clicked personal story
-//        Animal.PersonalStories animal = (Animal.PersonalStories) getIntent().getExtras().getSerializable("animal");
-        int storyIndex = (int) getIntent().getExtras().getSerializable("animal");
+        // get the clicked personal story
+        int storyId = (int) getIntent().getExtras().getSerializable("animalId");
 
         // TODO: no need to send callback
         GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
@@ -41,8 +40,17 @@ public class PersonalPopUp extends BaseActivity {
 
             }
         });
-
-        Animal.PersonalStories animal = stories[storyIndex];
+        Animal.PersonalStories animal = null;
+        for (Animal.PersonalStories anm :
+                stories) {
+            if(anm.getId() == storyId) {
+                animal = anm;
+                break;
+            }
+        }
+        if(animal == null) {
+            this.finish();
+        }
 
         //calculate the window size
         DisplayMetrics dm = new DisplayMetrics();

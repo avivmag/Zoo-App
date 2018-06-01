@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,10 @@ import android.widget.Toolbar;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 
+import static com.zoovisitors.cl.gps.ProviderBasedActivity.PERMISSION_REQUEST_GPS;
+
 public class BaseActivity extends AppCompatActivity {
+    public static final int PERMISSION_REQUEST_GPS = 310;
 
     @Override
     protected void onResume() {
@@ -44,5 +48,15 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setActionBarTransparentColor(){
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_GPS:
+                GlobalVariables.gpsService.beginFlow();
+                break;
+        }
     }
 }
