@@ -3,13 +3,14 @@
     <!--//Main Menu/-->
     <string name="app_name">Negev Zoo</string>
     //preferences
-    <string name="animal_name">Olive Baboon</string>
     <string name="notifications">notifications</string>
     <string name="language">language</string>
     <string name="language_eng">English</string>
     <string name="language_heb">עברית</string>
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
+
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
 
     <!-- main menu buttons -->
     <string name="watch_all_feed">watch all</string>
@@ -37,7 +38,6 @@
     <string name="searchPlaceHolder">Type enclosure or animal</string>
     <string name="shareOnFacebook">Share on facebook</string>
     <string name="showOnMap">Show on map</string>
-    <string name="title_activity_general_info">GeneralInfoActivity</string>
     <string name="about_enc">About the Enclosure:</string>
     <string name="next_event">Next Event:</string>
 
@@ -45,6 +45,11 @@
     <string name="contact_us_headline">Ways To Contact Us:</string>
     <string name="contact_info">Contact Info</string>
     <string name="contact_address">Address</string>
+    <string name="conatct_address">Address</string>
+
+    <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
     <!--contact ways-->
     <string name="prices">Prices</string>
     <string name="free">free</string>
@@ -86,5 +91,7 @@
     <string name="init_bad">Sorry but something went wrong. Close the app and open it again</string>
 
     <string name="confirm">Confirm</string>
+
+    <string name="register"><u><b>Copyright</b></u></string>
 
 </resources>
