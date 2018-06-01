@@ -89,12 +89,10 @@ public class MapActivity extends ProviderBasedActivity
         );
         Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap());
-        for (Enclosure enc :
-                enclosures) {
-            if(enc.getMarkerBitmap() != null) {
-                mapView.addEnclosure(enc);
+        for(int i = 0; i<enclosures.length; i++)
+            if(enclosures[i].getMarkerBitmap() != null) {
+                mapView.addEnclosure(enclosures[i], i);
             }
-        }
         for (Misc misc :
                 GlobalVariables.bl.getMiscs()) {
             if(misc.getMarkerBitmap() != null) {
@@ -130,8 +128,7 @@ public class MapActivity extends ProviderBasedActivity
                     return;
                 movementInProgress.set(true);
             }
-            Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG)
-                    .show();
+            //Toast.makeText(MapActivity.this, "acc: " + location.getAccuracy(), Toast.LENGTH_LONG).show();
 
             if (location.getLatitude() < mapData.getMapInfo().getMinLatitude() - MAX_MARGIN ||
                     location.getLatitude() > mapData.getMapInfo().getMaxLatitude() + MAX_MARGIN ||
