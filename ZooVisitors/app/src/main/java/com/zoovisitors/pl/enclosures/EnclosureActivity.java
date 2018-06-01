@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.CallbackManager;
@@ -34,23 +33,19 @@ import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.bl.RecurringEventsHandler;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import com.zoovisitors.pl.customViews.ImageViewEncAsset;
-import com.zoovisitors.pl.customViews.TextViewTitle;
+import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.customViews.ButtonCustomView;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -58,8 +53,6 @@ import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTim
 
 public class EnclosureActivity extends BaseActivity {
 
-    private TextView closestEvent;
-    private TextView closestEventTimer;
     private Enclosure enclosure;
     private Animal[] animals;
     private GridLayout assetsLayout;
@@ -71,10 +64,11 @@ public class EnclosureActivity extends BaseActivity {
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private Target target;
-    private Bitmap encImage;
     private int index;
     private Map<ImageView, Integer> imageViewIntegerMap;
 
+
+    private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -83,7 +77,18 @@ public class EnclosureActivity extends BaseActivity {
         Bundle clickedEnclosure = getIntent().getExtras();
         index = 0;
         imageViewIntegerMap = new HashMap<>();
-        enclosure = (Enclosure) clickedEnclosure.getSerializable("enc");
+        final int encIndex = (int) clickedEnclosure.getSerializable("enc");
+        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosure = ((Enclosure[]) response) [encIndex];
+            }
+
+            @Override
+            public void onFailure(Object response) {
+
+            }
+        });
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
 
@@ -101,8 +106,6 @@ public class EnclosureActivity extends BaseActivity {
                 Log.e("GetAnimals", (String) response);
             }
         });
-
-
     }
 
     private void draw() {
@@ -119,32 +122,19 @@ public class EnclosureActivity extends BaseActivity {
         LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
         encMainLayout.addView(encHeader,0);
 
-        //initialize the closest event section
-        LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
-        if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
-            enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        } else {
-            enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        }
-
-        // if there are recurring events add them and start the timer.
+        //initialize recurring events
         if (enclosure.getRecurringEvents().length > 0) {
-
-            closestEvent = (TextView) findViewById(R.id.closesEventText);
-            closestEventTimer = (TextView) findViewById(R.id.closestEventTimer);
-
-            long delay = 6000;
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    long startTime = getTimeAdjustedToWeekTime() + delay;
-                    handleClosestEvent(startTime);
-                }
-            }, 0l, delay * 5);
-        } else { //else remove them from the main layout so it won't appear.
+            //initialize the closest event section
+            LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
+            if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
+                enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            } else {
+                enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            }
+            handleClosestEvent();
+        }
+        else{
             LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
-
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
 
@@ -233,7 +223,8 @@ public class EnclosureActivity extends BaseActivity {
             TextView enclosureStoryText = findViewById(R.id.enc_story_text);
             enclosureStoryText.setText(enclosure.getStory());
         }
-
+        //initialize the 'who live here' section
+        //Cards and Recycle of the animals
         LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
         for (Animal an: animals) {
             CustomRelativeLayout animalCard = getAnCard(an);
@@ -253,7 +244,6 @@ public class EnclosureActivity extends BaseActivity {
             addImagesToAssets(assetWidth, assetHeight);
             addVideosToAssets(assetWidth, assetHeight);
         }
-
     }
 
     private CustomRelativeLayout getAnCard(Animal animal) {
@@ -273,16 +263,6 @@ public class EnclosureActivity extends BaseActivity {
             });
 
         return card;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     private void addImagesToAssets(int width, int height) {
@@ -351,66 +331,55 @@ public class EnclosureActivity extends BaseActivity {
         }
     }
 
-    private void handleClosestEvent(long starTimeArg) {
-        final long DELAY_TIME = 0;
-        final long PERIOD = 250;
-        boolean blinking = false;
-        Enclosure.RecurringEvent recurringEvent = recurringEventsHandler.getNextRecuringEvent();
-        final long startTime = starTimeArg;
-        closestEvent.post(() -> closestEvent.setText(recurringEvent.getTitle()));
-//        String time = recurringEventsHandler.getTime(recurringEvent.getStartTime());
-        Timer timer = new Timer();
-        Timer blinkingTimer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-                                      @Override
-                                      public void run() {
-                                          closestEventTimer.post(() -> {
-                                              long currentTime = getTimeAdjustedToWeekTime();
-                                              if (startTime > currentTime) {
-                                                  if (blinking) {
-                                                      blinkingTimer.cancel();
-                                                      closestEvent.post(() -> closestEvent.setVisibility(View.VISIBLE));
-                                                  }
-                                                  closestEventTimer.setText(recurringEventsHandler.getTime(startTime - currentTime));
-                                              } else {
-                                                  blinkingText(blinkingTimer);
-                                                  boolean blinking = true;
-                                                  timer.cancel();
-                                              }
-                                          });
-                                      }
-                                  },
-                DELAY_TIME,
-                PERIOD);
+    private void handleClosestEvent() {
+        RecurringEventsHandler recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
+        Enclosure.RecurringEvent nextRecurringEvent = recurringEventsHandler.getNextRecuringEvent();
+        if (nextRecurringEvent.getStartTime() - RecurringEventsHandler.getTimeAdjustedToWeekTime() <= DAY_TIME_LONG){
+            TextViewRegularText closestEventTitle = findViewById(R.id.closestEventTitle);
+            TextView closestEventDesc = findViewById(R.id.closestEventDesc);
+            TextViewRegularText closestEventTimer = findViewById(R.id.closestEventTimer);
+            closestEventTitle.setText(nextRecurringEvent.getTitle());
+            closestEventDesc.setText(nextRecurringEvent.getDescription());
 
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                blinkingText();
-//            }
-//        },
-//        3000l);
+            Log.e("EPoch name", "" + nextRecurringEvent.getStartTime());
+
+            double startTime = ((double) nextRecurringEvent.getStartTime() / 1000 / 3600) % 24;
+            double endTime = ((double) nextRecurringEvent.getEndTime() / 1000 / 3600) % 24;
+            int startHour = (int) startTime;
+            int startMinutes = (int) (startTime * 100) % 100 * 60 / 100;
+            int endHour = (int) endTime;
+            int endMinutes = (int) (endTime * 100) % 100 * 60 / 100;
+            String timeToShow = "";
+            if (GlobalVariables.language == 2 || GlobalVariables.language == 4)
+                timeToShow = "" + checkZero(startHour) + ":" + checkZero(startMinutes) + " - "
+                       +  checkZero(endHour) + ":" + checkZero(endMinutes);
+            else
+                timeToShow = "" + checkZero(endHour) + ":" + checkZero(endMinutes) + " - "
+                        +  checkZero(startHour) + ":" + checkZero(startMinutes);
+            closestEventTimer.setText(timeToShow);
+        }
+        else{
+            LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
+            LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
+            encMainLayout.removeView(enclosureClosestEventLayout);
+        }
+
+
+
+
     }
 
-    private void blinkingText(Timer timer) {
-        final long PERIOD = 300;
-        final long DELAY = 0l;
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                closestEvent.post(() -> {
-                    if (closestEvent.getVisibility() == View.VISIBLE)
-                        closestEvent.setVisibility(View.INVISIBLE);
-                    else
-                        closestEvent.setVisibility(View.VISIBLE);
-                });
-            }
-        }, DELAY, PERIOD);
+    private String checkZero(int time){
+        if (time == 0)
+            return "00";
+        else
+            return "" + time;
     }
 
     @Override
     protected void onPause() {
-        encHeader.stopAudio();
+        if (encHeader != null)
+            encHeader.stopAudio();
         super.onPause();
     }
 }

@@ -10,7 +10,7 @@ import com.zoovisitors.pl.BaseActivity;
  */
 
 public class GlobalVariables {
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static String ServerAddress = "negevzoo.sytes.net:50" +
             (DEBUG ? "555/" : "000/");
     public static String LOG_TAG = "zoovisitors";

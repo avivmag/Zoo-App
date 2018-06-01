@@ -37,7 +37,7 @@ public class aboutUsFragment extends Fragment {
 
                 TextViewRegularText aboutUs = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER);
                 aboutUs.setPadding(0,150,0,0);
-                aboutUs.setText(((AboutUs[]) response)[0].getAboutUs());
+                aboutUs.setText((String) response);
 
                 infoTableLayout.addView(aboutUs);
             }

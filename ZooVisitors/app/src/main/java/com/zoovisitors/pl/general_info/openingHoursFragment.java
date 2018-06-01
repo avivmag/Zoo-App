@@ -81,40 +81,45 @@ public class openingHoursFragment extends Fragment {
                 //add the linear layout to the table
                 openingHoursTable.addView(titleLayout);
 
-                //Build the table for the opening hours
-                for (OpeningHoursResult.OpeningHours oh : openingHoursResult.getOpeningHours()) {
-                    LinearLayout rowLayout = new LinearLayout(getContext());
-                    rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    rowLayout.setLayoutParams(rowParams);
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+                if (openingHoursResult.getOpeningHours() != null) {
+                    //Build the table for the opening hours
+                    for (OpeningHoursResult.OpeningHours oh : openingHoursResult.getOpeningHours()) {
+                        LinearLayout rowLayout = new LinearLayout(getContext());
+                        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        rowLayout.setLayoutParams(rowParams);
+                        if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        } else {
+                            rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                        }
+
+                        //day cell
+                        TextViewRegularText dayColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER);
+                        dayColumn.setText(oh.getDay());
+                        dayColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        dayColumn.setWidth(cellWidth);
+                        dayColumn.setPadding(0, 20, 0, 20);
+                        dayColumn.setGravity(Gravity.CENTER);
+
+                        //hours title
+                        TextViewRegularText hoursTimeColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the start time
+                        hoursTimeColumn.setText(oh.getStartTime() + " - " + oh.getEndTime());
+                        hoursTimeColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
+                        hoursTimeColumn.setWidth(cellWidth);
+                        hoursTimeColumn.setPadding(0, 20, 0, 20);
+                        hoursTimeColumn.setGravity(Gravity.CENTER);
+
+                        rowLayout.addView(dayColumn);
+                        rowLayout.addView(hoursTimeColumn);
+
+                        openingHoursTable.addView(rowLayout);
                     }
-                    else{
-                        rowLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                    }
-
-                    //day cell
-                    TextViewRegularText dayColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER);
-                    dayColumn.setText(oh.getDay());
-                    dayColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    dayColumn.setWidth(cellWidth);
-                    dayColumn.setPadding(0,20,0,20);
-                    dayColumn.setGravity(Gravity.CENTER);
-
-                    //hours title
-                    TextViewRegularText hoursTimeColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the start time
-                    hoursTimeColumn.setText(oh.getStartTime() + " - " + oh.getEndTime());
-                    hoursTimeColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
-                    hoursTimeColumn.setWidth(cellWidth);
-                    hoursTimeColumn.setPadding(0,20,0,20);
-                    hoursTimeColumn.setGravity(Gravity.CENTER);
-
-                    rowLayout.addView(dayColumn);
-                    rowLayout.addView(hoursTimeColumn);
-
-                    openingHoursTable.addView(rowLayout);
                 }
+
+                TextViewRegularText noteText = rootView.findViewById(R.id.info_note_text);
+                noteText.setText(openingHoursResult.getOpeningHoursNote());
             }
 
             @Override

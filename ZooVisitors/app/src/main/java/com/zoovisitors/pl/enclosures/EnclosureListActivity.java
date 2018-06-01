@@ -69,7 +69,7 @@ public class EnclosureListActivity extends BaseActivity {
 
                 for (int i = 0; i<enclosures.length; i++)
                 {
-                    enclosureCards[i] = getEncCard(enclosures[i]);
+                    enclosureCards[i] = getEncCard(enclosures[i], i);
                 }
 
                 addMatchEnc("");
@@ -87,12 +87,6 @@ public class EnclosureListActivity extends BaseActivity {
                     public void onSuccess(Object response) {
                         animals = (Animal[]) response;
                         animalCards = new CustomRelativeLayout[animals.length];
-
-                        //Adapt the recycle to view the card
-//                        recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle_enc_list);
-//                        layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity);
-//                        recycleViewAnim.setLayoutManager(layoutManagerAnim);
-
                     }
 
                     @Override
@@ -100,32 +94,6 @@ public class EnclosureListActivity extends BaseActivity {
 
                     }
                 });
-
-//                //Adapt the recycle to view the card
-//                recycleViewEnc = (RecyclerView) findViewById(R.id.enclosure_recycle);
-//                layoutManagerEnc = new LinearLayoutManager(GlobalVariables.appCompatActivity);
-//                recycleViewEnc.setLayoutManager(layoutManagerEnc);
-//                adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
-//                recycleViewEnc.setAdapter(adapterEnc);
-
-//                GlobalVariables.bl.getAllAnimals(new GetObjectInterface() {
-//                    @Override
-//                    public void onSuccess(Object response) {
-//
-//                        animals = (Animal[]) response;
-//
-//                        //Adapt the recycle to view the card
-//                        recycleViewAnim = (RecyclerView) findViewById(R.id.animal_recycle_enc_list);
-//                        layoutManagerAnim = new LinearLayoutManager(GlobalVariables.appCompatActivity);
-//                        recycleViewAnim.setLayoutManager(layoutManagerAnim);
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Object response) {
-//
-//                    }
-//                });
 
 
                 //initialize the search view
@@ -137,33 +105,6 @@ public class EnclosureListActivity extends BaseActivity {
                         clearSearchList();
                         addMatchEnc(query);
                         addMatchAn(query);
-                        //if it's empty string - delete everything
-//                        if (query.equals("")) {
-//
-//                            adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
-//                            recycleViewEnc.setAdapter(adapterEnc);
-//                        }
-
-//                        List<Enclosure> matchedSearchEnclosures = new ArrayList<Enclosure>();
-
-
-//                        Enclosure[] enclosuresToAdapt = new Enclosure[matchedSearchEnclosures.size()];
-//                        for (int i = 0; i< matchedSearchEnclosures.size(); i++) {
-//                            enclosuresToAdapt[i] = matchedSearchEnclosures.get(i);
-//                        }
-//
-//                        adapterEnc = new EnclosureListRecyclerAdapter(enclosuresToAdapt);
-//                        recycleViewEnc.setAdapter(adapterEnc);
-
-//                        List<Animal> matchedSearchAnimals = new ArrayList<Animal>();
-
-//                        Animal[] animalsToAdapt = new Animal[matchedSearchAnimals.size()];
-//                        for (int i = 0; i< matchedSearchAnimals.size(); i++) {
-//                            animalsToAdapt[i] = matchedSearchAnimals.get(i);
-//                        }
-//
-//                        adapterAnim = new AnimalsRecyclerAdapter(animalsToAdapt, R.layout.enclosure_card);
-//                        recycleViewAnim.setAdapter(adapterAnim);
 
                         InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
                         in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
@@ -175,61 +116,6 @@ public class EnclosureListActivity extends BaseActivity {
                         clearSearchList();
                         addMatchEnc(newText);
                         addMatchAn(newText);
-//                            adapterEnc = new EnclosureListRecyclerAdapter(enclosures);
-//                            recycleViewEnc.setAdapter(adapterEnc);
-//                        }
-
-//                        List<Enclosure> matchedSearchEnclosures = new ArrayList<Enclosure>();
-
-//                        boolean layoutTurn = true;
-//                        for (CustomRelativeLayout enc : enclosures){
-//                            if (enc.getName().contains(newText)){
-//                                if (layoutTurn){
-//                                    firstEncCol.addView(card);
-//                                    layoutTurn = false;
-//                                }
-//                                else {
-//                                    secondEncCol.addView(card);
-//                                    layoutTurn = true;
-//                                }
-////                                matchedSearchEnclosures.add(enc);
-//                            }
-//                        }
-
-//                        Enclosure[] enclosuresToAdapt = new Enclosure[matchedSearchEnclosures.size()];
-//                        for (int i = 0; i< matchedSearchEnclosures.size(); i++) {
-//                            enclosuresToAdapt[i] = matchedSearchEnclosures.get(i);
-//                        }
-//
-//                        adapterEnc = new EnclosureListRecyclerAdapter(enclosuresToAdapt);
-//                        recycleViewEnc.setAdapter(adapterEnc);
-
-                        //Search for animals
-
-//                        List<Animal> matchedSearchAnimals = new ArrayList<Animal>();
-
-//                        boolean layoutTurn = true;
-//                        for (CustomRelativeLayout animal : animals){
-//                            if (animal.getName().contains(newText)){
-//                                if (layoutTurn){
-//                                    firstAnCol.addView(card);
-//                                    layoutTurn = false;
-//                                }
-//                                else {
-//                                    secondAnCol.addView(card);
-//                                    layoutTurn = true;
-//                                }
-//                            }
-////                                matchedSearchAnimals.add(animal);
-//                        }
-
-//                        Animal[] animalsToAdapt = new Animal[matchedSearchAnimals.size()];
-//                        for (int i = 0; i< matchedSearchAnimals.size(); i++) {
-//                            animalsToAdapt[i] = matchedSearchAnimals.get(i);
-//                        }
-//
-//                        adapterAnim = new AnimalsRecyclerAdapter(animalsToAdapt, R.layout.enclosure_card);
-//                        recycleViewAnim.setAdapter(adapterAnim);
                         return true;
                     }
                 });
@@ -317,7 +203,7 @@ public class EnclosureListActivity extends BaseActivity {
         return card;
     }
 
-    private CustomRelativeLayout getEncCard(Enclosure enc) {
+    private CustomRelativeLayout getEncCard(Enclosure enc, int encIndex) {
         CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),enc.getPictureUrl(), enc.getName(),null, layoutWidth);
         card.init();
 
@@ -327,9 +213,9 @@ public class EnclosureListActivity extends BaseActivity {
                 Intent intent = new Intent(GlobalVariables.appCompatActivity, EnclosureActivity.class);
                 Bundle clickedEnclosure = new Bundle();
 
-                clickedEnclosure.putSerializable("enc", enc);
+                clickedEnclosure.putSerializable("enc", encIndex);
                 intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-                GlobalVariables.appCompatActivity.startActivity(intent);
+                startActivity(intent);
             }
         });
 

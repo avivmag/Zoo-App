@@ -15,7 +15,7 @@
 
 
         <LinearLayout
-            android:id="@+id/allNewsFeedList"
+            android:id="@+id/all_rec_events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -24,12 +24,12 @@
 
 
             <TextView
-                android:id="@+id/wall_feed_popup_title"
+                android:id="@+id/rec_events_popup_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:text="@string/news_feed"
+                android:text="@string/today_rec_events"
                 android:background="@drawable/dashed_bottom_line"
 
                 />

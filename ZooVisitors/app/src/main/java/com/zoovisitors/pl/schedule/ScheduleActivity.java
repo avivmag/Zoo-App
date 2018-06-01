@@ -1,5 +1,6 @@
 package com.zoovisitors.pl.schedule;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,24 +11,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Schedule;
+import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
+import com.zoovisitors.pl.general_info.WatchAll;
 
 import java.time.LocalDateTime;
 
 public class ScheduleActivity extends BaseActivity {
 
-    private RecyclerView recycleView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
     private Schedule[] schedulers;
 
     @Override
@@ -36,6 +38,12 @@ public class ScheduleActivity extends BaseActivity {
         setContentView(R.layout.activity_schedule);
 
         setActionBar(R.color.blueIcon);
+
+        Button todayEventsButton = findViewById(R.id.todays_events_button);
+        todayEventsButton.setOnClickListener(v -> {
+            Intent recEveAll = new Intent(getBaseContext(), TodayRecEvent.class);
+            startActivity(recEveAll);
+        });
 
         //get all the schedule
         GlobalVariables.bl.getSchedule(new GetObjectInterface() {
@@ -49,44 +57,33 @@ public class ScheduleActivity extends BaseActivity {
                 //get the list layout
                 LinearLayout scheduleListLayout = findViewById(R.id.schedule_list);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 for (Schedule s: schedulers) {
 
-                    //initiates a schedule layout
-                    LinearLayout scheduleLayout = new LinearLayout(getBaseContext());
-                    params.setMargins(0,10,0,10);
-                    scheduleLayout.setLayoutParams(params);
-                    scheduleLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    scheduleLayout.setBackground(getResources().getDrawable(R.drawable.up_down_border));
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        scheduleLayout.setTextDirection(View.TEXT_DIRECTION_RTL);
-                    }
-                    else
-                        scheduleLayout.setTextDirection(View.TEXT_DIRECTION_LTR);
 
                     //initiates the text layout
                     LinearLayout textLayout = new LinearLayout(getBaseContext());
-                    params.width = screenWidth/2*3;
-                    params.setMargins(5,0,5,0);
-                    textLayout.setLayoutParams(params);
+                    LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        textLayout.setGravity(Gravity.RIGHT);
+                    }
+                    textParams.weight = 1;
+                    textLayout.setLayoutParams(textParams);
                     textLayout.setOrientation(LinearLayout.VERTICAL);
+                    textLayout.setBaselineAligned(false);
+
 
                     //initiates the date TextView
                     TextViewRegularText dateText;
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_END);
-                    }
-                    else{
-                        dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
-                    }
+                    dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_GRAVITY);
+
                     dateText.setText(s.getStartTime().substring(0, 10) + " - " + s.getEndTime().substring(0, 10));
 
                     //initiates the title TextView
-                    TextViewTitle titleText = new TextViewTitle(getBaseContext(),View.TEXT_ALIGNMENT_TEXT_START);
+                    TextViewTitle titleText = new TextViewTitle(getBaseContext(),View.TEXT_ALIGNMENT_GRAVITY);
                     titleText.setText(s.getTitle());
 
                     //initiates the description TextView
-                    TextViewRegularText descText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
+                    TextViewRegularText descText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_GRAVITY);
                     descText.setText(s.getDescription());
 
                     textLayout.addView(dateText,0);
@@ -95,14 +92,14 @@ public class ScheduleActivity extends BaseActivity {
 
                     //initiates the ImageView
                     ImageView image = new ImageView(getBaseContext());
-                    params.width = screenWidth/3;
-                    image.setLayoutParams(params);
+
+
                     GlobalVariables.bl.getImage(s.getImageUrl(), 200, 200, new GetObjectInterface() {
 
                         @Override
                         public void onSuccess(Object response) {
                             image.setImageBitmap((Bitmap) response);
-//                            viewHolder.image.setImageBitmap();
+                            ((LinearLayout.LayoutParams)image.getLayoutParams()).weight = 0;
                             GlobalVariables.bl.insertStringandBitmap(s.getImageUrl(), (Bitmap) response);
                         }
 
@@ -114,22 +111,32 @@ public class ScheduleActivity extends BaseActivity {
                         }
                     });
 
-                    scheduleListLayout.addView(textLayout);
-                    scheduleLayout.addView(image);
-                }
 
-//                recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
-//                layoutManager = new LinearLayoutManager(GlobalVariables.appCompatActivity);
-//                recycleView.setLayoutManager(layoutManager);
-//                adapter = new ScheduleRecyclerAdapter(schedulers);
-//                recycleView.setAdapter(adapter);
+
+                    //initiates a schedule layout
+                    LinearLayout scheduleLayout = new LinearLayout(getBaseContext());
+                    LinearLayout.LayoutParams relativeParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    relativeParams.weight = 3;
+                    scheduleLayout.setLayoutParams(relativeParams);
+                    scheduleLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    scheduleLayout.setBackground(getResources().getDrawable(R.drawable.dashed_bottom_line));
+
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        scheduleLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                    }
+                    else
+                        scheduleLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
+                    scheduleLayout.addView(textLayout);
+                    scheduleLayout.addView(image);
+
+                    scheduleListLayout.addView(scheduleLayout);
+                }
             }
 
             @Override
             public void onFailure(Object response) {
                 TextView error  = (TextView) findViewById(R.id.error_sched_text);
-//                recycleView = (RecyclerView) findViewById(R.id.schedule_recycle);
-//                recycleView.setVisibility(View.INVISIBLE);
                 error.setVisibility(View.VISIBLE);
                 error.setText((String) response);
             }

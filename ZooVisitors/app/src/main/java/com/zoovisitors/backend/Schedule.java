@@ -1,5 +1,7 @@
 package com.zoovisitors.backend;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -33,12 +35,18 @@ public class Schedule {
     }
 
     public String getStartTime() {
-        return startTime;
+        return fixDateToShow(startTime);
     }
 
-    public String getEndTime() { return endTime; }
+    public String getEndTime() { return fixDateToShow(endTime); }
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    private String fixDateToShow(String date){
+        //date = date.substring(0, date.length()-3);
+//        Log.e("Date schedule", date);
+        return date;
     }
 }

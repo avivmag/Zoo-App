@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.zoovisitors.backend.Enclosure;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -19,6 +20,7 @@ public class RecurringEventsHandler {
 
     public RecurringEventsHandler(Enclosure.RecurringEvent[] recurringEvents) {
         this.recurringEvents = recurringEvents;
+        Arrays.sort(this.recurringEvents, (r1, r2) -> (int)(r1.getEndTime() - r2.getEndTime()));
     }
 
     public boolean isEmpty()
@@ -52,9 +54,9 @@ public class RecurringEventsHandler {
             return recurringEvents[lastRecurringEventIndex];
         }
     }
-
+    //Added 3 hours to get our local time
     public static long getTimeAdjustedToWeekTime() {
-        return (Calendar.getInstance().getTimeInMillis() + SEVEN_DAYS - THREE_DAYS) % SEVEN_DAYS;
+        return ((Calendar.getInstance().getTimeInMillis() + SEVEN_DAYS - THREE_DAYS) % SEVEN_DAYS) + 60 * 60 * 1000 * 3;
     }
 
     /**

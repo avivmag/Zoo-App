@@ -38,12 +38,12 @@ public class EnclosureIconsHandler {
     private List<Runnable> timerSlowRunnables;
 
     public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Timer
-            timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables) {
+            timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables, int encIndex) {
         this.timerFastRunnables = timerFastRunnables;
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-        onTouchListener = createOnTouchListener(enclosure);
+        onTouchListener = createOnTouchListener(enclosure, encIndex);
         enclosureIcon = new EnclosureIcon(mapView, enclosure.getMarkerBitmap(), onTouchListener,
                 enclosure.getMarkerX(),
                 enclosure.getMarkerY());
@@ -74,7 +74,7 @@ public class EnclosureIconsHandler {
     }
 
     @NonNull
-    private View.OnTouchListener createOnTouchListener(Enclosure enclosure) {
+    private View.OnTouchListener createOnTouchListener(Enclosure enclosure, int encIndex) {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -84,7 +84,7 @@ public class EnclosureIconsHandler {
                                 EnclosureActivity.class);
                         Bundle clickedEnclosure = new Bundle();
 
-                        clickedEnclosure.putSerializable("enc", enclosure);
+                        clickedEnclosure.putSerializable("enc", encIndex);
                         intent.putExtras(clickedEnclosure); //Put your id to your next Intent
                         GlobalVariables.appCompatActivity.startActivity(intent);
 

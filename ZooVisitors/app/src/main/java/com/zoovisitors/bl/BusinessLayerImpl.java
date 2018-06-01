@@ -144,17 +144,19 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     public void getImage(String url, int width, int height, GetObjectInterface goi) {
-            ni.postImage(url, width, height, new ResponseInterface<Bitmap>() {
-                @Override
-                public void onSuccess(Bitmap response) {
-                    goi.onSuccess(response);
-                }
+        if (url == null)
+            goi.onFailure("Null URL");
+        ni.postImage(url, width, height, new ResponseInterface<Bitmap>() {
+            @Override
+            public void onSuccess(Bitmap response) {
+                goi.onSuccess(response);
+            }
 
-                @Override
-                public void onFailure(String response) {
-                    goi.onFailure(response);
-                }
-            });
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
+            }
+        });
     }
 
     @Override
@@ -442,5 +444,21 @@ public class BusinessLayerImpl implements BusinessLayer {
     @Override
     public MapResult getMapResult() {
         return memory.getMapResult();
+    }
+
+    @Override
+    public void getAllRecEvents(GetObjectInterface goi) {
+        ni.post("enclosures/recurring/" + GlobalVariables.language, new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Enclosure.RecurringEventString[] recurringEvents = gson.fromJson(response, Enclosure.RecurringEventString[].class);
+                goi.onSuccess(recurringEvents);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(response);
+            }
+        });
     }
 }
