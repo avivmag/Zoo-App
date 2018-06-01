@@ -47,6 +47,7 @@
     <string name="contact_address">Address</string>
     <!--contact ways-->
     <string name="prices">Prices</string>
+    <string name="free">free</string>
     <string name="population">population</string>
     <string name="opening_hours">Opening Hours</string>
     <string name="about_us">About Us</string>

@@ -1,6 +1,10 @@
 package com.zoovisitors.backend;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
+import com.zoovisitors.GlobalVariables;
+import com.zoovisitors.R;
 
 /**
  * Created by Gili on 10/03/2018.
@@ -16,7 +20,14 @@ public class Price {
         return population;
     }
 
-    public Double getPricePop() {
-        return pricePop;
+    public String getPricePop() {
+        if (pricePop == 0)
+            return GlobalVariables.appCompatActivity.getResources().getString(R.string.free);
+        return fixPriceToShow("" + pricePop);
+    }
+
+    private String fixPriceToShow(String price){
+        Log.e("Date price", price);
+        return price + "0₪";
     }
 }
