@@ -63,6 +63,9 @@ public class ScheduleActivity extends BaseActivity {
                     //initiates the text layout
                     LinearLayout textLayout = new LinearLayout(getBaseContext());
                     LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        textLayout.setGravity(Gravity.RIGHT);
+                    }
                     textParams.weight = 1;
                     textLayout.setLayoutParams(textParams);
                     textLayout.setOrientation(LinearLayout.VERTICAL);
@@ -71,20 +74,16 @@ public class ScheduleActivity extends BaseActivity {
 
                     //initiates the date TextView
                     TextViewRegularText dateText;
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
-                    }
-                    else{
-                        dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
-                    }
+                    dateText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_GRAVITY);
+
                     dateText.setText(s.getStartTime().substring(0, 10) + " - " + s.getEndTime().substring(0, 10));
 
                     //initiates the title TextView
-                    TextViewTitle titleText = new TextViewTitle(getBaseContext(),View.TEXT_ALIGNMENT_TEXT_START);
+                    TextViewTitle titleText = new TextViewTitle(getBaseContext(),View.TEXT_ALIGNMENT_GRAVITY);
                     titleText.setText(s.getTitle());
 
                     //initiates the description TextView
-                    TextViewRegularText descText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_TEXT_START);
+                    TextViewRegularText descText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_GRAVITY);
                     descText.setText(s.getDescription());
 
                     textLayout.addView(dateText,0);
