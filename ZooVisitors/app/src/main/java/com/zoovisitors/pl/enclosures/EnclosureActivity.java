@@ -68,7 +68,7 @@ public class EnclosureActivity extends BaseActivity {
     private Map<ImageView, Integer> imageViewIntegerMap;
 
 
-    private final long DAY_TIME_LONG = 24 * 60 * 60;
+    private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -124,8 +124,6 @@ public class EnclosureActivity extends BaseActivity {
 
         //initialize recurring events
         if (enclosure.getRecurringEvents().length > 0) {
-            handleClosestEvent();
-            
             //initialize the closest event section
             LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
             if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
@@ -133,6 +131,7 @@ public class EnclosureActivity extends BaseActivity {
             } else {
                 enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
             }
+            handleClosestEvent();
         }
         else{
             LinearLayout enclosureClosestEventLayout = (LinearLayout) findViewById(R.id.enclosureClosestEventLayout);
@@ -333,23 +332,31 @@ public class EnclosureActivity extends BaseActivity {
     }
 
     private void handleClosestEvent() {
-
         RecurringEventsHandler recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
         Enclosure.RecurringEvent nextRecurringEvent = recurringEventsHandler.getNextRecuringEvent();
-        Log.e("EPoch Start", "" + nextRecurringEvent.getStartTime());
-        Log.e("EPoch Now", "" + System.currentTimeMillis());
-        if (nextRecurringEvent.getStartTime() - System.currentTimeMillis() <= DAY_TIME_LONG){
+        if (nextRecurringEvent.getStartTime() - RecurringEventsHandler.getTimeAdjustedToWeekTime() <= DAY_TIME_LONG){
             TextViewRegularText closestEventTitle = findViewById(R.id.closestEventTitle);
-            TextViewRegularText closestEventDesc = findViewById(R.id.closestEventDesc);
+            TextView closestEventDesc = findViewById(R.id.closestEventDesc);
             TextViewRegularText closestEventTimer = findViewById(R.id.closestEventTimer);
             closestEventTitle.setText(nextRecurringEvent.getTitle());
             closestEventDesc.setText(nextRecurringEvent.getDescription());
 
-            Date expiry = new Date(nextRecurringEvent.getStartTime() * 1000);
+            Log.e("EPoch name", "" + nextRecurringEvent.getStartTime());
 
-            Log.e("EPoch Expiry", expiry.toString());
-
-            closestEventTimer.setText("ddddddddddddddd");
+            double startTime = ((double) nextRecurringEvent.getStartTime() / 1000 / 3600) % 24;
+            double endTime = ((double) nextRecurringEvent.getEndTime() / 1000 / 3600) % 24;
+            int startHour = (int) startTime;
+            int startMinutes = (int) (startTime * 100) % 100 * 60 / 100;
+            int endHour = (int) endTime;
+            int endMinutes = (int) (endTime * 100) % 100 * 60 / 100;
+            String timeToShow = "";
+            if (GlobalVariables.language == 2 || GlobalVariables.language == 4)
+                timeToShow = "" + checkZero(startHour) + ":" + checkZero(startMinutes) + " - "
+                       +  checkZero(endHour) + ":" + checkZero(endMinutes);
+            else
+                timeToShow = "" + checkZero(endHour) + ":" + checkZero(endMinutes) + " - "
+                        +  checkZero(startHour) + ":" + checkZero(startMinutes);
+            closestEventTimer.setText(timeToShow);
         }
         else{
             LinearLayout encMainLayout = (LinearLayout) findViewById(R.id.enclosureMainLayout);
@@ -360,6 +367,13 @@ public class EnclosureActivity extends BaseActivity {
 
 
 
+    }
+
+    private String checkZero(int time){
+        if (time == 0)
+            return "00";
+        else
+            return "" + time;
     }
 
     @Override

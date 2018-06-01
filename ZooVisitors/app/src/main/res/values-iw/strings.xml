@@ -41,6 +41,7 @@
     <string name="contact_info">יצירת קשר</string>
     <string name="conatct_address">כתובת</string>
     <string name="prices">מחירון</string>
+    <string name="free">חינם</string>
     <string name="population">אוכלוסיה</string>
     <string name="opening_hours">שעות פתיחה</string>
     <string name="about_us">עלינו</string>
@@ -48,6 +49,13 @@
     <string name="prices_headline">מחירון:</string>
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
     <string name="choose_route">בחר מסלול</string>
+    <string name="contact_address">כתובת</string>
+
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
+
+    <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
 
     <!-- Schedule -->
     <string name="todays_event">אירועי היום</string>
@@ -77,4 +85,6 @@
     <string name="init_bad">מצטערים אבל ישנה בעיה. אנא סגרו את האפלייקציה ופתחו אותה שוב</string>
 
     <string name="confirm">אישור</string>
+
+    <string name="register"><u><b>Copyright</b></u></string>
 </resources>

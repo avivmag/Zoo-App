@@ -105,7 +105,7 @@ public class pricesFragment extends Fragment {
 
                         //price cell
                         TextViewRegularText priceColumn = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER); //column of the prices
-                        priceColumn.setText("" + p.getPricePop() + "₪");
+                        priceColumn.setText(p.getPricePop());
                         priceColumn.setBackground(getContext().getResources().getDrawable(R.drawable.cell_border_shape));
                         priceColumn.setWidth(cellWidth);
                         priceColumn.setHeight(150);

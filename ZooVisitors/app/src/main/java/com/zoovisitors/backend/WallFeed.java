@@ -1,5 +1,7 @@
 package com.zoovisitors.backend;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -23,7 +25,7 @@ public class WallFeed implements Serializable {
     }
 
     public String getCreated() {
-        return created;
+        return fixDateToShow(created);
     }
 
     public String getInfo() {
@@ -32,5 +34,10 @@ public class WallFeed implements Serializable {
 
     public String getTitle() {
         return title;
+    }
+
+    private String fixDateToShow(String date){
+        date = date.substring(0,10);
+        return date;
     }
 }

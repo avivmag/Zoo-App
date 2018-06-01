@@ -277,8 +277,8 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    public void addEnclosure(Enclosure enclosure) {
-        enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, timer, timerFastRunnables, timerSlowRunnables));
+    public void addEnclosure(Enclosure enclosure, int encIndex) {
+        enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, timer, timerFastRunnables, timerSlowRunnables, encIndex));
     }
 
     public void addMiscIcon(Misc misc) {

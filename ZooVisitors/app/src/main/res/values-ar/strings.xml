@@ -14,6 +14,19 @@
     <string name="map">خريطة</string>
     <string name="other_info">معلومات أخرى</string>
     <string name="nav">انتقل الينا</string>
+    <string name="news_feed">زاوية المستجدات:</string>
+    <string name="today_rec_events">אירועי היום:</string>
+    <string name="doesnt_know">מצב שימור לא ידוע</string>
+    <string name="interesting">משהו מעניין עליי:</string>
+    <string name="about_enc">על המתחם:</string>
+    <string name="next_event">אירוע קרוב:</string>
+    <string name="population">אוכלוסיה</string>
+
+    <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
+
+    <string name="init_bad">מצטערים אבל ישנה בעיה. אנא סגרו את האפלייקציה ופתחו אותה שוב</string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">حيواناتنا</string>
@@ -35,12 +48,16 @@
     <string name="contact_info">اتصل بنا</string>
     <string name="conatct_address">عنوان الشخص</string>
     <string name="prices">أسعار</string>
+    <string name="free">مجانا</string>
     <string name="opening_hours">ساعات العمل</string>
     <string name="about_us">عنا</string>
     <string name="opening_hours_headline">ساعات العمل:</string>
     <string name="prices_headline">أسعار:</string>
     <string name="searchPlaceHolder">اكتب مجمع او حيوان</string>
     <string name="choose_route">اختر مسار</string>
+    <string name="contact_address">כתובת</string>
+
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
 
     <!-- Schedule -->
     <string name="todays_event">احداث اليوم</string>
@@ -69,4 +86,6 @@
     <string name="turn_the_volume">הגבר את עוצמת השמע</string>
 
     <string name="confirm">אישור</string>
+
+    <string name="register"><u><b>Copyright</b></u></string>
 </resources>

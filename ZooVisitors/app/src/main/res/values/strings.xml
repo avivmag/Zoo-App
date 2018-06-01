@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">נגב ZOO</string>
     //preferences
-    <string name="animal_name">בבון הזית</string>
     <string name="notifications">התראות</string>
     <string name="language">שפה</string>
     <string name="language_eng">English</string>
@@ -48,10 +47,15 @@
     <string name="conatct_address">כתובת</string>
 
     <string name="prices">מחירון</string>
+    <string name="free">חינם</string>
     <string name="population">אוכלוסיה</string>
     <string name="opening_hours_headline">זמני פתיחה</string>
     <string name="opening_hours">שעות פתיחה</string>
     <string name="about_us">עלינו</string>
+    <string name="contact_address">כתובת</string>
+    <string name="prices_headline">מחירון:</string>
+    <string name="days">ימים</string>
+    <string name="hours">שעות</string>
 
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
     <string name="choose_route">בחר מסלול</string>
@@ -71,6 +75,10 @@
     <string name="gps_no_activated_dialog_open_settings">פתח הגדרות</string>
     <string name="gps_no_activated_dialog_do_not_open_settings">ביטול</string>
     <string name="gps_no_activated_dialog_title">הגדרות מיקומי המכשיר</string>
+
+    <string name="title_activity_general_info">GeneralInfoActivity</string>
+
+
 
     <string name="no_data">אין מידע</string>
 

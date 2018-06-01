@@ -14,14 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -130,11 +128,11 @@ public class MainActivity extends BaseActivity {
         //create the buttons
         int buttonsHeight = height/15*2;
         MainButtonCustomView encButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.our_enclosures), buttonsHeight, encListener);
-        MainButtonCustomView otherInfoButton = new MainButtonCustomView(getBaseContext(),  R.mipmap.enc_button, getResources().getString(R.string.other_info), buttonsHeight,otherInfoListener);
-        MainButtonCustomView personalButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.personal), buttonsHeight,personalStoryListener);
-        MainButtonCustomView mapButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.map), buttonsHeight,mapListener);
-        MainButtonCustomView wazebutton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.nav), buttonsHeight,navigateListener);
-        MainButtonCustomView scheduleButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.schedule), buttonsHeight,scheduleListener);
+        MainButtonCustomView otherInfoButton = new MainButtonCustomView(getBaseContext(),  R.mipmap.info_button, getResources().getString(R.string.other_info), buttonsHeight,otherInfoListener);
+        MainButtonCustomView personalButton = new MainButtonCustomView(getBaseContext(), R.mipmap.personal_button, getResources().getString(R.string.personal), buttonsHeight,personalStoryListener);
+        MainButtonCustomView mapButton = new MainButtonCustomView(getBaseContext(), R.mipmap.map_button, getResources().getString(R.string.map), buttonsHeight,mapListener);
+        MainButtonCustomView wazebutton = new MainButtonCustomView(getBaseContext(), R.mipmap.waze_button, getResources().getString(R.string.nav), buttonsHeight,navigateListener);
+        MainButtonCustomView scheduleButton = new MainButtonCustomView(getBaseContext(), R.mipmap.schedule_button, getResources().getString(R.string.schedule), buttonsHeight,scheduleListener);
 
         firstButtonsLayout.addView(encButton);
         secondButtonsLayout.addView(personalButton);
@@ -183,18 +181,17 @@ public class MainActivity extends BaseActivity {
                     dateText.setTextColor(getResources().getColor(R.color.black));
                     dateText.setTextSize(14);
                     dateText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    dateText.setText(s.getCreated().substring(0,10));
-
+                    dateText.setText(s.getCreated());
                     //initiates the title.
-                    TextView infoText = new TextView(getBaseContext());
-                    infoText.setTextColor(getResources().getColor(R.color.black));
-                    infoText.setTextSize(16);
-                    infoText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    infoText.setText(s.getInfo());
+                    TextView titleText = new TextView(getBaseContext());
+                    titleText.setTextColor(getResources().getColor(R.color.black));
+                    titleText.setTextSize(16);
+                    titleText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    titleText.setText(s.getTitle());
 
                     //add the text to the feed layot
                     feedLayout.addView(dateText);
-                    feedLayout.addView(infoText);
+                    feedLayout.addView(titleText);
 
                     //add the feed layout to the feed list
                     newsFeedLinearLayout.addView(feedLayout);
@@ -231,7 +228,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startAutoScrolling(){
-
         int jumpSteps = newsFeedLinearLayout.getMeasuredHeight()/ scrollView.getHeight();
         ObjectAnimator animator[] = new ObjectAnimator[jumpSteps];
 
@@ -246,6 +242,27 @@ public class MainActivity extends BaseActivity {
         }
 
         if (jumpSteps > 0){
+            animator[0].addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
             animator[jumpSteps-1].addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -267,6 +284,7 @@ public class MainActivity extends BaseActivity {
 
                 }
             });
+
         }
     }
 
@@ -315,36 +333,44 @@ public class MainActivity extends BaseActivity {
 
         switch (item.getItemId()){
             case R.id.language_arb:
-                GlobalVariables.language = 3;
                 arbItem.setChecked(true);
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
-                setLocale(LanguageMap.get("Arabic"));
+                if (GlobalVariables.language != 3) {
+                    GlobalVariables.language = 3;
+                    setLocale(LanguageMap.get("Arabic"));
+                }
                 return;
             case R.id.language_eng:
-                GlobalVariables.language = 2;
                 engItem.setChecked(true);
                 arbItem.setChecked(false);
                 hebItem.setChecked(false);
                 rusItem.setChecked(false);
-                setLocale(LanguageMap.get("English"));
+                if (GlobalVariables.language != 2) {
+                    GlobalVariables.language = 2;
+                    setLocale(LanguageMap.get("English"));
+                }
                 return;
             case R.id.language_heb:
-                GlobalVariables.language = 1;
                 hebItem.setChecked(true);
                 engItem.setChecked(false);
                 arbItem.setChecked(false);
                 rusItem.setChecked(false);
-                setLocale(LanguageMap.get("Hebrew"));
+                if (GlobalVariables.language != 1) {
+                    GlobalVariables.language = 1;
+                    setLocale(LanguageMap.get("Hebrew"));
+                }
                 return;
             case R.id.language_rus:
-                GlobalVariables.language = 4;
                 rusItem.setChecked(true);
                 engItem.setChecked(false);
                 hebItem.setChecked(false);
                 arbItem.setChecked(false);
-                setLocale(LanguageMap.get("Russian"));
+                if (GlobalVariables.language != 4) {
+                    GlobalVariables.language = 4;
+                    setLocale(LanguageMap.get("Russian"));
+                }
                 return;
         }
 
