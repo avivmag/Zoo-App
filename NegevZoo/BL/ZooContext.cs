@@ -3083,7 +3083,14 @@ namespace BL
                 // Resize the image.
                 using (var resizedImage = ResizeImage(image, size: 480.0, keepResolution: true, isMisc: isMisc))
                 {
-                    ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                    ImageCodecInfo encoder = null;
+                    if (filePath.EndsWith(".png")) {
+                        encoder = GetEncoder(ImageFormat.Png);
+                    }
+                    else
+                    {
+                        encoder = GetEncoder(ImageFormat.Jpeg);
+                    }
 
                     // Create an Encoder object based on the GUID  
                     // for the Quality parameter category.  
@@ -3101,30 +3108,7 @@ namespace BL
 
                     image.Dispose();
 
-                    resizedImage.Save(filePath, jpgEncoder, myEncoderParameters);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves the image as icon.
-        /// </summary>
-        /// <param name="filePath">The file path to save.</param>
-        private void SaveAsIcon(string filePath)
-        {
-            // Get the image from file.
-            using (var image = new Bitmap(filePath))
-            {
-                // Sets the image orientation to default value.
-                SetOrientationToDefault(image);
-
-                using (var resizedImage = new Bitmap(image))
-                {
-                    // Dispose the original image file desc.
-                    image.Dispose();
-
-                    // Save the new resized image.
-                    resizedImage.Save(filePath);
+                    resizedImage.Save(filePath, encoder, myEncoderParameters);
                 }
             }
         }
