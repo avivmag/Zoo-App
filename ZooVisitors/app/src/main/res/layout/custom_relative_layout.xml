@@ -35,7 +35,7 @@
             android:id="@+id/custom_animal_personal_story_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/map_get_to_know_me_gradient"
+            android:background="@drawable/gray_partial_transparent_gradient"
             android:gravity="center_horizontal"
             android:textColor="@color/white"
             android:textSize="18sp"
