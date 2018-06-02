@@ -38,7 +38,7 @@ public interface BusinessLayer {
      * Returns the personal stories that has been loaded in the load screen
      */
     Animal.PersonalStories[] getPersonalStories();
-    void getPersonalStories(final GetObjectInterface goi);
+//    void getPersonalStories(final GetObjectInterface goi);
 
     //notification
     void updateIfInPark(boolean isInPark);

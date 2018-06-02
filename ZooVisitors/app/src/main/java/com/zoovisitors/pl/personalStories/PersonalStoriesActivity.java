@@ -42,28 +42,17 @@ public class PersonalStoriesActivity extends BaseActivity {
         LinearLayout secondCol = findViewById(R.id.second_column_story);
         secondCol.setLayoutParams(params);
 
-        GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
+        stories = GlobalVariables.bl.getPersonalStories();
+        CustomRelativeLayout card;
+        for (int i = 0; i < stories.length / 2; i++) {
+            card = getCard(stories[i]);
+            firstCol.addView(card);
+        }
 
-            @Override
-            public void onSuccess(Object response) {
-                stories = ((Animal.PersonalStories[]) response);
-                CustomRelativeLayout card;
-                for (int i = 0; i < stories.length / 2; i++) {
-                    card = getCard(stories[i]);
-                    firstCol.addView(card);
-                }
-
-                for (int i = stories.length / 2; i < stories.length; i++) {
-                    card = getCard(stories[i]);
-                    secondCol.addView(card);
-                }
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                ((TextView) findViewById(R.id.personal_text_no_data)).setText((String) response);
-            }
-        });
+        for (int i = stories.length / 2; i < stories.length; i++) {
+            card = getCard(stories[i]);
+            secondCol.addView(card);
+        }
     }
 
     private CustomRelativeLayout getCard(Animal.PersonalStories story) {

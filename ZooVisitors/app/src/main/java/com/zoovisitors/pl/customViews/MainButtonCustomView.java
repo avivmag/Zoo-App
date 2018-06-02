@@ -71,7 +71,7 @@ public class MainButtonCustomView extends RelativeLayout {
         if (listener != null)
             iconText.setOnClickListener(listener);
 
-        //if it's russian than it's to long
+        //if it's russian than it's too long
         if (GlobalVariables.language == 4){
            iconText.setTextSize(12);
            ((LayoutParams) iconText.getLayoutParams()).bottomMargin = 0;

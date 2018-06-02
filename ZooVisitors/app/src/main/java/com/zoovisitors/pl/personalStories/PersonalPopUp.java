@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,18 +29,7 @@ public class PersonalPopUp extends BaseActivity {
         // get the clicked personal story
         int storyId = (int) getIntent().getExtras().getSerializable("animalId");
 
-        // TODO: no need to send callback
-        GlobalVariables.bl.getPersonalStories(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                stories = (Animal.PersonalStories[])response;
-            }
-
-            @Override
-            public void onFailure(Object response) {
-
-            }
-        });
+        stories = GlobalVariables.bl.getPersonalStories();
         Animal.PersonalStories animal = null;
         for (Animal.PersonalStories anm :
                 stories) {
@@ -52,6 +42,7 @@ public class PersonalPopUp extends BaseActivity {
             this.finish();
         }
 
+        Log.e("AVIV", animal.getStory());
         //calculate the window size
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
