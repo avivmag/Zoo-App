@@ -29,7 +29,7 @@
         android:layout_alignTop="@+id/map_view_layout"
         android:layout_marginEnd="50dp"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-200dp"
         android:background="@drawable/map_get_to_know_me_gradient"
         android:gravity="center"
         android:orientation="horizontal"
