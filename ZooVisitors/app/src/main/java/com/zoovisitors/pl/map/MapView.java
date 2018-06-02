@@ -31,7 +31,6 @@ public class MapView extends RelativeLayout {
     private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
     private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
     private int PRIMARY_IMAGE_INITIAL_MARGIN = 50;
-    private int maxPrimaryImageMargin;
     private int primaryImageMargin;
 
     private float mPosX;

@@ -1,14 +1,21 @@
 package com.zoovisitors.pl;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +34,7 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.WallFeed;
+import com.zoovisitors.cl.gps.GpsService;
 import com.zoovisitors.pl.customViews.MainButtonCustomView;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
@@ -35,16 +43,11 @@ import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.personalStories.PersonalStoriesActivity;
 import com.zoovisitors.pl.schedule.ScheduleActivity;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Timer;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends BaseActivity {
     private ScrollView scrollView;
@@ -53,6 +56,8 @@ public class MainActivity extends BaseActivity {
     private WallFeed[] feed;
     private Map<String, String> LanguageMap;
     private boolean isNotificationChecked;
+    private static final int PERMISSION_REQUEST_LOCATION = 370;
+    private boolean refusedToTurnOnGPS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -65,19 +70,6 @@ public class MainActivity extends BaseActivity {
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-
-        GlobalVariables.bl.updateIfInPark(true, new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                //Toast.makeText(GlobalVariables.appCompatActivity, "Token has been send", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Object response) {
-                //Toast.makeText(GlobalVariables.appCompatActivity, "TOKEN NOT SEND", Toast.LENGTH_LONG).show();
-            }
-        });
-
 
         ((Button) findViewById(R.id.three_dots)).setOnClickListener(v->{
             showPopup(v);
@@ -294,6 +286,7 @@ public class MainActivity extends BaseActivity {
                 //item.setChecked(!item.isChecked());
                 isNotificationChecked = !isNotificationChecked;
                 if (GlobalVariables.notifications) {
+                    GlobalVariables.notifications = false;
                     GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
                         @Override
                         public void onSuccess(Object response) {
@@ -305,21 +298,9 @@ public class MainActivity extends BaseActivity {
                             Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG).show();
                         }
                     });
-                    GlobalVariables.notifications = false;
                 }
                 else {
-                    GlobalVariables.bl.updateIfInPark(false, new GetObjectInterface() {
-                        @Override
-                        public void onSuccess(Object response) {
-                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onFailure(Object response) {
-                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
+                    // This is update from the separated gps process
                     GlobalVariables.notifications = true;
                 }
         }
@@ -440,5 +421,83 @@ public class MainActivity extends BaseActivity {
                 break;
         }
         popup.show();
+    }
+
+    /**
+     * @return true if it needs to handle the permission and the general flow should not continue.
+     */
+    private boolean handlePermissions() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.gps_no_permission_dialog_title)
+                        .setMessage(R.string.gps_no_permission_dialog_message)
+                        .setPositiveButton(R.string.gps_no_permission_dialog_approve, (dialog, id) -> {
+                            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
+                        })
+                        .setNegativeButton(R.string.gps_no_permission_dialog_disapprove, (dialog, id) -> {
+                            refusedToTurnOnGPS = true;
+                        })
+                        .show();
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return true if it needs to handle the activation and the general flow should not continue.
+     */
+    public boolean handleActivation() {
+        if (((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER))
+            return false;
+
+        if (!isFinishing())
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.gps_no_activated_dialog_title)
+                    .setMessage(this.getResources().getString(R.string.gps_no_activated_dialog_activate_needed))
+                    .setPositiveButton(this.getResources().getString(R.string.gps_no_activated_dialog_open_settings), (paramDialogInterface, paramInt) -> {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        this.startActivity(myIntent);
+                    })
+                    .setNegativeButton(this.getString(R.string.gps_no_activated_dialog_do_not_open_settings), (paramDialogInterface, paramInt) -> {
+                        refusedToTurnOnGPS = true;
+                    })
+                    .show();
+        return true;
+    }
+
+    private boolean runningUpdates = false;
+    @SuppressLint("MissingPermission")
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!refusedToTurnOnGPS && !handlePermissions() && !handleActivation() && !runningUpdates) {
+            runningUpdates = true;
+            startService(new Intent(this, GpsService.class));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_LOCATION:
+                break;
+        }
     }
 }

@@ -11,7 +11,6 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.bl.BusinessLayerImpl;
-import com.zoovisitors.cl.gps.GpsService;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
 import java.util.Locale;
 
@@ -62,10 +61,6 @@ public class LoadingScreen extends BaseActivity {
                 pb.post(() -> pb.setProgressPrecentage((Integer) response));
             }
         });
-
-        // trigger gps service
-//        Intent i= new Intent(getApplicationContext(), GpsService.class);
-//        startService(i);
     }
 
     private void goToMain(){

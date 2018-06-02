@@ -18,12 +18,12 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 
 public class BaseActivity extends AppCompatActivity {
-    public static final int PERMISSION_REQUEST_GPS = 310;
+//    private static final int PERMISSION_REQUEST_GPS = 310;
 
     @Override
     protected void onResume() {
         super.onResume();
-        GlobalVariables.foregroundActivity = this;
+//        GlobalVariables.foregroundActivity = this;
     }
 
     //This function set the action bar to the activity with the given color
@@ -48,13 +48,13 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_GPS:
-                GlobalVariables.gpsService.beginFlow();
-                break;
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        switch (requestCode) {
+//            case PERMISSION_REQUEST_GPS:
+//                GlobalVariables.gpsService.beginFlow();
+//                break;
+//        }
+//    }
 }

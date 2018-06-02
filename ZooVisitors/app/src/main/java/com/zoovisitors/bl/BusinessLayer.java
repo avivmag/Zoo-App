@@ -41,7 +41,7 @@ public interface BusinessLayer {
     void getPersonalStories(final GetObjectInterface goi);
 
     //notification
-    void updateIfInPark(boolean isInPark, final GetObjectInterface goi);
+    void updateIfInPark(boolean isInPark);
     void unsubscribeToNotification(final GetObjectInterface goi);
 
     //Images
