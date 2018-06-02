@@ -65,9 +65,7 @@ public class PersonalStoriesActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
-                Bundle clickedAnimal = new Bundle();
-                clickedAnimal.putSerializable("animalId", story.getId());
-                intent.putExtras(clickedAnimal);
+                intent.putExtra("animalId", story.getId());
                 startActivity(intent);
             }
         });

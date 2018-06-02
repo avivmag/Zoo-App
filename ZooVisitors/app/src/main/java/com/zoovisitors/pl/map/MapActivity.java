@@ -42,7 +42,7 @@ public class MapActivity extends ProviderBasedActivity
     private int getToKnowMeIndex = -1;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
-    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000 ;
+    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
 
@@ -66,16 +66,14 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeLayout.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_UP:
-                    Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp.class);
-                    Bundle clickedAnimal = new Bundle();
-                    clickedAnimal.putSerializable("animalId", getToKnowMeIndex);
-                    intent.putExtras(clickedAnimal);
+                    Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp
+                            .class);
+                    intent.putExtra("animalId", getToKnowMeIndex);
                     startActivity(intent);
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     break;
             }
-
             return true;
         });
 
@@ -95,17 +93,9 @@ public class MapActivity extends ProviderBasedActivity
         );
         Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
 
-        mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap());
-        for(int i = 0; i<enclosures.length; i++)
-            if(enclosures[i].getMarkerBitmap() != null) {
-                mapView.addEnclosure(enclosures[i], i);
-            }
-        for (Misc misc :
-                GlobalVariables.bl.getMiscs()) {
-            if(misc.getMarkerBitmap() != null) {
-                mapView.addMiscIcon(misc);
-            }
-        }
+        mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
+                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1));
+
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
 
@@ -160,12 +150,13 @@ public class MapActivity extends ProviderBasedActivity
     private Animal.PersonalStories lastPersonalStoryShowed = null;
 
     private boolean isGetToKnowMeShown = false;
+
     private void updateGetToKnowMe() {
         if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
                 MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
             Set<Animal.PersonalStories> animalPersonalStories = mapDS.getCloseAnimalStories();
             if (animalPersonalStories.isEmpty()) {
-                if(isGetToKnowMeShown)
+                if (isGetToKnowMeShown)
                     hideGetToKnowMe();
                 return;
             }
@@ -195,13 +186,16 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeTv.setText(animalStory.getName());
         getToKnowMeIb.setImageBitmap(animalStory.getPersonalPicture());
 
-        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).topMargin;
-        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).bottomMargin;
+        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
+                .topMargin;
+        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
+                .bottomMargin;
 
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams());
+                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams)
+                        getToKnowMeLayout.getLayoutParams());
                 params.topMargin =
                         (int) (currentTop + getToKnowMeAnimationDeltaPx * interpolatedTime);
                 params.bottomMargin =
@@ -222,13 +216,16 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void hideGetToKnowMe() {
-        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).topMargin;
-        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams()).bottomMargin;
+        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
+                .topMargin;
+        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
+                .bottomMargin;
 
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams());
+                RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams)
+                        getToKnowMeLayout.getLayoutParams());
                 params.topMargin =
                         (int) (currentTop - getToKnowMeAnimationDeltaPx * interpolatedTime);
                 params.bottomMargin =
