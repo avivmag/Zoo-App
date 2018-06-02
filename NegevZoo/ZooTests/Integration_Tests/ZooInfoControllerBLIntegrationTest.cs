@@ -1279,7 +1279,7 @@ namespace ZooTests
             var aboutUs = ZooInfoController.GetZooAboutInfo(1);
             Assert.IsInstanceOfType(aboutUs, typeof(ZooInfoController.AboutUsResult[]));
 
-            Assert.AreEqual(aboutUs.Count(), 1);
+            Assert.AreEqual(aboutUs, "אנחנו נגב זו!!! אנחנו אוהבים חיות");
         }
 
         [TestMethod]
@@ -1295,9 +1295,9 @@ namespace ZooTests
         public void UpdateAboutUsValidInput()
         {
             var aboutUs = ZooInfoController.GetZooAboutInfo((int)Languages.en);
-            Assert.AreEqual(aboutUs.Count(), 1);
+            Assert.AreEqual(aboutUs, "We are Negev Zoo!!! We love animals");
 
-            var oldAboutUs = aboutUs.SingleOrDefault(au => au.AboutUs == "We are Negev Zoo!!! We love animals");
+            var oldAboutUs = aboutUs;
             var newAboutUs = new ZooInfoController.AboutUsResult
             {
                 AboutUs = "This is the new about us!"
@@ -1306,8 +1306,8 @@ namespace ZooTests
             ZooInfoController.UpdateZooAboutInfo(newAboutUs, (int)Languages.en);
 
             aboutUs = ZooInfoController.GetZooAboutInfo((int)Languages.en);
-            Assert.IsTrue(aboutUs.Any(au => au.AboutUs == newAboutUs.AboutUs));
-            Assert.IsFalse(aboutUs.Any(au => au.AboutUs == oldAboutUs.AboutUs));
+            Assert.AreEqual(aboutUs.AboutUs, newAboutUs.AboutUs);
+            Assert.AreNotEqual(aboutUs.AboutUs, oldAboutUs.AboutUs);
         }
 
         [TestMethod]
