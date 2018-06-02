@@ -179,6 +179,7 @@ public class MapView extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        animationInterrupt = true;
         // Let the ScaleGestureDetector inspect all events.
         mScaleDetector.onTouchEvent(ev);
 
@@ -325,14 +326,20 @@ public class MapView extends RelativeLayout {
         }, FOCUS_ON_LOCATION_ANIMATION_TIME - numberOfRattleTimes * RATTLE_ANIMATION_HALF_TIME);
     }
 
+    private boolean animationInterrupt = false;
     private void focusOnLocationAnimation(int x, int y, int duration) {
         float initialMScaleFactor = mScaleFactor;
         float initialMPosX = mPosX;
         float initialMPosY = mPosY;
 
+        animationInterrupt = false;
+
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(animationInterrupt)
+                    this.cancel();
+
                 mScaleFactor = mLastScaleFactor = initialMScaleFactor + (maxScaleFactor - initialMScaleFactor) * interpolatedTime;
                 mPosX =
                         Math.max(
