@@ -19,9 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.zoovisitors.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.zoovisitors.pl.BaseActivity.PERMISSION_REQUEST_GPS;
 
 public abstract class ProviderBasedActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_GPS = 310;
     private LocationManager lm;
     private LocationListener locationListener;
     private boolean refusedToTurnOnGPS = false;
@@ -138,7 +138,6 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_GPS:
-
                 break;
         }
     }

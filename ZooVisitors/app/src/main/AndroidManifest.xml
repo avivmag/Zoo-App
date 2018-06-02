@@ -59,7 +59,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <!--<service android:name=".cl.gps.GpsService" />-->
         <service android:name=".cl.gps.GpsService" />
+        <!--<service android:name=".cl.gps.GpsService" android:process=":gps_service" />-->
 
         <activity
             android:name=".pl.LoadingScreen"
