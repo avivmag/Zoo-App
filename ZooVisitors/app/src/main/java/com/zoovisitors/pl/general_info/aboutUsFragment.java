@@ -2,6 +2,7 @@ package com.zoovisitors.pl.general_info;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,6 @@ public class aboutUsFragment extends Fragment {
                 TextViewRegularText aboutUs = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER);
                 aboutUs.setPadding(0,150,0,0);
                 aboutUs.setText((String) response);
-
                 infoTableLayout.addView(aboutUs);
             }
 

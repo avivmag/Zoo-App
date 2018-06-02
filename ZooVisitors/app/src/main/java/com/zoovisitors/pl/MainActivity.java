@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
@@ -35,7 +37,6 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.cl.gps.GpsService;
-import com.zoovisitors.pl.customViews.MainButtonCustomView;
 import com.zoovisitors.pl.general_info.GeneralInfoActivity;
 import com.zoovisitors.pl.enclosures.EnclosureListActivity;
 import com.zoovisitors.pl.general_info.WatchAll;
@@ -75,63 +76,7 @@ public class MainActivity extends BaseActivity {
             showPopup(v);
         });
 
-
-        //create the buttons layout
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.width = width/2;
-
-        LinearLayout firstButtonsLayout = findViewById(R.id.first_buttons_layout);
-        firstButtonsLayout.setLayoutParams(params);
-
-        LinearLayout secondButtonsLayout = findViewById(R.id.second_buttons_layout);
-        secondButtonsLayout.setLayoutParams(params);
-
-        //initiates the listeners
-        View.OnClickListener encListener = v -> {
-            Intent enclosureIntent = new Intent(MainActivity.this, EnclosureListActivity.class);
-            startActivity(enclosureIntent);
-        };
-        View.OnClickListener otherInfoListener = v -> {
-            Intent otherInfoIntent = new Intent(MainActivity.this, GeneralInfoActivity.class);
-            startActivity(otherInfoIntent);
-        };
-        View.OnClickListener mapListener = v -> {
-            Intent otherInfoIntent = new Intent(MainActivity.this, MapActivity.class);
-            startActivity(otherInfoIntent);
-        };
-        View.OnClickListener scheduleListener = (v -> {
-            Intent otherInfoIntent = new Intent(MainActivity.this, ScheduleActivity.class);
-            startActivity(otherInfoIntent);
-        });
-        View.OnClickListener personalStoryListener = (v -> {
-            Intent otherInfoIntent = new Intent(MainActivity.this, PersonalStoriesActivity.class);
-            startActivity(otherInfoIntent);
-        });
-        View.OnClickListener navigateListener = v -> {
-            if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620")));//&navigate=yes
-            }
-            else{
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620")));
-            }
-
-        };
-
-        //create the buttons
-        int buttonsHeight = height/15*2;
-        MainButtonCustomView encButton = new MainButtonCustomView(getBaseContext(), R.mipmap.enc_button, getResources().getString(R.string.our_enclosures), buttonsHeight, encListener);
-        MainButtonCustomView otherInfoButton = new MainButtonCustomView(getBaseContext(),  R.mipmap.info_button, getResources().getString(R.string.other_info), buttonsHeight,otherInfoListener);
-        MainButtonCustomView personalButton = new MainButtonCustomView(getBaseContext(), R.mipmap.personal_button, getResources().getString(R.string.personal), buttonsHeight,personalStoryListener);
-        MainButtonCustomView mapButton = new MainButtonCustomView(getBaseContext(), R.mipmap.map_button, getResources().getString(R.string.map), buttonsHeight,mapListener);
-        MainButtonCustomView wazebutton = new MainButtonCustomView(getBaseContext(), R.mipmap.waze_button, getResources().getString(R.string.nav), buttonsHeight,navigateListener);
-        MainButtonCustomView scheduleButton = new MainButtonCustomView(getBaseContext(), R.mipmap.schedule_button, getResources().getString(R.string.schedule), buttonsHeight,scheduleListener);
-
-        firstButtonsLayout.addView(encButton);
-        secondButtonsLayout.addView(personalButton);
-        firstButtonsLayout.addView(mapButton);
-        secondButtonsLayout.addView(scheduleButton);
-        firstButtonsLayout.addView(wazebutton);
-        secondButtonsLayout.addView(otherInfoButton);
+        setButtonsLayouts();
 
         LanguageMap = new HashMap<String, String>();
         //put language in the app according to values/strings/(**)
@@ -499,5 +444,59 @@ public class MainActivity extends BaseActivity {
             case PERMISSION_REQUEST_LOCATION:
                 break;
         }
+    }
+
+    private void setButtonsLayouts() {
+        setLayoutsImageAndText(R.id.personal_layout, R.mipmap.personal_button, R.string.personal);
+        setLayoutsImageAndText(R.id.enc_layout, R.mipmap.enc_button, R.string.our_enclosures);
+        setLayoutsImageAndText(R.id.schedule_layout, R.mipmap.schedule_button, R.string.schedule);
+        setLayoutsImageAndText(R.id.map_layout, R.mipmap.map_button, R.string.map);
+        setLayoutsImageAndText(R.id.waz_layout, R.mipmap.waze_button, R.string.nav);
+        setLayoutsImageAndText(R.id.other_info_layout, R.mipmap.info_button, R.string.other_info);
+    }
+
+    public void onClickMenuButton(View v) {
+        Intent intent = null;
+        switch (v.getId())
+        {
+            case R.id.enc_layout:
+                intent = new Intent(MainActivity.this, EnclosureListActivity.class);
+                break;
+            case R.id.other_info_layout:
+                intent = new Intent(MainActivity.this, GeneralInfoActivity.class);
+                break;
+            case R.id.map_layout:
+                intent = new Intent(MainActivity.this, MapActivity.class);
+                break;
+            case R.id.schedule_layout:
+                intent = new Intent(MainActivity.this, ScheduleActivity.class);
+                break;
+            case R.id.personal_layout:
+                intent = new Intent(MainActivity.this, PersonalStoriesActivity.class);
+                break;
+            case R.id.waz_layout:
+                if (isAppInstalled(GlobalVariables.appCompatActivity, "com.waze")){
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("waze://?ll=31.258137,34.745620"));//&navigate=yes
+                }
+                else{
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.waze.com/location?newsFeddLinearLayout=31.258137,%2034.745620"));
+                }
+                break;
+            default:
+                return;
+        }
+        startActivity(intent);
+    }
+
+    private void setLayoutsImageAndText(int layoutId, int imageId, int textId) {
+        ConstraintLayout cl = (ConstraintLayout) findViewById(layoutId);
+        ((ImageView) cl.findViewById(R.id.icon_image)).setImageResource(imageId);
+        ((TextView) cl.findViewById(R.id.icon_text)).setText(textId);
+
+        //if it's russian than it's too long
+        if (GlobalVariables.language == 4){
+            ((TextView) cl.findViewById(R.id.icon_text)).setTextSize(12);
+        }
+
     }
 }

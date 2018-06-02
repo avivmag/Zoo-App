@@ -318,34 +318,6 @@ public class BusinessLayerImpl implements BusinessLayer {
         return memory.getAnimalStories();
     }
 
-    @Override
-    public void getPersonalStories(final GetObjectInterface goi) {
-        Animal.PersonalStories[] personalStories = memory.getAnimalStories();
-        // TODO: No need to send a call to the server
-        if (personalStories != null) {
-            goi.onSuccess(personalStories);
-        } else {
-            ni.post("animals/story/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-                @Override
-                public void onSuccess(String response) {
-                    Animal.PersonalStories[] animals = gson.fromJson(response, Animal.PersonalStories[].class);
-
-                    if (animals.length <= 0)
-                        goi.onFailure("No Data in the server");
-                    else {
-                        memory.setAnimalStories(animals);
-                        goi.onSuccess(animals);
-                    }
-                }
-
-                @Override
-                public void onFailure(String response) {
-                    goi.onFailure("Can't get personal stories from the server");
-                }
-            });
-        }
-    }
-
     public void getImageFullUrl(String url, int width, int height, GetObjectInterface goi) {
         ni.postImageWithoutPrefix(url, width, height, new ResponseInterface<Bitmap>() {
             @Override
