@@ -42,7 +42,6 @@ public class PersonalPopUp extends BaseActivity {
             this.finish();
         }
 
-        Log.e("AVIV", animal.getStory());
         //calculate the window size
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);

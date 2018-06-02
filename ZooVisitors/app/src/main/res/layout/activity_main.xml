@@ -72,81 +72,92 @@
                 android:layout_weight="0" />
         </LinearLayout>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="22"-->
-            <!--android:baselineAligned="false"-->
-            <!--android:weightSum="2"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<LinearLayout-->
-                <!--android:id="@+id/first_buttons_layout"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:weightSum="3"-->
-                <!--android:orientation="vertical">-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-            <!--</LinearLayout>-->
-
-            <!--<LinearLayout-->
-                <!--android:id="@+id/second_buttons_layout"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:weightSum="3"-->
-                <!--android:orientation="vertical">-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-                <!--<com.zoovisitors.pl.customViews.MainButtonCustomView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1" />-->
-            <!--</LinearLayout>-->
-        <!--</LinearLayout>-->
-
-
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="22"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:paddingLeft="20dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="22" >
 
-            <LinearLayout
-                android:id="@+id/first_buttons_layout"
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/second_buttons_layout"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_horizontal_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.33333333" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_horizontal_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.66666667" />
 
-            </LinearLayout>
-        </LinearLayout>
+            <include
+                android:id="@+id/personal_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_top"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/guideline_vertical"/>
+
+            <include
+                android:id="@+id/enc_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_top"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline_vertical"/>
+
+            <include
+                android:id="@+id/schedule_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="@id/guideline_horizontal_top"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_bottom"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/guideline_vertical"/>
+
+            <include
+                android:id="@+id/map_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="@id/guideline_horizontal_top"
+                app:layout_constraintBottom_toTopOf="@id/guideline_horizontal_bottom"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline_vertical"/>
+
+            <include
+                android:id="@+id/other_info_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="@id/guideline_horizontal_bottom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/guideline_vertical"/>
+
+            <include
+                android:id="@+id/waz_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                layout="@layout/main_button_custom_view"
+                app:layout_constraintTop_toTopOf="@id/guideline_horizontal_bottom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline_vertical"/>
+        </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
 
