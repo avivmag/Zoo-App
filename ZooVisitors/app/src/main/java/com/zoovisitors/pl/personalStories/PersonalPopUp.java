@@ -27,7 +27,7 @@ public class PersonalPopUp extends BaseActivity {
         setContentView(R.layout.activity_personal_pop_up);
 
         // get the clicked personal story
-        int storyId = (int) getIntent().getExtras().getSerializable("animalId");
+        int storyId = (int) getIntent().getIntExtra("animalId", -1);
 
         stories = GlobalVariables.bl.getPersonalStories();
         Animal.PersonalStories animal = null;

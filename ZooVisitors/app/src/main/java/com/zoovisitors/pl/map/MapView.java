@@ -2,14 +2,19 @@ package com.zoovisitors.pl.map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import android.widget.RelativeLayout;
 
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.Misc;
+import com.zoovisitors.pl.map.icons.Icon;
 import com.zoovisitors.pl.map.icons.MiscIcon;
 import com.zoovisitors.pl.map.icons.VisitorIcon;
 import com.zoovisitors.pl.map.icons.ZooMapIcon;
@@ -30,8 +35,12 @@ public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
     private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
     private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
+    private static final int FOCUS_ON_LOCATION_ANIMATION_TIME = 2000;
+    private static final int RATTLE_ANIMATION_HALF_TIME = 100;
     private int PRIMARY_IMAGE_INITIAL_MARGIN = 50;
     private int primaryImageMargin;
+
+    private int enclosureIdToFocus;
 
     private float mPosX;
     private float mPosY;
@@ -62,17 +71,31 @@ public class MapView extends RelativeLayout {
     private int screenWidth;
     private int screenHeight;
 
+    public void SetInitialValues(Bitmap zooMapBitmap, Enclosure[] enclosures, Misc[] miscs, int enclosureIdToFocus) {
+        this.enclosureIdToFocus = enclosureIdToFocus;
+        zooMapIcon = new ZooMapIcon(this, new Object[] {zooMapBitmap});
+        visitorIcon = new VisitorIcon(this);
+        for(int i = 0; i < enclosures.length; i++)
+            if(enclosures[i].getMarkerBitmap() != null) {
+                addEnclosure(enclosures[i], i);
+            }
+        for (Misc misc :
+                miscs) {
+            if(misc.getMarkerBitmap() != null) {
+                addMiscIcon(misc);
+            }
+        }
+    }
+
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
         equatorScaleFactor = ((float) screenWidth / primaryImageWidth + (float) screenHeight /
                 primaryImageHeight) / 2;
-        maxScaleFactor = equatorScaleFactor * 3;
+        maxScaleFactor = equatorScaleFactor * 4;
         minScaleFactor =
                 Math.min(
                         (float) screenWidth / (primaryImageWidth + 2 * primaryImageMargin),
                         (float) screenHeight / (primaryImageHeight + 2 * primaryImageMargin)
                 );
-
-
         mScaleFactor = mLastScaleFactor =
                 Math.max(
                         (float) screenWidth / primaryImageWidth,
@@ -80,6 +103,9 @@ public class MapView extends RelativeLayout {
                 );
         mPosX = screenWidth / 2 - getmScaleFactor() * zooMapIcon.width / 2;
         mPosY = screenHeight / 2 - getmScaleFactor() * zooMapIcon.height / 2;
+
+        if(enclosureIdToFocus != -1)
+            focusOnIconAndRattle(enclosureIdToFocus);
     }
 
     public MapView(Context context) {
@@ -128,11 +154,6 @@ public class MapView extends RelativeLayout {
         );
     }
 
-    public void SetInitialValues(Bitmap zooMapBitmap) {
-        zooMapIcon = new ZooMapIcon(this, new Object[] {zooMapBitmap});
-        visitorIcon = new VisitorIcon(this);
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (MotionEvent.ACTION_DOWN == ev.getAction()) {
@@ -158,6 +179,7 @@ public class MapView extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        animationInterrupt = true;
         // Let the ScaleGestureDetector inspect all events.
         mScaleDetector.onTouchEvent(ev);
 
@@ -177,19 +199,7 @@ public class MapView extends RelativeLayout {
                 setMPos(x, y);
                 mLastScaleFactor = getmScaleFactor();
 
-                zooMapIcon.updateIconPosition();
-
-                for (EnclosureIconsHandler enclosureIconsHandler :
-                        enclosureIconsHandlers) {
-                    enclosureIconsHandler.updateIconPositionWithSize();
-                }
-                for (MiscIcon miscIcon :
-                        miscIcons) {
-                    miscIcon.updateIconPosition();
-                }
-                if (visitorIcon.view.getVisibility() == VISIBLE) {
-                    visitorIcon.updateIconPosition();
-                }
+                updateViewsPosition();
 
                 mLastTouchX = x;
                 mLastTouchY = y;
@@ -294,5 +304,109 @@ public class MapView extends RelativeLayout {
 
     public void HideVisitorIcon() {
         visitorIcon.Hide();
+    }
+
+    public void focusOnIconAndRattle(int enclosureId) {
+        Icon icon = null;
+        for (EnclosureIconsHandler handler :
+                enclosureIconsHandlers) {
+            if(handler.getEnclosureId() == enclosureId) {
+                icon = handler.getEnclosureIcon();
+                break;
+            }
+        }
+        if(icon == null)
+            return;
+
+        int numberOfRattleTimes = 2;
+        focusOnLocationAnimation(icon.left, icon.top, FOCUS_ON_LOCATION_ANIMATION_TIME);
+        Icon finalIcon = icon;
+        new Handler().postDelayed(() -> {
+            rattleViewAnimation(finalIcon.view, numberOfRattleTimes);
+        }, FOCUS_ON_LOCATION_ANIMATION_TIME - numberOfRattleTimes * RATTLE_ANIMATION_HALF_TIME);
+    }
+
+    private boolean animationInterrupt = false;
+    private void focusOnLocationAnimation(int x, int y, int duration) {
+        float initialMScaleFactor = mScaleFactor;
+        float initialMPosX = mPosX;
+        float initialMPosY = mPosY;
+
+        animationInterrupt = false;
+
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(animationInterrupt)
+                    this.cancel();
+
+                mScaleFactor = mLastScaleFactor = initialMScaleFactor + (maxScaleFactor - initialMScaleFactor) * interpolatedTime;
+                mPosX =
+                        Math.max(
+                                Math.min(
+                                        initialMPosX + (screenWidth / 2 - x * maxScaleFactor - initialMPosX) * interpolatedTime,
+                                        mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 +
+                                                primaryImageMargin)
+                                ),
+                                screenWidth - mScaleFactor * (zooMapIcon.width + primaryImageMargin)
+                        );
+                mPosY =
+                        Math.max(
+                                Math.min(
+                                        initialMPosY + (screenHeight / 2 - y * maxScaleFactor - initialMPosY) * interpolatedTime,
+                                        mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 +
+                                                primaryImageMargin)
+                                ),
+                                screenHeight - mScaleFactor * (zooMapIcon.height + primaryImageMargin)
+                        );
+                updateViewsPosition();
+            }
+        };
+        a.setDuration(duration);
+        startAnimation(a);
+    }
+
+    private void rattleViewAnimation(View view, int times) {
+        Animation biggerAnimation = new ScaleAnimation(
+                1f, 1.1f, 1f, 1.1f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+        );
+        biggerAnimation.setDuration(RATTLE_ANIMATION_HALF_TIME);
+        view.startAnimation(biggerAnimation);
+
+        Animation smallerAnimation = new ScaleAnimation(
+                1.1f, 1f, 1.1f, 1f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+        );
+        smallerAnimation.setDuration(RATTLE_ANIMATION_HALF_TIME);
+        new Handler().postDelayed(() -> {
+            view.startAnimation(smallerAnimation);
+        }, RATTLE_ANIMATION_HALF_TIME);
+        if(times > 1) {
+            new Handler().postDelayed(() -> {
+                rattleViewAnimation(view, times - 1);
+            }, RATTLE_ANIMATION_HALF_TIME * 2);
+        }
+    }
+
+    private void updateViewsPosition() {
+        zooMapIcon.updateIconPosition();
+        for (EnclosureIconsHandler enclosureIconsHandler :
+                enclosureIconsHandlers) {
+            enclosureIconsHandler.updateIconPositionWithSize();
+        }
+        for (MiscIcon miscIcon :
+                miscIcons) {
+            miscIcon.updateIconPosition();
+        }
+        if (visitorIcon.view.getVisibility() == VISIBLE) {
+            visitorIcon.updateIconPosition();
+        }
     }
 }
