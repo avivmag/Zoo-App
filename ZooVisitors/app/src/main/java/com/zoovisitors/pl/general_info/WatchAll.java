@@ -4,6 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,7 @@ public class WatchAll extends BaseActivity {
             //initiate the text TextView
             TextViewRegularText regularText = new TextViewRegularText(getBaseContext(), View.TEXT_ALIGNMENT_GRAVITY);
             regularText.setText(feed.getInfo());
+            Log.e("FEED", feed.getInfo());
 
             feedLayout.addView(titleText);
             feedLayout.addView(dateText);

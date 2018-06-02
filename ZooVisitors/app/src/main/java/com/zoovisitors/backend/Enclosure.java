@@ -197,11 +197,11 @@ public class Enclosure implements java.io.Serializable{
         }
 
         public String getStartTime() {
-            return startTime;
+            return fixHoursToShow(startTime);
         }
 
         public String getEndTime() {
-            return endTime;
+            return fixHoursToShow(endTime);
         }
 
         public String getTitle() {
@@ -209,6 +209,11 @@ public class Enclosure implements java.io.Serializable{
         }
 
         public int getDay() { return  day; }
+
+        private String fixHoursToShow(String date){
+            date = date.substring(0, date.length()-3);
+            return date;
+        }
     }
 
     public class PictureEnc implements java.io.Serializable{

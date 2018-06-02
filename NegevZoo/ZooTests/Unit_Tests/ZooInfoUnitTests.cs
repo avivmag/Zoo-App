@@ -1291,16 +1291,16 @@ namespace ZooTests.Unit_Tests
         public void UpdateAboutUsValidInput()
         {
             var aboutUs = context.GetZooAboutInfo((int)Languages.en);
-            Assert.AreEqual(aboutUs.Count(), 1);
+            Assert.AreEqual(aboutUs, "We are Negev Zoo!!! We love animals");
 
-            var oldAboutUs = aboutUs.First();
+            var oldAboutUs = aboutUs;
             var newAboutUs = "This is the new about us!";
 
             context.UpdateZooAboutInfo(newAboutUs, (int)Languages.en);
 
             aboutUs = context.GetZooAboutInfo((int)Languages.en);
-            Assert.IsTrue(aboutUs.Any(au => au == newAboutUs));
-            Assert.IsFalse(aboutUs.Any(au => au == oldAboutUs));
+            Assert.AreEqual(aboutUs, newAboutUs);
+            Assert.AreNotEqual(aboutUs, oldAboutUs);
         }
 
         [TestMethod]

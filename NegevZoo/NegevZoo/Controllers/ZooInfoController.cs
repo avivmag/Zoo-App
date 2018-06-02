@@ -533,19 +533,24 @@ namespace NegevZoo.Controllers
         /// <returns>The zoo's about info.</returns>
         [HttpGet]
         [Route("about/info/{language}")]
-        public IEnumerable<AboutUsResult> GetZooAboutInfo(int language = 1)
+        public AboutUsResult GetZooAboutInfo(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.GetZooAboutInfo(language)
-                        .Select(zi =>
-                            new AboutUsResult
-                            {
-                                AboutUs = zi
-                            })
-                        .ToArray();
+                    var aboutUs = db.GetZooAboutInfo(language);
+                    return new AboutUsResult()
+                    {
+                        AboutUs = aboutUs
+                    };
+                    //return db.GetZooAboutInfo(language)
+                    //    .Select(zi =>
+                    //        new AboutUsResult
+                    //        {
+                    //            AboutUs = zi
+                    //        })
+                    //    .ToArray();
                 }
             }
             catch (Exception Exp)
