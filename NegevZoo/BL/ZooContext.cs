@@ -1896,17 +1896,21 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the about info is in.</param>
         /// <returns>The zoo's about info.</returns>
-        public IEnumerable<String> GetZooAboutInfo(int language)
+        public String GetZooAboutInfo(int language)
         {
             if (!ValidLanguage(language))
             {
                 throw new ArgumentException("Wrong input. Wrong language");
             }
 
-            return zooDB.GetFromCache(zooDB.GetGeneralInfo())
+            var aboutUs = zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.aboutUs)
                 .ToArray();
+
+            if (aboutUs != null)
+                return aboutUs.First();
+            return null;
         }
 
         /// <summary>
@@ -3226,7 +3230,7 @@ namespace BL
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
             var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
-            var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
+            var aboutUs             = this.GetZooAboutInfo(language);
 
             var contactInfoResult   = new
             {
