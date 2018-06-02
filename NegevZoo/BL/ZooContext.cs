@@ -3230,7 +3230,7 @@ namespace BL
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
             var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
-            var aboutUs             = this.GetZooAboutInfo(language).FirstOrDefault();
+            var aboutUs             = this.GetZooAboutInfo(language);
 
             var contactInfoResult   = new
             {
