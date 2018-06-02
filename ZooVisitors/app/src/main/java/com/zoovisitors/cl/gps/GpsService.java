@@ -17,7 +17,7 @@ public class GpsService extends Service
     private static final double MAX_MARGIN = 10 * 0.0111111;
     private LocationListener mLocationListener = new LocationListener();
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 0;//30 * 1000;
+    private static final int LOCATION_INTERVAL = 30 * 1000;
     private static final float LOCATION_DISTANCE = 0;
 
     private class LocationListener implements android.location.LocationListener
