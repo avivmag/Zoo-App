@@ -147,15 +147,18 @@ public class NetworkImpl implements NetworkInterface {
 
                     String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
-                    byte data[] = new byte[1024];
+                    byte data[] = new byte[1024 * 1024 * 10];
 
                     total = 0;
                     String strAllData = "";
-                    while ((count = input.read(data)) != -1) {
+                    while ((count = input.read(data, total, data.length - total)) != -1) {
                         total += count;
-                        strAllData += new String(data, 0, count);
+                        if (total >= data.length) {
+                            break;
+                        }
                         publishProgress((int) ((total * 100) / lengthOfFile));
                     }
+                    strAllData = new String(data, 0, total);
                     input.close();
                     return strAllData;
 
@@ -179,7 +182,4 @@ public class NetworkImpl implements NetworkInterface {
             }
         }.execute("http://" + GlobalVariables.ServerAddress + "/" + innerUrl);
     }
-
-
-
 }
