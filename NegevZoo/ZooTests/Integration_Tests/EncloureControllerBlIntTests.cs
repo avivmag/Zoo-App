@@ -51,7 +51,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAllEnclosuresResultsLangEng()
         {
-            Assert.AreEqual(3, enclosureController.GetAllEnclosureResults((int)Languages.en).Count());
+            Assert.AreEqual(4, enclosureController.GetAllEnclosureResults((int)Languages.en).Count());
         }
 
         [TestMethod]
@@ -231,7 +231,7 @@ namespace ZooTests
         public void UpdateEnclosureAddEncValidTest()
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -242,7 +242,7 @@ namespace ZooTests
             enclosureController.UpdateEnclosure(enc);
 
             encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
         }
 
         [TestMethod]
@@ -251,7 +251,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -270,7 +270,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -404,7 +404,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -448,7 +448,7 @@ namespace ZooTests
         public void UpdateEnclosureDetailsEncDoesntExists()
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -467,7 +467,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -486,7 +486,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -505,7 +505,7 @@ namespace ZooTests
         {
             var encs = enclosureController.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -631,7 +631,7 @@ namespace ZooTests
             {
                 id          = default(int),
                 enclosureId = 2,
-                day         = 12,
+                day         = 1,
                 description = "Looking",
                 startTime   = new TimeSpan(10,30,00),
                 endTime     = new TimeSpan(11,30,00),
@@ -660,7 +660,7 @@ namespace ZooTests
             {
                 id = default(int),
                 enclosureId = 2,
-                day = 17,
+                day = 7,
                 description = "Looking",
                 startTime = new TimeSpan(10, 00, 00),
                 endTime = new TimeSpan(10, 30, 00),
@@ -747,32 +747,6 @@ namespace ZooTests
                 id = default(int),
                 enclosureId = 2,
                 day = 8,
-                description = "Looking",
-                startTime = new TimeSpan(10, 30, 00),
-                endTime = new TimeSpan(11, 30, 00),
-                language = (int)Languages.en
-            };
-
-            enclosureController.UpdateRecurringEvent(newRecEvent);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateRecurringEventWrongDayAccordingToLanguage()
-        {
-            var events = enclosureController.GetRecurringEvents(2, 2);
-            Assert.AreEqual(2, events.Count());
-
-            var recEvent = events.First();
-            Assert.AreEqual(4, recEvent.id);
-            Assert.AreEqual(11, recEvent.day);
-            Assert.AreEqual("Playing", recEvent.description);
-
-            var newRecEvent = new RecurringEvent
-            {
-                id = default(int),
-                enclosureId = 2,
-                day = 2,
                 description = "Looking",
                 startTime = new TimeSpan(10, 30, 00),
                 endTime = new TimeSpan(11, 30, 00),
@@ -901,7 +875,7 @@ namespace ZooTests
             {
                 id = 6,
                 enclosureId = 2,
-                day = 17,
+                day = 7,
                 description = "Feeding",
                 startTime = new TimeSpan(10, 30, 0),
                 endTime = new TimeSpan(11, 0, 0),
@@ -909,14 +883,14 @@ namespace ZooTests
             };
 
             newRecEvent.description = "kaki";
-            newRecEvent.day = 16;
+            newRecEvent.day = 6;
 
             enclosureController.UpdateRecurringEvent(newRecEvent);
 
             events = enclosureController.GetRecurringEvents(2,2);
             Assert.AreEqual(2, events.Count());
             Assert.IsNotNull(events.SingleOrDefault(re => re.description == "kaki"));
-            Assert.IsNotNull(events.SingleOrDefault(re => re.day == 16));
+            Assert.IsNotNull(events.SingleOrDefault(re => re.day == 6));
             Assert.IsNull(events.SingleOrDefault(re => re.day == 17));
         }
 

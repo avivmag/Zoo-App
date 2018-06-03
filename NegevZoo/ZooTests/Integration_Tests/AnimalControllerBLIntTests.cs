@@ -53,7 +53,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAllAnimalResultsLangAr()
         {
-            Assert.AreEqual(0, animalsController.GetAllAnimalsResults((int)Languages.ar).Count());
+            Assert.AreEqual(3, animalsController.GetAllAnimalsResults((int)Languages.ar).Count());
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace ZooTests
         [TestMethod]
         public void GetAnimalResultsWithStoryLangAr()
         {
-            Assert.AreEqual(0, animalsController.GetAnimalResultsWithStory((int)Languages.ar).Count());
+            Assert.AreEqual(2, animalsController.GetAnimalResultsWithStory((int)Languages.ar).Count());
         }
 
         [TestMethod]

@@ -3268,6 +3268,11 @@ namespace BL
 
         public void Dispose()
         {
+            // If the database is a dummy, no need to dispose anything, nor track the changes.
+            if (zooDB.GetType() == typeof(DummyDB)) {
+                return;
+            }
+
             var test = zooDB.ChangeTracker.Entries();
 
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
