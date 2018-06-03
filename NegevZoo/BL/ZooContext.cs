@@ -2391,7 +2391,8 @@ namespace BL
         /// <returns>The users.</returns>
         public IEnumerable<User> GetAllUsers()
         {
-            return zooDB.GetFromCache(zooDB.GetAllUsers()).ToArray();
+            return zooDB.GetAllUsers();
+            //return zooDB.GetFromCache(zooDB.GetAllUsers()).ToArray();
         }
 
         /// <summary>
@@ -3264,6 +3265,11 @@ namespace BL
 
         public void Dispose()
         {
+            // If the database is a dummy, no need to dispose anything, nor track the changes.
+            if (zooDB.GetType() == typeof(DummyDB)) {
+                return;
+            }
+
             var test = zooDB.ChangeTracker.Entries();
 
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();

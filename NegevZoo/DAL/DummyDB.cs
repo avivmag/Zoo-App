@@ -85,7 +85,7 @@ namespace DAL
 
         public override List<T> GetFromCache<T>(DbSet<T> table)
         {
-            return null;
+            return table.ToList();
         }
 
         public override void RemoveFromCache(string entity)
