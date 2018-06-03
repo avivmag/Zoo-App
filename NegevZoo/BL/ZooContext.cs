@@ -2391,8 +2391,7 @@ namespace BL
         /// <returns>The users.</returns>
         public IEnumerable<User> GetAllUsers()
         {
-            return zooDB.GetAllUsers();
-            //return zooDB.GetFromCache(zooDB.GetAllUsers()).ToArray();
+            return zooDB.GetFromCache(zooDB.GetAllUsers()).ToArray();
         }
 
         /// <summary>
