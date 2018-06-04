@@ -24,8 +24,8 @@ namespace ZooTests
             ControllerBase.isTesting = true;
             usersController = new UserController();
             usersController.Request = new HttpRequestMessage();
-            usersController.Request.Headers.Add("Cookie","session-id=123");
-            usersController.Request.RequestUri = new Uri("http://localhost:50000");
+            usersController.Request.Headers.Add("Cookie", "session-id=123");
+            usersController.Request.RequestUri = new Uri("http://localhost:50555");
         }
 
         [TestCleanup]

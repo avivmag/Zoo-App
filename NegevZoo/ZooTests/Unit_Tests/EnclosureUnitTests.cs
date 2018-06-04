@@ -42,7 +42,7 @@ namespace ZooTests.Unit_Tests
         [TestMethod]
         public void GetAllEnclosuresResultsLangEng()
         {
-            Assert.AreEqual(3, context.GetAllEnclosureResults((int)Languages.en).Count());
+            Assert.AreEqual(4, context.GetAllEnclosureResults((int)Languages.en).Count());
         }
 
         [TestMethod]
@@ -222,7 +222,7 @@ namespace ZooTests.Unit_Tests
         public void UpdateEnclosureAddEncValidTest()
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -233,7 +233,7 @@ namespace ZooTests.Unit_Tests
             context.UpdateEnclosure(enc);
 
             encs = context.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
         }
 
         [TestMethod]
@@ -242,7 +242,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -259,7 +259,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new Enclosure
             {
@@ -391,7 +391,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -435,7 +435,7 @@ namespace ZooTests.Unit_Tests
         public void UpdateEnclosureDetailsEncDoesntExists()
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -454,7 +454,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -473,7 +473,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -492,7 +492,7 @@ namespace ZooTests.Unit_Tests
         {
             var encs = context.GetAllEnclosureResults((int)Languages.en);
             Assert.IsNotNull(encs);
-            Assert.AreEqual(3, encs.Count());
+            Assert.AreEqual(4, encs.Count());
 
             var enc = new EnclosureDetail
             {
@@ -618,7 +618,7 @@ namespace ZooTests.Unit_Tests
             {
                 id = default(int),
                 enclosureId = 2,
-                day = 12,
+                day = 1,
                 description = "Looking",
                 startTime = new TimeSpan(10, 30, 00),
                 endTime = new TimeSpan(11, 30, 00),
@@ -647,7 +647,7 @@ namespace ZooTests.Unit_Tests
             {
                 id = default(int),
                 enclosureId = 2,
-                day = 17,
+                day = 7,
                 description = "Looking",
                 startTime = new TimeSpan(10, 00, 00),
                 endTime = new TimeSpan(10, 30, 00),
@@ -744,7 +744,6 @@ namespace ZooTests.Unit_Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Wrong input. The day is not defined")]
         public void UpdateRecurringEventWrongDayAccordingToLanguage()
         {
             var events = context.GetRecurringEvents(2, 2);
@@ -874,6 +873,7 @@ namespace ZooTests.Unit_Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Wrong input. The day is not defined")]
         public void UpdateRecurringEventUpdateRecEventValidInput()
         {
             var events = context.GetRecurringEvents(1, (int)Languages.he);
