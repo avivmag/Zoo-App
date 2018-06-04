@@ -28,6 +28,7 @@ import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTim
 public class EnclosureIconsHandler {
     public static final long RECURRING_EVENT_TIMER_ELAPSE_TIME = 30 * 60 * 1000;
 
+    private int enclosureId;
     private EnclosureIcon enclosureIcon;
     private View.OnTouchListener onTouchListener;
     private RecurringEventCountDownIcon recurringEventCountDownIcon;
@@ -39,11 +40,12 @@ public class EnclosureIconsHandler {
 
     public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Timer
             timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables, int encIndex) {
+        enclosureId = enclosure.getId();
         this.timerFastRunnables = timerFastRunnables;
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-        onTouchListener = createOnTouchListener(enclosure, encIndex);
+        onTouchListener = createOnTouchListener(encIndex);
         enclosureIcon = new EnclosureIcon(mapView, enclosure.getMarkerBitmap(), onTouchListener,
                 enclosure.getMarkerX(),
                 enclosure.getMarkerY());
@@ -74,7 +76,7 @@ public class EnclosureIconsHandler {
     }
 
     @NonNull
-    private View.OnTouchListener createOnTouchListener(Enclosure enclosure, int encIndex) {
+    private View.OnTouchListener createOnTouchListener(int encIndex) {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -181,5 +183,13 @@ public class EnclosureIconsHandler {
                            }
                        },
                 delayTime);
+    }
+
+    public EnclosureIcon getEnclosureIcon() {
+        return enclosureIcon;
+    }
+
+    public int getEnclosureId() {
+        return enclosureId;
     }
 }

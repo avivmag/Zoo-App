@@ -24,7 +24,7 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_GPS = 310;
     private LocationManager lm;
     private LocationListener locationListener;
-    private boolean refusedToTurnOnGPS = false;
+    private static boolean refusedToTurnOnGPS = false;
 
     public void startProviderActivity() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

@@ -8,7 +8,7 @@
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
     <!--main menu buttons-->
-    <string name="watch_all_feed">اعرض الكل</string>
+    <string name="watch_all_feed">اقرأ المزيد</string>
     <string name="our_enclosures">مجمعاتنا</string>
     <string name="schedule">تقويم</string>
     <string name="map">خريطة</string>
@@ -89,6 +89,8 @@
     <string name="turn_the_volume">הגבר את עוצמת השמע</string>
 
     <string name="confirm">אישור</string>
+
+    <string name="language_preferences">language</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 </resources>

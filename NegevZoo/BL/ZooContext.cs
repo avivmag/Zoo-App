@@ -200,6 +200,21 @@ namespace BL
         }
 
         /// <summary>
+        /// Fixes the closest point bug.
+        /// </summary>
+        public void FixClosestPoint()
+        {
+            // Get all the enclosures.
+            var enclosures = this.zooDB.GetAllEnclosures().ToArray();
+
+            // For each enclosure, update it, meaning firing the closest point algorithm.
+            foreach (var enclosure in enclosures)
+            {
+                this.UpdateEnclosure(enclosure);
+            }
+        }
+
+        /// <summary>
         /// Gets the recurring events.
         /// </summary>
         /// <param name="language">The RecurringEvent's data language.</param>
@@ -365,13 +380,13 @@ namespace BL
             for (int i = indexRange[0]; i <= indexRange[1]; i++)
             {
                 int curDistance = squaredDistance(point, points[i]);
-                if (curDistance < distanceToNearest && curDistance <=
-                        MAX_APPROXIMATE_DISTANCE_FROM_POINT)
+                if (curDistance < distanceToNearest)
                 {
                     distanceToNearest = curDistance;
                     nearest = points[i];
                 }
             }
+
             return nearest;
         }
 
@@ -3267,6 +3282,11 @@ namespace BL
 
         public void Dispose()
         {
+            // If the database is a dummy, no need to dispose anything, nor track the changes.
+            if (zooDB.GetType() == typeof(DummyDB)) {
+                return;
+            }
+
             var test = zooDB.ChangeTracker.Entries();
 
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();

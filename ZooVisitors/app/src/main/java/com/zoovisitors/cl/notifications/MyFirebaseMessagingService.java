@@ -18,11 +18,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.pl.MainActivity;
-import com.zoovisitors.pl.map.MapActivity;
-import com.zoovisitors.pl.schedule.ScheduleActivity;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Gili on 21/03/2018.

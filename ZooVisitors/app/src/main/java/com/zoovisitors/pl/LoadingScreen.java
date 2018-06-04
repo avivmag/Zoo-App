@@ -1,10 +1,14 @@
 package com.zoovisitors.pl;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
@@ -12,25 +16,38 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.UpdateInterface;
 import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.pl.customViews.ProgressBarCustomView;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class LoadingScreen extends BaseActivity {
 
     //progress bar fields
     private ProgressBarCustomView pb;
+    private Map<Integer, String> languageMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        changeLanguage();
 
         //hiding the action bar in this activity
         android.support.v7.app.ActionBar AB= getSupportActionBar();
         AB.hide();
 
+
+
+        languageMap = new HashMap<Integer, String>();
+        //put language in the app according to values/strings/(**)
+        languageMap.put(1, "iw");
+        languageMap.put(2, "en");
+        languageMap.put(3, "ar");
+        languageMap.put(4, "ru");
+
         setContentView(R.layout.activity_loading_screen);
         //Initialize business layer (change for testing)
         GlobalVariables.appCompatActivity = this;
+        changeLanguage();
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
@@ -69,8 +86,11 @@ public class LoadingScreen extends BaseActivity {
     }
 
     private void changeLanguage() {
-        if (GlobalVariables.firstEnter == 0) {
-            switch (Locale.getDefault().getLanguage()){
+        SharedPreferences sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
+        int languageNotInstantiate = getResources().getInteger(R.integer.language_not_instantiate);
+        GlobalVariables.language = sharedPref.getInt(getString(R.string.language_preferences), languageNotInstantiate);
+        if (GlobalVariables.language == languageNotInstantiate) {
+            switch (Locale.getDefault().getLanguage()) {
                 case "he": //Hebrew
                     GlobalVariables.language = 1;
                     break;
@@ -83,11 +103,29 @@ public class LoadingScreen extends BaseActivity {
                 case "ru": //Russian
                     GlobalVariables.language = 4;
                     break;
-                    default:
-                        GlobalVariables.language = 1;
-                        break;
+                default:
+                    GlobalVariables.language = 1;
+                    break;
             }
-            GlobalVariables.firstEnter++;
+            sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(getString(R.string.language_preferences), GlobalVariables.language);
+            editor.commit();
+            setLocale();
         }
+        else
+            setLocale();
+
+    }
+
+
+    private void setLocale() {
+
+        Locale myLocale = new Locale(languageMap.get(GlobalVariables.language));
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
     }
 }
