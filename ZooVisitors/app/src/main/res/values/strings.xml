@@ -9,7 +9,7 @@
     <string name="language_rus">русский</string>
 
     <!--main menu buttons-->
-    <string name="watch_all_feed">הצג הכל</string>
+    <string name="watch_all_feed">קרא עוד</string>
     <string name="news_feed">קיר עדכונים:</string>
     <string name="our_enclosures">המתחמים שלנו</string>
     <string name="schedule">לוח שנה</string>
@@ -51,7 +51,7 @@
     <string name="population">אוכלוסיה</string>
     <string name="opening_hours_headline">זמני פתיחה</string>
     <string name="opening_hours">שעות פתיחה</string>
-    <string name="about_us">עלינו</string>
+    <string name="about_us">אודות</string>
     <string name="contact_address">כתובת</string>
     <string name="prices_headline">מחירון:</string>
     <string name="days">ימים</string>
@@ -91,6 +91,8 @@
     <string name="confirm">אישור</string>
 
     <string name="vertical_ellipsis">&#8942;</string>
+
+    <string name="language_preferences">language</string>
 
     <!--bold and underline text-->
     <string name="register"><u><b>Copyright</b></u></string>
