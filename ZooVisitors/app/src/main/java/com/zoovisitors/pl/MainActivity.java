@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -265,6 +266,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 3) {
                     GlobalVariables.language = 3;
+                    setLanguageOnPreferences();
                     setLocale(LanguageMap.get("Arabic"));
                 }
                 return;
@@ -275,6 +277,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 2) {
                     GlobalVariables.language = 2;
+                    setLanguageOnPreferences();
                     setLocale(LanguageMap.get("English"));
                 }
                 return;
@@ -285,6 +288,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 1) {
                     GlobalVariables.language = 1;
+                    setLanguageOnPreferences();
                     setLocale(LanguageMap.get("Hebrew"));
                 }
                 return;
@@ -295,6 +299,7 @@ public class MainActivity extends BaseActivity {
                 arbItem.setChecked(false);
                 if (GlobalVariables.language != 4) {
                     GlobalVariables.language = 4;
+                    setLanguageOnPreferences();
                     setLocale(LanguageMap.get("Russian"));
                 }
                 return;
@@ -499,5 +504,12 @@ public class MainActivity extends BaseActivity {
             ((TextView) cl.findViewById(R.id.icon_text)).setTextSize(12);
         }
 
+    }
+
+    private void setLanguageOnPreferences(){
+        SharedPreferences sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.language_preferences), GlobalVariables.language);
+        editor.commit();
     }
 }
