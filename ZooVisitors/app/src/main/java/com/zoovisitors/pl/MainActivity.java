@@ -467,6 +467,7 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.map_layout:
                 intent = new Intent(MainActivity.this, MapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 break;
             case R.id.schedule_layout:
                 intent = new Intent(MainActivity.this, ScheduleActivity.class);

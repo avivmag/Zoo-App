@@ -31,6 +31,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        int encId = getIntent().getIntExtra("enclosureID", -1);
+        // on the first run the map is not ready, so we need to run it in other place
+        if(!firstRun && encId != -1) {
+            mapView.focusOnIconAndRattle(encId);
+        }
+        getIntent().putExtra("enclosureID", -1);
+        firstRun = false;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
 
     public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 220;
     private MapView mapView;
@@ -45,6 +63,7 @@ public class MapActivity extends ProviderBasedActivity
     private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
+    private boolean firstRun = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +255,11 @@ public class MapActivity extends ProviderBasedActivity
         a.setDuration(GET_TO_KNOW_ME_ANIMATION_TIME);
         getToKnowMeLayout.startAnimation(a);
         isGetToKnowMeShown = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(false);
     }
 
     @Override
