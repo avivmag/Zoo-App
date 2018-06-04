@@ -536,5 +536,32 @@ namespace NegevZoo.Controllers
 
         #endregion
         
+        /// <summary>
+        /// Fixes the closest point issue.
+        /// </summary>
+        [HttpGet]
+        [Route("enclosures/closestPointFix")]
+        public void FixClosestPoint()
+        {
+            try
+            {
+                using (var db = this.GetContext())
+                {
+                    if (ValidateSessionId(db))
+                    {
+                        db.FixClosestPoint();
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+                }
+
+            }
+            catch (Exception Exp)
+            {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
     }
 }
