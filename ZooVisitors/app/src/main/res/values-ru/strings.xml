@@ -8,7 +8,7 @@
     <string name="language_arb">عربى</string>
     <string name="language_rus">русский</string>
     <!--main menu buttons-->
-    <string name="watch_all_feed">Показать все</string>
+    <string name="watch_all_feed">Читать больше</string>
     <string name="our_enclosures">Наши выставки</string>
     <string name="schedule">Календарь</string>
     <string name="map">Карта</string>
@@ -89,6 +89,8 @@
     <string name="init_bad">מצטערים אבל ישנה בעיה. אנא סגרו את האפלייקציה ופתחו אותה שוב</string>
 
     <string name="confirm">אישור</string>
+
+    <string name="language_preferences">language</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 </resources>

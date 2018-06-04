@@ -13,14 +13,14 @@
     <string name="title_activity_general_info">GeneralInfoActivity</string>
 
     <!-- main menu buttons -->
-    <string name="watch_all_feed">watch all</string>
+    <string name="watch_all_feed">Read More</string>
     <string name="news_feed">News Feed:</string>
     <string name="our_enclosures">Our Enclosures</string>
     <string name="schedule">Schedule</string>
     <string name="today_rec_events">Today\'s Events</string>
     <string name="map">Map</string>
     <string name="other_info">Other Info</string>
-    <string name="nav">Navigate to us</string>
+    <string name="nav">Navigate to Us</string>
 
     <!-- Animal Activity -->
     <string name="title_activity_animal">AnimalActivity</string>
@@ -93,6 +93,8 @@
     <string name="init_bad">Sorry but something went wrong. Close the app and open it again</string>
 
     <string name="confirm">Confirm</string>
+
+    <string name="language_preferences">language</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 
