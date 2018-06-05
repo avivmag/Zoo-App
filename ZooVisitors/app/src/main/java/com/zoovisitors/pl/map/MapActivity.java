@@ -21,6 +21,8 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.MapResult;
+import com.zoovisitors.backend.Misc;
+import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.map.DataStructure;
@@ -46,6 +48,7 @@ public class MapActivity extends ProviderBasedActivity
     private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
+    private Enclosure[] enclosures;
     private boolean firstRun = true;
     private boolean needFirstAnimation = true;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
@@ -100,7 +103,17 @@ public class MapActivity extends ProviderBasedActivity
                 mapData.getMapInfo().getMinLongitude(),
                 mapData.getMapInfo().getMaxLongitude()
         );
-        Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
+        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+            @Override
+            public void onSuccess(Object response) {
+                enclosures = (Enclosure[]) response;
+            }
+
+            @Override
+            public void onFailure(Object response) {
+
+            }
+        });
 
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
                 GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1),

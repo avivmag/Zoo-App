@@ -249,7 +249,7 @@ public class EnclosureListActivity extends BaseActivity {
     }
 
     private CustomRelativeLayout getEncCard(Enclosure enc, int encIndex) {
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),enc.getPictureUrl(), enc.getName(),null, layoutWidth);
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(), enc.getPictureUrl(), enc.getName(),null, layoutWidth);
         card.init();
 
         card.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +263,6 @@ public class EnclosureListActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-
         return card;
     }
 

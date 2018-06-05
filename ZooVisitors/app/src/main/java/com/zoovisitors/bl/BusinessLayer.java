@@ -9,6 +9,7 @@ import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.callbacks.UpdateInterface;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 /**
  * Created by Gili on 13/01/2018.
@@ -21,7 +22,7 @@ public interface BusinessLayer {
     /**
      * Returns the enclosures that has been loaded in the load screen
      */
-    Enclosure[] getEnclosures();
+//    Enclosure[] getEnclosures();
     void getEnclosures(final GetObjectInterface goi);
     void getAllRecEvents (final GetObjectInterface goi);
     /**
@@ -57,4 +58,12 @@ public interface BusinessLayer {
     void insertStringandBitmap(String s, Bitmap d);
     Bitmap getBitmapByString(String s);
     MapResult getMapResult();
+
+    //Enclosure and animal cache
+    CustomRelativeLayout[] getEnclosureCards();
+    CustomRelativeLayout[] getAllAnimalCards();
+    CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId);
+
+    void setEnclosureCardsInMemory(CustomRelativeLayout[] cards);
+    void setAllAnimalCards(CustomRelativeLayout[] cards, Animal[] animals);
 }
