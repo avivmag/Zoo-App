@@ -42,10 +42,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".pl.map.MapActivity">
-
-            <!-- android:theme="@style/CustomTheme"> -->
-        </activity>
+        <activity android:name=".pl.map.MapActivity" android:launchMode="singleInstance" />
         <activity
             android:name=".pl.general_info.GeneralInfoActivity"
             android:label="@string/title_activity_general_info"

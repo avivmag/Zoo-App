@@ -116,15 +116,11 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
     }
 
     private boolean runningUpdates = false;
-    @SuppressLint("MissingPermission")
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (!refusedToTurnOnGPS && !handlePermissions() && !handleActivation() && !runningUpdates) {
-            runningUpdates = true;
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, getMinTime(), getMinDistance(), locationListener);
-        }
+        startGpsFlow();
     }
 
     @Override
@@ -151,4 +147,17 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
     public abstract int getMinTime();
 
     public abstract int getMinDistance();
+
+    protected void startGps() {
+        refusedToTurnOnGPS = false;
+        startGpsFlow();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startGpsFlow() {
+        if (!refusedToTurnOnGPS && !handlePermissions() && !handleActivation() && !runningUpdates) {
+            runningUpdates = true;
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, getMinTime(), getMinDistance(), locationListener);
+        }
+    }
 }

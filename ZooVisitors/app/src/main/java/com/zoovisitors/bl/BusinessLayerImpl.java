@@ -48,9 +48,6 @@ public class BusinessLayerImpl implements BusinessLayer {
 
     @Override
     public void getAnimals(int id, final GetObjectInterface goi) {
-
-        Log.e("ANIMALS", ""+id+"/" + GlobalVariables.language);
-
         ni.post("/animals/enclosure/" + id + "/" + GlobalVariables.language, new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
@@ -335,7 +332,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     public void updateIfInPark(boolean isInPark){
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
-            public void onSuccess(String response) { }
+            public void onSuccess(String response) {Log.e("IFINPARK","notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark); }
 
             @Override
             public void onFailure(String response) { }
