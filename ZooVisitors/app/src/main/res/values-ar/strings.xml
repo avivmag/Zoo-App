@@ -54,6 +54,8 @@
     <string name="opening_hours_headline">ساعات العمل:</string>
     <string name="prices_headline">أسعار:</string>
     <string name="searchPlaceHolder">اكتب مجمع او حيوان</string>
+    <string name="enclosures">تطويق</string>
+    <string name="animals">جماعة من الحيوان</string>
     <string name="choose_route">اختر مسار</string>
     <string name="contact_address">כתובת</string>
 
