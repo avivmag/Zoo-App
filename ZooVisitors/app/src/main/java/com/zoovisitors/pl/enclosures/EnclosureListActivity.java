@@ -1,6 +1,8 @@
 package com.zoovisitors.pl.enclosures;
 
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
+
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
@@ -17,19 +21,20 @@ import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.animals.AnimalActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EnclosureListActivity extends BaseActivity {
     //screen attributes
     private int layoutWidth;
     private LinearLayout.LayoutParams params;
+    //main layout
+    private LinearLayout mainLayout;
     //enc list attributes
+    private TextView encTitle;
     private CustomRelativeLayout[] enclosureCards;
     private LinearLayout firstEncCol;
     private LinearLayout secondEncCol;
     //animal list attributes
     private Animal[] animals;
+    private TextView animalTitle;
     private CustomRelativeLayout[] animalCards;
     private LinearLayout firstAnCol;
     private LinearLayout secondAnCol;
@@ -52,7 +57,13 @@ public class EnclosureListActivity extends BaseActivity {
         params = new LinearLayout.LayoutParams(layoutWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.width = layoutWidth;
 
+        //get the main layout
+        mainLayout = findViewById(R.id.list_layout);
+
         //initialize the enclosure list attributes
+        encTitle = initializeTitle();
+        encTitle.setText(getResources().getString(R.string.our_enclosures));
+        mainLayout.addView(encTitle,0);
         firstEncCol = findViewById(R.id.first_column_enc_list);
         firstEncCol.setLayoutParams(params);
 
@@ -87,6 +98,9 @@ public class EnclosureListActivity extends BaseActivity {
                     public void onSuccess(Object response) {
                         animals = (Animal[]) response;
                         animalCards = new CustomRelativeLayout[animals.length];
+                        for (int i = 0 ; i < animals.length; i++){
+                            animalCards[i] = getAnCard(animals[i]);
+                        }
                     }
 
                     @Override
@@ -128,6 +142,8 @@ public class EnclosureListActivity extends BaseActivity {
                         searchEncAnimal.setQuery("", false);
                         clearSearchList();
                         addMatchEnc("");
+                        InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
+                        in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
                     }
                 });
             }
@@ -137,6 +153,20 @@ public class EnclosureListActivity extends BaseActivity {
                 Log.e("ENCLOSURES", "Cant get enclosures");
             }
         });
+    }
+
+    private TextView initializeTitle() {
+        TextView title = new TextView(getBaseContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(5,0,5,0);
+        title.setLayoutParams(params);
+
+        title.setPadding(0,5,0,5);
+        title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        title.setTypeface(null, Typeface.BOLD);
+        title.setTextSize(20);
+        title.setTextColor(getResources().getColor(R.color.black));
+        return title;
     }
 
     private void addMatchAn(String query) {
@@ -167,6 +197,7 @@ public class EnclosureListActivity extends BaseActivity {
             if (enc.getName().contains(newText)){
                 if (layoutTurn){
                     firstEncCol.addView(enc);
+
                     layoutTurn = false;
                 }
                 else {
@@ -175,6 +206,20 @@ public class EnclosureListActivity extends BaseActivity {
                 }
             }
         }
+
+//        for (int i = 0; i < firstEncCol.getChildCount(); i++){
+//            CustomRelativeLayout enc = (CustomRelativeLayout) firstEncCol.getChildAt(i);
+//            if (!(enc.getName().contains(newText))){
+//                firstEncCol.removeView(enc);
+//            }
+//        }
+//
+//        for (int i = 0; i < secondEncCol.getChildCount(); i++){
+//            CustomRelativeLayout enc = (CustomRelativeLayout) firstEncCol.getChildAt(i);
+//            if (!(enc.getName().contains(newText))){
+//                firstEncCol.removeView(enc);
+//            }
+//        }
     }
 
     private void clearSearchList() {
