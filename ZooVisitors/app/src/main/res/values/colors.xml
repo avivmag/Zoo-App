@@ -16,6 +16,8 @@
     <color name="mapGetToKnowMeBackground">#88000000</color>
     <color name="mapGetToKnowMeText">#BBFFFFFF</color>
 
+    <color name="grayPartlyTransparent">#aadddddd</color>
+
     <!-- colors for buttons -->
     <color name="greenIcon">#88B577</color>
     <color name="lightGreenIcon">#59A63B</color>

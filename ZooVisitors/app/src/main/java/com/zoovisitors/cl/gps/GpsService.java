@@ -26,7 +26,6 @@ public class GpsService extends Service
         public void onLocationChanged(Location location) {
             if(!GlobalVariables.notifications)
                 return;
-
             boolean isInPark = (location.getLatitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLatitude() - MAX_MARGIN &&
                     location.getLatitude() <= GlobalVariables.bl.getMapResult().getMapInfo().getMaxLatitude() + MAX_MARGIN &&
                     location.getLongitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLongitude() - MAX_MARGIN &&

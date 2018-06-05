@@ -237,7 +237,7 @@ public class DataStructure {
         return secNearest;
     }
 
-    public int squaredDistance(Point a, Point b) {
+    public static int squaredDistance(Point a, Point b) {
         return (a.getX() - b.getX()) * (a.getX() - b.getX())
                 + (a.getY() - b.getY()) * (a.getY() - b.getY());
     }
