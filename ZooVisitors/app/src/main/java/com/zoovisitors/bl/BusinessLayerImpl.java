@@ -27,6 +27,11 @@ import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.backend.callbacks.ResponseInterface;
 import com.zoovisitors.dal.DataFromServer;
 import com.zoovisitors.dal.InternalStorage;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Gili on 13/01/2018.
@@ -86,10 +91,10 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-    @Override
-    public Enclosure[] getEnclosures() {
-        return memory.getEnclosures();
-    }
+//    @Override
+//    public Enclosure[] getEnclosures() {
+//        return memory.getEnclosures();
+//    }
 
     @Override
     public void getEnclosures(final GetObjectInterface goi) {
@@ -425,5 +430,48 @@ public class BusinessLayerImpl implements BusinessLayer {
                 goi.onFailure(response);
             }
         });
+    }
+
+    @Override
+    public CustomRelativeLayout[] getEnclosureCards() {
+        return memory.getEnclosureCards();
+    }
+
+    @Override
+    public CustomRelativeLayout[] getAllAnimalCards() {
+        List<CustomRelativeLayout> animalCards = new ArrayList<>();
+        Collection<List<CustomRelativeLayout>> allAnimalList =  memory.getEnclosuresAnimalCardMap().values();
+        for (List<CustomRelativeLayout> animalInEncList : allAnimalList){
+            for (CustomRelativeLayout animalCard : animalInEncList){
+                animalCards.add(animalCard);
+            }
+        }
+        return (CustomRelativeLayout[]) animalCards.toArray();
+    }
+
+    @Override
+    public CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId) {
+        return (CustomRelativeLayout[]) memory.getEnclosuresAnimalCardMap().get(encId).toArray();
+    }
+
+    @Override
+    public void setEnclosureCardsInMemory(CustomRelativeLayout[] cards) {
+        memory.setEnclosureCards(cards);
+    }
+
+    @Override
+    public void setAllAnimalCards(CustomRelativeLayout[] cards, Animal[] animals) {
+        for (int i=0; i<animals.length; i++){
+            List<CustomRelativeLayout> animalCards = memory.getEnclosuresAnimalCardMap().get(animals[i].getEncId());
+            if (animalCards == null){
+                animalCards = new ArrayList<CustomRelativeLayout>();
+                animalCards.add(cards[i]);
+                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+            }
+            else {
+                animalCards.add(cards[i]);
+                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+            }
+        }
     }
 }
