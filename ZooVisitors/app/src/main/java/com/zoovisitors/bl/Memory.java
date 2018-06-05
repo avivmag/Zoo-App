@@ -48,6 +48,7 @@ public class Memory {
         this.prices = prices;
         this.aboutUs = aboutUs;
         this.stringToBitmapMap = new HashMap<>();
+        this.enclosuresAnimalCardMap = new HashMap<>();
 
         initializeBitmaps();
         List<Point> points = new ArrayList<>();

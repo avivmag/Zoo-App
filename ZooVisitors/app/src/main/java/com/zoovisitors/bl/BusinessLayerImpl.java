@@ -446,7 +446,8 @@ public class BusinessLayerImpl implements BusinessLayer {
                 animalCards.add(animalCard);
             }
         }
-        return (CustomRelativeLayout[]) animalCards.toArray();
+
+        return animalCards.toArray(new CustomRelativeLayout[animalCards.size()]);
     }
 
     @Override
@@ -466,11 +467,11 @@ public class BusinessLayerImpl implements BusinessLayer {
             if (animalCards == null){
                 animalCards = new ArrayList<CustomRelativeLayout>();
                 animalCards.add(cards[i]);
-                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+                memory.getEnclosuresAnimalCardMap().put(animals[i].getEncId(), animalCards);
             }
             else {
                 animalCards.add(cards[i]);
-                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+                memory.getEnclosuresAnimalCardMap().put(animals[i].getEncId(), animalCards);
             }
         }
     }
