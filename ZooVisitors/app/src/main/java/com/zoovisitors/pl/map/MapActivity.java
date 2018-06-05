@@ -7,8 +7,10 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,6 +49,13 @@ public class MapActivity extends ProviderBasedActivity
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
     private Enclosure[] enclosures;
+    private boolean firstRun = true;
+    private boolean needFirstAnimation = true;
+    private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
+
+    private enum GpsState {Off, On, Focused};
+    private GpsState gpsState = GpsState.Off;
+    private ImageButton gpsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,7 @@ public class MapActivity extends ProviderBasedActivity
                 GET_TO_KNOW_ME_ANIMATION_DELTA_DP,
                 getResources().getDisplayMetrics()
         );
+        gpsButton = findViewById(R.id.gps_button);
 
         getToKnowMeLayout.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -106,13 +116,34 @@ public class MapActivity extends ProviderBasedActivity
         });
 
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
-                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1));
+                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        cancelFocus();
+                    }
+                });
 
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    private boolean needToShowIcon = true;
-    private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
+        int encId = getIntent().getIntExtra("enclosureID", -1);
+        // on the first run the map is not ready, so we need to run it in other place
+        if(!firstRun && encId != -1) {
+            mapView.focusOnIconAndRattle(encId);
+        }
+        getIntent().putExtra("enclosureID", -1);
+        firstRun = false;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
 
     @Override
     public void onLocationChanged(android.location.Location location) {
@@ -150,10 +181,21 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void updateVisitorPosition(Point calibratedPointAndClosestPointFromPoints) {
+        MapView.VisitorPositionUpdateType updateType = MapView.VisitorPositionUpdateType.NoAnimation;
+        if (gpsState == GpsState.Focused) {
+            if (needFirstAnimation) {
+                updateType = MapView.VisitorPositionUpdateType.FirstAnimation;
+                needFirstAnimation = false;
+            } else {
+                updateType = MapView.VisitorPositionUpdateType.ContinuesAnimation;
+            }
+        }
         mapView.UpdateVisitorLocation(calibratedPointAndClosestPointFromPoints.getX(),
-                calibratedPointAndClosestPointFromPoints.getY());
-        if (needToShowIcon) {
-            needToShowIcon = false;
+                calibratedPointAndClosestPointFromPoints.getY(),
+                updateType);
+
+        if (updateType == MapView.VisitorPositionUpdateType.NoAnimation ||
+                updateType == MapView.VisitorPositionUpdateType.FirstAnimation) {
             mapView.ShowVisitorIcon();
         }
     }
@@ -251,13 +293,8 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     @Override
-    public void onProviderEnabled() {
-        needToShowIcon = true;
-    }
-
-    @Override
-    public void onProviderDisabled() {
-        mapView.HideVisitorIcon();
+    public void onBackPressed() {
+        moveTaskToBack(false);
     }
 
     @Override
@@ -268,5 +305,40 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public int getMinDistance() {
         return 0;
+    }
+
+    @Override
+    public void onProviderEnabled() {
+        gpsState = GpsState.On;
+        needFirstAnimation = true;
+        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_not_fixed_black_24));
+    }
+
+    @Override
+    public void onProviderDisabled() {
+        gpsState = GpsState.Off;
+        mapView.HideVisitorIcon();
+        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_off_black_24));
+    }
+
+    public void onGpsButtonClick(View view) {
+        switch(gpsState) {
+            case Off:
+                startGps();
+                break;
+            case On:
+                gpsState = GpsState.Focused;
+                gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_fixed_black_24));
+                break;
+            case Focused:
+                mapView.animationInterrupt = true;
+                cancelFocus();
+                break;
+        }
+    }
+
+    private void cancelFocus() {
+        gpsState = GpsState.On;
+        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_not_fixed_black_24));
     }
 }

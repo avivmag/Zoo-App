@@ -210,6 +210,7 @@ public class EnclosureActivity extends BaseActivity {
         showOnMapButton.setOnClickListener(
                 v -> {
                     Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     intent.putExtra("enclosureID", enclosure.getId());
                     startActivity(intent);
                 }
