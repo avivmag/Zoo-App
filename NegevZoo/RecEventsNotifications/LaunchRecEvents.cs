@@ -48,7 +48,7 @@ namespace RecEventsNotifications
         private void Run()
         {
             // Set the starting time to zero and the time between the operation to 10 minutes.
-            var periodTimeSpan  = TimeSpan.FromSeconds(60);
+            var periodTimeSpan  = TimeSpan.FromSeconds(10);
             var startTimeSpan   = TimeSpan.Zero;
 
             // Create an IPC wait handle with a unique identifier.
@@ -92,6 +92,7 @@ namespace RecEventsNotifications
 
         private void SendRecNotification()
         {
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Trying to send recurring notification.");
             using (var context = new ZooContext(false))
             {
                 Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
