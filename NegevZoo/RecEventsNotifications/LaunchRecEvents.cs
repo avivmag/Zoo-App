@@ -48,7 +48,7 @@ namespace RecEventsNotifications
         private void Run()
         {
             // Set the starting time to zero and the time between the operation to 10 minutes.
-            var periodTimeSpan  = TimeSpan.FromMinutes(10);
+            var periodTimeSpan  = TimeSpan.FromSeconds(60);
             var startTimeSpan   = TimeSpan.Zero;
 
             // Create an IPC wait handle with a unique identifier.
@@ -73,11 +73,16 @@ namespace RecEventsNotifications
                 Task.Factory.StartNew(() => SendRecNotification());
             }, null, startTimeSpan, periodTimeSpan);
 
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Entering wait state.");
+
             // Wait if someone tells us to die or do every five seconds something else.
             do
             {
-                signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(5));
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Waiting one more minute.");
+                signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(1));
             } while (!signaled);
+
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Wait state ended. killing process...");
 
             // The above loop with an interceptor could also be replaced by an endless waiter
             //waitHandle.WaitOne();
