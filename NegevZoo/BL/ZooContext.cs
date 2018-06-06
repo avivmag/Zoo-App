@@ -3281,21 +3281,29 @@ namespace BL
 
         public void Dispose()
         {
+            Logger.LoggerRec.GetInstance(false).WriteLine("Got to dispose!");
             // If the database is a dummy, no need to dispose anything, nor track the changes.
             if (zooDB.GetType() == typeof(DummyDB)) {
+                Logger.LoggerRec.GetInstance(false).WriteLine("Dummy DB!");
                 return;
             }
 
-            var test = zooDB.ChangeTracker.Entries();
+            Logger.LoggerRec.GetInstance(false).WriteLine("Not Dummy DB!");
 
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
-            
+
+            Logger.LoggerRec.GetInstance(false).WriteLine("Got Entries!");
+
             foreach (var entry in entries)
             {
                 zooDB.RemoveFromCache(entry.GetType().FullName);
             }
 
+            Logger.LoggerRec.GetInstance(false).WriteLine("Proccessed entry changes.");
+
             zooDB.SaveChanges();
+
+            Logger.LoggerRec.GetInstance(false).WriteLine("Saved changes!");
         }
     }
 }
