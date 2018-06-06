@@ -69,6 +69,7 @@ namespace RecEventsNotifications
             // Start a another thread that does something every 10 seconds.
             var timer = new Timer((e) =>
             {
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Timer Init.");
                 //setting the task to be the sending function
                 Task.Factory.StartNew(() => SendRecNotification());
             }, null, startTimeSpan, periodTimeSpan);
