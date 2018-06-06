@@ -74,6 +74,14 @@ namespace RecEventsNotifications
                 try
                 {
                     Logger.LoggerRec.GetLoggerRecInstance().WriteLine("inside try.");
+
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Trying to send recurring notification.");
+                    using (var context = new ZooContext(false))
+                    {
+                        Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
+                        context.SendNotificationsOnlineDevicesRecurringEvents();
+                        Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
+                    }
                     //SendRecNotification();
                 }
                 catch (Exception exp)
@@ -102,13 +110,7 @@ namespace RecEventsNotifications
 
         private void SendRecNotification()
         {
-            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Trying to send recurring notification.");
-            using (var context = new ZooContext(false))
-            {
-                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
-                context.SendNotificationsOnlineDevicesRecurringEvents();
-                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
-            }
+            
         }
     }
 
