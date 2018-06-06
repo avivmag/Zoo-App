@@ -196,6 +196,10 @@ public class MapView extends RelativeLayout {
                 }
 
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if(pointerIndex == INVALID_POINTER_ID) {
+                    movementInProgress.set(false);
+                    break;
+                }
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
