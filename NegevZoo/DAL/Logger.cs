@@ -104,20 +104,25 @@ namespace DAL
         
         public class LoggerRec : Logger
         {
-            private static Logger logger;
-            private static String filePath;
-            private static DateTime date;
+            private static Logger logger_rec;
+            private static String filePath_rec;
+            private static DateTime date_rec;
+
+            protected LoggerRec(string path = null)
+            {
+                date_rec = DateTime.Today;
+                filePath = path ?? String.Format(Properties.Settings.Default.RecLog + "{0}.log", date_rec.ToString("yyyy-MM-dd"));
+            }
 
             public static Logger GetLoggerRecInstance()
             {
-                if (logger == null || date != DateTime.Today)
+                if (logger_rec == null || date_rec != DateTime.Today)
                 {
-                    //settig the path to testing if needed
-                    string path = String.Format(Properties.Settings.Default.RecLog + "{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
-                    logger = new Logger(path);
+                    filePath_rec = String.Format(Properties.Settings.Default.RecLog + "{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
+                    logger_rec = new LoggerRec(filePath_rec);
                 }
 
-                return logger;
+                return logger_rec;
             }
         }
     }

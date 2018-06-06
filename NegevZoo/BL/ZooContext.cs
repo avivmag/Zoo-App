@@ -2808,6 +2808,8 @@ namespace BL
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
+            var hasEvents       = false;
+
             Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
@@ -2819,14 +2821,16 @@ namespace BL
 
                 if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
-                    Logger.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
+                    hasEvents = true;
+                    Logger.LoggerRec.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
 
                     SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
-                else
-                {
-                    Logger.GetInstance(false).WriteLine("No events found");
-                }
+            }
+
+            if (!hasEvents)
+            {
+                Logger.LoggerRec.GetInstance(false).WriteLine("No events found.");
             }
         }
 
@@ -3281,29 +3285,19 @@ namespace BL
 
         public void Dispose()
         {
-            Logger.LoggerRec.GetInstance(false).WriteLine("Got to dispose!");
             // If the database is a dummy, no need to dispose anything, nor track the changes.
             if (zooDB.GetType() == typeof(DummyDB)) {
-                Logger.LoggerRec.GetInstance(false).WriteLine("Dummy DB!");
                 return;
             }
 
-            Logger.LoggerRec.GetInstance(false).WriteLine("Not Dummy DB!");
-
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
-
-            Logger.LoggerRec.GetInstance(false).WriteLine("Got Entries!");
 
             foreach (var entry in entries)
             {
                 zooDB.RemoveFromCache(entry.GetType().FullName);
             }
 
-            Logger.LoggerRec.GetInstance(false).WriteLine("Proccessed entry changes.");
-
             zooDB.SaveChanges();
-
-            Logger.LoggerRec.GetInstance(false).WriteLine("Saved changes!");
         }
     }
 }
