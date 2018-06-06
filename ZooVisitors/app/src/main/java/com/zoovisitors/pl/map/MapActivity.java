@@ -41,6 +41,7 @@ public class MapActivity extends ProviderBasedActivity
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
+    private RelativeLayout mapActivityLayout;
     private LinearLayout getToKnowMeLayout;
     private int initialGetToKnowMeLayoutTop;
     private int initialGetToKnowMeLayoutBottom;
@@ -52,21 +53,20 @@ public class MapActivity extends ProviderBasedActivity
     private int getToKnowMeAnimationDeltaPx;
     private Enclosure[] enclosures;
     private boolean firstRun = true;
-    //    private boolean needFirstAnimation;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
-
-    private enum GpsState {Off, On, Focused}
-
-    ;
+    private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
+    private ImageView leftDoor;
+    private ImageView rightDoor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+//        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
+        mapActivityLayout = findViewById(R.id.activity_map_layout);
         mapView = findViewById(R.id.map_view_layout);
         getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
@@ -78,11 +78,13 @@ public class MapActivity extends ProviderBasedActivity
                 getResources().getDisplayMetrics()
         );
         gpsButton = findViewById(R.id.gps_button);
-
         initialGetToKnowMeLayoutTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout
                 .getLayoutParams()).topMargin;
         initialGetToKnowMeLayoutBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout
                 .getLayoutParams()).bottomMargin;
+
+        leftDoor = findViewById(R.id.map_left_door);
+        rightDoor = findViewById(R.id.map_right_door);
 
         getToKnowMeLayout.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -127,11 +129,17 @@ public class MapActivity extends ProviderBasedActivity
         // Note: be aware that cancelFocus should be called only when touching the map view and
         // not other views in activity_map
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
-                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1), () -> {
-                    cancelFocus();
-                });
+                GlobalVariables.bl.getMiscs(),
+                getIntent().getIntExtra("enclosureID", -1),
+                () -> {cancelFocus();});
 
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -145,12 +153,6 @@ public class MapActivity extends ProviderBasedActivity
         }
         getIntent().putExtra("enclosureID", -1);
         firstRun = false;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
     }
 
     @Override
@@ -329,5 +331,17 @@ public class MapActivity extends ProviderBasedActivity
             gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap
                     .round_gps_not_fixed_black_24));
         }
+    }
+
+    private final long OPEN_DOORS_ANIMATION_DURATION = 1000;
+    private void openDoorsAnimation() {
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+            }
+        };
+        a.setDuration(OPEN_DOORS_ANIMATION_DURATION);
+        mapActivityLayout.startAnimation(a);
     }
 }

@@ -365,10 +365,8 @@ public class MapView extends RelativeLayout {
                 mPosX =
                         Math.max(
                                 Math.min(
-                                        initialMPosX + (screenWidth / 2 - x * maxScaleFactor -
-                                                initialMPosX) * interpolatedTime,
-                                        mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 +
-                                                primaryImageMargin)
+                                        initialMPosX + (screenWidth / 2 - x * maxScaleFactor - initialMPosX) * interpolatedTime,
+                                        mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
                                 ),
                                 screenWidth - mScaleFactor * (zooMapIcon.width + primaryImageMargin)
                         );

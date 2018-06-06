@@ -85,6 +85,27 @@
         android:onClick="onGpsButtonClick"
         android:padding="15dp"
         android:src="@mipmap/round_gps_off_black_24" />
-    <!--</LinearLayout>-->
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:layoutDirection="ltr">
+
+        <ImageView
+            android:id="@+id/map_left_door"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@mipmap/left_door" />
+
+        <ImageView
+            android:id="@+id/map_right_door"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="@mipmap/right_door"
+            android:layout_weight="1" />
+    </LinearLayout>
 </RelativeLayout>
