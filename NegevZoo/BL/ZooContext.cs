@@ -2803,7 +2803,6 @@ namespace BL
         {
             //get all the recurring events in hebrew
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
-            Logger.GetInstance(false).WriteLine("Package received");
 
             //get the current time
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");

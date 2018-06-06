@@ -100,5 +100,23 @@ namespace DAL
             }
 
         }
+    
+        
+        public class LoggerRec : Logger
+        {
+
+            public static Logger GetLoggerRecInstance()
+            {
+                if (logger == null || date != DateTime.Today)
+                {
+                    //settig the path to testing if needed
+                    string path = String.Format(Properties.Settings.Default.RecLog + "{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
+                    logger = new Logger(path);
+                }
+
+                return logger;
+            }
+        }
     }
+
 }
