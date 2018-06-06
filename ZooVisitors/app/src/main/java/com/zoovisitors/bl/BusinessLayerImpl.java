@@ -31,6 +31,7 @@ import com.zoovisitors.dal.InternalStorage;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -379,7 +380,11 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(Object response) {
                 DataFromServer dataFromServer = gson.fromJson((String) response, DataFromServer.class);
-                memory = new Memory(dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
+                // reorders them so they would be better looking on the map
+                Arrays.sort(dataFromServer.getEnclosures(), (enc1, enc2) -> enc1.getMarkerY()-enc2.getMarkerY());
+                Arrays.sort(dataFromServer.getMiscMarkers(), (misc1, misc2) -> misc1.getMarkerY()-misc2.getMarkerY());
+                memory = new Memory(
+                        dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
                         dataFromServer.getMiscMarkers(), dataFromServer.getMapResult(), dataFromServer.getWallFeeds(),
                         dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
@@ -447,11 +452,6 @@ public class BusinessLayerImpl implements BusinessLayer {
         }
 
         return animalCards.toArray(new CustomRelativeLayout[animalCards.size()]);
-    }
-
-    @Override
-    public CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId) {
-        return (CustomRelativeLayout[]) memory.getEnclosuresAnimalCardMap().get(encId).toArray();
     }
 
     @Override

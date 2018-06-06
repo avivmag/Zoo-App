@@ -61,8 +61,8 @@ public class EnclosureIconsHandler {
 
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
-            recurringEventCountDownIcon.top -= enclosureIcon.height / 2 +
-                    recurringEventCountDownIcon.textView.getLineHeight();
+            recurringEventCountDownIcon.top -= enclosureIcon.height / 2;
+//                    + recurringEventCountDownIcon.textView.getLineHeight();
             recurringEventIcon.top = recurringEventCountDownIcon.top;
         });
 

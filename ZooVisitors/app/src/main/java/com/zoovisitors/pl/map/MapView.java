@@ -28,6 +28,8 @@ import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
+
 /**
  * Created by aviv on 12-Jan-18.
  */
