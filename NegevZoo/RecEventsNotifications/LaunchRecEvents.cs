@@ -66,16 +66,12 @@ namespace RecEventsNotifications
                 return;
             }
 
-            // Start a another thread that does something every 10 seconds.
-            var timer = new Timer((e) =>
+            Task.Factory.StartNew(() => 
             {
-                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Timer Init.");
-                //setting the task to be the sending function
-                try
+                while(true)
                 {
-                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("inside try.");
-
                     Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Trying to send recurring notification.");
+
                     using (var context = new ZooContext(false))
                     {
                         Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
@@ -83,15 +79,38 @@ namespace RecEventsNotifications
                         Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
                     }
 
-                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Got back to timer!");
-                    //SendRecNotification();
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
+
+                    Thread.Sleep(1000 * 10);
                 }
-                catch (Exception exp)
-                {
-                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine(exp.Message);
-                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine(exp.InnerException?.Message);
-                }
-            }, null, startTimeSpan, periodTimeSpan);
+            });
+
+            //// Start a another thread that does something every 10 seconds.
+            //var timer = new Timer((e) =>
+            //{
+            //    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Timer Init.");
+            //    //setting the task to be the sending function
+            //    try
+            //    {
+            //        Logger.LoggerRec.GetLoggerRecInstance().WriteLine("inside try.");
+
+            //        Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Trying to send recurring notification.");
+            //        using (var context = new ZooContext(false))
+            //        {
+            //            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
+            //            context.SendNotificationsOnlineDevicesRecurringEvents();
+            //            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
+            //        }
+
+            //        Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Got back to timer!");
+            //        //SendRecNotification();
+            //    }
+            //    catch (Exception exp)
+            //    {
+            //        Logger.LoggerRec.GetLoggerRecInstance().WriteLine(exp.Message);
+            //        Logger.LoggerRec.GetLoggerRecInstance().WriteLine(exp.InnerException?.Message);
+            //    }
+            //}, null, startTimeSpan, periodTimeSpan);
 
             Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Entering wait state.");
 
