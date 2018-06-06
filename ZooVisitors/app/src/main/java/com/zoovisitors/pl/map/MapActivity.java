@@ -50,7 +50,9 @@ public class MapActivity extends ProviderBasedActivity
     private boolean needFirstAnimation = true;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
-    private enum GpsState {Off, On, Focused};
+    private enum GpsState {Off, On, Focused}
+
+    ;
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
 
@@ -102,24 +104,23 @@ public class MapActivity extends ProviderBasedActivity
         );
         Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
 
+        // Note: be aware that cancelFocus should be called only when touching the map view and
+        // not other views in activity_map
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
-                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        cancelFocus();
-                    }
+                GlobalVariables.bl.getMiscs(), getIntent().getIntExtra("enclosureID", -1), () -> {
+                    cancelFocus();
                 });
 
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
+
     @Override
     protected void onResume() {
         super.onResume();
 
         int encId = getIntent().getIntExtra("enclosureID", -1);
         // on the first run the map is not ready, so we need to run it in other place
-        if(!firstRun && encId != -1) {
+        if (!firstRun && encId != -1) {
             mapView.focusOnIconAndRattle(encId);
         }
         getIntent().putExtra("enclosureID", -1);
@@ -168,7 +169,8 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void updateVisitorPosition(Point calibratedPointAndClosestPointFromPoints) {
-        MapView.VisitorPositionUpdateType updateType = MapView.VisitorPositionUpdateType.NoAnimation;
+        MapView.VisitorPositionUpdateType updateType = MapView.VisitorPositionUpdateType
+                .NoAnimation;
         if (gpsState == GpsState.Focused) {
             if (needFirstAnimation) {
                 updateType = MapView.VisitorPositionUpdateType.FirstAnimation;
@@ -298,7 +300,8 @@ public class MapActivity extends ProviderBasedActivity
     public void onProviderEnabled() {
         gpsState = GpsState.On;
         needFirstAnimation = true;
-        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_not_fixed_black_24));
+        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap
+                .round_gps_not_fixed_black_24));
     }
 
     @Override
@@ -309,13 +312,14 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     public void onGpsButtonClick(View view) {
-        switch(gpsState) {
+        switch (gpsState) {
             case Off:
                 startGps();
                 break;
             case On:
                 gpsState = GpsState.Focused;
-                gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_fixed_black_24));
+                gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap
+                        .round_gps_fixed_black_24));
                 break;
             case Focused:
                 mapView.animationInterrupt = true;
@@ -325,7 +329,10 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void cancelFocus() {
-        gpsState = GpsState.On;
-        gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap.round_gps_not_fixed_black_24));
+        if (gpsState == GpsState.Focused) {
+            gpsState = GpsState.On;
+            gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap
+                    .round_gps_not_fixed_black_24));
+        }
     }
 }

@@ -16,7 +16,6 @@ public class GlobalVariables {
     public static int language;
     public static AppCompatActivity appCompatActivity;
     public static BusinessLayer bl;
-    public static int firstEnter = 0;
     public static String firebaseToken;
     public static boolean notifications = true;
 }

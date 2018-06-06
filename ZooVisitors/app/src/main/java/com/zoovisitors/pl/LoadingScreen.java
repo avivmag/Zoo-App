@@ -48,7 +48,7 @@ public class LoadingScreen extends BaseActivity {
         //Initialize business layer (change for testing)
         GlobalVariables.appCompatActivity = this;
         changeLanguage();
-        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
+        GlobalVariables.bl = new BusinessLayerImpl(getApplicationContext());
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
         pb.setProgressPrecentage(0);

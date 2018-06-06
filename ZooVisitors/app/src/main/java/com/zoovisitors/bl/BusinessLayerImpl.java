@@ -2,6 +2,7 @@ package com.zoovisitors.bl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -34,13 +35,11 @@ import com.zoovisitors.dal.InternalStorage;
 
 public class BusinessLayerImpl implements BusinessLayer {
     private NetworkInterface ni;
-    private InternalStorage is;
     private Gson gson;
     private Memory memory;
 
-    public BusinessLayerImpl(Activity activity) {
-        ni = new NetworkImpl(activity);
-        is = new InternalStorage(activity);
+    public BusinessLayerImpl(Context context) {
+        ni = new NetworkImpl(context);
         gson = new Gson();
     }
 
