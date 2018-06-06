@@ -71,7 +71,7 @@ namespace RecEventsNotifications
             {
                 Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Timer Init.");
                 //setting the task to be the sending function
-                //Task.Factory.StartNew(() => SendRecNotification());
+                SendRecNotification();
             }, null, startTimeSpan, periodTimeSpan);
 
             Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Entering wait state.");
