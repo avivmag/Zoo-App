@@ -42,6 +42,8 @@ public class MapActivity extends ProviderBasedActivity
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
     private LinearLayout getToKnowMeLayout;
+    private int initialGetToKnowMeLayoutTop;
+    private int initialGetToKnowMeLayoutBottom;
     private int getToKnowMeIndex = -1;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
@@ -50,10 +52,12 @@ public class MapActivity extends ProviderBasedActivity
     private int getToKnowMeAnimationDeltaPx;
     private Enclosure[] enclosures;
     private boolean firstRun = true;
-//    private boolean needFirstAnimation;
+    //    private boolean needFirstAnimation;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
-    private enum GpsState {Off, On, Focused};
+    private enum GpsState {Off, On, Focused}
+
+    ;
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
 
@@ -74,6 +78,11 @@ public class MapActivity extends ProviderBasedActivity
                 getResources().getDisplayMetrics()
         );
         gpsButton = findViewById(R.id.gps_button);
+
+        initialGetToKnowMeLayoutTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout
+                .getLayoutParams()).topMargin;
+        initialGetToKnowMeLayoutBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout
+                .getLayoutParams()).bottomMargin;
 
         getToKnowMeLayout.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -147,7 +156,7 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onLocationChanged(android.location.Location location) {
         // TODO: Tell the user its accuracy is bad
-        // TODO: delete this
+        //TODO: delete this
         if (true || location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
@@ -226,20 +235,15 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeTv.setText(animalStory.getName());
         getToKnowMeIb.setImageBitmap(animalStory.getPersonalPicture());
 
-        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
-                .topMargin;
-        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
-                .bottomMargin;
-
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams)
                         getToKnowMeLayout.getLayoutParams());
                 params.topMargin =
-                        (int) (currentTop + getToKnowMeAnimationDeltaPx * interpolatedTime);
+                        (int) (initialGetToKnowMeLayoutTop + getToKnowMeAnimationDeltaPx * interpolatedTime);
                 params.bottomMargin =
-                        (int) (currentBottom + getToKnowMeAnimationDeltaPx * interpolatedTime);
+                        (int) (initialGetToKnowMeLayoutBottom + getToKnowMeAnimationDeltaPx * interpolatedTime);
                 getToKnowMeLayout.setLayoutParams(params);
             }
         };
@@ -256,20 +260,15 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void hideGetToKnowMe() {
-        int currentTop = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
-                .topMargin;
-        int currentBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout.getLayoutParams())
-                .bottomMargin;
-
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams)
                         getToKnowMeLayout.getLayoutParams());
                 params.topMargin =
-                        (int) (currentTop - getToKnowMeAnimationDeltaPx * interpolatedTime);
+                        (int) (initialGetToKnowMeLayoutTop + getToKnowMeAnimationDeltaPx * (1 - interpolatedTime));
                 params.bottomMargin =
-                        (int) (currentBottom - getToKnowMeAnimationDeltaPx * interpolatedTime);
+                        (int) (initialGetToKnowMeLayoutBottom + getToKnowMeAnimationDeltaPx * (1 - interpolatedTime));
                 getToKnowMeLayout.setLayoutParams(params);
             }
         };
