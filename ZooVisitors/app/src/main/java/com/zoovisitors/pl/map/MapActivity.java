@@ -156,8 +156,7 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onLocationChanged(android.location.Location location) {
         // TODO: Tell the user its accuracy is bad
-        //TODO: delete this
-        if (true || location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
+        if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
                     return;

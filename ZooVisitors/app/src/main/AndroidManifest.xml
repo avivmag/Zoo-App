@@ -51,20 +51,17 @@
         <activity android:name=".pl.enclosures.EnclosureListActivity" />
         <activity android:name=".pl.schedule.ScheduleActivity" />
 
-        <service android:name=".cl.notifications.MyFirebaseMessagingService">
+        <service android:name=".cl.notifications.MyFirebaseMessagingService" android:stopWithTask="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <!--<service android:name=".cl.gps.GpsService" />-->
-        <service android:name=".cl.gps.GpsService" />
-        <!--<service android:name=".cl.gps.GpsService" android:process=":gps_service" />-->
+        <service android:name=".cl.gps.GpsService" android:stopWithTask="true"/>
 
         <activity
             android:name=".pl.LoadingScreen"
             android:theme="@style/CustomTheme">
 
-            <!-- android:theme="@style/AppTheme.NoActionBar"> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
