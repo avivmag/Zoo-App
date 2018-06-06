@@ -82,6 +82,8 @@ namespace RecEventsNotifications
                         context.SendNotificationsOnlineDevicesRecurringEvents();
                         Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
                     }
+
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Got back to timer!");
                     //SendRecNotification();
                 }
                 catch (Exception exp)
