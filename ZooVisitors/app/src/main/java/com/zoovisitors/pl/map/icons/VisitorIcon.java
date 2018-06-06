@@ -30,9 +30,6 @@ public class VisitorIcon extends ImageIcon {
         this.top = top;
 
         updateIconPosition();
-    }
-
-    public void Show() {
         view.setVisibility(VISIBLE);
     }
 

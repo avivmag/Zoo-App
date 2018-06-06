@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -27,19 +28,15 @@ import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.zoovisitors.bl.map.DataStructure.squaredDistance;
-
 /**
  * Created by aviv on 12-Jan-18.
  */
-
 public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
     private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
     private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
     private static final int FOCUS_ON_LOCATION_ANIMATION_TIME = 2000;
     private static final int RATTLE_ANIMATION_HALF_TIME = 100;
-    private int PRIMARY_IMAGE_INITIAL_MARGIN = 50;
     private int primaryImageMargin;
 
     private int enclosureIdToFocus;
@@ -50,7 +47,6 @@ public class MapView extends RelativeLayout {
 
     private float mLastTouchX;
     private float mLastTouchY;
-    private int mTouchSlop = 5;
     private int mActivePointerId = INVALID_POINTER_ID;
 
     /**
@@ -166,12 +162,11 @@ public class MapView extends RelativeLayout {
             mLastTouchY = ev.getY();
             mActivePointerId = ev.getPointerId(0);
         }
-        if (MotionEvent.ACTION_MOVE == ev.getAction() &&
+        int mTouchSlop = 5;
+        return MotionEvent.ACTION_MOVE == ev.getAction() &&
                 (Math.abs(ev.getX() - mLastTouchX) > mTouchSlop ||
-                        Math.abs(ev.getY() - mLastTouchY) > mTouchSlop))
-            return true;
+                        Math.abs(ev.getY() - mLastTouchY) > mTouchSlop);
 
-        return false;
     }
 
     @Override
@@ -180,7 +175,7 @@ public class MapView extends RelativeLayout {
         timer.cancel();
     }
 
-    AtomicBoolean movementInProgress = new AtomicBoolean(false);
+    final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -237,7 +232,7 @@ public class MapView extends RelativeLayout {
     }
 
     private void setMPos(float deltaX, float deltaY) {
-        primaryImageMargin = Math.max(PRIMARY_IMAGE_INITIAL_MARGIN,
+        primaryImageMargin = Math.max(50,
                 Math.max(
                         (int) ((screenHeight / getmScaleFactor() - zooMapIcon.height) / 2),
                         (int) ((screenWidth / getmScaleFactor() - zooMapIcon.width) / 2)
@@ -302,23 +297,16 @@ public class MapView extends RelativeLayout {
                 .getMarkerY()));
     }
 
-    public void ShowVisitorIcon() {
-        visitorIcon.Show();
-    }
-
     private Animation lastVisitorAnimation;
     private long lastTimeStarted;
 
-    public enum VisitorPositionUpdateType {NoAnimation, FirstAnimation, ContinuesAnimation};
-
-    public void UpdateVisitorLocation(int x, int y, VisitorPositionUpdateType updateType) {
+    public void UpdateVisitorLocation(int x, int y, boolean shouldAnimate) {
         if (x != visitorIcon.left && y != visitorIcon.top) {
             visitorIcon.UpdateVisitorLocation(x, y);
-            if (updateType == VisitorPositionUpdateType.FirstAnimation ||
-                    (updateType == VisitorPositionUpdateType.ContinuesAnimation &&
-                            lastVisitorAnimation != null &&
-                            System.currentTimeMillis() - lastTimeStarted >= lastVisitorAnimation
-                                    .getDuration())) {
+            if (shouldAnimate &&
+                    (lastVisitorAnimation == null ||
+                            System.currentTimeMillis() - lastTimeStarted >=
+                                    lastVisitorAnimation.getDuration())) {
                 if (lastVisitorAnimation != null)
                     lastVisitorAnimation.cancel();
                 lastTimeStarted = System.currentTimeMillis();
@@ -398,9 +386,10 @@ public class MapView extends RelativeLayout {
     }
 
     private Animation focusOnLocationAnimation(int x, int y) {
-        // the ratio is 1 mil/pixel
-        return focusOnLocationAnimation(x, y, (long) Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY
-                - y) * (mPosY - y))/3);
+        // the ratio is 1/currentZoomLevel mil/pixel
+        return focusOnLocationAnimation(x, y,
+                (long) (Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY - y) * (mPosY - y))
+                        / mScaleFactor * equatorScaleFactor));
     }
 
     private void rattleViewAnimation(View view, int times) {

@@ -50,12 +50,10 @@ public class MapActivity extends ProviderBasedActivity
     private int getToKnowMeAnimationDeltaPx;
     private Enclosure[] enclosures;
     private boolean firstRun = true;
-    private boolean needFirstAnimation = true;
+//    private boolean needFirstAnimation;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
-    private enum GpsState {Off, On, Focused}
-
-    ;
+    private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
 
@@ -149,7 +147,8 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onLocationChanged(android.location.Location location) {
         // TODO: Tell the user its accuracy is bad
-        if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY || GlobalVariables.DEBUG) {
+        // TODO: delete this
+        if (true || location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
                     return;
@@ -182,24 +181,9 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void updateVisitorPosition(Point calibratedPointAndClosestPointFromPoints) {
-        MapView.VisitorPositionUpdateType updateType = MapView.VisitorPositionUpdateType
-                .NoAnimation;
-        if (gpsState == GpsState.Focused) {
-            if (needFirstAnimation) {
-                updateType = MapView.VisitorPositionUpdateType.FirstAnimation;
-                needFirstAnimation = false;
-            } else {
-                updateType = MapView.VisitorPositionUpdateType.ContinuesAnimation;
-            }
-        }
         mapView.UpdateVisitorLocation(calibratedPointAndClosestPointFromPoints.getX(),
                 calibratedPointAndClosestPointFromPoints.getY(),
-                updateType);
-
-        if (updateType == MapView.VisitorPositionUpdateType.NoAnimation ||
-                updateType == MapView.VisitorPositionUpdateType.FirstAnimation) {
-            mapView.ShowVisitorIcon();
-        }
+                gpsState == GpsState.Focused);
     }
 
     private long lastTimeUpdatedGetToKnowMe = 0;
@@ -296,6 +280,7 @@ public class MapActivity extends ProviderBasedActivity
 
     @Override
     public void onBackPressed() {
+        cancelFocus();
         moveTaskToBack(false);
     }
 
@@ -312,7 +297,6 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onProviderEnabled() {
         gpsState = GpsState.On;
-        needFirstAnimation = true;
         gpsButton.setImageDrawable(getResources().getDrawable(R.mipmap
                 .round_gps_not_fixed_black_24));
     }

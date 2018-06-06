@@ -336,7 +336,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     public void updateIfInPark(boolean isInPark){
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
-            public void onSuccess(String response) {Log.e("IFINPARK","notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark); }
+            public void onSuccess(String response) { }
 
             @Override
             public void onFailure(String response) { }
