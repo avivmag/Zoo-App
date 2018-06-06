@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
                 //getting all the feeds.
                 feed = (WallFeed[]) response;
 
-                //initates the scroller
+                //initiates the scroller
                 scrollView = findViewById(R.id.feedWall);
                 scrollView.setClickable(false);
                 ViewGroup.LayoutParams scrollParams = scrollView.getLayoutParams();

@@ -36,6 +36,8 @@
     <string name="food">Nutrition:</string>
     <string name="interesting">Something Interesting</string>
     <string name="searchPlaceHolder">Type enclosure or animal</string>
+    <string name="enclosures">Enclosures</string>
+    <string name="animals">Animals</string>
     <string name="shareOnFacebook">Share on facebook</string>
     <string name="showOnMap">Show on map</string>
     <string name="about_enc">About the Enclosure:</string>

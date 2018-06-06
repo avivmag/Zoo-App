@@ -12,16 +12,13 @@ import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.OpeningHoursResult;
 import com.zoovisitors.backend.Price;
 import com.zoovisitors.backend.WallFeed;
-import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
+import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Memory {
 
@@ -34,6 +31,8 @@ public class Memory {
     private OpeningHoursResult openingHoursResult;
     private Price[] prices;
     private String aboutUs;
+    private Map<Integer, List<CustomRelativeLayout>> enclosuresAnimalCardMap;
+    private CustomRelativeLayout[] enclosureCards;
 
     public Memory(Enclosure[] enclosures, Animal.PersonalStories[] animalStories,
                   Misc[] miscMarkers, MapResult mapResult, WallFeed[] wallFeeds,
@@ -49,6 +48,7 @@ public class Memory {
         this.prices = prices;
         this.aboutUs = aboutUs;
         this.stringToBitmapMap = new HashMap<>();
+        this.enclosuresAnimalCardMap = new HashMap<>();
 
         initializeBitmaps();
         List<Point> points = new ArrayList<>();
@@ -164,6 +164,22 @@ public class Memory {
 
     public void setAboutUs(String aboutUs) {
         this.aboutUs = aboutUs;
+    }
+
+    public Map<Integer, List<CustomRelativeLayout>> getEnclosuresAnimalCardMap() {
+        return enclosuresAnimalCardMap;
+    }
+
+    public void setEnclosuresAnimalCardMap(Map<Integer, List<CustomRelativeLayout>> enclosuresAnimalCardMap) {
+        this.enclosuresAnimalCardMap = enclosuresAnimalCardMap;
+    }
+
+    public CustomRelativeLayout[] getEnclosureCards() {
+        return enclosureCards;
+    }
+
+    public void setEnclosureCards(CustomRelativeLayout[] enclosureCards) {
+        this.enclosureCards = enclosureCards;
     }
 }
 

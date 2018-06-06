@@ -47,7 +47,10 @@
     <string name="about_us">אודות</string>
     <string name="opening_hours_headline">זמני פתיחה:</string>
     <string name="prices_headline">מחירון:</string>
+
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
+    <string name="enclosures">מתחמים</string>
+    <string name="animals">חיות</string>
     <string name="choose_route">בחר מסלול</string>
     <string name="contact_address">כתובת</string>
 
