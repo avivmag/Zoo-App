@@ -97,6 +97,7 @@ namespace RecEventsNotifications
             {
                 Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
                 context.SendNotificationsOnlineDevicesRecurringEvents();
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notiifcation send call.");
             }
         }
     }

@@ -104,6 +104,9 @@ namespace DAL
         
         public class LoggerRec : Logger
         {
+            private static Logger logger;
+            private static String filePath;
+            private static DateTime date;
 
             public static Logger GetLoggerRecInstance()
             {
