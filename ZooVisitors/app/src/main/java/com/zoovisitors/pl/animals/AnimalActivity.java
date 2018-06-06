@@ -45,7 +45,7 @@ public class AnimalActivity extends BaseActivity {
 
         ImageView preservation = findViewById(R.id.preservation_image_view);
 
-        if (animal.getPreservation() == 7 || animal.getPreservation() <= 1){ //means that the preservation is unknown
+        if (animal.getPreservation() == 7 || animal.getPreservation() < 1){ //means that the preservation is unknown
             LinearLayout animalConservationLayout = findViewById(R.id.animal_conservation_layout);
 
             animalConservationLayout.removeView(preservation);
