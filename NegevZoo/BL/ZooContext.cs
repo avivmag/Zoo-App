@@ -2808,7 +2808,6 @@ namespace BL
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            Console.WriteLine(currentTime);
             Logger.GetInstance(false).WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
