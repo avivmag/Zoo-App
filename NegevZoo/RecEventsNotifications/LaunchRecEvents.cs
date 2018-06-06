@@ -73,7 +73,8 @@ namespace RecEventsNotifications
                 //setting the task to be the sending function
                 try
                 {
-                    SendRecNotification();
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("inside try.");
+                    //SendRecNotification();
                 }
                 catch (Exception exp)
                 {
