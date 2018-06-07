@@ -100,4 +100,7 @@
 
     <string name="register"><u><b>Copyright</b></u></string>
 
+    <!--ERROR MESSAGES-->
+    <string name="error_no_schedule">There aren\'t any events in the schedule </string>
+    <string name="error_no_rec_events">There aren\'t any events today</string>
 </resources>

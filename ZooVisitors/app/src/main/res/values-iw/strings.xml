@@ -95,4 +95,8 @@
     <string name="language_preferences">language</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
+
+    <!--ERROR MESSAGES-->
+    <string name="error_no_schedule">אין אירועים בלוח השנה</string>
+    <string name="error_no_rec_events">אין אירועים היום</string>
 </resources>
