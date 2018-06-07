@@ -2810,7 +2810,7 @@ namespace BL
 
             var hasEvents       = false;
 
-            Logger.GetInstance(false).WriteLine("Searching for events");
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
                 // get the difference between now and the recEve
@@ -2822,7 +2822,7 @@ namespace BL
                 if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
                     hasEvents = true;
-                    Logger.LoggerRec.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Event found" + recEve.title + ", ", recEve.description);
 
                     SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
@@ -2830,7 +2830,7 @@ namespace BL
 
             if (!hasEvents)
             {
-                Logger.LoggerRec.GetInstance(false).WriteLine("No events found.");
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("No events found.");
             }
         }
 
@@ -2855,12 +2855,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
                     data = new
                     {
                         Title   = title,
                         Body    = body,
-                        Window  = "com.zoovisitors.pl.map.MapActivity"
+                        //Window  = "com.zoovisitors.pl.map.MapActivity"
                     }
                 };
 
