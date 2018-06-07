@@ -32,11 +32,13 @@ import java.util.ListIterator;
 public class TodayRecEvent extends BaseActivity {
 
     Enclosure.RecurringEventString[] allRecEvents;
+    LinearLayout allRecEveList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today_rec_event);
+        allRecEveList = findViewById(R.id.all_rec_events);
 
         //calculate the window size
         DisplayMetrics dm = new DisplayMetrics();
@@ -51,6 +53,7 @@ public class TodayRecEvent extends BaseActivity {
             @Override
             public void onSuccess(Object response) {
                 allRecEvents = (Enclosure.RecurringEventString[]) response;
+                boolean found = false;
 
                 int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
@@ -58,8 +61,6 @@ public class TodayRecEvent extends BaseActivity {
                     if (rec.getDay() == day)
                         todaysEvents.add(rec);
                 }
-
-                LinearLayout allRecEveList = findViewById(R.id.all_rec_events);
 
                 TextView recEveTitle = findViewById(R.id.rec_events_popup_title);
                 recEveTitle.setPaintFlags(recEveTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -101,14 +102,29 @@ public class TodayRecEvent extends BaseActivity {
                     recLayout.addView(regularText);
 
                     allRecEveList.addView(recLayout);
+                    found = true;
                 }
 
+                if (!found){
+                    addErrorMessage();
+                }
             }
 
             @Override
             public void onFailure(Object response) {
-
+                addErrorMessage();
             }
         });
+    }
+
+    private void addErrorMessage() {
+        TextView error = new TextView(getBaseContext());
+        error.setVisibility(View.VISIBLE);
+        error.setGravity(Gravity.CENTER_HORIZONTAL);
+        error.setTextColor(getResources().getColor(R.color.black));
+        error.setTextSize(20);
+        error.setText(R.string.error_no_rec_events);
+
+        allRecEveList.addView(error);
     }
 }
