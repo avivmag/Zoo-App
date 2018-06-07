@@ -2803,14 +2803,14 @@ namespace BL
         {
             //get all the recurring events in hebrew
             var allRecEvents = GetAllRecurringEvents(1).ToArray();
-            Logger.GetInstance(false).WriteLine("Package received");
 
             //get the current time
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            Console.WriteLine(currentTime);
-            Logger.GetInstance(false).WriteLine("Searching for events");
+            var hasEvents       = false;
+
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
                 // get the difference between now and the recEve
@@ -2821,14 +2821,16 @@ namespace BL
 
                 if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
-                    Logger.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
+                    hasEvents = true;
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Event found" + recEve.title + ", ", recEve.description);
 
                     SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
-                else
-                {
-                    Logger.GetInstance(false).WriteLine("No events found");
-                }
+            }
+
+            if (!hasEvents)
+            {
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("No events found.");
             }
         }
 
@@ -2853,12 +2855,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
                     data = new
                     {
                         Title   = title,
                         Body    = body,
-                        Window  = "com.zoovisitors.pl.map.MapActivity"
+                        //Window  = "com.zoovisitors.pl.map.MapActivity"
                     }
                 };
 
@@ -3288,10 +3289,8 @@ namespace BL
                 return;
             }
 
-            var test = zooDB.ChangeTracker.Entries();
-
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
-            
+
             foreach (var entry in entries)
             {
                 zooDB.RemoveFromCache(entry.GetType().FullName);
