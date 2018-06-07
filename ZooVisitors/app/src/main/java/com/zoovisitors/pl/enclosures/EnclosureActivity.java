@@ -7,6 +7,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.CallbackManager;
@@ -55,7 +59,7 @@ public class EnclosureActivity extends BaseActivity {
 
     private Enclosure enclosure;
     private Animal[] animals;
-    private GridLayout assetsLayout;
+    private LinearLayout picAndVidLayout;
     private RecurringEventsHandler recurringEventsHandler;
     private List<Bitmap> imagesInAsset;
     private CustomRelativeLayout encHeader;
@@ -67,7 +71,7 @@ public class EnclosureActivity extends BaseActivity {
     private int index;
     private Map<ImageView, Integer> imageViewIntegerMap;
 
-
+    private int screenSize;
     private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class EnclosureActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setActionBar(R.color.greenIcon);
         Bundle clickedEnclosure = getIntent().getExtras();
+        screenSize = getResources().getDisplayMetrics().widthPixels;
         index = 0;
         imageViewIntegerMap = new HashMap<>();
         final int encIndex = (int) clickedEnclosure.getSerializable("enc");
@@ -227,11 +232,11 @@ public class EnclosureActivity extends BaseActivity {
         }
         //initialize the 'who live here' section
         //Cards and Recycle of the animals
-        LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
+        GridLayout animalGreedLayout = findViewById(R.id.animals_grid_layout);
         for (Animal an: animals) {
             CustomRelativeLayout animalCard = getAnCard(an);
 
-            whoLivesLayout.addView(animalCard);
+            animalGreedLayout.addView(animalCard);
         }
 
         //initialize the 'pictures and videos' section
@@ -240,17 +245,15 @@ public class EnclosureActivity extends BaseActivity {
             encMainLayout.removeView(encAssetsLayout);
         }
         else {
-            assetsLayout = findViewById(R.id.enc_asset_grid_layout);
-            int assetWidth = screenWidth/4;
-            int assetHeight = screenWidth/4;
-            addImagesToAssets(assetWidth, assetHeight);
-            addVideosToAssets(assetWidth, assetHeight);
+            picAndVidLayout = findViewById(R.id.pic_and_vid_layout);
+
+            addImagesToAssets();
+            addVideosToAssets();
         }
     }
 
     private CustomRelativeLayout getAnCard(Animal animal) {
-        int screenSize = getResources().getDisplayMetrics().widthPixels;
-        int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
+        int layoutWidth = screenSize/3;
 
         CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
         card.init();
@@ -267,19 +270,28 @@ public class EnclosureActivity extends BaseActivity {
         return card;
     }
 
-    private void addImagesToAssets(int width, int height) {
-        Intent assetsPopUp = new Intent(GlobalVariables.appCompatActivity, EnclosureAssetsPopUp.class);
+    private void addImagesToAssets() {
+        int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
+
+        Intent assetsPopUp = new Intent(getBaseContext(), EnclosureAssetsPopUp.class);
         for (Enclosure.PictureEnc pe : enclosure.getPictures()) {
-            GlobalVariables.bl.getImage(pe.getPictureUrl(), width, height, new GetObjectInterface() {
+            GlobalVariables.bl.getImage(pe.getPictureUrl(), layoutWidth, layoutWidth, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
-                    ImageViewEncAsset imageView = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
+                    //initialize the image
+                    ImageViewEncAsset imageView = new ImageViewEncAsset(getBaseContext());
                     imageView.setImageBitmap((Bitmap) response);
-                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                    layoutParams.setMargins(4, 0, 0, 4);
-                    imageView.setLayoutParams(layoutParams);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.width = layoutWidth;
+                    params.height = layoutWidth;
+                    params.setMargins(2,2,2,2);
+                    imageView.setLayoutParams(params);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    assetsLayout.addView(imageView);
+
+                    //add the image to the layout
+                    picAndVidLayout.addView(imageView);
+
+                    //initialize the image in the popup
                     imagesInAsset.add((Bitmap) response);
                     GlobalVariables.bl.insertStringandBitmap(pe.getPictureUrl(), (Bitmap) response);
                     assetsPopUp.putExtra("imageUrl" + index, pe.getPictureUrl());
@@ -302,27 +314,36 @@ public class EnclosureActivity extends BaseActivity {
         assetsPopUp.putExtra("arraySize", enclosure.getPictures().length);
     }
 
-    private void addVideosToAssets(int width, int height) {
+    private void addVideosToAssets() {
+        int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
+
         String youtubeVideoPrefix = "https://www.youtube.com/watch?v=";
         for (Enclosure.VideoEnc ve : enclosure.getVideos()) {
-            ImageViewEncAsset imageButton = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
+            ImageViewEncAsset imageButton = new ImageViewEncAsset(getBaseContext());
             String imageUrl = "https://img.youtube.com/vi/" + ve.getVideoUrl() + "/0.jpg";
-            GlobalVariables.bl.getImageFullUrl(imageUrl, 210, 210, new GetObjectInterface() {
+            GlobalVariables.bl.getImageFullUrl(imageUrl, layoutWidth, layoutWidth, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
+                    //initialize the frame of the video
+                    FrameLayout frameLayout = new FrameLayout(getBaseContext());
+
+                    //initialize the video image
                     imageButton.setImageBitmap((Bitmap) response);
                     imageButton.setOnClickListener(
                             v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoPrefix + ve.getVideoUrl()))));
-                    FrameLayout frameLayout = new FrameLayout(GlobalVariables.appCompatActivity);
-                    ImageView youtubeImageView = new ImageView(GlobalVariables.appCompatActivity);
+
+                    //initialize the play image
+                    ImageView youtubeImageView = new ImageView(getBaseContext());
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
                     youtubeImageView.setLayoutParams(layoutParams);
                     youtubeImageView.setImageResource(R.mipmap.youtube_play);
                     youtubeImageView.setX(140);
                     youtubeImageView.setY(110);
+
+                    //add the button and play images
                     frameLayout.addView(imageButton);
                     frameLayout.addView(youtubeImageView);
-                    assetsLayout.addView(frameLayout);
+                    picAndVidLayout.addView(frameLayout);
                 }
 
                 @Override
