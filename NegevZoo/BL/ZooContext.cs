@@ -2737,7 +2737,8 @@ namespace BL
             //check if the device already exists
             if (device != null)
             {
-                device.lastPing = currentTime;
+                device.lastPing     = currentTime;
+                device.insidePark   = (sbyte)(insidePark ? 1 : 0);
             }
             else
             {
