@@ -74,10 +74,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/location_facebook_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="2"
+                    android:layout_gravity="center"
                     android:background="@drawable/up_down_border"
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"

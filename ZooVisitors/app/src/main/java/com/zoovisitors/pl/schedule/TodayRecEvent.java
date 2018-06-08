@@ -2,8 +2,6 @@ package com.zoovisitors.pl.schedule;
 
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -11,23 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
-import com.zoovisitors.backend.WallFeed;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.customViews.TextViewTitle;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class TodayRecEvent extends BaseActivity {
 
@@ -55,16 +46,16 @@ public class TodayRecEvent extends BaseActivity {
                 allRecEvents = (Enclosure.RecurringEventString[]) response;
                 boolean found = false;
 
+                TextView recEveTitle = findViewById(R.id.rec_events_popup_title);
+                recEveTitle.setPaintFlags(recEveTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                recEveTitle.setTypeface(null, Typeface.BOLD);
+
                 int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
                 for (Enclosure.RecurringEventString rec: allRecEvents) {
                     if (rec.getDay() == day)
                         todaysEvents.add(rec);
                 }
-
-                TextView recEveTitle = findViewById(R.id.rec_events_popup_title);
-                recEveTitle.setPaintFlags(recEveTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                recEveTitle.setTypeface(null, Typeface.BOLD);
 
                 for (Enclosure.RecurringEventString rec : todaysEvents) {
                     //initiate the recurring Events layout
