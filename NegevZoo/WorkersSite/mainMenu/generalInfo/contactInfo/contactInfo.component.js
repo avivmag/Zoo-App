@@ -1,39 +1,42 @@
-﻿app.controller('zooContactInfoCtrl', ['$q', '$scope', '$mdDialog', 'utilitiesService', 'zooInfoService',
-    function zooContactInfoController($q, $scope, $mdDialog, utilitiesService, zooInfoService) {
+﻿app.controller('zooContactInfoCtrl', ['$q', '$scope', 'utilitiesService', 'zooInfoService',
+    function zooContactInfoController($q, $scope, utilitiesService, zooInfoService) {
         $scope.isLoading            = true;
 
+        // Initialize the component.
         initializeComponent();
 
+        // Get the languages.
         app.getLanguages().then(
             (data) => {
                 $scope.languages    = data.data;
                 $scope.language     = $scope.languages[0];
 
+                // Update the contact infos.
                 $scope.updateContactInfos($scope.language);
         });
 
+        // Initializes the component.
         function initializeComponent() {
+            // Initialize the update contact infos function.
             $scope.updateContactInfos       = function (language) {
                 $scope.language             = language;
 
+                // Get the contact infos.
                 var contactInfoQuery        = zooInfoService.contactInfo.getAllContactInfos(language.id).then(
                     function (data) {
                         $scope.contactInfos = data.data;
 
+                        // Add an empty contact info for the user to add.
                         addEmptyContactInfo($scope.contactInfos);
                     },
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
                     });
 
+                // Get the contact info note.
                 var contactInfoNoteQuery    = zooInfoService.contactInfo.getContactInfoNote(language.id).then(
                     function (data) {
-                        $scope.contactInfoNote = data.data[0] || { contactInfoNote: '' };
+                        $scope.contactInfoNote = data.data || { contactInfoNote: '' };
                     },
                     function () {
                         utilitiesService.utilities.alert("אירעה שגיאה במהלך טעינת הנתונים");
@@ -46,51 +49,45 @@
                     () => $scope.isLoading    = false);
             }
 
+            // Initialize the confirm delete contact info function.
             $scope.confirmDeleteContactInfo = function (ev, contactInfo, contactInfos) {
-                var confirm = $mdDialog.confirm()
-                    .title('האם אתה בטוח שברצונך למחוק את תוכן זה?')
-                    .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
-                    .targetEvent(ev)
-                    .ok('אישור')
-                    .cancel('ביטול');
+                utilitiesService.utilities.confirm({ title: 'מחיקת דרך יצירת קשר', text: 'האם אתה בטוח שברצונך למחוק דרך יצירת קשר זו?' }).then(
+                    function () {
+                        deleteContactInfo(contactInfo, contactInfos);
+                    });
 
-                $mdDialog.show(confirm).then(function () { deleteContactInfo(contactInfo, contactInfos); });
+                return;
             }
 
+            // Initialize the add contact info function.
             $scope.addContactInfo           = function (contactInfo) {
                 if (!checkContactInfo(contactInfo)) {
                     return;
                 }
 
                 $scope.isLoading        = true;
+
+                // Initialize the return statement.
                 var successContent      = contactInfo.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
                 var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
 
+                // Update the contact info.
                 zooInfoService.contactInfo.updateContactInfo(contactInfo).then(
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(successContent)
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert(successContent);
 
                         $scope.isLoading = false;
 
                         $scope.updateContactInfos($scope.language);
                     },
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent(failContent)
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert(failContent);
 
                         $scope.isLoading = false;
                     });
             }
 
+            // Initialize the add contact info note function.
             $scope.addContactInfoNote       = function (contactInfoNote, languageId) {
                 var contactInfoObj          = { contactInfoNote: contactInfoNote };
 
@@ -100,43 +97,40 @@
             }
         }
 
+        // Adds an empty contact info.
         function addEmptyContactInfo(contactInfos) {
             contactInfos.push({ isNew: true, language: $scope.language.id, id: 0 });
         }
 
+        // Deletes a contact info.
         function deleteContactInfo(contactInfo, contactInfos) {
             zooInfoService.contactInfo.deleteContactInfo(contactInfo.id).then(
                 function () {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .textContent('התוכן נמחק בהצלחה')
-                            .ok('סגור')
-                    );
+                    utilitiesService.utilities.alert('דרך יצירת הקשר נמחקה בהצלחה');
 
+                    // Remove the contact info from the contact infos array.
                     contactInfos.splice(contactInfos.indexOf(contactInfo), 1);
                 },
                 function () {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .textContent('התרחשה שגיאה בעת מחיקת התוכן')
-                            .ok('סגור')
-                    );
+                    utilitiesService.utilities.alert('התרחשה שגיאה בעת מחיקת דרך יצירת הקשר');
                 });
         }
 
+        // Checks the contact info's validity.
         function checkContactInfo(contactInfo) {
+            // If no contact info was given, return.
             if (!contactInfo) {
                 return;
             }
 
+            // If no via was entered, return.
             if (!angular.isDefined(contactInfo.via) || contactInfo.via === '') {
                 utilitiesService.utilities.alert('אנא הכנס דרך התקשרות');
 
                 return false;
             }
 
+            // If no address was entered, return.
             if (!angular.isDefined(contactInfo.address) || contactInfo.address === '') {
                 utilitiesService.utilities.alert('אנא הכנס כתובת התקשרות');
 

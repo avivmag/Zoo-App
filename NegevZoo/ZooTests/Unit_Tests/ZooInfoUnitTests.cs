@@ -1272,9 +1272,7 @@ namespace ZooTests.Unit_Tests
         public void GetAboutUsValidInput()
         {
             var aboutUs = context.GetZooAboutInfo(1);
-            Assert.IsInstanceOfType(aboutUs, typeof(String[]));
-
-            Assert.AreEqual(aboutUs.Count(), 1);
+            Assert.IsInstanceOfType(aboutUs, typeof(String));
         }
 
         [TestMethod]
@@ -1328,13 +1326,6 @@ namespace ZooTests.Unit_Tests
         #region GetOpeningHourNote
 
         [TestMethod]
-        public void GetOpeningHourNoteValidInput()
-        {
-            var ohNote = context.GetOpeningHourNote((int)Languages.en);
-            Assert.AreEqual(ohNote.Count(), 1);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language")]
         public void GetOpeningHourNoteLangaugeNotExist()
         {
@@ -1349,16 +1340,15 @@ namespace ZooTests.Unit_Tests
         public void UpdateOpeningHourNoteValidInput()
         {
             var ohNote = context.GetOpeningHourNote((int)Languages.en);
-            Assert.AreEqual(ohNote.Count(), 1);
 
-            var oldNote = ohNote.First();
+            var oldNote = ohNote;
             var newAboutUs = "This is the new note!";
 
             context.UpdateOpeningHourNote(newAboutUs, (int)Languages.en);
 
             ohNote = context.GetOpeningHourNote((int)Languages.en);
-            Assert.IsTrue(ohNote.Any(ohn => ohn == newAboutUs));
-            Assert.IsFalse(ohNote.Any(ohn => ohn == oldNote));
+            Assert.IsTrue(ohNote == newAboutUs);
+            Assert.IsFalse(ohNote == oldNote);
         }
 
         [TestMethod]
@@ -1387,13 +1377,6 @@ namespace ZooTests.Unit_Tests
         #region GetContactInfoNote
 
         [TestMethod]
-        public void GetContacgInfoNote()
-        {
-            var ciNote = context.GetContactInfoNote((int)Languages.en);
-            Assert.AreEqual(ciNote.Count(), 1);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language")]
         public void GetContactInfoNoteLangaugeNotExist()
         {
@@ -1408,16 +1391,15 @@ namespace ZooTests.Unit_Tests
         public void UpdateContactInfoNoteValidInput()
         {
             var ciNote = context.GetContactInfoNote((int)Languages.en);
-            Assert.AreEqual(ciNote.Count(), 1);
 
-            var oldNote = ciNote.First();
+            var oldNote = ciNote;
             var newAboutUs = "This is the new note!";
 
             context.UpdateContactInfoNote(newAboutUs, (int)Languages.en);
 
             ciNote = context.GetContactInfoNote((int)Languages.en);
-            Assert.IsTrue(ciNote.Any(cin => cin == newAboutUs));
-            Assert.IsFalse(ciNote.Any(cin => cin == oldNote));
+            Assert.IsTrue(ciNote == newAboutUs);
+            Assert.IsFalse(ciNote == oldNote);
         }
 
         [TestMethod]
