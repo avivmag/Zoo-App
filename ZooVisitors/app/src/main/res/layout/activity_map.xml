@@ -5,8 +5,8 @@
     android:id="@+id/activity_map_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zoovisitors.pl.map.MapActivity"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:context="com.zoovisitors.pl.map.MapActivity">
 
     <com.zoovisitors.pl.map.MapView
         android:id="@+id/map_view_layout"
@@ -14,13 +14,7 @@
         android:layout_height="match_parent"
         android:background="@color/mapBackgroundColor"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"/>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--android:orientation="horizontal">-->
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
         android:id="@+id/map_get_to_know_me_layout"
@@ -31,46 +25,48 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="-200dp"
         android:background="@drawable/map_get_to_know_me_gradient"
+        android:duplicateParentState="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="3"
-        android:duplicateParentState="true"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:weightSum="3">
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="2"
+            android:clickable="false"
             android:gravity="center"
             android:orientation="vertical"
-            android:weightSum="2"
-            android:clickable="false"
-            android:layout_height="match_parent">
+            android:weightSum="2">
+
             <TextView
                 android:id="@+id/map_get_to_know_me_textview"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/mapGetToKnowMeText"
-                android:gravity="center"
-                android:clickable="false"
                 android:layout_weight="1"
-                android:layout_width="wrap_content" />
+                android:clickable="false"
+                android:gravity="center"
+                android:textColor="@color/mapGetToKnowMeText" />
+
             <TextView
                 android:id="@+id/map_get_to_know_me_textview2"
-                android:text="@string/map_get_to_know_me_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orangeNegev"
-                android:gravity="center"
-                android:clickable="false"
                 android:layout_weight="1"
-                android:layout_width="wrap_content" />
+                android:clickable="false"
+                android:gravity="center"
+                android:text="@string/map_get_to_know_me_text"
+                android:textColor="@color/orangeNegev" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/map_get_to_know_me_imagebutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:clickable="false"
             android:layout_weight="1"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:clickable="false" />
     </LinearLayout>
 
     <ImageButton
@@ -87,25 +83,36 @@
         android:src="@mipmap/round_gps_off_black_24" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="2"
-        android:layoutDirection="ltr">
+        android:layoutDirection="ltr"
+        android:weightSum="2">
 
         <ImageView
             android:id="@+id/map_left_door"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@mipmap/left_door" />
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/left_door" />
 
         <ImageView
             android:id="@+id/map_right_door"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@mipmap/right_door"
-            android:layout_weight="1" />
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/right_door" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/map_logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:src="@mipmap/loading_logo" />
 </RelativeLayout>

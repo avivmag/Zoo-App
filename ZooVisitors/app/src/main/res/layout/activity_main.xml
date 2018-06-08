@@ -69,6 +69,7 @@
                 android:layout_marginEnd="217dp"
                 android:background="@drawable/button_shape"
                 android:text="@string/watch_all_feed"
+                android:textStyle="bold"
                 android:layout_weight="0" />
         </LinearLayout>
 

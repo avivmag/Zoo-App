@@ -2,9 +2,12 @@ package com.zoovisitors.pl.map;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +24,6 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.MapResult;
-import com.zoovisitors.backend.Misc;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
@@ -57,15 +59,19 @@ public class MapActivity extends ProviderBasedActivity
     private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
+    private ImageView logo;
     private ImageView leftDoor;
     private ImageView rightDoor;
+    private android.support.v7.app.ActionBar actionBar;
+    public static final long OPEN_DOORS_ANIMATION_DURATION = 750;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-//        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-//        actionBar.hide();
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+
         mapActivityLayout = findViewById(R.id.activity_map_layout);
         mapView = findViewById(R.id.map_view_layout);
         getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
@@ -83,6 +89,7 @@ public class MapActivity extends ProviderBasedActivity
         initialGetToKnowMeLayoutBottom = ((RelativeLayout.LayoutParams) getToKnowMeLayout
                 .getLayoutParams()).bottomMargin;
 
+        logo = findViewById(R.id.map_logo);
         leftDoor = findViewById(R.id.map_left_door);
         rightDoor = findViewById(R.id.map_right_door);
 
@@ -153,6 +160,8 @@ public class MapActivity extends ProviderBasedActivity
         }
         getIntent().putExtra("enclosureID", -1);
         firstRun = false;
+
+        moveDoors(true);
     }
 
     @Override
@@ -281,7 +290,11 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onBackPressed() {
         cancelFocus();
-        moveTaskToBack(false);
+//        moveTaskToBack(false);
+        moveDoors(false);
+        new Handler().postDelayed(() -> {
+            super.onBackPressed();
+        }, OPEN_DOORS_ANIMATION_DURATION * 2);
     }
 
     @Override
@@ -333,15 +346,37 @@ public class MapActivity extends ProviderBasedActivity
         }
     }
 
-    private final long OPEN_DOORS_ANIMATION_DURATION = 1000;
-    private void openDoorsAnimation() {
-        Animation a = new Animation() {
+    private void moveDoors(boolean outSide) {
+        RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logo.getLayoutParams();
+        LinearLayout.LayoutParams leftDoorParams = (LinearLayout.LayoutParams) leftDoor.getLayoutParams();
+        LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
+
+        int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
+        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 100;
+        Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-
+                logoParams.topMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenHeight);
+                logoParams.bottomMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenHeight);
+                logo.setLayoutParams(logoParams);
             }
         };
-        a.setDuration(OPEN_DOORS_ANIMATION_DURATION);
-        mapActivityLayout.startAnimation(a);
+        Animation animationDoors = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                leftDoorParams.rightMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
+                leftDoorParams.leftMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
+                leftDoor.setLayoutParams(leftDoorParams);
+                rightDoorParams.rightMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
+                rightDoorParams.leftMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
+                rightDoor.setLayoutParams(rightDoorParams);
+            }
+        };
+        animationDoors.setDuration(OPEN_DOORS_ANIMATION_DURATION);
+        animationLogo.setDuration(OPEN_DOORS_ANIMATION_DURATION);
+        mapActivityLayout.startAnimation(outSide ? animationLogo : animationDoors);
+        new Handler().postDelayed(() -> {
+            mapActivityLayout.startAnimation(outSide ? animationDoors : animationLogo);
+        }, OPEN_DOORS_ANIMATION_DURATION);
     }
 }

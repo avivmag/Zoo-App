@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -29,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
+import static com.zoovisitors.pl.map.MapActivity.OPEN_DOORS_ANIMATION_DURATION;
 
 /**
  * Created by aviv on 12-Jan-18.
@@ -99,16 +101,38 @@ public class MapView extends RelativeLayout {
                         (float) screenWidth / (primaryImageWidth + 2 * primaryImageMargin),
                         (float) screenHeight / (primaryImageHeight + 2 * primaryImageMargin)
                 );
-        mScaleFactor = mLastScaleFactor =
-                Math.max(
-                        (float) screenWidth / primaryImageWidth,
-                        (float) screenHeight / primaryImageHeight
-                );
-        mPosX = screenWidth / 2 - getmScaleFactor() * zooMapIcon.width / 2;
-        mPosY = screenHeight / 2 - getmScaleFactor() * zooMapIcon.height / 2;
+        mScaleFactor = mLastScaleFactor = minScaleFactor;
 
-        if (enclosureIdToFocus != -1)
-            focusOnIconAndRattle(enclosureIdToFocus);
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / mScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / mScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
+        mPosX = Math.min(
+                                screenWidth / 2 - zooMapIcon.width / 2 * mScaleFactor,
+                                mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
+                        );
+        mPosY =
+                Math.min(
+                                screenHeight / 2 - mScaleFactor * zooMapIcon.height / 2,
+                                mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
+                        );
+
+//        new Handler().postDelayed(() -> {
+//            if (enclosureIdToFocus == -1) {
+//                focusOnLocationAnimation(
+//                        zooMapIcon.width / 2,
+//                        zooMapIcon.height / 2,
+//                        Math.max(
+//                                (float) screenWidth / primaryImageWidth,
+//                                (float) screenHeight / primaryImageHeight
+//                        ),
+//                        OPEN_DOORS_ANIMATION_DURATION);
+//            } else {
+//                focusOnIconAndRattle(enclosureIdToFocus);
+//            }
+//        }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
     public MapView(Context context) {
@@ -128,6 +152,7 @@ public class MapView extends RelativeLayout {
         timerFastRunnables = new CopyOnWriteArrayList<>();
         timerSlowRunnables = new CopyOnWriteArrayList<>();
         // screen size
+
         screenWidth = this.getResources().getDisplayMetrics().widthPixels;
         screenHeight = this.getResources().getDisplayMetrics().heightPixels;
 
@@ -338,7 +363,7 @@ public class MapView extends RelativeLayout {
             return;
 
         int numberOfRattleTimes = 2;
-        focusOnLocationAnimation(icon.left, icon.top, FOCUS_ON_LOCATION_ANIMATION_TIME);
+        focusOnLocationAnimation(icon.left, icon.top, maxScaleFactor, FOCUS_ON_LOCATION_ANIMATION_TIME);
         Icon finalIcon = icon;
         new Handler().postDelayed(() -> {
             rattleViewAnimation(finalIcon.view, numberOfRattleTimes);
@@ -347,7 +372,7 @@ public class MapView extends RelativeLayout {
 
     public boolean animationInterrupt = false;
 
-    private Animation focusOnLocationAnimation(int x, int y, long duration) {
+    private Animation focusOnLocationAnimation(int x, int y, float finalScale, long duration) {
         float initialMScaleFactor = mScaleFactor;
         float initialMPosX = mPosX;
         float initialMPosY = mPosY;
@@ -360,12 +385,12 @@ public class MapView extends RelativeLayout {
                 if (animationInterrupt)
                     this.cancel();
 
-                mScaleFactor = mLastScaleFactor = initialMScaleFactor + (maxScaleFactor -
+                mScaleFactor = mLastScaleFactor = initialMScaleFactor + (finalScale -
                         initialMScaleFactor) * interpolatedTime;
                 mPosX =
                         Math.max(
                                 Math.min(
-                                        initialMPosX + (screenWidth / 2 - x * maxScaleFactor - initialMPosX) * interpolatedTime,
+                                        initialMPosX + (screenWidth / 2 - x * finalScale - initialMPosX) * interpolatedTime,
                                         mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
                                 ),
                                 screenWidth - mScaleFactor * (zooMapIcon.width + primaryImageMargin)
@@ -373,7 +398,7 @@ public class MapView extends RelativeLayout {
                 mPosY =
                         Math.max(
                                 Math.min(
-                                        initialMPosY + (screenHeight / 2 - y * maxScaleFactor -
+                                        initialMPosY + (screenHeight / 2 - y * finalScale -
                                                 initialMPosY) * interpolatedTime,
                                         mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 +
                                                 primaryImageMargin)
@@ -391,7 +416,7 @@ public class MapView extends RelativeLayout {
 
     private Animation focusOnLocationAnimation(int x, int y) {
         // the ratio is 1/currentZoomLevel mil/pixel
-        return focusOnLocationAnimation(x, y,
+        return focusOnLocationAnimation(x, y, maxScaleFactor,
                 (long) (Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY - y) * (mPosY - y))
                         / mScaleFactor * equatorScaleFactor));
     }
