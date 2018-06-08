@@ -48,7 +48,7 @@ namespace RecEventsNotifications
         private void Run()
         {
             // Set the starting time to zero and the time between the operation to 10 minutes.
-            var periodTimeSpan  = TimeSpan.FromMinutes(10);
+            var periodTimeSpan  = TimeSpan.FromSeconds(10);
             var startTimeSpan   = TimeSpan.Zero;
 
             // Create an IPC wait handle with a unique identifier.
@@ -66,21 +66,22 @@ namespace RecEventsNotifications
                 return;
             }
 
-            // Start a another thread that does something every 10 seconds.
-            var timer = new Timer((e) =>
+            Task.Factory.StartNew(() => 
             {
-                //setting the task to be the sending function
-                Task.Factory.StartNew(() => SendRecNotification());
-            }, null, startTimeSpan, periodTimeSpan);
+                while(true)
+                {
+                    this.SendRecNotification();
+
+                    // Sleep for 10 minutes.
+                    Thread.Sleep(1000 * 60 * 10);
+                }
+            });
 
             // Wait if someone tells us to die or do every five seconds something else.
             do
             {
-                signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(5));
+                signaled = waitHandle.WaitOne(TimeSpan.FromMinutes(10));
             } while (!signaled);
-
-            // The above loop with an interceptor could also be replaced by an endless waiter
-            //waitHandle.WaitOne();
 
             Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Got signal to kill myself.");
         }
@@ -91,6 +92,7 @@ namespace RecEventsNotifications
             {
                 Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Calling Web API to send notifications about RecurringEvents");
                 context.SendNotificationsOnlineDevicesRecurringEvents();
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Finished notifcation send call.");
             }
         }
     }

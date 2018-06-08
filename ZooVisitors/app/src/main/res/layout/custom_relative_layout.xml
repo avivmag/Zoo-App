@@ -12,9 +12,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:background="@drawable/cell_border_shape"
-        android:layout_margin="5dip"
-        >
+        android:background="@drawable/cell_border_shape">
+
 
         <ImageView
             android:id="@+id/custom_animal_personal_story_image"

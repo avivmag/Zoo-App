@@ -597,19 +597,13 @@ namespace NegevZoo.Controllers
         /// <returns>The zoo's opening hour note.</returns>
         [HttpGet]
         [Route("openingHours/openingHourNote/{language}")]
-        public IEnumerable<OpeningHourNoteResult> GetOpeningHourNote(int language = 1)
+        public OpeningHourNoteResult GetOpeningHourNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.GetOpeningHourNote(language)
-                        .Select(oen =>
-                            new OpeningHourNoteResult
-                            {
-                                OpeningHourNote = oen
-                            })
-                        .ToArray();
+                    return new OpeningHourNoteResult { OpeningHourNote = db.GetOpeningHourNote(language) };
                 }
             }
             catch (Exception Exp)
@@ -656,19 +650,13 @@ namespace NegevZoo.Controllers
         /// <returns>The zoo's Contact us note.</returns>
         [HttpGet]
         [Route("contactInfos/contactInfoNote/{language}")]
-        public IEnumerable<ContactInfoNoteResult> GetContactInfoNote(int language = 1)
+        public ContactInfoNoteResult GetContactInfoNote(int language = 1)
         {
             try
             {
                 using (var db = GetContext())
                 {
-                    return db.GetContactInfoNote(language)
-                        .Select(cin =>
-                            new ContactInfoNoteResult
-                            {
-                                ContactInfoNote = cin
-                            })
-                        .ToArray();
+                    return new ContactInfoNoteResult { ContactInfoNote = db.GetContactInfoNote(language) };
                 }
             }
             catch (Exception Exp)

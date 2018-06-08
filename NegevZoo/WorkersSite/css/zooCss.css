@@ -23,19 +23,6 @@
     transform: translate(-50%, -50%);
 }
 
-.md-datepicker-input {
-    margin-right: 20px !important;
-}
-
-md-datepicker {
-    margin-top: 17px !important;
-}
-
-body.md-toast-animating {
-    position: fixed;
-    overflow: auto !important;
-}
-
 .picture {
     height: 320px; 
     width: 320px;

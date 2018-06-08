@@ -72,6 +72,15 @@ app.factory('utilitiesService', ['$mdDialog',
                         .required(object.isRequired || false)
                         .ok(object.okMsg || 'כן')
                         .cancel(object.cancelMsg || 'לא'));
+            },
+
+            confirm: function(object) {
+                return $mdDialog.show(
+                    $mdDialog.confirm()
+                    .title(object.title || '')
+                    .textContent(object.text || '')
+                    .ok(object.okMsg || 'כן')
+                    .cancel(object.cancelMsg || 'לא'));
             }
         }
 

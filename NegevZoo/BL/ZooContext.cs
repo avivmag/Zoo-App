@@ -462,7 +462,7 @@ namespace BL
                 throw new ArgumentException("No enclosure with such enclosure Id exists.");
             }
 
-            var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() });
+            var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() }).ToArray();
 
             if (pictures.Any(p => String.IsNullOrWhiteSpace(p.pictureUrl)))
             {
@@ -1973,7 +1973,7 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the note is in.</param>
         /// <returns>The zoo's openingHourNote.</returns>
-        public IEnumerable<String> GetOpeningHourNote(int language)
+        public String GetOpeningHourNote(int language)
         {
             if (!ValidLanguage(language))
             {
@@ -1983,7 +1983,7 @@ namespace BL
             return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.openingHoursNote)
-                .ToArray();
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -2016,7 +2016,7 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the note is in.</param>
         /// <returns>The zoo's ContactInfoNote.</returns>
-        public IEnumerable<String> GetContactInfoNote(int language)
+        public String GetContactInfoNote(int language)
         {
             if (!ValidLanguage(language))
             {
@@ -2026,7 +2026,7 @@ namespace BL
             return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.contactInfoNote)
-                .ToArray();
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -2737,7 +2737,8 @@ namespace BL
             //check if the device already exists
             if (device != null)
             {
-                device.lastPing = currentTime;
+                device.lastPing     = currentTime;
+                device.insidePark   = (sbyte)(insidePark ? 1 : 0);
             }
             else
             {
@@ -2808,8 +2809,9 @@ namespace BL
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            Console.WriteLine(currentTime);
-            Logger.GetInstance(false).WriteLine("Searching for events");
+            var hasEvents       = false;
+
+            Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Searching for events");
             foreach(RecurringEvent recEve in allRecEvents)
             {
                 // get the difference between now and the recEve
@@ -2820,14 +2822,16 @@ namespace BL
 
                 if (curDayOfWeek == recEve.day && timeDif.Hours == 0 && timeDif.Minutes <= 10 && timeDif.Minutes > TimeSpan.Zero.Minutes)
                 {
-                    Logger.GetInstance(false).WriteLine("Event found" + recEve.title + ", ", recEve.description);
+                    hasEvents = true;
+                    Logger.LoggerRec.GetLoggerRecInstance().WriteLine("Event found" + recEve.title + ", ", recEve.description);
 
                     SendNotificationsOnlineDevices(recEve.title, recEve.description);
                 }
-                else
-                {
-                    Logger.GetInstance(false).WriteLine("No events found");
-                }
+            }
+
+            if (!hasEvents)
+            {
+                Logger.LoggerRec.GetLoggerRecInstance().WriteLine("No events found.");
             }
         }
 
@@ -2852,12 +2856,11 @@ namespace BL
                 var data = new
                 {
                     registration_ids,
-                    //notification = new { title, body, sound = "default", vibrate = true, background = true },
                     data = new
                     {
                         Title   = title,
                         Body    = body,
-                        Window  = "com.zoovisitors.pl.map.MapActivity"
+                        //Window  = "com.zoovisitors.pl.map.MapActivity"
                     }
                 };
 
@@ -3240,10 +3243,10 @@ namespace BL
             var mapInfo             = this.GetMapSettings();
             var wallFeeds           = this.GetAllWallFeeds(language);
             var openingHours        = this.GetAllOpeningHours(language);
-            var openingHoursNote    = this.GetOpeningHourNote(language).FirstOrDefault();
+            var openingHoursNote    = this.GetOpeningHourNote(language);
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
-            var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
+            var contactInfoNote     = this.GetContactInfoNote(language);
             var aboutUs             = this.GetZooAboutInfo(language);
 
             var contactInfoResult   = new
@@ -3287,10 +3290,8 @@ namespace BL
                 return;
             }
 
-            var test = zooDB.ChangeTracker.Entries();
-
             var entries = zooDB.ChangeTracker.Entries().Select(e => e.Entity).ToArray().Distinct();
-            
+
             foreach (var entry in entries)
             {
                 zooDB.RemoveFromCache(entry.GetType().FullName);

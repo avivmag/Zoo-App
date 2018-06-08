@@ -1,12 +1,16 @@
-app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'utilitiesService',
-    function userControlController($scope, $mdDialog, usersService, utilitiesService) {
-        $scope.isLoading            = true;
+app.controller('zooUserControlCtrl', ['$scope', 'usersService', 'utilitiesService',
+    function userControlController($scope, usersService, utilitiesService) {
+        $scope.isLoading = true;
 
+        // Initialize the users component.
         initializeComponent();
 
+        // Update the users.
         $scope.updateUsers();
 
+        // Initializes the users component.
         function initializeComponent() {
+            // Initialize the update users function.
             $scope.updateUsers          = function () {
 
                 usersQuery = usersService.getAllUsers().then(
@@ -14,27 +18,26 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
                         $scope.users        = data.data;
                         $scope.isLoading    = false;
 
+                        // Add an empty user for the user to add.
                         addEmptyUser($scope.users);
                     },
                     function () {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .textContent('אירעה שגיאה במהלך טעינת הנתונים')
-                                .ok('סגור')
-                        );
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך טעינת הנתונים');
 
                         $scope.isLoading = false;
                     });
             };
 
+            // Initialize the add user function.
             $scope.addUser              = function (user, users) {
+                // Check the user's validity.
                 if (!checkUser(user, users)) {
                     return;
                 }
 
                 $scope.isLoading        = true;
 
+                // Initialize the return statement.
                 var successContent      = user.isNew ? 'המשתמש נוסף בהצלחה!' : 'המשתמש עודכן בהצלחה!';
                 var failContent         = user.isNew ? 'התרחשה שגיאה בעת שמירת המשתמש' : 'התרחשה שגיאה בעת עדכון המשתמש';
 
@@ -53,121 +56,122 @@ app.controller('zooUserControlCtrl', ['$scope', '$mdDialog', 'usersService', 'ut
                     });
             };
 
-            $scope.confirmDeleteUser    = function (ev, user, users) {
-                var confirm = $mdDialog.confirm()
-                    .title('האם אתה בטוח שברצונך למחוק את משתמש זה?')
-                    .textContent('לאחר המחיקה, לא תוכל להחזירו אלא ליצור אותו מחדש')
-                    .targetEvent(ev)
-                    .ok('אישור')
-                    .cancel('ביטול');
-    
-                $mdDialog.show(confirm).then(function () {
-                   deleteUser(user, users);
-                });
+            // Initialize the confirm delete user function.
+            $scope.confirmDeleteUser    = function (user, users) {
+                utilitiesService.utilities.confirm({ title: 'מחיקת משתמש', text: 'האם אתה בטוח שברצונך למחוק משתמש זה?' }).then(
+                    function () {
+                        deleteUser(user, users);
+                    });
+
+                return;
             }
 
-            $scope.confirmResetPassword = function (ev, user) {
+            // Initialize the confirm reset password function.
+            $scope.confirmResetPassword = function (user) {
+                // If the user is new, reset it's password without confirming.
                 if (user.isNew) {
-                    resetPassword(ev, user);
+                    resetPassword(user);
     
                     return;
                 }
-                var confirm = $mdDialog.confirm()
-                    .title('האם אתה בטוח שברצונך לאפס למשתמש זה את סיסמתו??')
-                    .textContent('לאחר האיפוס, המשתמש לא יוכל להכנס עם סיסמתו הישנה.')
-                    .targetEvent(ev)
-                    .ok('אישור')
-                    .cancel('ביטול');
-    
-                $mdDialog.show(confirm).then(function () {
-                   resetPassword(ev, user);
-                });
+
+                utilitiesService.utilities.confirm({ title: 'איפוס סיסמא', text: 'האם אתה בטוח שברצונך לאפס סיסמא למשתמש זה?' }).then(
+                    function () {
+                        resetPassword(user);
+                    });
+
+                return;
             }
 
-            $scope.resetPassword        = function (user) {
-                promptObject = {
-                    title:          'איפוס סיסמא',
-                    content:        'הכנס סיסמא חדשה לאיפוס',
-                    placeholder:    'סיסמא חדשה',
-                    required:       true,
-                    okMsg:          'אפס סיסמא',
-                    cancelMsg:      'ביטול'
-                };
-
-                utilitiesService.utilities.prompt(promptObject).then(
-                    function(newPass) {
-                        user.password = newPass;
-
-                        if (!checkUser(user)) {
-                            return;
-                        }
-
-                        usersService.updatePassword(user.id, user.password).then(
-                            () => utilitiesService.utilities.alert("הסיסמא אופסה בהצלחה"),
-                            () => utilitiesService.utilities.alert("קרתה שגיאה בעת איפוס הסיסמא"));
-                    });
-            };
-
+            // Initialize the update username function.
             $scope.updateUsername       = function (user, users) {
+                // Check for user validity.
                 if (!checkUser(user, users)) {
                     return;
                 }
 
+                // Update the username.
                 usersService.updateUsername(user.id, user.name).then(
                     () => utilitiesService.utilities.alert("שם המשתמש עודכן בהצלחה"),
                     () => utilitiesService.utilities.alert("קרתה שגיאה בעת עדכון שם המשתמש")); 
             }
         }
 
+        // Resets the user's password.
+        function resetPassword(user) {
+            promptObject = {
+                title:          'איפוס סיסמא',
+                content:        'הכנס סיסמא חדשה לאיפוס',
+                placeholder:    'סיסמא חדשה',
+                required:       true,
+                okMsg:          'אפס סיסמא',
+                cancelMsg:      'ביטול'
+            };
+
+            utilitiesService.utilities.prompt(promptObject).then(
+                function(newPass) {
+                    user.password = newPass;
+
+                    // Check the user's validity.
+                    if (!checkUser(user)) {
+                        return;
+                    }
+
+                    // Update the password.
+                    usersService.updatePassword(user.id, user.password).then(
+                        () => utilitiesService.utilities.alert("הסיסמא אופסה בהצלחה"),
+                        () => utilitiesService.utilities.alert("קרתה שגיאה בעת איפוס הסיסמא"));
+                });
+        };
+
+        // Deletes a user.
         function deleteUser(user, users) {
             usersService.deleteUser(user.id).then(
                 function () {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .textContent('המשתמש נמחק בהצלחה')
-                            .ok('סגור')
-                    );
+                    utilitiesService.utilities.alert('המשתמש נמחק בהצלחה');
 
+                    // Remove the user from the users array.
                     users.splice(users.indexOf(user), 1);
                 },
                 function () {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .textContent('התרחשה שגיאה בעת מחיקת המשתמש')
-                            .ok('סגור')
-                    );
+                    utilitiesService.utilities.alert('התרחשה שגיאה בעת מחיקת המשתמש');
                 });
         }
 
+        // Adds an empty user.
         function addEmptyUser(users) {
             users.push({ id: 0, isNew: true });
         }
 
+        // Checks the user's validity.
         function checkUser(user, users) {
+            // If no user was given, return.
             if (!user) {
                 return false;
             }
 
+            // If no username was given, return.
             if (!angular.isDefined(user.name) || user.name === '') {
                 utilitiesService.utilities.alert('אנא בחר שם משתמש');
 
                 return false;
             }
 
+            // If the username was alrady taken, return.
             if (users && users.filter(u => u.name === user.name).length > 1) {
                 utilitiesService.utilities.alert('שם המשתמש הנבחר כבר בשימוש');
 
                 return false;
             }
 
+            // If no password was given, return.
             if (!angular.isDefined(user.password) || user.password === '') {
                 utilitiesService.utilities.alert('אנא בחר סיסמא');
 
                 return false;
             }
 
+            // If the password's length was under 6 characters, return.
             if (user.password.length < 6) {
                 utilitiesService.utilities.alert('הסיסמא חייבת להיות לפחות 6 תווים');
 
