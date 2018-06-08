@@ -3,23 +3,15 @@ package com.zoovisitors.pl.enclosures;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.CallbackManager;
@@ -44,9 +36,7 @@ import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.customViews.ButtonCustomView;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,17 +199,23 @@ public class EnclosureActivity extends BaseActivity {
         });
 
 
-        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
-        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
+        ButtonCustomView showOnMapButton = findViewById(R.id.showOnMap);
+        if (enclosure.getMarkerX() != 0 || enclosure.getMarkerY() != 0) {
+            showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
 
-        showOnMapButton.setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtra("enclosureID", enclosure.getId());
-                    startActivity(intent);
-                }
-        );
+            showOnMapButton.setOnClickListener(
+                    v -> {
+                        Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("enclosureID", enclosure.getId());
+                        startActivity(intent);
+                    }
+            );
+        }
+        else {
+            LinearLayout locationFacebookLayout = findViewById(R.id.location_facebook_layout);
+            locationFacebookLayout.removeView(showOnMapButton);
+        }
 
         //initialize the title and the story of the enclosure
         if (enclosure.getStory().equals("")){
