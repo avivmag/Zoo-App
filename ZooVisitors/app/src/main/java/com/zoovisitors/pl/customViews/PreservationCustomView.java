@@ -5,6 +5,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -52,7 +53,7 @@ public class PreservationCustomView extends LinearLayout {
         imageLayoutParams.leftMargin = 2;
         preservationImage.setLayoutParams(imageLayoutParams);
 
-        LayoutParams textLayoutParams = new LayoutParams(screenWidth, screenWidth - 2);
+        LayoutParams textLayoutParams = new LayoutParams(screenWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         preservationText.setLayoutParams(textLayoutParams);
     }
