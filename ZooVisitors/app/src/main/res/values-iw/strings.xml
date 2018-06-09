@@ -110,4 +110,8 @@
     <!--ERROR MESSAGES-->
     <string name="error_no_schedule">אין אירועים בלוח השנה</string>
     <string name="error_no_rec_events">אין אירועים היום</string>
+    <string name="error_no_about_us">לא קיים מידע אודותינו</string>
+    <string name="error_no_contact_infos">לא קיים מידע על דרכי יצירת קשר</string>
+    <string name="error_no_prices">לא קיים מידע על מחירים</string>
+
 </resources>

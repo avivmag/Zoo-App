@@ -42,13 +42,13 @@
     <string name="showOnMap">اظهار على الخريطة</string>
     <!--preservation strings-->
     <string name="preservation0">لا اعرف</string>
-    <string name="preservation1">بدون خوف</string>
-    <string name="preservation2">على مقربة من التهديد</string>
-    <string name="preservation3">عرضة</string>
-    <string name="preservation4">بالانقراض</string>
-    <string name="preservation5">في خطر الانقراض</string>
-    <string name="preservation6">منقرض في الطبيعة</string>
-    <string name="preservation7">منقرض</string>
+    <string name="preservation1">غير مهدد</string>
+    <string name="preservation2">نوع قريب من الخطر</string>
+    <string name="preservation3">غير محصن</string>
+    <string name="preservation4">أنواع مهددة بالانقراض</string>
+    <string name="preservation5">معرض للخطر للغاية</string>
+    <string name="preservation6">نوع منقرض في البرية</string>
+    <string name="preservation7">انقراض</string>
 
 
     <!-- General Info -->

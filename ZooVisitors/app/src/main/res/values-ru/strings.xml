@@ -36,13 +36,13 @@
     <string name="population">אוכלוסיה</string>
     <!--preservation strings-->
     <string name="preservation0">НЕИЗВЕСТНЫЙ</string>
-    <string name="preservation1">Без страха</string>
-    <string name="preservation2">Близко к угрозе</string>
-    <string name="preservation3">уязвимый</string>
-    <string name="preservation4">находящихся под угрозой исчезновения</string>
-    <string name="preservation5">В опасности исчезновения</string>
-    <string name="preservation6">Вымерший в природе</string>
-    <string name="preservation7">потухший</string>
+    <string name="preservation1">Виды под наименьшей угрозой</string>
+    <string name="preservation2">Виды, близкие к уязвимому положению</string>
+    <string name="preservation3">Уязвимые виды</string>
+    <string name="preservation4">Вымирающие виды</string>
+    <string name="preservation5">Виды на грани исчезновения</string>
+    <string name="preservation6">Исчезнувшие в дикой природе</string>
+    <string name="preservation7">Исчезнувшие</string>
 
     <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
 

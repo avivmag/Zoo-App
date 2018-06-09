@@ -44,8 +44,14 @@ public class PreservationCustomView extends LinearLayout {
         setOrientation(VERTICAL);
         rootView = inflate(context, R.layout.preservation_layout, this);
         preservationText = rootView.findViewById(R.id.preservation_text);
-        preservationText.setTextSize(10);
+        if (GlobalVariables.language == 4){
+            preservationText.setTextSize(8);
+        }
+        else {
+            preservationText.setTextSize(10);
+        }
         preservationText.setTextColor(getResources().getColor(R.color.black));
+
         preservationImage = rootView.findViewById(R.id.preservation_image);
         preservationImage.setScaleType(ImageView.ScaleType.FIT_XY);
         int screenWidth = getResources().getDisplayMetrics().widthPixels / 8 - 6;
@@ -53,7 +59,13 @@ public class PreservationCustomView extends LinearLayout {
         imageLayoutParams.leftMargin = 2;
         preservationImage.setLayoutParams(imageLayoutParams);
 
-        LayoutParams textLayoutParams = new LayoutParams(screenWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams textLayoutParams;
+        if (GlobalVariables.language == 4) {
+            textLayoutParams = new LayoutParams(screenWidth, screenWidth + 30);
+        }
+        else {
+            textLayoutParams = new LayoutParams(screenWidth, screenWidth);
+        }
 
         preservationText.setLayoutParams(textLayoutParams);
     }
