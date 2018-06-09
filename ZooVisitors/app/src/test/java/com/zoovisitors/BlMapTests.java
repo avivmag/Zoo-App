@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNull;
  */
 
 public class BlMapTests {
-//    static double MAX_DISTANCE_FROM_POINT = 7 * 0.0111111;
+//    static double MAX_DISTANCE_FROM_POINT = preservation6 * 0.0111111;
 //    static DataStructure mapDS;
 //    static Method getIndexRangeInLocations;
 //    static Method getLocationOnLineThatIsClosestToOutsideLocation;
@@ -62,76 +62,76 @@ public class BlMapTests {
 //        try {
 //            range = (int[]) getIndexRangeInLocations.invoke(mapDS, 31.25956117);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{0, locations.length - 1}, range);
+//        assertArrayEquals(new int[]{0, locations.length - preservation0}, range);
 //    }
 //
 //    @Test
 //    public void testGetIndexRangeInLocations1() {
 //        Location[] locations = {
 //                new Location(MAX_DISTANCE_FROM_POINT * 0.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
 //        try {
-//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * 3);
+//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * preservation2);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{2, 4}, range);
+//        assertArrayEquals(new int[]{preservation1, preservation3}, range);
 //    }
 //
 //    @Test
 //    public void testGetIndexRangeInLocations2() {
 //        Location[] locations = {
-//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0/2,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0/preservation1,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
 //        try {
-//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * 3);
+//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * preservation2);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{4, 6}, range);
+//        assertArrayEquals(new int[]{preservation3, preservation5}, range);
 //    }
 //
 //    @Test
 //    public void testGetIndexRangeInLocations3() {
 //        Location[] locations = {
-//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0/2,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0/preservation1,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
 //        try {
-//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * 3);
+//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * preservation2);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{4, 6}, range);
+//        assertArrayEquals(new int[]{preservation3, preservation5}, range);
 //    }
 //
 //    @Test
 //    public void testGetIndexRangeInLocations5() {
 //        Location[] locations = {
-//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0/2,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0/preservation1,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
@@ -144,43 +144,43 @@ public class BlMapTests {
 //    @Test
 //    public void testGetIndexRangeInLocations6() {
 //        Location[] locations = {
-//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 7.0/2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 8.0/2,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * 0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation6.0/preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation7.0/preservation1,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
 //        try {
-//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * 4.5/2);
+//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * preservation3.preservation4/preservation1);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{3,6}, range);
+//        assertArrayEquals(new int[]{preservation2,preservation5}, range);
 //    }
 //
 //    @Test
 //    public void testGetIndexRangeInLocations7() {
 //        Location[] locations = {
-//                new Location(MAX_DISTANCE_FROM_POINT * 0.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 1.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 2.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 3.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 4.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 5.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 6.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 7.0*2,0.0),
-//                new Location(MAX_DISTANCE_FROM_POINT * 8.0*2,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * 0.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation0.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation1.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation2.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation3.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation4.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation5.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation6.0*preservation1,0.0),
+//                new Location(MAX_DISTANCE_FROM_POINT * preservation7.0*preservation1,0.0),
 //        };
 //        DataStructure mapDS = new DataStructure(locations, Dummy.ZOO_ENTRANCE_LOCATION, Dummy.ZOO_EXIT_LOCATION, Dummy.ZOO_ENTRANCE_POINT, Dummy.ZOO_EXIT_POINT);
 //        int[] range = null;
 //        try {
-//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * 2*2);
+//            range = (int[]) getIndexRangeInLocations.invoke(mapDS, MAX_DISTANCE_FROM_POINT * preservation1*preservation1);
 //        } catch (Exception e) {}
-//        assertArrayEquals(new int[]{2,2}, range);
+//        assertArrayEquals(new int[]{preservation1,preservation1}, range);
 //    }
 //
 //    @Test
@@ -189,11 +189,11 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(0.0,2.5),
-//                    new Location(2.0,1.0),
+//                    new Location(0.0,preservation1.preservation4),
+//                    new Location(preservation1.0,preservation0.0),
 //                    new Location(0.0,0.0));
 //        } catch (Exception e) { }
-//        assertEquals(new Location(1.0,0.5), o);
+//        assertEquals(new Location(preservation0.0,0.preservation4), o);
 //    }
 //
 //    @Test
@@ -202,11 +202,11 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(0.0,2.5),
-//                    new Location(2.0,1.0),
+//                    new Location(0.0,preservation1.preservation4),
+//                    new Location(preservation1.0,preservation0.0),
 //                    new Location(0.0,0.0));
 //        } catch (Exception e) { }
-//        assertEquals(new Location(1.0,0.5), o);
+//        assertEquals(new Location(preservation0.0,0.preservation4), o);
 //    }
 //
 //    @Test
@@ -215,9 +215,9 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(9.0,3.0),
-//                    new Location(7.0,5.0),
-//                    new Location(2.0,1.0));
+//                    new Location(9.0,preservation2.0),
+//                    new Location(preservation6.0,preservation4.0),
+//                    new Location(preservation1.0,preservation0.0));
 //        } catch (Exception e) { }
 //        assertEquals(297.0/41, o.getLatitude(), 0.0000001);
 //        assertEquals(213.0/41, o.getLongitude(), 0.0000001);
@@ -229,12 +229,12 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(1.0,3.0),
-//                    new Location(2.0,6.0),
-//                    new Location(3.0,9.0));
+//                    new Location(preservation0.0,preservation2.0),
+//                    new Location(preservation1.0,preservation5.0),
+//                    new Location(preservation2.0,9.0));
 //        } catch (Exception e) { }
-//        assertEquals(1.0, o.getLatitude(), 0.0000001);
-//        assertEquals(3.0, o.getLongitude(), 0.0000001);
+//        assertEquals(preservation0.0, o.getLatitude(), 0.0000001);
+//        assertEquals(preservation2.0, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -243,12 +243,12 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(3.0,2.0),
-//                    new Location(1.0,1.0),
-//                    new Location(2.0,1.0));
+//                    new Location(preservation2.0,preservation1.0),
+//                    new Location(preservation0.0,preservation0.0),
+//                    new Location(preservation1.0,preservation0.0));
 //        } catch (Exception e) { }
-//        assertEquals(3.0, o.getLatitude(), 0.0000001);
-//        assertEquals(1.0, o.getLongitude(), 0.0000001);
+//        assertEquals(preservation2.0, o.getLatitude(), 0.0000001);
+//        assertEquals(preservation0.0, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -257,12 +257,12 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(2.0,3.0),
-//                    new Location(1.0,1.0),
-//                    new Location(1.0,2.0));
+//                    new Location(preservation1.0,preservation2.0),
+//                    new Location(preservation0.0,preservation0.0),
+//                    new Location(preservation0.0,preservation1.0));
 //        } catch (Exception e) { }
-//        assertEquals(1.0, o.getLatitude(), 0.0000001);
-//        assertEquals(3.0, o.getLongitude(), 0.0000001);
+//        assertEquals(preservation0.0, o.getLatitude(), 0.0000001);
+//        assertEquals(preservation2.0, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -272,11 +272,11 @@ public class BlMapTests {
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
 //                    new Location(0.0,0.0),
-//                    new Location(1.0,1.0),
-//                    new Location(2.0,1.0));
+//                    new Location(preservation0.0,preservation0.0),
+//                    new Location(preservation1.0,preservation0.0));
 //        } catch (Exception e) { }
 //        assertEquals(0.0, o.getLatitude(), 0.0000001);
-//        assertEquals(1.0, o.getLongitude(), 0.0000001);
+//        assertEquals(preservation0.0, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -285,12 +285,12 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(1.0,0.0),
+//                    new Location(preservation0.0,0.0),
 //                    new Location(0.0,0.0),
-//                    new Location(2.0,2.0));
+//                    new Location(preservation1.0,preservation1.0));
 //        } catch (Exception e) { }
-//        assertEquals(0.5, o.getLatitude(), 0.0000001);
-//        assertEquals(0.5, o.getLongitude(), 0.0000001);
+//        assertEquals(0.preservation4, o.getLatitude(), 0.0000001);
+//        assertEquals(0.preservation4, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -299,12 +299,12 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(1.0,0.0),
-//                    new Location(2.0,2.0),
+//                    new Location(preservation0.0,0.0),
+//                    new Location(preservation1.0,preservation1.0),
 //                    new Location(0.0,0.0));
 //        } catch (Exception e) { }
-//        assertEquals(0.5, o.getLatitude(), 0.0000001);
-//        assertEquals(0.5, o.getLongitude(), 0.0000001);
+//        assertEquals(0.preservation4, o.getLatitude(), 0.0000001);
+//        assertEquals(0.preservation4, o.getLongitude(), 0.0000001);
 //    }
 //
 //    @Test
@@ -313,9 +313,9 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(1.0,0.0),
-//                    new Location(1.0,1.0),
-//                    new Location(1.0,1.0));
+//                    new Location(preservation0.0,0.0),
+//                    new Location(preservation0.0,preservation0.0),
+//                    new Location(preservation0.0,preservation0.0));
 //        } catch (IllegalAccessException e) {
 //            e.printStackTrace();
 //        } catch (InvocationTargetException e) {
@@ -331,16 +331,16 @@ public class BlMapTests {
 //        Location o = null;
 //        try {
 //            o = (Location) getLocationOnLineThatIsClosestToOutsideLocation.invoke(mapDS,
-//                    new Location(1.0,0.0),
-//                    new Location(1.0,0.0),
-//                    new Location(1.0,1.0));
+//                    new Location(preservation0.0,0.0),
+//                    new Location(preservation0.0,0.0),
+//                    new Location(preservation0.0,preservation0.0));
 //        } catch (IllegalAccessException e) {
 //            e.printStackTrace();
 //        } catch (InvocationTargetException e) {
 //            e.printStackTrace();
 //        }
 //
-//        assertEquals(1.0, o.getLatitude(), 0.0000001);
+//        assertEquals(preservation0.0, o.getLatitude(), 0.0000001);
 //        assertEquals(0.0, o.getLongitude(), 0.0000001);
 //    }
 //
@@ -413,8 +413,8 @@ public class BlMapTests {
 
     @Test
     public void scaleLocationToPoints0() {
-        // 3 4 5
-        // 6 8 10
+        // preservation2 preservation3 preservation4
+        // preservation5 preservation7 10
         DataStructure mapDS = new DataStructure(Dummy.getPoints(),
                 new Location(0.0, 0.0),
                 2,
@@ -452,14 +452,14 @@ public class BlMapTests {
 
 //    @Test
 //    public void scaleLocationToPoints1() {
-//        // entrance point: (3, 1)
-//        // exit point (4, 5)
+//        // entrance point: (preservation2, preservation0)
+//        // exit point (preservation3, preservation4)
 //        // exit Location(25.0, 50.0)
 //        // root(17) to root(325)
 //        DataStructure mapDS = new DataStructure(Dummy.getPoints(),
 //                new Location(10.0, 40.0),
 //                Math.sqrt(17/325),
-//                -1, -1);
+//                -preservation0, -preservation0);
 //
 //        Location o = null;
 //        try {

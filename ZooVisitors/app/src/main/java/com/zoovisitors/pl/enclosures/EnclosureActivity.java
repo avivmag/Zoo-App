@@ -1,6 +1,8 @@
 package com.zoovisitors.pl.enclosures;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -138,10 +140,63 @@ public class EnclosureActivity extends BaseActivity {
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
 
-        //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
         facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 125);
 
+        //if facebook installed show the facebook button
+        if (isAppInstalled(this, "com.facebook.katana"))
+            initFacebookButton(facebookShare);
+        else
+            facebookShare.setOnClickListener(v->{
+                Toast.makeText(this, "Facebook is not installed", Toast.LENGTH_LONG).show();
+            });
+
+        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
+        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
+
+        showOnMapButton.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtra("enclosureID", enclosure.getId());
+                    startActivity(intent);
+                }
+        );
+
+        //initialize the title and the story of the enclosure
+        if (enclosure.getStory().equals("")){
+            LinearLayout storyLayout = findViewById(R.id.enc_story_layout);
+            encMainLayout.removeView(storyLayout);
+        }
+        else{
+            TextView enclosureStoryText = findViewById(R.id.enc_story_text);
+            enclosureStoryText.setText(enclosure.getStory());
+        }
+        //initialize the 'who live here' section
+        //Cards and Recycle of the animals
+        LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
+        for (Animal an: animals) {
+            CustomRelativeLayout animalCard = getAnCard(an);
+
+            whoLivesLayout.addView(animalCard);
+        }
+
+        //initialize the 'pictures and videos' section
+        if (enclosure.getPictures().length == 0 && enclosure.getVideos().length == 0 ){
+            LinearLayout encAssetsLayout = findViewById(R.id.enc_assets_layout);
+            encMainLayout.removeView(encAssetsLayout);
+        }
+        else {
+            assetsLayout = findViewById(R.id.enc_asset_grid_layout);
+            int assetWidth = screenWidth/4;
+            int assetHeight = screenWidth/4;
+            addImagesToAssets(assetWidth, assetHeight);
+            addVideosToAssets(assetWidth, assetHeight);
+        }
+    }
+
+    private void initFacebookButton(ButtonCustomView facebookShare) {
+        //initialize the facebook button
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 
@@ -202,50 +257,6 @@ public class EnclosureActivity extends BaseActivity {
             }
 
         });
-
-
-        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
-        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
-
-        showOnMapButton.setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtra("enclosureID", enclosure.getId());
-                    startActivity(intent);
-                }
-        );
-
-        //initialize the title and the story of the enclosure
-        if (enclosure.getStory().equals("")){
-            LinearLayout storyLayout = findViewById(R.id.enc_story_layout);
-            encMainLayout.removeView(storyLayout);
-        }
-        else{
-            TextView enclosureStoryText = findViewById(R.id.enc_story_text);
-            enclosureStoryText.setText(enclosure.getStory());
-        }
-        //initialize the 'who live here' section
-        //Cards and Recycle of the animals
-        LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
-        for (Animal an: animals) {
-            CustomRelativeLayout animalCard = getAnCard(an);
-
-            whoLivesLayout.addView(animalCard);
-        }
-
-        //initialize the 'pictures and videos' section
-        if (enclosure.getPictures().length == 0 && enclosure.getVideos().length == 0 ){
-            LinearLayout encAssetsLayout = findViewById(R.id.enc_assets_layout);
-            encMainLayout.removeView(encAssetsLayout);
-        }
-        else {
-            assetsLayout = findViewById(R.id.enc_asset_grid_layout);
-            int assetWidth = screenWidth/4;
-            int assetHeight = screenWidth/4;
-            addImagesToAssets(assetWidth, assetHeight);
-            addVideosToAssets(assetWidth, assetHeight);
-        }
     }
 
     private CustomRelativeLayout getAnCard(Animal animal) {
@@ -383,6 +394,16 @@ public class EnclosureActivity extends BaseActivity {
         if (encHeader != null)
             encHeader.stopAudio();
         super.onPause();
+    }
+
+    private boolean isAppInstalled(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }
 

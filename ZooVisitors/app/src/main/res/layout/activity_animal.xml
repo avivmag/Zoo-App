@@ -37,13 +37,11 @@
                     android:text="@string/preservation"
                     />
 
-                <ImageView
+                <LinearLayout
+                    android:id="@+id/preservation_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:id="@+id/preservation_image_view"
-                    android:layout_gravity="center|end"
-                    android:paddingBottom="2dp"
-                    />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"></LinearLayout>
 
             </LinearLayout>
 

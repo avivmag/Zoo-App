@@ -28,5 +28,7 @@
 
     <color name="buttonBackground">#88fdfdfe</color>
     <color name="buttonTextColor">#534c44</color>
+    
+    <color name="preservation_green">#009933</color>
 
 </resources>

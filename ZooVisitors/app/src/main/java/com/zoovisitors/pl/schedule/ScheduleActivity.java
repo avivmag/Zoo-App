@@ -116,7 +116,7 @@ public class ScheduleActivity extends BaseActivity {
                     //initiates a schedule layout
                     LinearLayout scheduleLayout = new LinearLayout(getBaseContext());
                     LinearLayout.LayoutParams relativeParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                    relativeParams.weight = 3;
+//                    relativeParams.weight = preservation2;
                     scheduleLayout.setLayoutParams(relativeParams);
                     scheduleLayout.setOrientation(LinearLayout.HORIZONTAL);
                     scheduleLayout.setBackground(getResources().getDrawable(R.drawable.dashed_bottom_line));

@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
+import com.zoovisitors.pl.LoadingScreen;
 import com.zoovisitors.pl.MainActivity;
 
 /**
@@ -97,12 +98,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 builder = new NotificationCompat.Builder(this, id);
 
-                try {
-                    Log.e("CLASS", remoteMessage.getData().get("Window"));
-                    intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
-                } catch (ClassNotFoundException e) {
-                    intent = new Intent(this, MainActivity.class);
-                }
+                intent = new Intent(this, LoadingScreen.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -118,12 +114,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 builder = new NotificationCompat.Builder(this);
 
-                try {
-                    Log.e("CLASS", remoteMessage.getData().get("Window"));
-                    intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
-                } catch (ClassNotFoundException e) {
-                    intent = new Intent(this, MainActivity.class);
-                }
+                intent = new Intent(this, LoadingScreen.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

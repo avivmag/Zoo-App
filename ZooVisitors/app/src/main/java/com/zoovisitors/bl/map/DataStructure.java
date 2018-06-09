@@ -34,9 +34,9 @@ public class DataStructure {
     private final int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
     private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * MAX_DISTANCE_OF_ROUTE_FLAT;
     private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
-//    // taking in account the measurement of gps errors (3 times further).
+//    // taking in account the measurement of gps errors (preservation2 times further).
 //    private final int MAX_DISTANCE_FROM_POINT = MAX_DISTANCE_OF_ROUTE * MAX_DISTANCE_OF_ROUTE *
-//            3;//7 * 0.0111111;
+//            preservation2;//preservation6 * 0.0111111;
     /**
      * max threashold for update, if last update was before that time, then we need to
      * reinitialize the current location
@@ -110,7 +110,7 @@ public class DataStructure {
 //            {
 //                big = entry.getValue().size();
 //                biggest = entry;
-//                biggest_counter = 1;
+//                biggest_counter = preservation0;
 //            } else if(entry.getValue().size() == big) {
 //                biggest_counter++;
 //            }
@@ -118,11 +118,11 @@ public class DataStructure {
 //            {
 //                low = entry.getValue().size();
 //                lowest = entry;
-//                lowest_counter = 1;
+//                lowest_counter = preservation0;
 //            } else if(entry.getValue().size() == low) {
 //                lowest_counter++;
 //            }
-//            if(entry.getValue().size() == 2) {
+//            if(entry.getValue().size() == preservation1) {
 //                Log.e("AVIV", "Point " + entry.getKey());
 //            }
 //        }

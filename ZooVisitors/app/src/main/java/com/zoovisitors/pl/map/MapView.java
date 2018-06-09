@@ -398,7 +398,7 @@ public class MapView extends RelativeLayout {
     }
 
     private Animation focusOnLocationAnimation(int x, int y) {
-        // the ratio is 1 mil/pixel
+        // the ratio is preservation0 mil/pixel
         return focusOnLocationAnimation(x, y, (long) Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY
                 - y) * (mPosY - y))/3);
     }

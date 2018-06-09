@@ -57,7 +57,6 @@ public class MainActivity extends BaseActivity {
     private Menu langMenu;
     private WallFeed[] feed;
     private Map<String, String> LanguageMap;
-    private boolean isNotificationChecked;
     private static final int PERMISSION_REQUEST_LOCATION = 370;
     private boolean refusedToTurnOnGPS = false;
 
@@ -66,7 +65,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        isNotificationChecked = true;
         getSupportActionBar().hide();
         setActionBarTransparentColor();
 
@@ -227,12 +225,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void  onClickNotification(MenuItem item){
-        switch (item.getItemId()) {
-            case R.id.notifications:
+        if(item.getItemId() == R.id.notifications) {
                 //item.setChecked(!item.isChecked());
-                isNotificationChecked = !isNotificationChecked;
-                if (GlobalVariables.notifications) {
-                    GlobalVariables.notifications = false;
+                int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
+                if (notificationFromPref == 1){
+                    item.setChecked(false);
+                    writeToPreferences(R.string.notification_preferences, 0);
                     GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
                         @Override
                         public void onSuccess(Object response) {
@@ -241,13 +239,17 @@ public class MainActivity extends BaseActivity {
 
                         @Override
                         public void onFailure(Object response) {
-                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG).show();
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: failed! try again", Toast.LENGTH_LONG)
+                                    .show();
                         }
                     });
                 }
                 else {
-                    // This is update from the separated gps process
-                    GlobalVariables.notifications = true;
+                    item.setChecked(true);
+                    writeToPreferences(R.string.notification_preferences, 1);
+                    //TODO: Change to Or's subscribe method
+                    GlobalVariables.bl.updateIfInPark(true);
+                    Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
                 }
         }
     }
@@ -266,7 +268,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 3) {
                     GlobalVariables.language = 3;
-                    setLanguageOnPreferences();
+                    writeToPreferences(R.string.language_preferences, GlobalVariables.language);
                     setLocale(LanguageMap.get("Arabic"));
                 }
                 return;
@@ -277,7 +279,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 2) {
                     GlobalVariables.language = 2;
-                    setLanguageOnPreferences();
+                    writeToPreferences(R.string.language_preferences, GlobalVariables.language);
                     setLocale(LanguageMap.get("English"));
                 }
                 return;
@@ -288,7 +290,7 @@ public class MainActivity extends BaseActivity {
                 rusItem.setChecked(false);
                 if (GlobalVariables.language != 1) {
                     GlobalVariables.language = 1;
-                    setLanguageOnPreferences();
+                    writeToPreferences(R.string.language_preferences, GlobalVariables.language);
                     setLocale(LanguageMap.get("Hebrew"));
                 }
                 return;
@@ -299,7 +301,7 @@ public class MainActivity extends BaseActivity {
                 arbItem.setChecked(false);
                 if (GlobalVariables.language != 4) {
                     GlobalVariables.language = 4;
-                    setLanguageOnPreferences();
+                    writeToPreferences(R.string.language_preferences, GlobalVariables.language);
                     setLocale(LanguageMap.get("Russian"));
                 }
                 return;
@@ -349,7 +351,16 @@ public class MainActivity extends BaseActivity {
 
 
         MenuItem notification = menu.findItem(R.id.notifications);
-        notification.setChecked(isNotificationChecked);
+        int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
+        if (notificationFromPref == -1 || notificationFromPref == 1){
+            notification.setChecked(true);
+            writeToPreferences(R.string.notification_preferences, 1);
+            //TODO: change to Or's subscribe method
+            GlobalVariables.bl.updateIfInPark(false);
+        }
+        else {
+            notification.setChecked(false);
+        }
         MenuItem subm = menu.findItem(R.id.language);
         langMenu = subm.getSubMenu();
         MenuItem hebItem = langMenu.getItem(1);
@@ -506,10 +517,16 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void setLanguageOnPreferences(){
+    private int readFromPreferences(int stringId, int integerId){
+        SharedPreferences sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
+        int integerNotInstantiate = getResources().getInteger(integerId);
+        return sharedPref.getInt(getString(stringId), integerNotInstantiate);
+    }
+
+    private void writeToPreferences(int stringId, int write){
         SharedPreferences sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.language_preferences), GlobalVariables.language);
+        editor.putInt(getString(stringId), write);
         editor.commit();
     }
 }
