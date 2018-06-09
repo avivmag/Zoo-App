@@ -54,7 +54,7 @@ public class RecurringEventsHandler {
             return recurringEvents[lastRecurringEventIndex];
         }
     }
-    //Added 3 hours to get our local time
+    //Added preservation2 hours to get our local time
     public static long getTimeAdjustedToWeekTime() {
         return ((Calendar.getInstance().getTimeInMillis() + SEVEN_DAYS - THREE_DAYS) % SEVEN_DAYS) + 60 * 60 * 1000 * 3;
     }

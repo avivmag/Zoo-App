@@ -7,9 +7,10 @@
     >
 
     <ImageView
+        android:id="@+id/action_bar_logo"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:paddingBottom="2dp"
         android:padding="2dp"
+        android:paddingBottom="2dp"
         android:src="@mipmap/logo" />
 </LinearLayout>

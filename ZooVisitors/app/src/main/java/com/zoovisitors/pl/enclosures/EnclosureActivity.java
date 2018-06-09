@@ -1,6 +1,8 @@
 package com.zoovisitors.pl.enclosures;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -133,71 +135,16 @@ public class EnclosureActivity extends BaseActivity {
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
 
-        //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
         facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 125);
 
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-
-        target = new Target() {
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                SharePhoto sharePhoto = new SharePhoto.Builder()
-                        .setBitmap(bitmap)
-                        .build();
-
-                if (ShareDialog.canShow(SharePhotoContent.class)) {
-                    SharePhotoContent content = new SharePhotoContent.Builder()
-                            .addPhoto(sharePhoto)
-                            .build();
-                    shareDialog.show(content);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        facebookShare.setOnClickListener((v) -> {
-            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                @Override
-                public void onSuccess(Sharer.Result result) {
-                    Toast.makeText(EnclosureActivity.this, "Share Successful", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onCancel() {
-                    Toast.makeText(EnclosureActivity.this, "Share Cancel", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-                    Toast.makeText(EnclosureActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                }
+        //if facebook installed show the facebook button
+        if (isAppInstalled(this, "com.facebook.katana"))
+            initFacebookButton(facebookShare);
+        else
+            facebookShare.setOnClickListener(v->{
+                Toast.makeText(this, "Facebook is not installed", Toast.LENGTH_LONG).show();
             });
-
-            SharePhoto sharePhoto = new SharePhoto.Builder()
-                    .setBitmap(GlobalVariables.bl.getBitmapByString(enclosure.getPictureUrl()))
-                    .build();
-
-            if (ShareDialog.canShow(SharePhotoContent.class)) {
-                SharePhotoContent content = new SharePhotoContent.Builder()
-                        .addPhoto(sharePhoto)
-                        .build();
-                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
-            }
-
-        });
-
 
         ButtonCustomView showOnMapButton = findViewById(R.id.showOnMap);
         if (enclosure.getMarkerX() != 0 || enclosure.getMarkerY() != 0) {
@@ -264,6 +211,70 @@ public class EnclosureActivity extends BaseActivity {
             });
 
         return card;
+    }
+
+    private void initFacebookButton(ButtonCustomView facebookShare) {
+        //initialize the facebook button
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+
+        target = new Target() {
+
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                SharePhoto sharePhoto = new SharePhoto.Builder()
+                        .setBitmap(bitmap)
+                        .build();
+
+                if (ShareDialog.canShow(SharePhotoContent.class)) {
+                    SharePhotoContent content = new SharePhotoContent.Builder()
+                            .addPhoto(sharePhoto)
+                            .build();
+                    shareDialog.show(content);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        facebookShare.setOnClickListener((v) -> {
+            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    Toast.makeText(EnclosureActivity.this, "Share Successful", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onCancel() {
+                    Toast.makeText(EnclosureActivity.this, "Share Cancel", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Toast.makeText(EnclosureActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            SharePhoto sharePhoto = new SharePhoto.Builder()
+                    .setBitmap(GlobalVariables.bl.getBitmapByString(enclosure.getPictureUrl()))
+                    .build();
+
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(sharePhoto)
+                        .build();
+                shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+            }
+
+        });
     }
 
     private void addImagesToAssets() {
@@ -400,6 +411,16 @@ public class EnclosureActivity extends BaseActivity {
         if (encHeader != null)
             encHeader.stopAudio();
         super.onPause();
+    }
+
+    private boolean isAppInstalled(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }
 

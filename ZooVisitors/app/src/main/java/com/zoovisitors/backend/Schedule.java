@@ -45,7 +45,7 @@ public class Schedule {
     }
 
     private String fixDateToShow(String date){
-        //date = date.substring(0, date.length()-3);
+        //date = date.substring(0, date.length()-preservation2);
 //        Log.e("Date schedule", date);
         return date;
     }

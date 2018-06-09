@@ -34,6 +34,15 @@
     <string name="about_enc">על המתחם:</string>
     <string name="next_event">אירוע קרוב:</string>
     <string name="population">אוכלוסיה</string>
+    <!--preservation strings-->
+    <string name="preservation0">НЕИЗВЕСТНЫЙ</string>
+    <string name="preservation1">Без страха</string>
+    <string name="preservation2">Близко к угрозе</string>
+    <string name="preservation3">уязвимый</string>
+    <string name="preservation4">находящихся под угрозой исчезновения</string>
+    <string name="preservation5">В опасности исчезновения</string>
+    <string name="preservation6">Вымерший в природе</string>
+    <string name="preservation7">потухший</string>
 
     <string name="facebook_login_protocol_scheme">fb1991264511112012</string>
 
@@ -93,6 +102,8 @@
     <string name="confirm">אישור</string>
 
     <string name="language_preferences">language</string>
+    <string name="notification_preferences">notification</string>
+    <string name="cant_share_facebook">אי אפשר לשתף, פייסבוק לא מותקן</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 </resources>

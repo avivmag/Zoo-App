@@ -40,6 +40,15 @@
     <string name="food">غذاء:</string>
     <string name="shareOnFacebook">شارك على الفيسبوك</string>
     <string name="showOnMap">اظهار على الخريطة</string>
+    <!--preservation strings-->
+    <string name="preservation0">لا اعرف</string>
+    <string name="preservation1">بدون خوف</string>
+    <string name="preservation2">على مقربة من التهديد</string>
+    <string name="preservation3">عرضة</string>
+    <string name="preservation4">بالانقراض</string>
+    <string name="preservation5">في خطر الانقراض</string>
+    <string name="preservation6">منقرض في الطبيعة</string>
+    <string name="preservation7">منقرض</string>
 
 
     <!-- General Info -->
@@ -93,6 +102,8 @@
     <string name="confirm">אישור</string>
 
     <string name="language_preferences">language</string>
+    <string name="notification_preferences">notification</string>
+    <string name="cant_share_facebook">אי אפשר לשתף, פייסבוק לא מותקן</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 </resources>

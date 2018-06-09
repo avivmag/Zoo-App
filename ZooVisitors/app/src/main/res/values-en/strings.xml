@@ -42,6 +42,15 @@
     <string name="showOnMap">Show on map</string>
     <string name="about_enc">About the Enclosure:</string>
     <string name="next_event">Next Event:</string>
+    <!--preservation strings-->
+    <string name="preservation0">Unknown</string>
+    <string name="preservation1">With no fear</string>
+    <string name="preservation2">Close to the threat</string>
+    <string name="preservation3">Vulnerable</string>
+    <string name="preservation4">In danger of extinction</string>
+    <string name="preservation5">Severe danger of extinction</string>
+    <string name="preservation6">Extinct in thhe wild</string>
+    <string name="preservation7">Extinct</string>
 
     <!-- General Info -->
     <string name="contact_us_headline">Ways To Contact Us:</string>
@@ -97,6 +106,8 @@
     <string name="confirm">Confirm</string>
 
     <string name="language_preferences">language</string>
+    <string name="notification_preferences">notification</string>
+    <string name="cant_share_facebook">Cannot share, Facebook not installed</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 

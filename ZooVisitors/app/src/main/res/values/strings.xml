@@ -38,7 +38,15 @@
     <string name="showOnMap">הראה במפה</string>
     <string name="about_enc">על המתחם:</string>
     <string name="next_event">אירוע קרוב:</string>
-
+    <!--preservation strings-->
+    <string name="preservation0">לא ידוע</string>
+    <string name="preservation1">ללא חשש</string>
+    <string name="preservation2">קרוב לאיום</string>
+    <string name="preservation3">פגיע</string>
+    <string name="preservation4">בסכנת הכחדה</string>
+    <string name="preservation5">בסכנת הכחדה חמורה</string>
+    <string name="preservation6">נכחד בטבע</string>
+    <string name="preservation7">נכחד</string>
 
     <!-- General Info -->
     <!--contact ways-->
@@ -95,6 +103,8 @@
     <string name="vertical_ellipsis">&#8942;</string>
 
     <string name="language_preferences">language</string>
+    <string name="notification_preferences">notification</string>
+    <string name="cant_share_facebook">אי אפשר לשתף, פייסבוק לא מותקן</string>
 
     <!--bold and underline text-->
     <string name="register"><u><b>Copyright</b></u></string>
