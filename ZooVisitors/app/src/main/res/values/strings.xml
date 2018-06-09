@@ -66,6 +66,8 @@
     <string name="hours">שעות</string>
 
     <string name="searchPlaceHolder">הכנס שם של חיה או מתחם</string>
+    <string name="enclosures">מתחמים</string>
+    <string name="animals">חיות</string>
     <string name="choose_route">בחר מסלול</string>
 
 
@@ -106,4 +108,8 @@
 
     <!--bold and underline text-->
     <string name="register"><u><b>Copyright</b></u></string>
+
+    <!--ERROR MESSAGES-->
+    <string name="error_no_schedule">אין אירועים בלוח השנה</string>
+    <string name="error_no_rec_events">אין אירועים היום</string>
 </resources>

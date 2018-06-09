@@ -1,17 +1,22 @@
 ﻿app.controller('zooMapCtrl', ['$q', '$scope', 'fileUpload', 'utilitiesService', 'mapService', 'mapViewService',
     function mapCtrl($q, $scope, fileUpload, utilitiesService, mapService, mapViewService) {
 
+        // Initialize the map component.
         initializeComponent();
 
+        // Update the markers.
         $scope.updateMarkers();
 
+        // Initializes the map component.
         function initializeComponent() {
             $scope.isLoading = true;
             $scope.baseURL   = app.baseURL;
 
+            // Initialize the update markers function.
             $scope.updateMarkers            = function () {
                 $scope.newMarker = { isNew: true };
                 
+                // Get the misc markers.
                 mapService.getMiscMarkers().then(
                     function (data) {
                         $scope.markers      = data.data;
@@ -24,19 +29,23 @@
                     });
             };
 
+            // Initialize the add marker function.
             $scope.addMarker                = function(marker, isExists) {
-                markerUploadQuery = uploadIcon($scope.markerPic, marker);
-
+                // If a longitude or latitude was not given, return.
                 if (marker.longitude === undefined || marker.latitude === undefined) {
                     utilitiesService.utilities.alert('אנא בחר מיקום לאייקון על המפה');
 
                     return;
                 }
 
+                // Upload the marker's icon.
+                markerUploadQuery = uploadIcon($scope.markerPic, marker);
+
                 $scope.isLoading        = true;
 
+                // Initialize the return statements.
                 var successContent      = marker.isNew ? 'האייקון נוסף בהצלחה!' : 'האייקון עודכן בהצלחה!';
-                var failContent         = marker.isNew === 'create' ? 'התרחשה שגיאה בעת שמירת האייקון' : 'התרחשה שגיאה בעת עדכון האייקון';
+                var failContent         = marker.isNew ? 'התרחשה שגיאה בעת שמירת האייקון' : 'התרחשה שגיאה בעת עדכון האייקון';
 
                 $q.all([markerUploadQuery]).then(
                     () => {
@@ -59,15 +68,19 @@
                     });
             };
 
+            // Initialize the add map function.
             $scope.addMap                   = function(map) {
+                // If no map was given, return.
                 if (!angular.isDefined(map) || map === null) {
                     return;
                 }
     
                 $scope.isLoading        = true;
     
+                // Set the upload url.
                 var uploadUrl           = 'map/upload';
     
+                // Upload the image.
                 var fileUploadQuery     = fileUpload.uploadFileToUrl(map, uploadUrl).then(
                     (success)   => {
                         $scope.mapPic               = null;
@@ -80,6 +93,7 @@
                     });    
             }
 
+            // Initialize the delete marker function.
             $scope.deleteMarker             = function(markerId) {
                 $scope.isLoading        = true;
 
@@ -97,14 +111,17 @@
                     });
             }
 
+            // Initialize the open map function.
             $scope.openMap                  = function(ev, marker, save) {
+                // Upload the icon (if needed).
                 var promises = [uploadIcon($scope.markerPic, marker)];
 
                 $q.all(promises).then(
                     () => {
                         $scope.isLoading = false;
                         
-                        mapViewService.showMap(ev, marker, 'iconUrl', 'longitude', 'latitude').then(function(clickPosition) {
+                        // Show the map.
+                        mapViewService.showMap(ev, marker, 'iconUrl', 'longitude', 'latitude', marker.iconUrl).then(function(clickPosition) {
                             if (angular.isDefined(clickPosition)) {
                                 marker.longitude   = Math.floor((clickPosition.width * clickPosition.ratio) + 42)
                                 marker.latitude    = Math.floor((clickPosition.height * clickPosition.ratio) + 42);
@@ -119,15 +136,19 @@
             }
         }
 
+        // Uploads an icon.
         function uploadIcon(icon, marker) {
+            // If no icon was given, return.
             if (!angular.isDefined(icon) || icon === null) {
                 return;
             }
 
             $scope.isLoading = true;
             
+            // Set the upload url.
             var uploadUrl               = 'map/misc/upload';
 
+            // Upload the icon.
             var fileUploadQuery         = fileUpload.uploadFileToUrl(icon, uploadUrl).then(
                 (success)   => {
                     marker.iconUrl      = success.data[0];

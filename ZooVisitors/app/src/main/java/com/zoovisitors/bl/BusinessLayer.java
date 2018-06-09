@@ -39,7 +39,6 @@ public interface BusinessLayer {
      * Returns the personal stories that has been loaded in the load screen
      */
     Animal.PersonalStories[] getPersonalStories();
-//    void getPersonalStories(final GetObjectInterface goi);
 
     //notification
     void updateIfInPark(boolean isInPark);
@@ -62,7 +61,6 @@ public interface BusinessLayer {
     //Enclosure and animal cache
     CustomRelativeLayout[] getEnclosureCards();
     CustomRelativeLayout[] getAllAnimalCards();
-    CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId);
 
     void setEnclosureCardsInMemory(CustomRelativeLayout[] cards);
     void setAllAnimalCards(CustomRelativeLayout[] cards, Animal[] animals);

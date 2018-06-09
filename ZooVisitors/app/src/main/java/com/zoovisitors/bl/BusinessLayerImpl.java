@@ -2,6 +2,7 @@ package com.zoovisitors.bl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -30,6 +31,7 @@ import com.zoovisitors.dal.InternalStorage;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,13 +41,11 @@ import java.util.List;
 
 public class BusinessLayerImpl implements BusinessLayer {
     private NetworkInterface ni;
-    private InternalStorage is;
     private Gson gson;
     private Memory memory;
 
-    public BusinessLayerImpl(Activity activity) {
-        ni = new NetworkImpl(activity);
-        is = new InternalStorage(activity);
+    public BusinessLayerImpl(Context context) {
+        ni = new NetworkImpl(context);
         gson = new Gson();
     }
 
@@ -337,7 +337,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     public void updateIfInPark(boolean isInPark){
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
-            public void onSuccess(String response) {Log.e("IFINPARK","notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark); }
+            public void onSuccess(String response) { }
 
             @Override
             public void onFailure(String response) { }
@@ -380,7 +380,11 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(Object response) {
                 DataFromServer dataFromServer = gson.fromJson((String) response, DataFromServer.class);
-                memory = new Memory(dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
+                // reorders them so they would be better looking on the map
+                Arrays.sort(dataFromServer.getEnclosures(), (enc1, enc2) -> enc1.getMarkerY()-enc2.getMarkerY());
+                Arrays.sort(dataFromServer.getMiscMarkers(), (misc1, misc2) -> misc1.getMarkerY()-misc2.getMarkerY());
+                memory = new Memory(
+                        dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
                         dataFromServer.getMiscMarkers(), dataFromServer.getMapResult(), dataFromServer.getWallFeeds(),
                         dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
@@ -446,12 +450,8 @@ public class BusinessLayerImpl implements BusinessLayer {
                 animalCards.add(animalCard);
             }
         }
-        return (CustomRelativeLayout[]) animalCards.toArray();
-    }
 
-    @Override
-    public CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId) {
-        return (CustomRelativeLayout[]) memory.getEnclosuresAnimalCardMap().get(encId).toArray();
+        return animalCards.toArray(new CustomRelativeLayout[animalCards.size()]);
     }
 
     @Override
@@ -466,11 +466,11 @@ public class BusinessLayerImpl implements BusinessLayer {
             if (animalCards == null){
                 animalCards = new ArrayList<CustomRelativeLayout>();
                 animalCards.add(cards[i]);
-                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+                memory.getEnclosuresAnimalCardMap().put(animals[i].getEncId(), animalCards);
             }
             else {
                 animalCards.add(cards[i]);
-                memory.getEnclosuresAnimalCardMap().put(i, animalCards);
+                memory.getEnclosuresAnimalCardMap().put(animals[i].getEncId(), animalCards);
             }
         }
     }

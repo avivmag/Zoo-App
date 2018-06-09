@@ -138,7 +138,10 @@ public class ScheduleActivity extends BaseActivity {
             public void onFailure(Object response) {
                 TextView error  = (TextView) findViewById(R.id.error_sched_text);
                 error.setVisibility(View.VISIBLE);
-                error.setText((String) response);
+                error.setGravity(Gravity.CENTER_HORIZONTAL);
+                error.setTextColor(getResources().getColor(R.color.black));
+                error.setTextSize(20);
+                error.setText(R.string.error_no_schedule);
             }
         });
     }

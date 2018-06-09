@@ -61,6 +61,8 @@
     <string name="opening_hours_headline">Часы работы:</string>
     <string name="prices_headline">Цены на билеты:</string>
     <string name="searchPlaceHolder">Введите название животного</string>
+    <string name="enclosures">вложение</string>
+    <string name="animals">животных</string>
     <string name="choose_route">Выберите маршрут</string>
     <string name="contact_address">כתובת</string>
 

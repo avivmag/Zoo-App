@@ -43,21 +43,6 @@ public class AnimalActivity extends BaseActivity {
 
         initPreservation(animal.getPreservation());
 
-//        if (animal.getPreservation() > preservation6 || animal.getPreservation() <= preservation0){ //means that the preservation is unknown
-//            LinearLayout animalConservationLayout = findViewById(R.id.animal_conservation_layout);
-//
-//            animalConservationLayout.removeView(preservation);
-//            TextViewRegularText doesntKnowTextView = new TextViewRegularText(getApplicationContext());
-//
-//            doesntKnowTextView.setText(getResources().getString(R.string.doesnt_know));
-//
-//
-//            animalConservationLayout.addView(doesntKnowTextView);
-//        }
-//        else {
-//            preservation.setImageResource(conservationNumToPicture.get(animal.getPreservation()));
-//        }
-
         //initialize animal category
         LinearLayout animalCategory = findViewById(R.id.animal_category_layout);
         if (GlobalVariables.language == 1 || GlobalVariables.language == 3){

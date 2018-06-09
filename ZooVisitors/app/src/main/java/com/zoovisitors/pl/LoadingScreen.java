@@ -9,10 +9,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -49,6 +46,7 @@ public class LoadingScreen extends BaseActivity {
         languageMap.put(4, "ru");
 
         setContentView(R.layout.activity_loading_screen);
+
         //Initialize business layer (change for testing)
         changeLanguage();
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();

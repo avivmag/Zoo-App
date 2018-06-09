@@ -10,14 +10,14 @@ import com.zoovisitors.pl.BaseActivity;
  */
 
 public class GlobalVariables {
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static String ServerAddress = "negevzoo.sytes.net:50" +
             (DEBUG ? "555/" : "000/");
     public static String LOG_TAG = "zoovisitors";
     public static int language;
     public static AppCompatActivity appCompatActivity;
-    public static BusinessLayer bl;// = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
     public static int firstEnter = 0;
+    public static BusinessLayer bl;
     public static String firebaseToken;
     public static boolean notifications = true;
 }

@@ -25,46 +25,45 @@
 
         <activity
             android:name=".pl.animals.AnimalActivity"
-            android:theme="@style/CustomTheme">
-
+            android:theme="@style/CustomTheme"
+            android:screenOrientation="portrait">
             <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
         </activity>
-        <activity android:name=".pl.MainActivity">
 
-            <!-- android:theme="@style/AppTheme"> -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".pl.enclosures.EnclosureActivity" />
+        <activity android:name=".pl.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".pl.enclosures.EnclosureActivity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".pl.map.MapActivity" android:launchMode="singleInstance" />
+        <activity android:name=".pl.map.MapActivity"/>
+            <!--android:theme="@style/AppTheme.NoActionBar"/>-->
         <activity
             android:name=".pl.general_info.GeneralInfoActivity"
             android:label="@string/title_activity_general_info"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"
+            android:screenOrientation="portrait"/>
         <!-- android:theme="@style/AppTheme.Cu" /> -->
-        <activity android:name=".pl.enclosures.EnclosureListActivity" />
-        <activity android:name=".pl.schedule.ScheduleActivity" />
+        <activity android:name=".pl.enclosures.EnclosureListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".pl.schedule.ScheduleActivity"
+            android:screenOrientation="portrait"/>
 
-        <service android:name=".cl.notifications.MyFirebaseMessagingService">
+        <service android:name=".cl.notifications.MyFirebaseMessagingService" android:stopWithTask="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <!--<service android:name=".cl.gps.GpsService" />-->
-        <service android:name=".cl.gps.GpsService" />
-        <!--<service android:name=".cl.gps.GpsService" android:process=":gps_service" />-->
+        <service android:name=".cl.gps.GpsService" android:stopWithTask="true"/>
 
         <activity
             android:name=".pl.LoadingScreen"
-            android:theme="@style/CustomTheme">
+            android:theme="@style/CustomTheme"
+            android:screenOrientation="portrait">
 
-            <!-- android:theme="@style/AppTheme.NoActionBar"> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,17 +72,21 @@
         </activity>
         <activity
             android:name=".pl.personalStories.PersonalStoriesActivity"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"
+            android:screenOrientation="portrait"/>
         <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
         <activity
             android:name=".pl.general_info.WatchAll"
-            android:theme="@style/AppTheme.PopUp" />
+            android:theme="@style/AppTheme.PopUp"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".pl.personalStories.PersonalPopUp"
-            android:theme="@style/AppTheme.PopUp" />
+            android:theme="@style/AppTheme.PopUp"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".pl.enclosures.EnclosureAssetsPopUp"
-            android:theme="@style/AppTheme.PopUp" />
+            android:theme="@style/AppTheme.PopUp"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -91,7 +94,8 @@
             android:exported="true" />
 
         <activity android:name=".pl.schedule.TodayRecEvent"
-            android:theme="@style/AppTheme.PopUp" >
+            android:theme="@style/AppTheme.PopUp"
+            android:screenOrientation="portrait" >
 
         </activity>
     </application>

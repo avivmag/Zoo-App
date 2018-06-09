@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.zoovisitors.R;
 
@@ -41,11 +42,12 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
 
             @Override
             public void onProviderEnabled(String provider) {
-                ProviderBasedActivity.this.onProviderEnabled();
+//                ProviderBasedActivity.this.onProviderEnabled();
             }
 
             @Override
             public void onProviderDisabled(String provider) {
+                alreadyRunning = false;
                 ProviderBasedActivity.this.onProviderDisabled();
                 handleActivation();
             }
@@ -53,7 +55,8 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
     }
 
     /**
-     * @return true if it needs to handle the permission and the general flow should not continue.
+     * @return true if it needs to handle permissions and the general flow calling it should not
+     * continue (it would start the general flow once more if it is needed.
      */
     private boolean handlePermissions() {
         if (ActivityCompat.checkSelfPermission(this,
@@ -71,16 +74,20 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.gps_no_permission_dialog_title)
                         .setMessage(R.string.gps_no_permission_dialog_message)
-                        .setPositiveButton(R.string.gps_no_permission_dialog_approve, (dialog, id) -> {
-                            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_GPS);
+                        .setPositiveButton(R.string.gps_no_permission_dialog_approve, (dialog,
+                                                                                       id) -> {
+                            ActivityCompat.requestPermissions(this, new
+                                    String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_GPS);
                         })
-                        .setNegativeButton(R.string.gps_no_permission_dialog_disapprove, (dialog, id) -> {
+                        .setNegativeButton(R.string.gps_no_permission_dialog_disapprove, (dialog,
+                                                                                          id) -> {
                             refusedToTurnOnGPS = true;
                         })
                         .show();
             } else {
                 // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_GPS);
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_GPS);
             }
             return true;
         }
@@ -88,24 +95,32 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
     }
 
     /**
-     * @return true if it needs to handle the activation and the general flow should not continue.
+     * @return true if it needs to handle activating and the general flow calling it should not
+     * continue (it would start the general flow once more if it is needed.
      */
     public boolean handleActivation() {
         if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
             return false;
 
-        if (!isFinishing())
+        if (!isFinishing()) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.gps_no_activated_dialog_title)
-                    .setMessage(this.getResources().getString(R.string.gps_no_activated_dialog_activate_needed))
-                    .setPositiveButton(this.getResources().getString(R.string.gps_no_activated_dialog_open_settings), (paramDialogInterface, paramInt) -> {
+                    .setMessage(this.getResources().getString(R.string
+                            .gps_no_activated_dialog_activate_needed))
+                    .setPositiveButton(this.getResources().getString(R.string
+                            .gps_no_activated_dialog_open_settings), (paramDialogInterface,
+                                                                      paramInt) -> {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         this.startActivity(myIntent);
+                        // this flow will start again from the onResume, once the user will return this activity
                     })
-                    .setNegativeButton(this.getString(R.string.gps_no_activated_dialog_do_not_open_settings), (paramDialogInterface, paramInt) -> {
-                        refusedToTurnOnGPS = true;
-                    })
+                    .setNegativeButton(this.getString(R.string
+                                    .gps_no_activated_dialog_do_not_open_settings),
+                            (paramDialogInterface, paramInt) -> {
+                                refusedToTurnOnGPS = true;
+                            })
                     .show();
+        }
         return true;
     }
 
@@ -115,7 +130,8 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
         startProviderActivity();
     }
 
-    private boolean runningUpdates = false;
+    private boolean alreadyRunning = false;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -155,9 +171,11 @@ public abstract class ProviderBasedActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void startGpsFlow() {
-        if (!refusedToTurnOnGPS && !handlePermissions() && !handleActivation() && !runningUpdates) {
-            runningUpdates = true;
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, getMinTime(), getMinDistance(), locationListener);
+        if (!refusedToTurnOnGPS && !alreadyRunning && !handlePermissions() && !handleActivation()) {
+            alreadyRunning = true;
+            ProviderBasedActivity.this.onProviderEnabled();
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, getMinTime(), getMinDistance
+                    (), locationListener);
         }
     }
 }

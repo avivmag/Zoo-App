@@ -100,5 +100,31 @@ namespace DAL
             }
 
         }
+    
+        
+        public class LoggerRec : Logger
+        {
+            private static Logger logger_rec;
+            private static String filePath_rec;
+            private static DateTime date_rec;
+
+            protected LoggerRec(string path = null)
+            {
+                date_rec = DateTime.Today;
+                filePath = path ?? String.Format(Properties.Settings.Default.RecLog + "{0}.log", date_rec.ToString("yyyy-MM-dd"));
+            }
+
+            public static Logger GetLoggerRecInstance()
+            {
+                if (logger_rec == null || date_rec != DateTime.Today)
+                {
+                    filePath_rec = String.Format(Properties.Settings.Default.RecLog + "{0}.log", DateTime.Today.ToString("yyyy-MM-dd"));
+                    logger_rec = new LoggerRec(filePath_rec);
+                }
+
+                return logger_rec;
+            }
+        }
     }
+
 }

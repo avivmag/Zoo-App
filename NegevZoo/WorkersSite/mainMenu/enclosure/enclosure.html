@@ -40,7 +40,7 @@
                 </div>
                 <div layout="column" layout-align="end end">
                     <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
-                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="deleteEnclosure(selectedEnclosure.id)">מחק מתחם</md-button>
+                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteEnclosure(selectedEnclosure.id)">מחק מתחם</md-button>
                 </div>
             </md-card-content>
     </md-card-content>
@@ -58,10 +58,10 @@
     </md-card-title>
     <md-card-content ng-if="selectedEnclosure.recurringEvents && selectedEnclosure.recurringEvents.length > 0">
         <div style="margin-right: 10%" ng-repeat="recurringEvent in selectedEnclosure.recurringEvents | orderBy:'id'" layout="row" layout-align="start center">
-            <md-button style="margin-bottom: 25px" ng-if="!feed.isNew" ng-click="deleteReucrringEvent(selectedEnclosure.id, selectedEnclosure.recurringEvents, recurringEvent)" >
+            <md-button style="margin-bottom: 25px" ng-if="!recurringEvent.isNew" ng-click="confirmDeleteRecurringEvent(selectedEnclosure.id, selectedEnclosure.recurringEvents, recurringEvent)" >
                 <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
             </md-button>
-            <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="feed.isNew">
+            <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="recurringEvent.isNew">
                 <md-icon md-svg-src="icons/ic_new_releases_black_24px.svg"></md-icon>
             </md-button>
 
@@ -149,7 +149,7 @@
         <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
             <div ng-repeat="video in selectedEnclosure.videos" ng-show="$index % 4 === colIndex" layout="column">
                 <youtube-video class="video" video-id="video.videoUrl"></youtube-video>
-                <md-button class="md-raised md-warn" ng-click="deleteVideo(selectedEnclosure.id, video, selectedEnclosure.videos)">מחק סרטון</md-button>
+                <md-button class="md-raised md-warn" ng-click="confirmDeleteVideo(selectedEnclosure.id, video, selectedEnclosure.videos)">מחק סרטון</md-button>
             </div>
         </div>
     </md-card-content>
@@ -164,7 +164,7 @@
         <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
             <div ng-repeat="picture in selectedEnclosure.pictures" ng-show="$index % 4 === colIndex" layout="column">
                 <img class="picture" ng-src="{{ baseURL + picture.pictureUrl }}" alt="{{ enclosure.name }}" />
-                <md-button class="md-raised md-warn" ng-click="deletePicture(selectedEnclosure.id, picture, selectedEnclosure.pictures)">מחק תמונה</md-button>
+                <md-button class="md-raised md-warn" ng-click="confirmDeletePicture(selectedEnclosure.id, picture, selectedEnclosure.pictures)">מחק תמונה</md-button>
             </div>
         </div>
     </md-card-content>
