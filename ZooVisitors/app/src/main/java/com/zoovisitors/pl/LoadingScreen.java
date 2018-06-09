@@ -9,8 +9,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
@@ -32,7 +32,8 @@ public class LoadingScreen extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        GlobalVariables.appCompatActivity = this;
+        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //hiding the action bar in this activity
         android.support.v7.app.ActionBar AB = getSupportActionBar();
         AB.hide();
@@ -47,11 +48,14 @@ public class LoadingScreen extends BaseActivity {
         setContentView(R.layout.activity_loading_screen);
 
         //Initialize business layer (change for testing)
-        GlobalVariables.appCompatActivity = this;
         changeLanguage();
-        GlobalVariables.bl = new BusinessLayerImpl(getApplicationContext());
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int screenHeightSize = getResources().getDisplayMetrics().heightPixels;
+        int widthMargin = (getResources().getDisplayMetrics().widthPixels) / 6;
+        layoutParams.setMargins(widthMargin,screenHeightSize/2,widthMargin,0);
+        pb.setLayoutParams(layoutParams);
         pb.setProgressPrecentage(0);
 
         GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
@@ -121,7 +125,6 @@ public class LoadingScreen extends BaseActivity {
 
 
     private void setLocale() {
-
         Locale myLocale = new Locale(languageMap.get(GlobalVariables.language));
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();

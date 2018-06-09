@@ -10,6 +10,7 @@ import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.pl.BaseActivity;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
+import com.zoovisitors.pl.customViews.PreservationCustomView;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class AnimalActivity extends BaseActivity {
 
     private Map<Integer, Integer> conservationNumToPicture;
     private CustomRelativeLayout animalHeader;
+    private final int PRESERVATION_SCALE = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,26 +41,7 @@ public class AnimalActivity extends BaseActivity {
         LinearLayout animalMainLayout = findViewById(R.id.linear_animal_activity);
         animalMainLayout.addView(animalHeader,0);
 
-
-        //initialize the preservation section
-        initializeConversationMap();
-
-        ImageView preservation = findViewById(R.id.preservation_image_view);
-
-        if (animal.getPreservation() == 7 || animal.getPreservation() < 1){ //means that the preservation is unknown
-            LinearLayout animalConservationLayout = findViewById(R.id.animal_conservation_layout);
-
-            animalConservationLayout.removeView(preservation);
-            TextViewRegularText doesntKnowTextView = new TextViewRegularText(getApplicationContext());
-
-            doesntKnowTextView.setText(getResources().getString(R.string.doesnt_know));
-
-
-            animalConservationLayout.addView(doesntKnowTextView);
-        }
-        else {
-            preservation.setImageResource(conservationNumToPicture.get(animal.getPreservation()));
-        }
+        initPreservation(animal.getPreservation());
 
         //initialize animal category
         LinearLayout animalCategory = findViewById(R.id.animal_category_layout);
@@ -113,17 +96,35 @@ public class AnimalActivity extends BaseActivity {
         interesting.setText(animal.getInteresting());
     }
 
-    // this method initialize the hash mao of the conservation section.
-    private void initializeConversationMap() {
-        conservationNumToPicture = new HashMap<>();
-        conservationNumToPicture.put(8, R.mipmap.conservation8); //extinct - probably won't be in use
-        conservationNumToPicture.put(6, R.mipmap.conservation6); //ExtinctWildlife
-        conservationNumToPicture.put(5, R.mipmap.conservation5); //CriticallyEndangered
-        conservationNumToPicture.put(4, R.mipmap.conservation4); //Endangered
-        conservationNumToPicture.put(3, R.mipmap.conservation3); //Vulnerable
-        conservationNumToPicture.put(2, R.mipmap.conservation2); //NearThreatened
-        conservationNumToPicture.put(1, R.mipmap.conservation1); //LeastConcern
+    private void initPreservation(int preservationNum) {
+        PreservationCustomView[] preservationCustomViews = new PreservationCustomView[PRESERVATION_SCALE];
+
+        LinearLayout animalPreservationLayout = findViewById(R.id.preservation_layout);
+        animalPreservationLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        if (GlobalVariables.language == 1 || GlobalVariables.language == 3)
+            animalPreservationLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        for (int i = 0; i < preservationCustomViews.length; i++) {
+            preservationCustomViews[i] = new PreservationCustomView(this);
+            int imageId = getResources().getIdentifier("preservation" + i, "mipmap", getPackageName());
+            int stringId = getResources().getIdentifier("preservation" + i, "string", getPackageName());
+            preservationCustomViews[i].setImageText(imageId, stringId);
+            animalPreservationLayout.addView(preservationCustomViews[i]);
+        }
+
+        preservationCustomViews[preservationNum].choosePreservation();
     }
+    // this method initialize the hash mao of the conservation section.
+//    private void initializeConversationMap() {
+//        conservationNumToPicture = new HashMap<>();
+//        conservationNumToPicture.put(preservation7, R.mipmap.conservation8); //extinct - probably won't be in use
+//        conservationNumToPicture.put(preservation5, R.mipmap.conservation6); //ExtinctWildlife
+//        conservationNumToPicture.put(preservation4, R.mipmap.conservation5); //CriticallyEndangered
+//        conservationNumToPicture.put(preservation3, R.mipmap.conservation4); //Endangered
+//        conservationNumToPicture.put(preservation2, R.mipmap.conservation3); //Vulnerable
+//        conservationNumToPicture.put(preservation1, R.mipmap.conservation2); //NearThreatened
+//        conservationNumToPicture.put(preservation0, R.mipmap.conservation1); //LeastConcern
+//    }
 
     @Override
     protected void onPause() {

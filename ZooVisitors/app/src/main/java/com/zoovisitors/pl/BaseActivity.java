@@ -2,6 +2,7 @@ package com.zoovisitors.pl;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -43,8 +44,13 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         android.support.v7.widget.Toolbar parent =(android.support.v7.widget.Toolbar) mCustomView.getParent();
         parent.setContentInsetsAbsolute(0,0);
-
         parent.setBackgroundResource(color);
+        ImageView logoImage = findViewById(R.id.action_bar_logo);
+        logoImage.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     public void setActionBarTransparentColor(){

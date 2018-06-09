@@ -34,6 +34,7 @@ public abstract class TextIcon extends Icon {
         gd = new GradientDrawable();
         gd.setColor(ContextCompat.getColor(mapView.getContext(), R.color.mapGetToKnowMeBackground));
         gd.setCornerRadius(5);
+//        gd.setStroke(preservation4, ContextCompat.getColor(mapView.getContext(), R.color.mapGetToKnowMeBackground));
         textView.setOnTouchListener((View.OnTouchListener) additionalData[0]);
 
         textView.setBackground(gd);

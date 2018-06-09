@@ -39,21 +39,21 @@ public class aboutSpeciesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.about_species_res, container, false);
 
-        numToPicture = new HashMap<>();
-        numToPicture.put(1, R.mipmap.conservation8);
-        numToPicture.put(2, R.mipmap.conservation6);
-        numToPicture.put(3, R.mipmap.conservation5);
-        numToPicture.put(4, R.mipmap.conservation4);
-        numToPicture.put(5, R.mipmap.conservation3);
-        numToPicture.put(6, R.mipmap.conservation2);
-        numToPicture.put(7, R.mipmap.conservation1);
+//        numToPicture = new HashMap<>();
+//        numToPicture.put(1, R.mipmap.conservation8);
+//        numToPicture.put(2, R.mipmap.conservation6);
+//        numToPicture.put(3, R.mipmap.conservation5);
+//        numToPicture.put(4, R.mipmap.conservation4);
+//        numToPicture.put(5, R.mipmap.conservation3);
+//        numToPicture.put(6, R.mipmap.conservation2);
+//        numToPicture.put(7, R.mipmap.conservation1);
 
 //        ((ImageView) rootView.findViewById(R.id.conservation_image)).setImageResource(numToPicture.get(animal.getPreservation()));
         linearLayoutSpecies = (LinearLayout) rootView.findViewById(R.id.linear_about_species);
 
-        if (animal.getPreservation() >= 1 && animal.getPreservation() <= 7)
-             linearLayoutSpecies.addView(createLinearLayoutPicture(GlobalVariables.appCompatActivity.getString(R.string.preservation),
-                                    numToPicture.get(animal.getPreservation())));
+//        if (animal.getPreservation() >= 1 && animal.getPreservation() <= 7)
+//             linearLayoutSpecies.addView(createLinearLayoutPicture(GlobalVariables.appCompatActivity.getString(R.string.preservation),
+//                                    numToPicture.get(animal.getPreservation())));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.category),
                 animal.getCategory()));
         linearLayoutSpecies.addView(createLinearLayout(GlobalVariables.appCompatActivity.getString(R.string.series),
