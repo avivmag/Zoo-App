@@ -31,20 +31,21 @@ import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.pl.personalStories.PersonalPopUp;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 220;
+    public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 230;
     private MapView mapView;
     private MapResult mapData;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
     private final double MAX_MARGIN = 10 * 0.0111111;
     private RelativeLayout mapActivityLayout;
-    private LinearLayout getToKnowMeLayout;
+    private RelativeLayout getToKnowMeLayout;
     private int initialGetToKnowMeLayoutTop;
     private int initialGetToKnowMeLayoutBottom;
     private int getToKnowMeIndex = -1;
@@ -54,7 +55,7 @@ public class MapActivity extends ProviderBasedActivity
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
     private Enclosure[] enclosures;
-    private boolean firstRun = true;
+//    private boolean firstRun = true;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
     private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
@@ -93,19 +94,15 @@ public class MapActivity extends ProviderBasedActivity
         leftDoor = findViewById(R.id.map_left_door);
         rightDoor = findViewById(R.id.map_right_door);
 
-        getToKnowMeLayout.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_UP:
-                    Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp
-                            .class);
-                    intent.putExtra("animalId", getToKnowMeIndex);
-                    startActivity(intent);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    break;
-            }
-            return true;
-        });
+//        getToKnowMeLayout.setOnTouchListener((v, event) -> {
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_UP:
+//                    break;
+//                case MotionEvent.ACTION_CANCEL:
+//                    break;
+//            }
+//            return true;
+//        });
 
         mapData = GlobalVariables.bl.getMapResult();
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
@@ -121,6 +118,7 @@ public class MapActivity extends ProviderBasedActivity
                 mapData.getMapInfo().getMinLongitude(),
                 mapData.getMapInfo().getMaxLongitude()
         );
+
         GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
@@ -138,7 +136,12 @@ public class MapActivity extends ProviderBasedActivity
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
                 GlobalVariables.bl.getMiscs(),
                 getIntent().getIntExtra("enclosureID", -1),
-                () -> {cancelFocus();});
+                () -> { cancelFocus(); },
+                () -> {
+                    cancelFocus();
+                    moveDoors(false);
+                },
+                2*OPEN_DOORS_ANIMATION_DURATION);
 
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
     }
@@ -149,19 +152,23 @@ public class MapActivity extends ProviderBasedActivity
         setIntent(intent);
     }
 
+    private boolean clickedGetToKnowMe = false;
     @Override
     protected void onResume() {
         super.onResume();
 
-        int encId = getIntent().getIntExtra("enclosureID", -1);
-        // on the first run the map is not ready, so we need to run it in other place
-        if (!firstRun && encId != -1) {
-            mapView.focusOnIconAndRattle(encId);
+        if(!clickedGetToKnowMe) {
+//            int encId = getIntent().getIntExtra("enclosureID", -1);
+//            // on the first run the map is not ready, so we need to run it in other place
+//            if (!firstRun && encId != -1) {
+//                mapView.focusOnIconAndRattle(encId);
+//            }
+//            getIntent().putExtra("enclosureID", -1);
+//            firstRun = false;
+//            mapView.resume();
+            moveDoors(true);
         }
-        getIntent().putExtra("enclosureID", -1);
-        firstRun = false;
-
-        moveDoors(true);
+        clickedGetToKnowMe = false;
     }
 
     @Override
@@ -209,11 +216,12 @@ public class MapActivity extends ProviderBasedActivity
     private Animal.PersonalStories lastPersonalStoryShowed = null;
 
     private boolean isGetToKnowMeShown = false;
-
+    private Set<Animal.PersonalStories> unwantedStories = new HashSet<>();
     private void updateGetToKnowMe() {
         if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
                 MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
             Set<Animal.PersonalStories> animalPersonalStories = mapDS.getCloseAnimalStories();
+            animalPersonalStories.removeAll(unwantedStories);
             if (animalPersonalStories.isEmpty()) {
                 if (isGetToKnowMeShown)
                     hideGetToKnowMe();
@@ -287,11 +295,25 @@ public class MapActivity extends ProviderBasedActivity
         isGetToKnowMeShown = false;
     }
 
+    public void getToKnowMeClick(View view) {
+        clickedGetToKnowMe = true;
+        Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp
+                .class);
+        intent.putExtra("animalId", getToKnowMeIndex);
+        startActivity(intent);
+    }
+
+    public void getToKnowMeClose(View view) {
+        unwantedStories.add(lastPersonalStoryShowed);
+        hideGetToKnowMe();
+    }
+
     @Override
     public void onBackPressed() {
         cancelFocus();
 //        moveTaskToBack(false);
         moveDoors(false);
+        mapView.exitMap();
         new Handler().postDelayed(() -> {
             super.onBackPressed();
         }, OPEN_DOORS_ANIMATION_DURATION * 2);
@@ -352,7 +374,7 @@ public class MapActivity extends ProviderBasedActivity
         LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
 
         int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
-        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 100;
+        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 200;
         Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {

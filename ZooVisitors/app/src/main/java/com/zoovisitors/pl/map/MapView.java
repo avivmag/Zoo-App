@@ -75,14 +75,16 @@ public class MapView extends RelativeLayout {
     private int screenHeight;
 
     public void SetInitialValues(Bitmap zooMapBitmap, Enclosure[] enclosures, Misc[] miscs, int
-            enclosureIdToFocus, Runnable onTouchEvent) {
+            enclosureIdToFocus, Runnable parentOnTouch, Runnable onEnclosureClick, long delayToClick) {
         this.enclosureIdToFocus = enclosureIdToFocus;
-        this.onTouchEvent = onTouchEvent;
+        this.onTouchEvent = parentOnTouch;
         zooMapIcon = new ZooMapIcon(this, new Object[]{zooMapBitmap});
         visitorIcon = new VisitorIcon(this);
         for (int i = 0; i < enclosures.length; i++)
             if (enclosures[i].getMarkerBitmap() != null) {
-                addEnclosure(enclosures[i], i);
+                addEnclosure(enclosures[i], i,
+                        onEnclosureClick,
+                        delayToClick);
             }
         for (Misc misc :
                 miscs) {
@@ -119,20 +121,20 @@ public class MapView extends RelativeLayout {
                                 mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
                         );
 
-//        new Handler().postDelayed(() -> {
-//            if (enclosureIdToFocus == -1) {
-//                focusOnLocationAnimation(
-//                        zooMapIcon.width / 2,
-//                        zooMapIcon.height / 2,
-//                        Math.max(
-//                                (float) screenWidth / primaryImageWidth,
-//                                (float) screenHeight / primaryImageHeight
-//                        ),
-//                        OPEN_DOORS_ANIMATION_DURATION);
-//            } else {
-//                focusOnIconAndRattle(enclosureIdToFocus);
-//            }
-//        }, OPEN_DOORS_ANIMATION_DURATION);
+        new Handler().postDelayed(() -> {
+            if (enclosureIdToFocus != -1) {
+                focusOnIconAndRattle(enclosureIdToFocus);
+            } else {
+                focusOnLocationAnimation(
+                        zooMapIcon.width / 2,
+                        zooMapIcon.height / 2,
+                        Math.max(
+                                (float) screenWidth / primaryImageWidth,
+                                (float) screenHeight / primaryImageHeight
+                        ),
+                        OPEN_DOORS_ANIMATION_DURATION);
+            }
+        }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
     public MapView(Context context) {
@@ -318,9 +320,14 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    public void addEnclosure(Enclosure enclosure, int encIndex) {
+    public void addEnclosure(Enclosure enclosure, int encIndex, Runnable onEnclosureClick, long delayToClick) {
         enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, timer,
-                timerFastRunnables, timerSlowRunnables, encIndex));
+                timerFastRunnables, timerSlowRunnables, encIndex,
+                () -> {
+                    onEnclosureClick.run();
+                    exitMap();
+                },
+                delayToClick));
     }
 
     public void addMiscIcon(Misc misc) {
@@ -341,6 +348,13 @@ public class MapView extends RelativeLayout {
                 if (lastVisitorAnimation != null)
                     lastVisitorAnimation.cancel();
                 lastTimeStarted = System.currentTimeMillis();
+
+                primaryImageMargin = Math.max(50,
+                        Math.max(
+                                (int) ((screenHeight / maxScaleFactor - zooMapIcon.height) / 2),
+                                (int) ((screenWidth / maxScaleFactor - zooMapIcon.width) / 2)
+                        )
+                );
                 lastVisitorAnimation = focusOnLocationAnimation(x, y);
             }
         }
@@ -363,6 +377,12 @@ public class MapView extends RelativeLayout {
             return;
 
         int numberOfRattleTimes = 2;
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / mScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / mScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
         focusOnLocationAnimation(icon.left, icon.top, maxScaleFactor, FOCUS_ON_LOCATION_ANIMATION_TIME);
         Icon finalIcon = icon;
         new Handler().postDelayed(() -> {
@@ -464,4 +484,41 @@ public class MapView extends RelativeLayout {
             visitorIcon.updateIconPosition();
         }
     }
+
+//    private float lastMPosX = Float.MAX_VALUE;
+//    private float lastMPosY = Float.MAX_VALUE;
+//    private float lastMScaleFactor = Float.MAX_VALUE;
+    public void exitMap() {
+//        lastMPosX = mPosX;
+//        lastMPosY = mPosY;
+//        lastMScaleFactor = mScaleFactor;
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / minScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / minScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
+        focusOnLocationAnimation(
+                zooMapIcon.width / 2,
+                zooMapIcon.height / 2,
+                minScaleFactor,
+                OPEN_DOORS_ANIMATION_DURATION);
+
+    }
+
+//    public void resume() {
+//         if(lastMPosX != Float.MAX_VALUE) {
+//             new Handler().postDelayed(() -> {
+//                 focusOnLocationAnimation(
+//                         (int) lastMPosX,
+//                         (int) lastMPosY,
+//                         lastMScaleFactor,
+//                         OPEN_DOORS_ANIMATION_DURATION);
+//             }, OPEN_DOORS_ANIMATION_DURATION);
+//
+//            lastMPosX = Float.MAX_VALUE;
+//            lastMPosY = Float.MAX_VALUE;
+//            lastMScaleFactor = Float.MAX_VALUE;
+//        }
+//    }
 }
