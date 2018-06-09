@@ -4,8 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -74,26 +73,31 @@ public class MapView extends RelativeLayout {
     private int screenWidth;
     private int screenHeight;
 
-    public void SetInitialValues(Bitmap zooMapBitmap, Enclosure[] enclosures, Misc[] miscs, int
+    public void SetInitialValues(Bitmap zooMapBitmap, Pair<Integer, Enclosure>[] enclosures, Misc[] miscs, int
             enclosureIdToFocus, Runnable parentOnTouch, Runnable onEnclosureClick, long delayToClick) {
         this.enclosureIdToFocus = enclosureIdToFocus;
         this.onTouchEvent = parentOnTouch;
         zooMapIcon = new ZooMapIcon(this, new Object[]{zooMapBitmap});
         visitorIcon = new VisitorIcon(this);
-        for (int i = 0; i < enclosures.length; i++)
-            if (enclosures[i].getMarkerBitmap() != null) {
-                addEnclosure(enclosures[i], i,
-                        onEnclosureClick,
-                        delayToClick);
-            }
-        for (Misc misc :
-                miscs) {
+
+        for (Pair<Integer, Enclosure> pair: enclosures) {
+            addEnclosure(pair.second, pair.first,
+                    onEnclosureClick,
+                    delayToClick);
+        }
+
+        for (Misc misc : miscs) {
             if (misc.getMarkerBitmap() != null) {
                 addMiscIcon(misc);
             }
         }
     }
 
+    /**
+     * Setting important things after the map has been initialized
+     * @param primaryImageWidth
+     * @param primaryImageHeight
+     */
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
         equatorScaleFactor = ((float) screenWidth / primaryImageWidth + (float) screenHeight /
                 primaryImageHeight) / 2;
@@ -121,6 +125,7 @@ public class MapView extends RelativeLayout {
                                 mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
                         );
 
+        // zooming in when a user enters the map and the doors are opened
         new Handler().postDelayed(() -> {
             if (enclosureIdToFocus != -1) {
                 focusOnIconAndRattle(enclosureIdToFocus);
@@ -156,7 +161,8 @@ public class MapView extends RelativeLayout {
         // screen size
 
         screenWidth = this.getResources().getDisplayMetrics().widthPixels;
-        screenHeight = this.getResources().getDisplayMetrics().heightPixels;
+        //                                                                    Title bar, should get it from the code somehow later..
+        screenHeight = this.getResources().getDisplayMetrics().heightPixels - 72;
 
         timer.scheduleAtFixedRate(new TimerTask() {
                                       @Override

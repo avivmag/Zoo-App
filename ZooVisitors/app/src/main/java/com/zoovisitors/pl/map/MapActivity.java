@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,8 +55,6 @@ public class MapActivity extends ProviderBasedActivity
     private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
-    private Enclosure[] enclosures;
-//    private boolean firstRun = true;
     private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
     private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
@@ -94,16 +93,6 @@ public class MapActivity extends ProviderBasedActivity
         leftDoor = findViewById(R.id.map_left_door);
         rightDoor = findViewById(R.id.map_right_door);
 
-//        getToKnowMeLayout.setOnTouchListener((v, event) -> {
-//            switch (event.getAction()) {
-//                case MotionEvent.ACTION_UP:
-//                    break;
-//                case MotionEvent.ACTION_CANCEL:
-//                    break;
-//            }
-//            return true;
-//        });
-
         mapData = GlobalVariables.bl.getMapResult();
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
                 new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
@@ -119,24 +108,15 @@ public class MapActivity extends ProviderBasedActivity
                 mapData.getMapInfo().getMaxLongitude()
         );
 
-        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                enclosures = (Enclosure[]) response;
-            }
-
-            @Override
-            public void onFailure(Object response) {
-
-            }
-        });
-
+        Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
         // Note: be aware that cancelFocus should be called only when touching the map view and
         // not other views in activity_map
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
                 GlobalVariables.bl.getMiscs(),
                 getIntent().getIntExtra("enclosureID", -1),
+                // called when someone touches the map
                 () -> { cancelFocus(); },
+                // called when someone clicks on enclosure
                 () -> {
                     cancelFocus();
                     moveDoors(false);
@@ -158,14 +138,6 @@ public class MapActivity extends ProviderBasedActivity
         super.onResume();
 
         if(!clickedGetToKnowMe) {
-//            int encId = getIntent().getIntExtra("enclosureID", -1);
-//            // on the first run the map is not ready, so we need to run it in other place
-//            if (!firstRun && encId != -1) {
-//                mapView.focusOnIconAndRattle(encId);
-//            }
-//            getIntent().putExtra("enclosureID", -1);
-//            firstRun = false;
-//            mapView.resume();
             moveDoors(true);
         }
         clickedGetToKnowMe = false;
@@ -311,12 +283,9 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     public void onBackPressed() {
         cancelFocus();
-//        moveTaskToBack(false);
         moveDoors(false);
         mapView.exitMap();
-        new Handler().postDelayed(() -> {
-            super.onBackPressed();
-        }, OPEN_DOORS_ANIMATION_DURATION * 2);
+        new Handler().postDelayed(super::onBackPressed, OPEN_DOORS_ANIMATION_DURATION * 2);
     }
 
     @Override
@@ -369,19 +338,14 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void moveDoors(boolean outSide) {
-//        RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logo.getLayoutParams();
         LinearLayout.LayoutParams leftDoorParams = (LinearLayout.LayoutParams) leftDoor.getLayoutParams();
         LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
 
         int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
-//        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 100;
         Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 logo.setAlpha((outSide ? (1 - interpolatedTime) : interpolatedTime));
-//                logoParams.topMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenHeight);
-//                logoParams.bottomMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenHeight);
-//                logo.setLayoutParams(logoParams);
             }
         };
         Animation animationDoors = new Animation() {

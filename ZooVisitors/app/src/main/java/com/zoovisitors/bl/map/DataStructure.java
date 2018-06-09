@@ -2,6 +2,7 @@ package com.zoovisitors.bl.map;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
@@ -346,13 +347,13 @@ public class DataStructure {
         );
     }
 
-    public void addAnimalStoriesToPoints(Enclosure[] enclosures, Animal.PersonalStories[] animalStories) {
-        for (Enclosure enclosure :
+    public void addAnimalStoriesToPoints(Pair<Integer, Enclosure>[] enclosures, Animal.PersonalStories[] animalStories) {
+        for (Pair<Integer, Enclosure> enclosure :
                 enclosures) {
             for (Animal.PersonalStories animalStory :
                     animalStories) {
-                if(enclosure.getId() == animalStory.getEncId()) {
-                    addAnimalStoryToPoints(enclosure, animalStory);
+                if(enclosure.second.getId() == animalStory.getEncId()) {
+                    addAnimalStoryToPoints(enclosure.second, animalStory);
                 }
             }
         }
