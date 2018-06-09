@@ -114,17 +114,6 @@ public class AnimalActivity extends BaseActivity {
 
         preservationCustomViews[preservationNum].choosePreservation();
     }
-    // this method initialize the hash mao of the conservation section.
-//    private void initializeConversationMap() {
-//        conservationNumToPicture = new HashMap<>();
-//        conservationNumToPicture.put(preservation7, R.mipmap.conservation8); //extinct - probably won't be in use
-//        conservationNumToPicture.put(preservation5, R.mipmap.conservation6); //ExtinctWildlife
-//        conservationNumToPicture.put(preservation4, R.mipmap.conservation5); //CriticallyEndangered
-//        conservationNumToPicture.put(preservation3, R.mipmap.conservation4); //Endangered
-//        conservationNumToPicture.put(preservation2, R.mipmap.conservation3); //Vulnerable
-//        conservationNumToPicture.put(preservation1, R.mipmap.conservation2); //NearThreatened
-//        conservationNumToPicture.put(preservation0, R.mipmap.conservation1); //LeastConcern
-//    }
 
     @Override
     protected void onPause() {

@@ -20,6 +20,8 @@ import com.zoovisitors.pl.customViews.TextViewRegularText;
  */
 public class aboutUsFragment extends Fragment {
 
+    private LinearLayout infoTableLayout;
+
     public aboutUsFragment() {
         // Required empty public constructor
     }
@@ -33,23 +35,38 @@ public class aboutUsFragment extends Fragment {
 
             @Override
             public void onSuccess(Object response) {
-                LinearLayout infoTableLayout = rootView.findViewById(R.id.info_table_layout);
+                infoTableLayout = rootView.findViewById(R.id.info_table_layout);
                 infoTableLayout.removeAllViews();
 
                 TextViewRegularText aboutUs = new TextViewRegularText(getContext(), View.TEXT_ALIGNMENT_CENTER);
                 aboutUs.setPadding(0,150,0,0);
-                aboutUs.setText((String) response);
+                String aboutUsString = (String) response;
+                if (aboutUsString == null){
+                    addErrorMessage();
+                }
+                else {
+                    aboutUs.setText(aboutUsString);
+                }
                 infoTableLayout.addView(aboutUs);
             }
 
             @Override
             public void onFailure(Object response) {
-                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
-                errorText.setText((String) response);
+                addErrorMessage();
             }
         });
 
         return rootView;
     }
 
+    private void addErrorMessage() {
+        TextView error = new TextView(GlobalVariables.appCompatActivity);
+        error.setVisibility(View.VISIBLE);
+        error.setGravity(Gravity.CENTER_HORIZONTAL);
+        error.setTextColor(getResources().getColor(R.color.black));
+        error.setTextSize(20);
+        error.setText(R.string.error_no_about_us);
+
+        infoTableLayout.addView(error);
+    }
 }
