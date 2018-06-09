@@ -374,7 +374,7 @@ public class MapActivity extends ProviderBasedActivity
         LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
 
         int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
-        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 200;
+        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 250;
         Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
