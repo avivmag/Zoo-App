@@ -369,18 +369,19 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     private void moveDoors(boolean outSide) {
-        RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logo.getLayoutParams();
+//        RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logo.getLayoutParams();
         LinearLayout.LayoutParams leftDoorParams = (LinearLayout.LayoutParams) leftDoor.getLayoutParams();
         LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
 
         int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
-        int halfScreenHeight = 1000;
+//        int halfScreenHeight = (getResources().getDisplayMetrics().heightPixels) / 2 + 100;
         Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                logoParams.topMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenHeight);
-                logoParams.bottomMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenHeight);
-                logo.setLayoutParams(logoParams);
+                logo.setAlpha((outSide ? (1 - interpolatedTime) : interpolatedTime));
+//                logoParams.topMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenHeight);
+//                logoParams.bottomMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenHeight);
+//                logo.setLayoutParams(logoParams);
             }
         };
         Animation animationDoors = new Animation() {
@@ -399,6 +400,7 @@ public class MapActivity extends ProviderBasedActivity
         mapActivityLayout.startAnimation(outSide ? animationLogo : animationDoors);
         new Handler().postDelayed(() -> {
             mapActivityLayout.startAnimation(outSide ? animationDoors : animationLogo);
+            logo.setVisibility(outSide ? View.INVISIBLE : View.VISIBLE);
         }, OPEN_DOORS_ANIMATION_DURATION);
     }
 }
