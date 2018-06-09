@@ -9,6 +9,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zoovisitors.GlobalVariables;
@@ -32,10 +34,8 @@ public class LoadingScreen extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         //hiding the action bar in this activity
-        android.support.v7.app.ActionBar AB= getSupportActionBar();
+        android.support.v7.app.ActionBar AB = getSupportActionBar();
         AB.hide();
-
-
 
         languageMap = new HashMap<Integer, String>();
         //put language in the app according to values/strings/(**)
@@ -45,10 +45,11 @@ public class LoadingScreen extends BaseActivity {
         languageMap.put(4, "ru");
 
         setContentView(R.layout.activity_loading_screen);
+
         //Initialize business layer (change for testing)
         GlobalVariables.appCompatActivity = this;
         changeLanguage();
-        GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
+        GlobalVariables.bl = new BusinessLayerImpl(getApplicationContext());
         GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
         pb.setProgressPrecentage(0);

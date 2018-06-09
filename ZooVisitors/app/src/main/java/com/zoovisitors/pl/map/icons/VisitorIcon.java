@@ -10,7 +10,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 public class VisitorIcon extends ImageIcon {
-    private final String VISITOR_ICON = "visitor_icon";
+    private final String VISITOR_ICON = "visitor_icon_2";
 
     public VisitorIcon(MapView mapView) {
         super(mapView, null, 0, 0, false);
@@ -30,10 +30,8 @@ public class VisitorIcon extends ImageIcon {
         this.top = top;
 
         updateIconPosition();
-    }
-
-    public void Show() {
         view.setVisibility(VISIBLE);
+        view.bringToFront();
     }
 
     public void Hide() {
