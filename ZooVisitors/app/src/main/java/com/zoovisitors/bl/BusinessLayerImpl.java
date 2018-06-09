@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
@@ -91,53 +92,14 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-//    @Override
-//    public Enclosure[] getEnclosures() {
-//        return memory.getEnclosures();
-//    }
+    @Override
+    public Enclosure[] getEnclosures() {
+        return memory.getEnclosures();
+    }
 
     @Override
-    public void getEnclosures(final GetObjectInterface goi) {
-        Enclosure[] enclosures = memory.getEnclosures();
-        if (enclosures != null)
-            goi.onSuccess(enclosures);
-        else {
-            ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onSuccess(String response) {
-                    Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
-
-//                // TODO: fake recurring events here, need to update the json somehow
-//                // TODO: I should add three days to the real recurring events
-//                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
-//                for (int i = 0; i < enc.length; i++) {
-//                    enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-//                            Enclosure.RecurringEvent.createRecurringEvent(1,
-//                                    "",
-//                                    (currentTime + 5 * 1000) % (7*24*60*60*1000),
-//                                    (currentTime + 10 * 1000) % (7*24*60*60*1000), "האכלה"),
-//                            Enclosure.RecurringEvent.createRecurringEvent(2,
-//                                    "",
-//                                    (currentTime + 15 * 1000) % (7*24*60*60*1000),
-//                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), "פיפי בפינה")
-//                    });
-//                }
-
-                    if (enc.length <= 0)
-                        goi.onFailure("No Data in the server");
-                    else{
-                        memory.setEnclosures(enc);
-                        goi.onSuccess(enc);
-                    }
-                }
-
-                @Override
-                public void onFailure(String response) {
-                    goi.onFailure("Can't get enclosures from server");
-                }
-            });
-        }
+    public Pair<Integer, Enclosure>[] getEnclosuresForMap() {
+        return memory.getIndexEnclosureForMap();
     }
 
     @Override
@@ -380,9 +342,6 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(Object response) {
                 DataFromServer dataFromServer = gson.fromJson((String) response, DataFromServer.class);
-                // reorders them so they would be better looking on the map
-                Arrays.sort(dataFromServer.getEnclosures(), (enc1, enc2) -> enc1.getMarkerY()-enc2.getMarkerY());
-                Arrays.sort(dataFromServer.getMiscMarkers(), (misc1, misc2) -> misc1.getMarkerY()-misc2.getMarkerY());
                 memory = new Memory(
                         dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
                         dataFromServer.getMiscMarkers(), dataFromServer.getMapResult(), dataFromServer.getWallFeeds(),
@@ -474,4 +433,5 @@ public class BusinessLayerImpl implements BusinessLayer {
             }
         }
     }
+
 }

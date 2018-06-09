@@ -73,17 +73,7 @@ public class EnclosureActivity extends BaseActivity {
         index = 0;
         imageViewIntegerMap = new HashMap<>();
         final int encIndex = (int) clickedEnclosure.getSerializable("enc");
-        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                enclosure = ((Enclosure[]) response) [encIndex];
-            }
-
-            @Override
-            public void onFailure(Object response) {
-
-            }
-        });
+        enclosure = GlobalVariables.bl.getEnclosures()[encIndex];
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
 
