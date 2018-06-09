@@ -112,7 +112,12 @@ public class AnimalActivity extends BaseActivity {
             animalPreservationLayout.addView(preservationCustomViews[i]);
         }
 
-        preservationCustomViews[preservationNum].choosePreservation();
+        if (preservationNum == 7){
+            preservationCustomViews[0].choosePreservation();
+        }
+        else {
+            preservationCustomViews[preservationNum].choosePreservation();
+        }
     }
 
     @Override
