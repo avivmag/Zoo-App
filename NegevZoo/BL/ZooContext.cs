@@ -872,18 +872,22 @@ namespace BL
             }
 
             var animalStories           = zooDB.GetFromCache(zooDB.GetAllAnimalStories());
-            var animalStoriesDetails    = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails());
+            var animalStoriesDetails    = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).Where(ans => ans.language == language);
+            var animalStoriesDetailsHe  = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).Where(ans => ans.language == (int)Languages.he);
 
             var animalStoryResults = from ans in animalStories
-                                    join ansd in animalStoriesDetails on new { ans.id, language } equals new { id = ansd.animalStoryId, ansd.language }
-                                    select new AnimalStoryResult
+                                    join ansd in animalStoriesDetails on ans.id equals ansd.animalStoryId into ansj
+                                    join ansh in animalStoriesDetailsHe on ans.id equals ansh.animalStoryId into anshj
+                                    from ansl in ansj.DefaultIfEmpty()
+                                    from anslh in anshj
+                                     select new AnimalStoryResult
                                     {
                                         Id = ans.id,
                                         EncId = ans.enclosureId,
-                                        Name = ansd.name,
-                                        Story = ansd.story,
+                                        Name = ansl != null ? ansl.name : anslh.name,
+                                        Story = ansl != null ? ansl.story : anslh.name,
                                         PictureUrl = ans.pictureUrl,
-                                        Language = ansd.language
+                                        Language = language
                                 };
 
             return animalStoryResults.ToArray();
