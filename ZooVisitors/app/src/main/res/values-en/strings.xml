@@ -44,12 +44,12 @@
     <string name="next_event">Next Event:</string>
     <!--preservation strings-->
     <string name="preservation0">Unknown</string>
-    <string name="preservation1">With no fear</string>
-    <string name="preservation2">Close to the threat</string>
+    <string name="preservation1">Least concern</string>
+    <string name="preservation2">Near-threatened</string>
     <string name="preservation3">Vulnerable</string>
-    <string name="preservation4">In danger of extinction</string>
-    <string name="preservation5">Severe danger of extinction</string>
-    <string name="preservation6">Extinct in thhe wild</string>
+    <string name="preservation4">Endangered</string>
+    <string name="preservation5">Critically endangered</string>
+    <string name="preservation6">Extinct in the wild</string>
     <string name="preservation7">Extinct</string>
 
     <!-- General Info -->
