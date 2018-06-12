@@ -24,7 +24,14 @@ namespace NegevZoo.Controllers
             {
                 using (var db = GetContext())
                 {
-                    return db.GetAllUsers();
+                    if (ValidateSessionId(db))
+                    {
+                        return db.GetAllUsers();
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
                 }
             }
             catch (Exception Exp)
