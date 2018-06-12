@@ -2715,10 +2715,10 @@ namespace BL
         }
 
         /// <summary>
-        /// updated the status of the given device.
+        /// Updates the status of the given device.
         /// </summary>
         /// <param name="deviceId">The device to update.</param>
-        /// <param name="insidePark"> The location status of the device</param>
+        /// <param name="insidePark">The location status of the device.</param>
         public void UpdateDevice(string deviceId, bool insidePark)
         {
             //validate the attribues
@@ -2728,24 +2728,55 @@ namespace BL
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
 
-            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+            var device          = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
 
             // Get the current time.
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
+            if (device == null)
+            {
+                throw new ArgumentNullException("No device with such device id.");
+            }
+            else
+            {
+                device.lastPing     = currentTime;
+                device.insidePark   = (sbyte)(insidePark ? 1 : 0);
+            } 
+        }
+
+        /// <summary>
+        /// Subscribes a device to recieve notifications.
+        /// </summary>
+        /// <param name="deviceId"></param>
+        public void SubscribeDevice(string deviceId)
+        {
+            //validate the attribues
+            //1. check the device id.
+            if (String.IsNullOrWhiteSpace(deviceId))
+            {
+                throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
+            }
+
+            var device      = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+
+            // Get the current time.
+            var israelTime  = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             //check if the device already exists
             if (device != null)
             {
-                device.lastPing = currentTime;
+                device.lastPing     = currentTime;
+                device.subscribed   = 1;
             }
             else
             {
                 device = new Device
                 {
-                    deviceId = deviceId,
-                    insidePark = (sbyte)(insidePark? 1 : 0),
-                    lastPing = currentTime
+                    deviceId    = deviceId,
+                    lastPing    = currentTime,
+                    subscribed  = 1
                 };
 
                 zooDB.GetAllDevices().Add(device);
@@ -2758,14 +2789,18 @@ namespace BL
         /// <param name="deviceId">The device to delete.</param>
         public void UnsubscribeDevice(string deviceId)
         {
-            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId);
+            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId).SingleOrDefault();
 
-            if (device == null)
+            // If no such device was found, throw error.
+            if (device == default(Device))
             {
                 throw new ArgumentException("Wrong input. There is no such device with such id");
             }
-
-            zooDB.GetAllDevices().RemoveRange(device);
+            // Otherwise, mark the device as unsubscribed.
+            else
+            {
+                device.subscribed = 0;
+            }
         }
 
         /// <summary>
@@ -2775,7 +2810,7 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsAllDevices(string title, string body)
         {
-            var devices = zooDB.GetAllDevices().ToList();
+            var devices = zooDB.GetAllDevices().Where(d => d.subscribed == 1).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
@@ -2791,7 +2826,7 @@ namespace BL
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.AddMinutes(30) > currentTime).ToList();
+            var devices = zooDB.GetAllDevices().ToList().Where(d => (d.subscribed == 1) && (d.lastPing.AddMinutes(30) > currentTime)).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
