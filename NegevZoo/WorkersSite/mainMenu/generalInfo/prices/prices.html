@@ -15,7 +15,7 @@
         </md-card-title>
         <md-card-content ng-if="prices && prices.length > 0">
             <div style="margin-right: 10%" ng-repeat="price in prices | orderBy:'id'" layout="row" layout-align="start center">
-                <md-button style="margin-bottom: 25px" ng-if="!price.isNew" ng-click="confirmDeletePrice($event, price, prices)" >
+                <md-button style="margin-bottom: 25px" ng-if="!price.isNew" ng-click="confirmDeletePrice(price, prices)" >
                     <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
                 </md-button>
                 <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="price.isNew">

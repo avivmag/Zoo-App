@@ -116,7 +116,7 @@ public class ScheduleActivity extends BaseActivity {
                     //initiates a schedule layout
                     LinearLayout scheduleLayout = new LinearLayout(getBaseContext());
                     LinearLayout.LayoutParams relativeParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                    relativeParams.weight = 3;
+//                    relativeParams.weight = preservation2;
                     scheduleLayout.setLayoutParams(relativeParams);
                     scheduleLayout.setOrientation(LinearLayout.HORIZONTAL);
                     scheduleLayout.setBackground(getResources().getDrawable(R.drawable.dashed_bottom_line));
@@ -138,7 +138,10 @@ public class ScheduleActivity extends BaseActivity {
             public void onFailure(Object response) {
                 TextView error  = (TextView) findViewById(R.id.error_sched_text);
                 error.setVisibility(View.VISIBLE);
-                error.setText((String) response);
+                error.setGravity(Gravity.CENTER_HORIZONTAL);
+                error.setTextColor(getResources().getColor(R.color.black));
+                error.setTextSize(20);
+                error.setText(R.string.error_no_schedule);
             }
         });
     }

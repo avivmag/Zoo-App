@@ -123,6 +123,7 @@ public class Enclosure implements java.io.Serializable{
         return recurringEvents;
     }
 
+
     public void setRecurringEvents(RecurringEvent[] recurringEvents) {
         this.recurringEvents = recurringEvents;
     }
@@ -158,8 +159,6 @@ public class Enclosure implements java.io.Serializable{
         private long endTime;
         @SerializedName("day")
         private int day;
-
-        public RecurringEvent() {}
 
         public String getDescription() {
             return description;

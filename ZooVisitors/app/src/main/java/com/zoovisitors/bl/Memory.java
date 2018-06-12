@@ -3,6 +3,7 @@ package com.zoovisitors.bl;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Pair;
 
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.ContactInfoResult;
@@ -16,6 +17,7 @@ import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Map;
 public class Memory {
 
     private Enclosure[] enclosures;
+    private Pair<Integer, Enclosure>[] indexEnclosureForMap;
     private Animal.PersonalStories[] animalStories;
     private Misc[] miscMarkers;
     private MapResult mapResult;
@@ -51,6 +54,21 @@ public class Memory {
         this.enclosuresAnimalCardMap = new HashMap<>();
 
         initializeBitmaps();
+
+
+        // just for the map
+        List<Pair<Integer, Enclosure>> enclosureList = new ArrayList<>();
+        for (int i = 0; i < enclosures.length; i++)
+            if (enclosures[i].getMarkerBitmap() != null) {
+                enclosureList.add(new Pair<>(i, enclosures[i]));
+            }
+        indexEnclosureForMap = new Pair[enclosureList.size()];
+        enclosureList.toArray(indexEnclosureForMap);
+        Arrays.sort(indexEnclosureForMap, (iep1, iep2) -> iep1.second.getMarkerY() - iep2.second.getMarkerY());
+        // reorders them so they would be better looking on the map, sadly cannot be done on the enclosures..
+        Arrays.sort(miscMarkers, (misc1, misc2) -> misc1.getMarkerY()-misc2.getMarkerY());
+
+
         List<Point> points = new ArrayList<>();
         points.add(new Point(mapResult.getMapInfo().getRoutes()[0].getX1(), mapResult.getMapInfo
                 ().getRoutes()[0].getY1()));
@@ -66,6 +84,10 @@ public class Memory {
 
         Point[] pointArr = new Point[points.size()];
         mapResult.getMapInfo().setPoints(points.toArray(pointArr));
+    }
+
+    public Pair<Integer, Enclosure>[] getIndexEnclosureForMap() {
+        return indexEnclosureForMap;
     }
 
     private void initializeBitmaps() {

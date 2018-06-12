@@ -2,6 +2,7 @@ package com.zoovisitors.pl.general_info;
 
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import com.zoovisitors.pl.customViews.TextViewTitle;
  */
 public class contactInfoFragment extends Fragment {
 
+    private TableLayout contactInfoTable;
+
 
     public contactInfoFragment() {
         // Required empty public constructor
@@ -42,9 +45,8 @@ public class contactInfoFragment extends Fragment {
             public void onSuccess(Object response) {
                 ContactInfoResult contactInfos = (ContactInfoResult) response;
 
-                TableLayout contactInfoTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
+                contactInfoTable = rootView.findViewById(R.id.info_table_table);
 
-                ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.swan);
 
                 //calculate the screen width.
                 int screenSize = GlobalVariables.appCompatActivity.getResources().getDisplayMetrics().widthPixels;
@@ -64,7 +66,10 @@ public class contactInfoFragment extends Fragment {
                 }
 
 
-                if (contactInfos.getContactInfo() != null) {
+                if (contactInfos.getContactInfo() != null && contactInfos.getContactInfo().length > 0) {
+
+                    ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.swan);
+
                     //way title
                     TextViewTitle wayTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
                     wayTitle.setText(getContext().getResources().getString(R.string.contact_info));
@@ -131,20 +136,35 @@ public class contactInfoFragment extends Fragment {
 
                         contactInfoTable.addView(rowLayout);
                     }
-                }
 
-                TextViewRegularText noteText = rootView.findViewById(R.id.info_note_text);
-                noteText.setText(contactInfos.getContactInfoNote());
+                    TextViewRegularText noteText = rootView.findViewById(R.id.info_note_text);
+                    noteText.setText(contactInfos.getContactInfoNote());
+                }
+                else {
+                    ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
+                    addErrorMessage();
+                }
             }
 
             @Override
             public void onFailure(Object response) {
-                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
-                errorText.setText((String) response);
+                ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
+                addErrorMessage();
             }
         });
 
         return rootView;
     }
 
+    private void addErrorMessage() {
+        contactInfoTable.removeAllViews();
+        TextView error = new TextView(GlobalVariables.appCompatActivity);
+        error.setVisibility(View.VISIBLE);
+        error.setGravity(Gravity.CENTER_HORIZONTAL);
+        error.setTextColor(getResources().getColor(R.color.black));
+        error.setTextSize(20);
+        error.setText(R.string.error_no_contact_infos);
+
+        contactInfoTable.addView(error);
+    }
 }

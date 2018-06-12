@@ -3,6 +3,7 @@ package com.zoovisitors.pl.map.icons.handlers;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -39,13 +40,14 @@ public class EnclosureIconsHandler {
     private List<Runnable> timerSlowRunnables;
 
     public EnclosureIconsHandler(MapView mapView, Enclosure enclosure, Timer
-            timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables, int encIndex) {
+            timer, List<Runnable> timerFastRunnables, List<Runnable> timerSlowRunnables, int encIndex,
+                                 Runnable onEnclosureClick, long delayToClick) {
         enclosureId = enclosure.getId();
         this.timerFastRunnables = timerFastRunnables;
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-        onTouchListener = createOnTouchListener(encIndex);
+        onTouchListener = createOnTouchListener(onEnclosureClick, encIndex, delayToClick);
         enclosureIcon = new EnclosureIcon(mapView, enclosure.getMarkerBitmap(), onTouchListener,
                 enclosure.getMarkerX(),
                 enclosure.getMarkerY());
@@ -61,8 +63,8 @@ public class EnclosureIconsHandler {
 
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
-            recurringEventCountDownIcon.top -= enclosureIcon.height / 2 +
-                    recurringEventCountDownIcon.textView.getLineHeight();
+            recurringEventCountDownIcon.top -= enclosureIcon.height / 2;
+//                    + recurringEventCountDownIcon.textView.getLineHeight();
             recurringEventIcon.top = recurringEventCountDownIcon.top;
         });
 
@@ -76,19 +78,23 @@ public class EnclosureIconsHandler {
     }
 
     @NonNull
-    private View.OnTouchListener createOnTouchListener(int encIndex) {
+    private View.OnTouchListener createOnTouchListener(Runnable onEnclosureClick, int encIndex, long delayToClick) {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_UP:
+                        onEnclosureClick.run();
+
                         Intent intent = new Intent(GlobalVariables.appCompatActivity,
                                 EnclosureActivity.class);
                         Bundle clickedEnclosure = new Bundle();
 
                         clickedEnclosure.putSerializable("enc", encIndex);
                         intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-                        GlobalVariables.appCompatActivity.startActivity(intent);
+                        new Handler().postDelayed(() -> {
+                            GlobalVariables.appCompatActivity.startActivity(intent);
+                        }, delayToClick);
 
                         break;
                     case MotionEvent.ACTION_CANCEL:

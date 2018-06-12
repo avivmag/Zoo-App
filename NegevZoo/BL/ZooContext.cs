@@ -462,7 +462,7 @@ namespace BL
                 throw new ArgumentException("No enclosure with such enclosure Id exists.");
             }
 
-            var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() });
+            var pictures = uploadedPictures.Select(up => new EnclosurePicture { enclosureId = enclosureId, pictureUrl = up.Value<String>() }).ToArray();
 
             if (pictures.Any(p => String.IsNullOrWhiteSpace(p.pictureUrl)))
             {
@@ -872,18 +872,22 @@ namespace BL
             }
 
             var animalStories           = zooDB.GetFromCache(zooDB.GetAllAnimalStories());
-            var animalStoriesDetails    = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails());
+            var animalStoriesDetails    = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).Where(ans => ans.language == language);
+            var animalStoriesDetailsHe  = zooDB.GetFromCache(zooDB.GetAllAnimalStoryDetails()).Where(ans => ans.language == (int)Languages.he);
 
             var animalStoryResults = from ans in animalStories
-                                    join ansd in animalStoriesDetails on new { ans.id, language } equals new { id = ansd.animalStoryId, ansd.language }
-                                    select new AnimalStoryResult
+                                    join ansd in animalStoriesDetails on ans.id equals ansd.animalStoryId into ansj
+                                    join ansh in animalStoriesDetailsHe on ans.id equals ansh.animalStoryId into anshj
+                                    from ansl in ansj.DefaultIfEmpty()
+                                    from anslh in anshj
+                                     select new AnimalStoryResult
                                     {
                                         Id = ans.id,
                                         EncId = ans.enclosureId,
-                                        Name = ansd.name,
-                                        Story = ansd.story,
+                                        Name = ansl != null ? ansl.name : anslh.name,
+                                        Story = ansl != null ? ansl.story : anslh.name,
                                         PictureUrl = ans.pictureUrl,
-                                        Language = ansd.language
+                                        Language = language
                                 };
 
             return animalStoryResults.ToArray();
@@ -1973,7 +1977,7 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the note is in.</param>
         /// <returns>The zoo's openingHourNote.</returns>
-        public IEnumerable<String> GetOpeningHourNote(int language)
+        public String GetOpeningHourNote(int language)
         {
             if (!ValidLanguage(language))
             {
@@ -1983,7 +1987,7 @@ namespace BL
             return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.openingHoursNote)
-                .ToArray();
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -2016,7 +2020,7 @@ namespace BL
         /// </summary>
         /// <param name="language">The language the note is in.</param>
         /// <returns>The zoo's ContactInfoNote.</returns>
-        public IEnumerable<String> GetContactInfoNote(int language)
+        public String GetContactInfoNote(int language)
         {
             if (!ValidLanguage(language))
             {
@@ -2026,7 +2030,7 @@ namespace BL
             return zooDB.GetFromCache(zooDB.GetGeneralInfo())
                 .Where(ge => ge.language == language)
                 .Select(ge => ge.contactInfoNote)
-                .ToArray();
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -3277,10 +3281,10 @@ namespace BL
             var mapInfo             = this.GetMapSettings();
             var wallFeeds           = this.GetAllWallFeeds(language);
             var openingHours        = this.GetAllOpeningHours(language);
-            var openingHoursNote    = this.GetOpeningHourNote(language).FirstOrDefault();
+            var openingHoursNote    = this.GetOpeningHourNote(language);
             var prices              = this.GetAllPrices(language);
             var contactInfo         = this.GetAllContactInfos(language);
-            var contactInfoNote     = this.GetContactInfoNote(language).FirstOrDefault();
+            var contactInfoNote     = this.GetContactInfoNote(language);
             var aboutUs             = this.GetZooAboutInfo(language);
 
             var contactInfoResult   = new

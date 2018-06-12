@@ -2,11 +2,13 @@ package com.zoovisitors.bl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.zoovisitors.GlobalVariables;
@@ -30,6 +32,7 @@ import com.zoovisitors.dal.InternalStorage;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,13 +42,11 @@ import java.util.List;
 
 public class BusinessLayerImpl implements BusinessLayer {
     private NetworkInterface ni;
-    private InternalStorage is;
     private Gson gson;
     private Memory memory;
 
-    public BusinessLayerImpl(Activity activity) {
-        ni = new NetworkImpl(activity);
-        is = new InternalStorage(activity);
+    public BusinessLayerImpl(Context context) {
+        ni = new NetworkImpl(context);
         gson = new Gson();
     }
 
@@ -91,53 +92,14 @@ public class BusinessLayerImpl implements BusinessLayer {
         });
     }
 
-//    @Override
-//    public Enclosure[] getEnclosures() {
-//        return memory.getEnclosures();
-//    }
+    @Override
+    public Enclosure[] getEnclosures() {
+        return memory.getEnclosures();
+    }
 
     @Override
-    public void getEnclosures(final GetObjectInterface goi) {
-        Enclosure[] enclosures = memory.getEnclosures();
-        if (enclosures != null)
-            goi.onSuccess(enclosures);
-        else {
-            ni.post("enclosures/all/" + GlobalVariables.language, new ResponseInterface<String>() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onSuccess(String response) {
-                    Enclosure[] enc = gson.fromJson(response, Enclosure[].class);
-
-//                // TODO: fake recurring events here, need to update the json somehow
-//                // TODO: I should add three days to the real recurring events
-//                long currentTime = (Calendar.getInstance().getTimeInMillis() + 7*24*60*60*1000 - 3*24*60*60*1000) % (7*24*60*60*1000);
-//                for (int i = 0; i < enc.length; i++) {
-//                    enc[i].setRecurringEvent(new Enclosure.RecurringEvent[]{
-//                            Enclosure.RecurringEvent.createRecurringEvent(1,
-//                                    "",
-//                                    (currentTime + 5 * 1000) % (7*24*60*60*1000),
-//                                    (currentTime + 10 * 1000) % (7*24*60*60*1000), "האכלה"),
-//                            Enclosure.RecurringEvent.createRecurringEvent(2,
-//                                    "",
-//                                    (currentTime + 15 * 1000) % (7*24*60*60*1000),
-//                                    (currentTime + 20 * 1000) % (7*24*60*60*1000), "פיפי בפינה")
-//                    });
-//                }
-
-                    if (enc.length <= 0)
-                        goi.onFailure("No Data in the server");
-                    else{
-                        memory.setEnclosures(enc);
-                        goi.onSuccess(enc);
-                    }
-                }
-
-                @Override
-                public void onFailure(String response) {
-                    goi.onFailure("Can't get enclosures from server");
-                }
-            });
-        }
+    public Pair<Integer, Enclosure>[] getEnclosuresForMap() {
+        return memory.getIndexEnclosureForMap();
     }
 
     @Override
@@ -337,7 +299,7 @@ public class BusinessLayerImpl implements BusinessLayer {
     public void updateIfInPark(boolean isInPark){
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
-            public void onSuccess(String response) {Log.e("IFINPARK","notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark); }
+            public void onSuccess(String response) { }
 
             @Override
             public void onFailure(String response) { }
@@ -380,7 +342,8 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onSuccess(Object response) {
                 DataFromServer dataFromServer = gson.fromJson((String) response, DataFromServer.class);
-                memory = new Memory(dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
+                memory = new Memory(
+                        dataFromServer.getEnclosures(), dataFromServer.getAnimalStories(),
                         dataFromServer.getMiscMarkers(), dataFromServer.getMapResult(), dataFromServer.getWallFeeds(),
                         dataFromServer.getContactInfoResult(), dataFromServer.getOpeningHoursResult(),
                         dataFromServer.getPrices(), dataFromServer.getAboutUs());
@@ -451,11 +414,6 @@ public class BusinessLayerImpl implements BusinessLayer {
     }
 
     @Override
-    public CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId) {
-        return (CustomRelativeLayout[]) memory.getEnclosuresAnimalCardMap().get(encId).toArray();
-    }
-
-    @Override
     public void setEnclosureCardsInMemory(CustomRelativeLayout[] cards) {
         memory.setEnclosureCards(cards);
     }
@@ -475,4 +433,5 @@ public class BusinessLayerImpl implements BusinessLayer {
             }
         }
     }
+
 }

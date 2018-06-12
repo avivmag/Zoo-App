@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -27,19 +28,18 @@ import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.zoovisitors.bl.map.DataStructure.squaredDistance;
+import static com.zoovisitors.bl.RecurringEventsHandler.getTimeAdjustedToWeekTime;
+import static com.zoovisitors.pl.map.MapActivity.OPEN_DOORS_ANIMATION_DURATION;
 
 /**
  * Created by aviv on 12-Jan-18.
  */
-
 public class MapView extends RelativeLayout {
     private static final int INVALID_POINTER_ID = -1;
     private static final long RECURRING_EVENT_SLOW_TIMER_BETWEEN_CALLS_TIME = 250;
     private static final long RECURRING_EVENT_FAST_TIMER_BETWEEN_CALLS_TIME = 50;
     private static final int FOCUS_ON_LOCATION_ANIMATION_TIME = 2000;
     private static final int RATTLE_ANIMATION_HALF_TIME = 100;
-    private int PRIMARY_IMAGE_INITIAL_MARGIN = 50;
     private int primaryImageMargin;
 
     private int enclosureIdToFocus;
@@ -50,7 +50,6 @@ public class MapView extends RelativeLayout {
 
     private float mLastTouchX;
     private float mLastTouchY;
-    private int mTouchSlop = 5;
     private int mActivePointerId = INVALID_POINTER_ID;
 
     /**
@@ -74,24 +73,31 @@ public class MapView extends RelativeLayout {
     private int screenWidth;
     private int screenHeight;
 
-    public void SetInitialValues(Bitmap zooMapBitmap, Enclosure[] enclosures, Misc[] miscs, int
-            enclosureIdToFocus, Runnable onTouchEvent) {
+    public void SetInitialValues(Bitmap zooMapBitmap, Pair<Integer, Enclosure>[] enclosures, Misc[] miscs, int
+            enclosureIdToFocus, Runnable parentOnTouch, Runnable onEnclosureClick, long delayToClick) {
         this.enclosureIdToFocus = enclosureIdToFocus;
-        this.onTouchEvent = onTouchEvent;
+        this.onTouchEvent = parentOnTouch;
         zooMapIcon = new ZooMapIcon(this, new Object[]{zooMapBitmap});
         visitorIcon = new VisitorIcon(this);
-        for (int i = 0; i < enclosures.length; i++)
-            if (enclosures[i].getMarkerBitmap() != null) {
-                addEnclosure(enclosures[i], i);
-            }
-        for (Misc misc :
-                miscs) {
+
+        for (Pair<Integer, Enclosure> pair: enclosures) {
+            addEnclosure(pair.second, pair.first,
+                    onEnclosureClick,
+                    delayToClick);
+        }
+
+        for (Misc misc : miscs) {
             if (misc.getMarkerBitmap() != null) {
                 addMiscIcon(misc);
             }
         }
     }
 
+    /**
+     * Setting important things after the map has been initialized
+     * @param primaryImageWidth
+     * @param primaryImageHeight
+     */
     public void SetInitialParameters(int primaryImageWidth, int primaryImageHeight) {
         equatorScaleFactor = ((float) screenWidth / primaryImageWidth + (float) screenHeight /
                 primaryImageHeight) / 2;
@@ -101,16 +107,39 @@ public class MapView extends RelativeLayout {
                         (float) screenWidth / (primaryImageWidth + 2 * primaryImageMargin),
                         (float) screenHeight / (primaryImageHeight + 2 * primaryImageMargin)
                 );
-        mScaleFactor = mLastScaleFactor =
-                Math.max(
-                        (float) screenWidth / primaryImageWidth,
-                        (float) screenHeight / primaryImageHeight
-                );
-        mPosX = screenWidth / 2 - getmScaleFactor() * zooMapIcon.width / 2;
-        mPosY = screenHeight / 2 - getmScaleFactor() * zooMapIcon.height / 2;
+        mScaleFactor = mLastScaleFactor = minScaleFactor;
 
-        if (enclosureIdToFocus != -1)
-            focusOnIconAndRattle(enclosureIdToFocus);
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / mScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / mScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
+        mPosX = Math.min(
+                                screenWidth / 2 - zooMapIcon.width / 2 * mScaleFactor,
+                                mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
+                        );
+        mPosY =
+                Math.min(
+                                screenHeight / 2 - mScaleFactor * zooMapIcon.height / 2,
+                                mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 + primaryImageMargin)
+                        );
+
+        // zooming in when a user enters the map and the doors are opened
+        new Handler().postDelayed(() -> {
+            if (enclosureIdToFocus != -1) {
+                focusOnIconAndRattle(enclosureIdToFocus);
+            } else {
+                focusOnLocationAnimation(
+                        zooMapIcon.width / 2,
+                        zooMapIcon.height / 2,
+                        Math.max(
+                                (float) screenWidth / primaryImageWidth,
+                                (float) screenHeight / primaryImageHeight
+                        ),
+                        OPEN_DOORS_ANIMATION_DURATION);
+            }
+        }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
     public MapView(Context context) {
@@ -130,8 +159,10 @@ public class MapView extends RelativeLayout {
         timerFastRunnables = new CopyOnWriteArrayList<>();
         timerSlowRunnables = new CopyOnWriteArrayList<>();
         // screen size
+
         screenWidth = this.getResources().getDisplayMetrics().widthPixels;
-        screenHeight = this.getResources().getDisplayMetrics().heightPixels;
+        //                                                                    Title bar, should get it from the code somehow later..
+        screenHeight = this.getResources().getDisplayMetrics().heightPixels - 72;
 
         timer.scheduleAtFixedRate(new TimerTask() {
                                       @Override
@@ -166,12 +197,11 @@ public class MapView extends RelativeLayout {
             mLastTouchY = ev.getY();
             mActivePointerId = ev.getPointerId(0);
         }
-        if (MotionEvent.ACTION_MOVE == ev.getAction() &&
+        int mTouchSlop = 5;
+        return MotionEvent.ACTION_MOVE == ev.getAction() &&
                 (Math.abs(ev.getX() - mLastTouchX) > mTouchSlop ||
-                        Math.abs(ev.getY() - mLastTouchY) > mTouchSlop))
-            return true;
+                        Math.abs(ev.getY() - mLastTouchY) > mTouchSlop);
 
-        return false;
     }
 
     @Override
@@ -180,7 +210,7 @@ public class MapView extends RelativeLayout {
         timer.cancel();
     }
 
-    AtomicBoolean movementInProgress = new AtomicBoolean(false);
+    final AtomicBoolean movementInProgress = new AtomicBoolean(false);
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -199,6 +229,10 @@ public class MapView extends RelativeLayout {
                 }
 
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if(pointerIndex == INVALID_POINTER_ID) {
+                    movementInProgress.set(false);
+                    break;
+                }
                 final float x = ev.getX(pointerIndex);
                 final float y = ev.getY(pointerIndex);
 
@@ -237,7 +271,7 @@ public class MapView extends RelativeLayout {
     }
 
     private void setMPos(float deltaX, float deltaY) {
-        primaryImageMargin = Math.max(PRIMARY_IMAGE_INITIAL_MARGIN,
+        primaryImageMargin = Math.max(50,
                 Math.max(
                         (int) ((screenHeight / getmScaleFactor() - zooMapIcon.height) / 2),
                         (int) ((screenWidth / getmScaleFactor() - zooMapIcon.width) / 2)
@@ -292,9 +326,14 @@ public class MapView extends RelativeLayout {
         }
     }
 
-    public void addEnclosure(Enclosure enclosure, int encIndex) {
+    public void addEnclosure(Enclosure enclosure, int encIndex, Runnable onEnclosureClick, long delayToClick) {
         enclosureIconsHandlers.add(new EnclosureIconsHandler(this, enclosure, timer,
-                timerFastRunnables, timerSlowRunnables, encIndex));
+                timerFastRunnables, timerSlowRunnables, encIndex,
+                () -> {
+                    onEnclosureClick.run();
+                    exitMap();
+                },
+                delayToClick));
     }
 
     public void addMiscIcon(Misc misc) {
@@ -302,26 +341,26 @@ public class MapView extends RelativeLayout {
                 .getMarkerY()));
     }
 
-    public void ShowVisitorIcon() {
-        visitorIcon.Show();
-    }
-
     private Animation lastVisitorAnimation;
     private long lastTimeStarted;
 
-    public enum VisitorPositionUpdateType {NoAnimation, FirstAnimation, ContinuesAnimation};
-
-    public void UpdateVisitorLocation(int x, int y, VisitorPositionUpdateType updateType) {
+    public void UpdateVisitorLocation(int x, int y, boolean shouldAnimate) {
         if (x != visitorIcon.left && y != visitorIcon.top) {
             visitorIcon.UpdateVisitorLocation(x, y);
-            if (updateType == VisitorPositionUpdateType.FirstAnimation ||
-                    (updateType == VisitorPositionUpdateType.ContinuesAnimation &&
-                            lastVisitorAnimation != null &&
-                            System.currentTimeMillis() - lastTimeStarted >= lastVisitorAnimation
-                                    .getDuration())) {
+            if (shouldAnimate &&
+                    (lastVisitorAnimation == null ||
+                            System.currentTimeMillis() - lastTimeStarted >=
+                                    lastVisitorAnimation.getDuration())) {
                 if (lastVisitorAnimation != null)
                     lastVisitorAnimation.cancel();
                 lastTimeStarted = System.currentTimeMillis();
+
+                primaryImageMargin = Math.max(50,
+                        Math.max(
+                                (int) ((screenHeight / maxScaleFactor - zooMapIcon.height) / 2),
+                                (int) ((screenWidth / maxScaleFactor - zooMapIcon.width) / 2)
+                        )
+                );
                 lastVisitorAnimation = focusOnLocationAnimation(x, y);
             }
         }
@@ -344,7 +383,13 @@ public class MapView extends RelativeLayout {
             return;
 
         int numberOfRattleTimes = 2;
-        focusOnLocationAnimation(icon.left, icon.top, FOCUS_ON_LOCATION_ANIMATION_TIME);
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / mScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / mScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
+        focusOnLocationAnimation(icon.left, icon.top, maxScaleFactor, FOCUS_ON_LOCATION_ANIMATION_TIME);
         Icon finalIcon = icon;
         new Handler().postDelayed(() -> {
             rattleViewAnimation(finalIcon.view, numberOfRattleTimes);
@@ -353,7 +398,7 @@ public class MapView extends RelativeLayout {
 
     public boolean animationInterrupt = false;
 
-    private Animation focusOnLocationAnimation(int x, int y, long duration) {
+    private Animation focusOnLocationAnimation(int x, int y, float finalScale, long duration) {
         float initialMScaleFactor = mScaleFactor;
         float initialMPosX = mPosX;
         float initialMPosY = mPosY;
@@ -366,22 +411,20 @@ public class MapView extends RelativeLayout {
                 if (animationInterrupt)
                     this.cancel();
 
-                mScaleFactor = mLastScaleFactor = initialMScaleFactor + (maxScaleFactor -
+                mScaleFactor = mLastScaleFactor = initialMScaleFactor + (finalScale -
                         initialMScaleFactor) * interpolatedTime;
                 mPosX =
                         Math.max(
                                 Math.min(
-                                        initialMPosX + (screenWidth / 2 - x * maxScaleFactor -
-                                                initialMPosX) * interpolatedTime,
-                                        mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 +
-                                                primaryImageMargin)
+                                        initialMPosX + (screenWidth / 2 - x * finalScale - initialMPosX) * interpolatedTime,
+                                        mScaleFactor * (zooMapIcon.left - zooMapIcon.width / 2 + primaryImageMargin)
                                 ),
                                 screenWidth - mScaleFactor * (zooMapIcon.width + primaryImageMargin)
                         );
                 mPosY =
                         Math.max(
                                 Math.min(
-                                        initialMPosY + (screenHeight / 2 - y * maxScaleFactor -
+                                        initialMPosY + (screenHeight / 2 - y * finalScale -
                                                 initialMPosY) * interpolatedTime,
                                         mScaleFactor * (zooMapIcon.top - zooMapIcon.height / 2 +
                                                 primaryImageMargin)
@@ -398,9 +441,10 @@ public class MapView extends RelativeLayout {
     }
 
     private Animation focusOnLocationAnimation(int x, int y) {
-        // the ratio is 1 mil/pixel
-        return focusOnLocationAnimation(x, y, (long) Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY
-                - y) * (mPosY - y))/3);
+        // the ratio is 1/currentZoomLevel mil/pixel
+        return focusOnLocationAnimation(x, y, maxScaleFactor,
+                (long) (Math.sqrt((mPosX - x) * (mPosX - x) + (mPosY - y) * (mPosY - y))
+                        / mScaleFactor * equatorScaleFactor));
     }
 
     private void rattleViewAnimation(View view, int times) {
@@ -446,4 +490,41 @@ public class MapView extends RelativeLayout {
             visitorIcon.updateIconPosition();
         }
     }
+
+//    private float lastMPosX = Float.MAX_VALUE;
+//    private float lastMPosY = Float.MAX_VALUE;
+//    private float lastMScaleFactor = Float.MAX_VALUE;
+    public void exitMap() {
+//        lastMPosX = mPosX;
+//        lastMPosY = mPosY;
+//        lastMScaleFactor = mScaleFactor;
+        primaryImageMargin = Math.max(50,
+                Math.max(
+                        (int) ((screenHeight / minScaleFactor - zooMapIcon.height) / 2),
+                        (int) ((screenWidth / minScaleFactor - zooMapIcon.width) / 2)
+                )
+        );
+        focusOnLocationAnimation(
+                zooMapIcon.width / 2,
+                zooMapIcon.height / 2,
+                minScaleFactor,
+                OPEN_DOORS_ANIMATION_DURATION);
+
+    }
+
+//    public void resume() {
+//         if(lastMPosX != Float.MAX_VALUE) {
+//             new Handler().postDelayed(() -> {
+//                 focusOnLocationAnimation(
+//                         (int) lastMPosX,
+//                         (int) lastMPosY,
+//                         lastMScaleFactor,
+//                         OPEN_DOORS_ANIMATION_DURATION);
+//             }, OPEN_DOORS_ANIMATION_DURATION);
+//
+//            lastMPosX = Float.MAX_VALUE;
+//            lastMPosY = Float.MAX_VALUE;
+//            lastMScaleFactor = Float.MAX_VALUE;
+//        }
+//    }
 }

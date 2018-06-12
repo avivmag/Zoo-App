@@ -73,13 +73,14 @@ public class CustomRelativeLayout extends RelativeLayout {
     public void init(){
         //card initiate
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.width = size;
+        params.width = size-6;
         params.setMargins(2,2,2,2);
 
         View v = mInflater.inflate(R.layout.custom_relative_layout, this, true);
         v.setLayoutParams(params);
+        v.setPadding(2,4,2,4);
 
-        //caed image
+        //card image
         params.height = size;
         ImageView iv = v.findViewById(R.id.custom_animal_personal_story_image);
         iv.setLayoutParams(params);

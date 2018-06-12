@@ -72,108 +72,97 @@ public class EnclosureListActivity extends BaseActivity {
         secondEncCol.setLayoutParams(params);
 
         //get all enclosures
-        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
+        Enclosure[] enclosures = GlobalVariables.bl.getEnclosures();
+        enclosureCards = GlobalVariables.bl.getEnclosureCards();
 
+        if (enclosureCards == null) {
+            enclosureCards = new CustomRelativeLayout[enclosures.length];
+
+            for (int i = 0; i<enclosures.length; i++)
+            {
+                enclosureCards[i] = getEncCard(enclosures[i], i);
+            }
+
+            GlobalVariables.bl.setEnclosureCardsInMemory(enclosureCards);
+        }
+
+        clearSearchList();
+        initEncList();
+
+
+        //initialize the animal list attributes
+        animalTitle = initializeTitle();
+        animalTitle.setText(getResources().getString(R.string.animals));
+
+
+        firstAnCol = findViewById(R.id.first_column_animals_list);
+        firstAnCol.setLayoutParams(params);
+
+        secondAnCol = findViewById(R.id.second_column_animals_list);
+        secondAnCol.setLayoutParams(params);
+
+        //get all the animals
+        GlobalVariables.bl.getAllAnimals(new GetObjectInterface() {
             @Override
             public void onSuccess(Object response) {
-                Enclosure[] enclosures = (Enclosure[]) response;
-                enclosureCards = GlobalVariables.bl.getEnclosureCards();
+                animals = (Animal[]) response;
+                animalCards = GlobalVariables.bl.getAllAnimalCards();
 
-                if (enclosureCards == null) {
-                    enclosureCards = new CustomRelativeLayout[enclosures.length];
+                if (animalCards.length == 0){
+                    animalCards = new CustomRelativeLayout[animals.length];
 
-                    for (int i = 0; i<enclosures.length; i++)
-                    {
-                        enclosureCards[i] = getEncCard(enclosures[i], i);
+                    for (int i = 0 ; i < animals.length; i++){
+                        animalCards[i] = getAnCard(animals[i]);
                     }
 
-                    GlobalVariables.bl.setEnclosureCardsInMemory(enclosureCards);
+                    GlobalVariables.bl.setAllAnimalCards(animalCards, animals);
                 }
-
-                clearSearchList();
-                initEncList();
-
-
-                //initialize the animal list attributes
-                animalTitle = initializeTitle();
-                animalTitle.setText(getResources().getString(R.string.animals));
-
-
-                firstAnCol = findViewById(R.id.first_column_animals_list);
-                firstAnCol.setLayoutParams(params);
-
-                secondAnCol = findViewById(R.id.second_column_animals_list);
-                secondAnCol.setLayoutParams(params);
-
-                //get all the animals
-                GlobalVariables.bl.getAllAnimals(new GetObjectInterface() {
-                    @Override
-                    public void onSuccess(Object response) {
-                        animals = (Animal[]) response;
-                        animalCards = GlobalVariables.bl.getAllAnimalCards();
-
-                        if (animalCards.length == 0){
-                            animalCards = new CustomRelativeLayout[animals.length];
-
-                            for (int i = 0 ; i < animals.length; i++){
-                                animalCards[i] = getAnCard(animals[i]);
-                            }
-
-                            GlobalVariables.bl.setAllAnimalCards(animalCards, animals);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Object response) {
-                        Log.e("ANIMALS", "Cant get animals");
-                    }
-                });
-
-
-                //initialize the search view
-                searchEncAnimal = findViewById(R.id.searchEncAnim);
-                searchEncAnimal.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        clearSearchList();
-                        addMatchEnc(query);
-                        addMatchAn(query);
-
-
-                        InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
-                        in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
-                        searchEncAnimal.clearFocus();
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        clearSearchList();
-                        addMatchEnc(newText);
-                        addMatchAn(newText);
-                        return true;
-                    }
-
-                });
-
-                //setting close button listener
-                View closeButton = searchEncAnimal.findViewById(getResources().getIdentifier("android:id/search_close_btn", null, null));
-                closeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        searchEncAnimal.setQuery("", false);
-                        clearSearchList();
-                        initEncList();
-                        InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
-                        in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
-                    }
-                });
             }
 
             @Override
             public void onFailure(Object response) {
-                Log.e("ENCLOSURES", "Cant get enclosures");
+                Log.e("ANIMALS", "Cant get animals");
+            }
+        });
+
+
+        //initialize the search view
+        searchEncAnimal = findViewById(R.id.searchEncAnim);
+        searchEncAnimal.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                clearSearchList();
+                addMatchEnc(query);
+                addMatchAn(query);
+
+
+                InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
+                searchEncAnimal.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                clearSearchList();
+                addMatchEnc(newText);
+                addMatchAn(newText);
+                return true;
+            }
+
+        });
+
+        //setting close button listener
+        View closeButton = searchEncAnimal.findViewById(getResources().getIdentifier("android:id/search_close_btn", null, null));
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEncAnimal.setQuery("", false);
+                clearSearchList();
+                initEncList();
+                InputMethodManager in = (InputMethodManager)getSystemService(getBaseContext().INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(searchEncAnimal.getWindowToken(), 0);
             }
         });
     }

@@ -2,6 +2,7 @@ package com.zoovisitors;
 
 import android.support.v7.app.AppCompatActivity;
 import com.zoovisitors.bl.BusinessLayer;
+import com.zoovisitors.bl.BusinessLayerImpl;
 import com.zoovisitors.pl.BaseActivity;
 
 /**
@@ -15,8 +16,8 @@ public class GlobalVariables {
     public static String LOG_TAG = "zoovisitors";
     public static int language;
     public static AppCompatActivity appCompatActivity;
-    public static BusinessLayer bl;
     public static int firstEnter = 0;
+    public static BusinessLayer bl;
     public static String firebaseToken;
     public static boolean notifications = true;
 }

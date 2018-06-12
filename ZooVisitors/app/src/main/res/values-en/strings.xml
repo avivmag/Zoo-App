@@ -42,6 +42,15 @@
     <string name="showOnMap">Show on map</string>
     <string name="about_enc">About the Enclosure:</string>
     <string name="next_event">Next Event:</string>
+    <!--preservation strings-->
+    <string name="preservation0">Unknown</string>
+    <string name="preservation1">Least concern</string>
+    <string name="preservation2">Near-threatened</string>
+    <string name="preservation3">Vulnerable</string>
+    <string name="preservation4">Endangered</string>
+    <string name="preservation5">Critically endangered</string>
+    <string name="preservation6">Extinct in the wild</string>
+    <string name="preservation7">Extinct</string>
 
     <!-- General Info -->
     <string name="contact_us_headline">Ways To Contact Us:</string>
@@ -97,7 +106,15 @@
     <string name="confirm">Confirm</string>
 
     <string name="language_preferences">language</string>
+    <string name="notification_preferences">notification</string>
+    <string name="cant_share_facebook">Cannot share, Facebook not installed</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
 
+    <!--ERROR MESSAGES-->
+    <string name="error_no_schedule">There aren\'t any events in the schedule </string>
+    <string name="error_no_rec_events">There aren\'t any events today</string>
+    <string name="error_no_about_us">About us information doesn\'t exists</string>
+    <string name="error_no_contact_infos">Contact information doesn\'t exists</string>
+    <string name="error_no_prices">Prices information doesn\'t exists</string>
 </resources>

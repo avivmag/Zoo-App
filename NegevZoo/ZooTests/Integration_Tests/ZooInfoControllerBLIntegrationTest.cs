@@ -1277,9 +1277,9 @@ namespace ZooTests
         public void GetAboutUsValidInput()
         {
             var aboutUs = ZooInfoController.GetZooAboutInfo(1);
-            Assert.IsInstanceOfType(aboutUs, typeof(ZooInfoController.AboutUsResult[]));
+            Assert.IsInstanceOfType(aboutUs, typeof(ZooInfoController.AboutUsResult));
 
-            Assert.AreEqual(aboutUs, "אנחנו נגב זו!!! אנחנו אוהבים חיות");
+            Assert.AreEqual(aboutUs.AboutUs, "אנחנו נגב זו!!! אנחנו אוהבים חיות");
         }
 
         [TestMethod]
@@ -1295,7 +1295,7 @@ namespace ZooTests
         public void UpdateAboutUsValidInput()
         {
             var aboutUs = ZooInfoController.GetZooAboutInfo((int)Languages.en);
-            Assert.AreEqual(aboutUs, "We are Negev Zoo!!! We love animals");
+            Assert.AreEqual(aboutUs.AboutUs, "We are Negev Zoo!!! We love animals");
 
             var oldAboutUs = aboutUs;
             var newAboutUs = new ZooInfoController.AboutUsResult
@@ -1343,12 +1343,6 @@ namespace ZooTests
         #endregion
 
         #region GetOpeningHourNote
-        [TestMethod]
-        public void GetOpeningHourNoteValidInput()
-        {
-            var ohNote= ZooInfoController.GetOpeningHourNote((int)Languages.en);
-            Assert.AreEqual(ohNote.Count(), 1);
-        }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
@@ -1364,9 +1358,9 @@ namespace ZooTests
         public void UpdateOpeningHourNoteValidInput()
         {
             var ohNote = ZooInfoController.GetOpeningHourNote((int)Languages.en);
-            Assert.AreEqual(ohNote.Count(), 1);
 
-            var oldNote = ohNote.SingleOrDefault(ohn => ohn.OpeningHourNote == "The cashier desk will bew closed two hours before the zoo is closing.");
+            var oldNote = ohNote;
+
             var newOpeningHournote = new ZooInfoController.OpeningHourNoteResult
             {
                 OpeningHourNote = "This is the new note!"
@@ -1375,8 +1369,8 @@ namespace ZooTests
             ZooInfoController.UpdateOpeningHourNote(newOpeningHournote, (int)Languages.en);
 
             ohNote = ZooInfoController.GetOpeningHourNote((int)Languages.en);
-            Assert.IsTrue(ohNote.Any(ohn => ohn.OpeningHourNote == newOpeningHournote.OpeningHourNote));
-            Assert.IsFalse(ohNote.Any(ohn => ohn.OpeningHourNote == oldNote.OpeningHourNote));
+            Assert.IsTrue(ohNote.OpeningHourNote == newOpeningHournote.OpeningHourNote);
+            Assert.IsFalse(ohNote.OpeningHourNote == oldNote.OpeningHourNote);
         }
 
         [TestMethod]
@@ -1418,12 +1412,6 @@ namespace ZooTests
         #endregion
 
         #region GetContactInfoNote
-        [TestMethod]
-        public void GetContacgInfoNote()
-        {
-            var ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
-            Assert.AreEqual(ciNote.Count(), 1);
-        }
 
         [TestMethod]
         [ExpectedException(typeof(HttpResponseException))]
@@ -1439,9 +1427,9 @@ namespace ZooTests
         public void UpdateContactInfoNoteValidInput()
         {
             var ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
-            Assert.AreEqual(ciNote.Count(), 1);
 
-            var oldNote = ciNote.SingleOrDefault(cin => cin.ContactInfoNote == "Contact between 08:00 - 22:00");
+            var oldNote = ciNote;
+
             var newContactInfoNote = new ZooInfoController.ContactInfoNoteResult
             {
                 ContactInfoNote = "This is the new note!"
@@ -1450,8 +1438,8 @@ namespace ZooTests
             ZooInfoController.UpdateContactInfoNote(newContactInfoNote, (int)Languages.en);
 
             ciNote = ZooInfoController.GetContactInfoNote((int)Languages.en);
-            Assert.IsTrue(ciNote.Any(cin => cin.ContactInfoNote == newContactInfoNote.ContactInfoNote));
-            Assert.IsFalse(ciNote.Any(cin => cin.ContactInfoNote == oldNote.ContactInfoNote));
+            Assert.IsTrue(ciNote.ContactInfoNote == newContactInfoNote.ContactInfoNote);
+            Assert.IsFalse(ciNote.ContactInfoNote == oldNote.ContactInfoNote);
         }
 
         [TestMethod]

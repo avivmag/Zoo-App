@@ -2,6 +2,7 @@ package com.zoovisitors.bl;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
@@ -22,8 +23,8 @@ public interface BusinessLayer {
     /**
      * Returns the enclosures that has been loaded in the load screen
      */
-//    Enclosure[] getEnclosures();
-    void getEnclosures(final GetObjectInterface goi);
+    Enclosure[] getEnclosures();
+    Pair<Integer, Enclosure>[] getEnclosuresForMap();
     void getAllRecEvents (final GetObjectInterface goi);
     /**
      * Returns the miscs that has been loaded in the load screen
@@ -39,7 +40,6 @@ public interface BusinessLayer {
      * Returns the personal stories that has been loaded in the load screen
      */
     Animal.PersonalStories[] getPersonalStories();
-//    void getPersonalStories(final GetObjectInterface goi);
 
     //notification
     void updateIfInPark(boolean isInPark);
@@ -62,7 +62,6 @@ public interface BusinessLayer {
     //Enclosure and animal cache
     CustomRelativeLayout[] getEnclosureCards();
     CustomRelativeLayout[] getAllAnimalCards();
-    CustomRelativeLayout[] getAnimalCardsInEnclosure(int encId);
 
     void setEnclosureCardsInMemory(CustomRelativeLayout[] cards);
     void setAllAnimalCards(CustomRelativeLayout[] cards, Animal[] animals);

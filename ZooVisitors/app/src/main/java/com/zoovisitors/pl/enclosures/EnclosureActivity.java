@@ -1,15 +1,13 @@
 package com.zoovisitors.pl.enclosures;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -40,9 +38,7 @@ import com.zoovisitors.pl.customViews.ImageViewEncAsset;
 import com.zoovisitors.pl.customViews.TextViewRegularText;
 import com.zoovisitors.pl.map.MapActivity;
 import com.zoovisitors.pl.customViews.ButtonCustomView;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +51,7 @@ public class EnclosureActivity extends BaseActivity {
 
     private Enclosure enclosure;
     private Animal[] animals;
-    private GridLayout assetsLayout;
+    private LinearLayout picAndVidLayout;
     private RecurringEventsHandler recurringEventsHandler;
     private List<Bitmap> imagesInAsset;
     private CustomRelativeLayout encHeader;
@@ -67,7 +63,7 @@ public class EnclosureActivity extends BaseActivity {
     private int index;
     private Map<ImageView, Integer> imageViewIntegerMap;
 
-
+    private int screenSize;
     private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +71,11 @@ public class EnclosureActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setActionBar(R.color.greenIcon);
         Bundle clickedEnclosure = getIntent().getExtras();
+        screenSize = getResources().getDisplayMetrics().widthPixels;
         index = 0;
         imageViewIntegerMap = new HashMap<>();
         final int encIndex = (int) clickedEnclosure.getSerializable("enc");
-        GlobalVariables.bl.getEnclosures(new GetObjectInterface() {
-            @Override
-            public void onSuccess(Object response) {
-                enclosure = ((Enclosure[]) response) [encIndex];
-            }
-
-            @Override
-            public void onFailure(Object response) {
-
-            }
-        });
+        enclosure = GlobalVariables.bl.getEnclosures()[encIndex];
         int id = enclosure.getId();
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
 
@@ -138,10 +125,86 @@ public class EnclosureActivity extends BaseActivity {
             encMainLayout.removeView(enclosureClosestEventLayout);
         }
 
-        //initialize the facebook and show on map buttons
         ButtonCustomView facebookShare = (ButtonCustomView) findViewById(R.id.shareOnFacebook);
         facebookShare.designButton(R.color.transparent, R.mipmap.facebook_icon, R.string.shareOnFacebook, 16, R.color.black, 125);
 
+        //if facebook installed show the facebook button
+        if (isAppInstalled(this, "com.facebook.katana"))
+            initFacebookButton(facebookShare);
+        else
+            facebookShare.setOnClickListener(v->{
+                Toast.makeText(this, "Facebook is not installed", Toast.LENGTH_LONG).show();
+            });
+
+        ButtonCustomView showOnMapButton = findViewById(R.id.showOnMap);
+        if (enclosure.getMarkerX() != 0 || enclosure.getMarkerY() != 0) {
+            showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
+
+            showOnMapButton.setOnClickListener(
+                    v -> {
+                        Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("enclosureID", enclosure.getId());
+                        startActivity(intent);
+                    }
+            );
+        }
+        else {
+            LinearLayout locationFacebookLayout = findViewById(R.id.location_facebook_layout);
+            locationFacebookLayout.removeView(showOnMapButton);
+        }
+
+        //initialize the title and the story of the enclosure
+        if (enclosure.getStory().equals("")){
+            LinearLayout storyLayout = findViewById(R.id.enc_story_layout);
+            encMainLayout.removeView(storyLayout);
+        }
+        else{
+            TextView enclosureStoryText = findViewById(R.id.enc_story_text);
+            enclosureStoryText.setText(enclosure.getStory());
+        }
+        //initialize the 'who live here' section
+        //Cards and Recycle of the animals
+        GridLayout animalGreedLayout = findViewById(R.id.animals_grid_layout);
+        for (Animal an: animals) {
+            CustomRelativeLayout animalCard = getAnCard(an);
+
+            animalGreedLayout.addView(animalCard);
+        }
+
+        //initialize the 'pictures and videos' section
+        if (enclosure.getPictures().length == 0 && enclosure.getVideos().length == 0 ){
+            LinearLayout encAssetsLayout = findViewById(R.id.enc_assets_layout);
+            encMainLayout.removeView(encAssetsLayout);
+        }
+        else {
+            picAndVidLayout = findViewById(R.id.pic_and_vid_layout);
+
+            addImagesToAssets();
+            addVideosToAssets();
+        }
+    }
+
+    private CustomRelativeLayout getAnCard(Animal animal) {
+        int layoutWidth = screenSize/3;
+
+        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
+        card.init();
+
+        card.setOnClickListener(v -> {
+                Intent intent = new Intent(GlobalVariables.appCompatActivity, AnimalActivity.class);
+                Bundle clickedAnimal = new Bundle();
+                clickedAnimal.putSerializable("animal", animal);
+
+                intent.putExtras(clickedAnimal);
+                GlobalVariables.appCompatActivity.startActivity(intent);
+            });
+
+        return card;
+    }
+
+    private void initFacebookButton(ButtonCustomView facebookShare) {
+        //initialize the facebook button
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 
@@ -202,84 +265,30 @@ public class EnclosureActivity extends BaseActivity {
             }
 
         });
-
-
-        ButtonCustomView showOnMapButton = (ButtonCustomView) findViewById(R.id.showOnMap);
-        showOnMapButton.designButton(R.color.transparent, R.mipmap.show_on_map, R.string.showOnMap, 16, R.color.black, 125);
-
-        showOnMapButton.setOnClickListener(
-                v -> {
-                    Intent intent = new Intent(EnclosureActivity.this, MapActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtra("enclosureID", enclosure.getId());
-                    startActivity(intent);
-                }
-        );
-
-        //initialize the title and the story of the enclosure
-        if (enclosure.getStory().equals("")){
-            LinearLayout storyLayout = findViewById(R.id.enc_story_layout);
-            encMainLayout.removeView(storyLayout);
-        }
-        else{
-            TextView enclosureStoryText = findViewById(R.id.enc_story_text);
-            enclosureStoryText.setText(enclosure.getStory());
-        }
-        //initialize the 'who live here' section
-        //Cards and Recycle of the animals
-        LinearLayout whoLivesLayout = findViewById(R.id.who_lives_here_layout);
-        for (Animal an: animals) {
-            CustomRelativeLayout animalCard = getAnCard(an);
-
-            whoLivesLayout.addView(animalCard);
-        }
-
-        //initialize the 'pictures and videos' section
-        if (enclosure.getPictures().length == 0 && enclosure.getVideos().length == 0 ){
-            LinearLayout encAssetsLayout = findViewById(R.id.enc_assets_layout);
-            encMainLayout.removeView(encAssetsLayout);
-        }
-        else {
-            assetsLayout = findViewById(R.id.enc_asset_grid_layout);
-            int assetWidth = screenWidth/4;
-            int assetHeight = screenWidth/4;
-            addImagesToAssets(assetWidth, assetHeight);
-            addVideosToAssets(assetWidth, assetHeight);
-        }
     }
 
-    private CustomRelativeLayout getAnCard(Animal animal) {
-        int screenSize = getResources().getDisplayMetrics().widthPixels;
+    private void addImagesToAssets() {
         int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
 
-        CustomRelativeLayout card = new CustomRelativeLayout(getBaseContext(),animal.getPictureUrl(), animal.getName(),null, layoutWidth);
-        card.init();
-
-        card.setOnClickListener(v -> {
-                Intent intent = new Intent(GlobalVariables.appCompatActivity, AnimalActivity.class);
-                Bundle clickedAnimal = new Bundle();
-                clickedAnimal.putSerializable("animal", animal);
-
-                intent.putExtras(clickedAnimal);
-                GlobalVariables.appCompatActivity.startActivity(intent);
-            });
-
-        return card;
-    }
-
-    private void addImagesToAssets(int width, int height) {
-        Intent assetsPopUp = new Intent(GlobalVariables.appCompatActivity, EnclosureAssetsPopUp.class);
+        Intent assetsPopUp = new Intent(getBaseContext(), EnclosureAssetsPopUp.class);
         for (Enclosure.PictureEnc pe : enclosure.getPictures()) {
-            GlobalVariables.bl.getImage(pe.getPictureUrl(), width, height, new GetObjectInterface() {
+            GlobalVariables.bl.getImage(pe.getPictureUrl(), layoutWidth, layoutWidth, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
-                    ImageViewEncAsset imageView = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
+                    //initialize the image
+                    ImageViewEncAsset imageView = new ImageViewEncAsset(getBaseContext());
                     imageView.setImageBitmap((Bitmap) response);
-                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                    layoutParams.setMargins(4, 0, 0, 4);
-                    imageView.setLayoutParams(layoutParams);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.width = layoutWidth;
+                    params.height = layoutWidth;
+                    params.setMargins(2,2,2,2);
+                    imageView.setLayoutParams(params);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    assetsLayout.addView(imageView);
+
+                    //add the image to the layout
+                    picAndVidLayout.addView(imageView);
+
+                    //initialize the image in the popup
                     imagesInAsset.add((Bitmap) response);
                     GlobalVariables.bl.insertStringandBitmap(pe.getPictureUrl(), (Bitmap) response);
                     assetsPopUp.putExtra("imageUrl" + index, pe.getPictureUrl());
@@ -302,27 +311,36 @@ public class EnclosureActivity extends BaseActivity {
         assetsPopUp.putExtra("arraySize", enclosure.getPictures().length);
     }
 
-    private void addVideosToAssets(int width, int height) {
+    private void addVideosToAssets() {
+        int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
+
         String youtubeVideoPrefix = "https://www.youtube.com/watch?v=";
         for (Enclosure.VideoEnc ve : enclosure.getVideos()) {
-            ImageViewEncAsset imageButton = new ImageViewEncAsset(GlobalVariables.appCompatActivity);
+            ImageViewEncAsset imageButton = new ImageViewEncAsset(getBaseContext());
             String imageUrl = "https://img.youtube.com/vi/" + ve.getVideoUrl() + "/0.jpg";
-            GlobalVariables.bl.getImageFullUrl(imageUrl, 210, 210, new GetObjectInterface() {
+            GlobalVariables.bl.getImageFullUrl(imageUrl, layoutWidth, layoutWidth, new GetObjectInterface() {
                 @Override
                 public void onSuccess(Object response) {
+                    //initialize the frame of the video
+                    FrameLayout frameLayout = new FrameLayout(getBaseContext());
+
+                    //initialize the video image
                     imageButton.setImageBitmap((Bitmap) response);
                     imageButton.setOnClickListener(
                             v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoPrefix + ve.getVideoUrl()))));
-                    FrameLayout frameLayout = new FrameLayout(GlobalVariables.appCompatActivity);
-                    ImageView youtubeImageView = new ImageView(GlobalVariables.appCompatActivity);
+
+                    //initialize the play image
+                    ImageView youtubeImageView = new ImageView(getBaseContext());
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
                     youtubeImageView.setLayoutParams(layoutParams);
                     youtubeImageView.setImageResource(R.mipmap.youtube_play);
                     youtubeImageView.setX(140);
                     youtubeImageView.setY(110);
+
+                    //add the button and play images
                     frameLayout.addView(imageButton);
                     frameLayout.addView(youtubeImageView);
-                    assetsLayout.addView(frameLayout);
+                    picAndVidLayout.addView(frameLayout);
                 }
 
                 @Override
@@ -383,6 +401,16 @@ public class EnclosureActivity extends BaseActivity {
         if (encHeader != null)
             encHeader.stopAudio();
         super.onPause();
+    }
+
+    private boolean isAppInstalled(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }
 
