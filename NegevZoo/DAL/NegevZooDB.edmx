@@ -68,6 +68,7 @@
           <Property Name="deviceId" Type="tinytext" Nullable="false" />
           <Property Name="lastPing" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="insidePark" Type="tinyint" Nullable="false" />
+          <Property Name="subscribed" Type="tinyint" Nullable="false" />
         </EntityType>
         <EntityType Name="enclosurepictures">
           <Key>
@@ -489,6 +490,7 @@
           <Property Name="deviceId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="lastPing" Type="DateTime" Nullable="false" />
           <Property Name="insidePark" Type="SByte" Nullable="false" />
+          <Property Name="subscribed" Type="SByte" Nullable="false" />
         </EntityType>
         <EntityType Name="MapInfo">
           <Key>
@@ -744,6 +746,7 @@
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="NegevZooModel.Device">
               <MappingFragment StoreEntitySet="devices">
+                <ScalarProperty Name="subscribed" ColumnName="subscribed" />
                 <ScalarProperty Name="insidePark" ColumnName="insidePark" />
                 <ScalarProperty Name="lastPing" ColumnName="lastPing" />
                 <ScalarProperty Name="deviceId" ColumnName="deviceId" />

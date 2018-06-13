@@ -12,29 +12,6 @@ namespace NegevZoo.Controllers
 {
     public class NotificationController : ControllerBase
     {
-
-        /// <summary>
-        /// get all the devices.
-        /// </summary>
-        /// <returns>all the devices.</returns>
-        [HttpGet]
-        [Route("notification/all")]
-        public IEnumerable<Device> GetAllDevices()
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    return db.GetAllDevices();
-                }
-            }
-            catch (Exception Exp)
-            {
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
         /// <summary>
         /// update the device state.
         /// </summary>
@@ -59,11 +36,33 @@ namespace NegevZoo.Controllers
         }
 
         /// <summary>
-        /// remove the device from the notification list.
+        /// Subscribes a device to get noficiations.
         /// </summary>
-        /// <param name="deviceId">The device to delete.</param>
+        /// <param name="deviceId">The device's id.</param>
         [HttpGet]
-        [Route("notification/unsubscribe/{deviceId}")]
+        [Route("notification/{deviceId}/subscribe")]
+        public void SubscribeDevice(string deviceId)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    db.SubscribeDevice(deviceId);
+                }
+            }
+            catch (Exception Exp)
+            {
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Device Id: " + deviceId);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Unsubscribes a device from getting notifications.
+        /// </summary>
+        /// <param name="deviceId">The device id.</param>
+        [HttpGet]
+        [Route("notification/{deviceId}/unsubscribe")]
         public void UnsubscribeDevice(string deviceId)
         {
             try
