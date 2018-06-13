@@ -2793,6 +2793,10 @@ namespace BL
         /// <param name="deviceId">The device to delete.</param>
         public void UnsubscribeDevice(string deviceId)
         {
+            // Get the current time.
+            var israelTime  = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId).SingleOrDefault();
 
             // If no such device was found, throw error.
@@ -2803,7 +2807,8 @@ namespace BL
             // Otherwise, mark the device as unsubscribed.
             else
             {
-                device.subscribed = 0;
+                device.subscribed   = 0;
+                device.lastPing     = currentTime;
             }
         }
 
