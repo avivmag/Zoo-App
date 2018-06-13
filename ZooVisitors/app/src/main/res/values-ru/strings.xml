@@ -106,4 +106,11 @@
     <string name="cant_share_facebook">אי אפשר לשתף, פייסבוק לא מותקן</string>
 
     <string name="register"><u><b>Copyright</b></u></string>
+
+    <!--ERROR MESSAGES-->
+    <string name="error_no_schedule">אין אירועים בלוח השנה בשפה המבוקשת</string>
+    <string name="error_no_rec_events">אין אירועים היום בשפה המבוקשת</string>
+    <string name="error_no_about_us">לא קיים מידע אודותינו בשפה המבוקשת</string>
+    <string name="error_no_contact_infos">לא קיים מידע על דרכי יצירת קשר בשפה המבוקשת</string>
+    <string name="error_no_prices">לא קיים מידע על מחירים בשפה המבוקשת</string>
 </resources>

@@ -120,7 +120,6 @@ public class LoadingScreen extends BaseActivity {
         }
         else
             setLocale();
-
     }
 
 
