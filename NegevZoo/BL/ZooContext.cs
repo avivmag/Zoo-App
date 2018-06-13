@@ -2238,7 +2238,7 @@ namespace BL
             return Math.Abs(Math.Atan2(coords.FirstY - coords.SecondY,
                     coords.FirstX- coords.SecondX))
                     -
-                    Math.Abs(Math.Atan2((coords.FirstLatitude - coords.SecondLatitude) * getYLatitudeRatio(coords.FirstLatitude, coords.FirstX, coords.SecondLatitude, coords.SecondY),
+                    Math.Abs(Math.Atan2((coords.FirstLatitude - coords.SecondLatitude) * getYLatitudeRatio(coords.FirstLatitude, coords.FirstY, coords.SecondLatitude, coords.SecondY),
                             (coords.FirstLongitude - coords.SecondLongitude) * getXLongitudeRatio(coords.FirstLongitude, coords.FirstX, coords.SecondLongitude, coords.SecondX)));
         }
 
