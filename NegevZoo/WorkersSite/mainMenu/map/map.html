@@ -11,19 +11,19 @@
     
     <md-card-content layout="row" style="margin-right: 4%">
         <md-card-content layout="column" flex>
-            <ng-card-content layout="column">
+            <md-card-content layout="column">
                 <div style="margin-top: 7px" layout="row">
                     <div style="width: 200px">העלה מפה חדשה:</div>
                     <input type="file" file-model="mapPic" accept="image/*"/>
                 </div>
-            </ng-card-content>
+            </md-card-content>
             
             <div layout="column" layout-align="end end">
                 <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addMap(mapPic)">החלף מפה</md-button>
             </div>
         </md-card-content>
     </md-card-content>
-    </md-card>
+</md-card>
 
 <md-card ng-show="!isLoading">
     <md-card-content layout="row" style="margin-right: 4%">
@@ -44,6 +44,7 @@
             </md-card-content>
     </md-card-content>
 </md-card>
+
 <md-card ng-if="!isLoading && markers && markers.length > 0">
     <md-card-title>
         <md-card-title-text class="md-headline">אייקונים קיימים</md-card-title-text>
@@ -57,6 +58,84 @@
                     <md-button class="md-raised md-warn" ng-click="deleteMarker(marker.id)">מחק אייקון</md-button>
                 </div>
             </div>
+        </div>
+    </md-card-content>
+</md-card>
+
+<md-card ng-if="!isLoading">
+    <md-card-title layout="column">
+        <md-card-title-text class="md-headline">הכנת מפה חדשה על פי קואורדינטות</md-card-title-text>
+        <md-card-title-text class="md-subtitle" style="color: red">שים לב!! דרך ממשק זה מעלים קואורדינטות חדשות וכן נוצרת מפה חדשה! השתמש בזהירות!</md-card-title-text>
+    </md-card-title>
+
+    <md-card-content layout="row" style="margin-right: 4%">
+        <md-card-content layout="column" flex>
+            <md-card-content layout="column">
+                <div style="margin-top: 7px" layout="row">
+                    <div style="width: 250px">העלה קובץ קורדינטות חדש (csv):</div>
+                    <input type="file" file-model="coords" accept=".csv"/>
+                </div>
+            </md-card-content>
+            
+            <div layout="column" layout-align="end end">
+                <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="uploadCoordsCsv(coords)">החלף קובץ</md-button>
+            </div>
+        </md-card-content>
+    </md-card-content>
+
+    <md-card-content layout="row" style="margin-right: 4%">
+        <md-card-content layout="column" layout-align="center start" flex>
+            <div layout="row">
+                <md-input-container style="margin-left: 10px">
+                    <label>נקודת GPS ראשונה, longitude</label>
+                    <input style="min-width: 300px" ng-model="firstLongitude" required type="number">
+                </md-input-container>
+                <md-input-container>
+                    <label>נקודת GPS ראשונה, latitude</label>
+                    <input style="min-width: 300px" ng-model="firstLatitude" required type="number">
+                </md-input-container>
+            </div>
+            
+            <div layout="row">
+                <md-input-container style="margin-left: 10px">
+                    <label>נקודת מיקום ראשונה, X</label>
+                    <input style="min-width: 300px" ng-model="firstX" required type="number">
+                </md-input-container>
+                <md-input-container>
+                    <label>נקודת מיקום ראשונה, Y</label>
+                    <input style="min-width: 300px" ng-model="firstY" required type="number">
+                </md-input-container>
+            </div>
+
+            <div layout="row">
+                <md-input-container style="margin-left: 10px">
+                    <label>נקודת GPS שניה, longitude</label>
+                    <input style="min-width: 300px" ng-model="secondLongitude" required type="number">
+                </md-input-container>
+                <md-input-container>
+                    <label>נקודת GPS שניה, latitude</label>
+                    <input style="min-width: 300px" ng-model="secondLatitude" required type="number">
+                </md-input-container>
+            </div>
+
+            <div layout="row">
+                <md-input-container style="margin-left: 10px">
+                    <label>נקודת מיקום שניה, X</label>
+                    <input style="min-width: 300px" ng-model="secondX" required type="number">
+                </md-input-container>
+                <md-input-container>
+                    <label>נקודת מיקום שניה, Y</label>
+                    <input style="min-width: 300px" ng-model="secondY" required type="number">
+                </md-input-container>
+            </div>
+        </md-card-content>
+        
+        <div layout="column" layout-align="end end">
+            <md-button  style="background-color:darkviolet; min-width: 125px" 
+                        class="md-raised md-accent" 
+                        ng-click="uploadCoords(firstLongitude, firstLatitude, firstX, firstY, secondLongitude, secondLatitude, secondX, secondY)">
+                עדכן קורדינטות
+            </md-button>
         </div>
     </md-card-content>
 </md-card>

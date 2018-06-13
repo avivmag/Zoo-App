@@ -93,6 +93,30 @@
                     });    
             }
 
+            // Initialize the uploadCoordsCsv function.
+            $scope.uploadCoordsCsv                  = function(coords) {
+                // If no coords file was given, return.
+                if (!angular.isDefined(coords) || coords === null) {
+                    return;
+                }
+    
+                $scope.isLoading        = true;
+    
+                // Set the upload url.
+                var uploadUrl           = 'map/coords/upload';
+    
+                // Upload the image.
+                var fileUploadQuery     = fileUpload.uploadFileToUrl(coords, uploadUrl).then(
+                    (success)   => {
+                        $scope.isLoading            = false;
+                        utilitiesService.utilities.alert('קובץ הקורדינטות עודכן בהצלחה');
+                    },
+                    ()          => {
+                        $scope.isLoading            = false;
+                        utilitiesService.utilities.alert('אירעה שגיאה במהלך ההעלאה');
+                    });    
+            }
+
             // Initialize the delete marker function.
             $scope.deleteMarker             = function(markerId) {
                 $scope.isLoading        = true;
@@ -133,6 +157,37 @@
                             }
                         });
                     });
+            }
+
+            $scope.uploadCoords             = function(firstLongitude, firstLatitude, firstX, firstY, secondLongitude, secondLatitude, secondX, secondY) {
+                if (firstLongitude === undefined    ||
+                    firstLatitude === undefined     ||
+                    firstX === undefined            ||
+                    firstY === undefined            ||
+                    secondLongitude === undefined   ||
+                    secondLatitude === undefined    ||
+                    secondX === undefined           ||
+                    secondY === undefined)
+                    {
+                        utilitiesService.utilities.alert('אנא מלא את כל פרטי הקורדינטות');
+
+                        return;
+                    }
+
+                var mapCoords = {
+                    firstLongitude,
+                    firstLatitude,
+                    firstX,
+                    firstY,
+                    secondLongitude,
+                    secondLatitude,
+                    secondX,
+                    secondY
+                };
+
+                mapService.uploadCoords(mapCoords).then(
+                    () => utilitiesService.utilities.alert('הקורדינטות עודכנו בהצלחה!'),
+                    () => utilitiesService.utilities.alert('אירעה תקלה בעת עדכון הקורדינטות'));
             }
         }
 
