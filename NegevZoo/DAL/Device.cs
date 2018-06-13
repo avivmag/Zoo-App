@@ -18,5 +18,6 @@ namespace DAL
         public string deviceId { get; set; }
         public System.DateTime lastPing { get; set; }
         public sbyte insidePark { get; set; }
+        public sbyte subscribed { get; set; }
     }
 }

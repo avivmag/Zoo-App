@@ -32,54 +32,6 @@ namespace ZooTests
         }
         #endregion
 
-        #region GetAllDevices
-        [TestMethod]
-        public void GetAllDevices()
-        {
-            Assert.AreEqual(2, NotificationController.GetAllDevices().Count());
-        }
-        #endregion
-
-        #region updateDevice
-        [TestMethod]
-        public void UpdateDeviceStatusAddDeviceValidInput()
-        {
-            var devices = NotificationController.GetAllDevices();
-            Assert.AreEqual(2, devices.Count());
-            
-            NotificationController.UpdateDevice("12345", true);
-
-            devices = NotificationController.GetAllDevices();
-            Assert.AreEqual(3, devices.Count());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(HttpResponseException))]
-        public void UpdateDeviceStatusAddDeviceEmptyDeviceId()
-        {
-            var devices = NotificationController.GetAllDevices();
-            Assert.AreEqual(2, devices.Count());
-
-            NotificationController.UpdateDevice("", true);
-        }
-
-        [TestMethod]
-        public void UpdateDeviceStatusUpdateDeviceValidInput()
-        {
-            var devices = NotificationController.GetAllDevices();
-            Assert.AreEqual(2, devices.Count());
-
-            NotificationController.UpdateDevice("123", true);
-
-            devices = NotificationController.GetAllDevices();
-            Assert.AreEqual(DateTime.Now, devices.Single(d => d.deviceId == "123").lastPing);
-            Assert.AreEqual(2, devices.Count());
-
-        }
-
-
-        #endregion
-
         [TestMethod]
         public void SendRecEventNotification()
         {
