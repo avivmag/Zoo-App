@@ -1,13 +1,8 @@
 package com.zoovisitors.bl;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.util.Base64;
-import android.util.Log;
 import android.util.Pair;
 
 import com.google.gson.Gson;
@@ -32,7 +27,6 @@ import com.zoovisitors.dal.InternalStorage;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
