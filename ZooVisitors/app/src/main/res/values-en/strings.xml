@@ -114,4 +114,7 @@
     <!--ERROR MESSAGES-->
     <string name="error_no_schedule">There aren\'t any events in the schedule </string>
     <string name="error_no_rec_events">There aren\'t any events today</string>
+    <string name="error_no_about_us">About us information doesn\'t exists</string>
+    <string name="error_no_contact_infos">Contact information doesn\'t exists</string>
+    <string name="error_no_prices">Prices information doesn\'t exists</string>
 </resources>

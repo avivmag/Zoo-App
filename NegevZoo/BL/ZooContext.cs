@@ -2162,22 +2162,22 @@ namespace BL
         /// <param name="point2Longitude"> This variable represents the longitude of a point in the map</param>
         /// <param name="point2XLocation"> This variable represents the location of the longitude on the map picture</param>
         /// <param name="point2YLocation"> This variable represents the location of the latitude on the map picture</param>
-        public void InitMapSettings(double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
+        public void InitMapSettings(MapCoords coords)
         {
             List<LocationMap> locations = ExtractLocationsFromCSVFile(Properties.Settings.Default.LocationFilePath);
             //File.Delete(Properties.Settings.Default.LocationFilePath);
 
-            double alpha = getAlpha(point1Latitude, point1Longitude, point1XLocation, point1YLocation, point2Latitude, point2Longitude, point2XLocation, point2YLocation);
+            double alpha = getAlpha(coords);
             
-            double xLongitudeRatio  = getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation);
-            double yLatitudeRatio   = getYLatitudeRatio(point1Latitude, point1YLocation, point2Latitude, point2YLocation);
+            double xLongitudeRatio  = getXLongitudeRatio(coords.FirstLongitude, coords.FirstX, coords.SecondLongitude, coords.SecondX);
+            double yLatitudeRatio   = getYLatitudeRatio(coords.FirstLatitude, coords.FirstY, coords.SecondLatitude, coords.SecondY);
             double sinAlpha         = Math.Sin(alpha);
             double cosAlpha         = Math.Cos(alpha);
             double minLatitude      = locations.Select(location => location.Latitude).Min();
             double maxLatitude      = locations.Select(location => location.Latitude).Max();
             double minLongitude     = locations.Select(location => location.Longitude).Min();
             double maxLongitude     = locations.Select(location => location.Longitude).Max();
-            PointMap[] points       = getPoints(locations, point1Latitude, point1Longitude, point1XLocation, point1YLocation, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
+            PointMap[] points       = getPoints(locations, coords.FirstLatitude, coords.FirstLongitude, coords.FirstX, coords.FirstY, cosAlpha, sinAlpha, xLongitudeRatio, yLatitudeRatio);
             var routesToAdd         = new List<Route>();
 
             // store the routes
@@ -2218,10 +2218,10 @@ namespace BL
 
             mapInfos.Add(new MapInfo
             {
-                zooLocationLongitude    = point1Longitude,
-                zooLocationLatitude     = point1Latitude,
-                zooPointX               = point1XLocation,
-                zooPointY               = point1YLocation,
+                zooLocationLongitude    = coords.FirstLongitude,
+                zooLocationLatitude     = coords.FirstLatitude,
+                zooPointX               = coords.FirstX,
+                zooPointY               = coords.FirstY,
                 xLongitudeRatio         = xLongitudeRatio,
                 yLatitudeRatio          = yLatitudeRatio,
                 sinAlpha                = sinAlpha,
@@ -2233,13 +2233,13 @@ namespace BL
             });
         }
 
-        private double getAlpha(double point1Latitude, double point1Longitude, int point1XLocation, int point1YLocation, double point2Latitude, double point2Longitude, int point2XLocation, int point2YLocation)
+        private double getAlpha(MapCoords coords)
         {
-            return Math.Abs(Math.Atan2(point1YLocation - point2YLocation,
-                    point1XLocation - point2XLocation))
+            return Math.Abs(Math.Atan2(coords.FirstY - coords.SecondY,
+                    coords.FirstX- coords.SecondX))
                     -
-                    Math.Abs(Math.Atan2((point1Latitude - point2Latitude) * getYLatitudeRatio(point1Latitude, point1YLocation, point2Latitude, point2YLocation),
-                            (point1Longitude - point2Longitude) * getXLongitudeRatio(point1Longitude, point1XLocation, point2Longitude, point2XLocation)));
+                    Math.Abs(Math.Atan2((coords.FirstLatitude - coords.SecondLatitude) * getYLatitudeRatio(coords.FirstLatitude, coords.FirstY, coords.SecondLatitude, coords.SecondY),
+                            (coords.FirstLongitude - coords.SecondLongitude) * getXLongitudeRatio(coords.FirstLongitude, coords.FirstX, coords.SecondLongitude, coords.SecondX)));
         }
 
         private double getXLongitudeRatio(double point1Longitude, int point1XLocation, double point2Longitude, int point2XLocation)
@@ -2719,10 +2719,10 @@ namespace BL
         }
 
         /// <summary>
-        /// updated the status of the given device.
+        /// Updates the status of the given device.
         /// </summary>
         /// <param name="deviceId">The device to update.</param>
-        /// <param name="insidePark"> The location status of the device</param>
+        /// <param name="insidePark">The location status of the device.</param>
         public void UpdateDevice(string deviceId, bool insidePark)
         {
             //validate the attribues
@@ -2732,25 +2732,55 @@ namespace BL
                 throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
             }
 
-            var device = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+            var device          = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
 
             // Get the current time.
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
+            if (device == null)
+            {
+                throw new ArgumentNullException("No device with such device id.");
+            }
+            else
+            {
+                device.lastPing     = currentTime;
+                device.insidePark   = (sbyte)(insidePark ? 1 : 0);
+            } 
+        }
+
+        /// <summary>
+        /// Subscribes a device to recieve notifications.
+        /// </summary>
+        /// <param name="deviceId"></param>
+        public void SubscribeDevice(string deviceId)
+        {
+            //validate the attribues
+            //1. check the device id.
+            if (String.IsNullOrWhiteSpace(deviceId))
+            {
+                throw new ArgumentException("Wrong input. Device Id empty or white spaces.");
+            }
+
+            var device      = zooDB.GetAllDevices().SingleOrDefault(d => d.deviceId == deviceId);
+
+            // Get the current time.
+            var israelTime  = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
+
             //check if the device already exists
             if (device != null)
             {
                 device.lastPing     = currentTime;
-                device.insidePark   = (sbyte)(insidePark ? 1 : 0);
+                device.subscribed   = 1;
             }
             else
             {
                 device = new Device
                 {
-                    deviceId = deviceId,
-                    insidePark = (sbyte)(insidePark? 1 : 0),
-                    lastPing = currentTime
+                    deviceId    = deviceId,
+                    lastPing    = currentTime,
+                    subscribed  = 1
                 };
 
                 zooDB.GetAllDevices().Add(device);
@@ -2763,14 +2793,23 @@ namespace BL
         /// <param name="deviceId">The device to delete.</param>
         public void UnsubscribeDevice(string deviceId)
         {
-            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId);
+            // Get the current time.
+            var israelTime  = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            var currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            if (device == null)
+            var device = zooDB.GetAllDevices().Where(d => d.deviceId == deviceId).SingleOrDefault();
+
+            // If no such device was found, throw error.
+            if (device == default(Device))
             {
                 throw new ArgumentException("Wrong input. There is no such device with such id");
             }
-
-            zooDB.GetAllDevices().RemoveRange(device);
+            // Otherwise, mark the device as unsubscribed.
+            else
+            {
+                device.subscribed   = 0;
+                device.lastPing     = currentTime;
+            }
         }
 
         /// <summary>
@@ -2780,7 +2819,7 @@ namespace BL
         /// <param name="body">The body of the notification</param>
         public void SendNotificationsAllDevices(string title, string body)
         {
-            var devices = zooDB.GetAllDevices().ToList();
+            var devices = zooDB.GetAllDevices().Where(d => d.subscribed == 1).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
@@ -2796,7 +2835,7 @@ namespace BL
             var israelTime      = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
             var currentTime     = TimeZoneInfo.ConvertTime(DateTime.Now, israelTime);
 
-            var devices = zooDB.GetAllDevices().ToList().Where(d => d.lastPing.AddMinutes(30) > currentTime).ToList();
+            var devices = zooDB.GetAllDevices().ToList().Where(d => (d.subscribed == 1) && (d.lastPing.AddMinutes(30) > currentTime)).ToList();
 
             Task.Factory.StartNew(() => NotifyAsync(title, body, devices));
         }
@@ -3203,6 +3242,27 @@ namespace BL
             postedFile.SaveAs(filePath);
 
             zooDB.GetGeneralInfo().First().mapBackgroundUrl = path.Substring(2) + fileName;
+        }
+
+        /// <summary>
+        /// Upload a new coords file.
+        /// </summary>
+        /// <param name="httpRequest">The request which holds the file.</param>
+        public void CoordsUpload(HttpRequest httpRequest)
+        {
+
+            var postedFile      = httpRequest.Files[0];
+
+            var fileExtension   = postedFile.FileName.Split('.').Last();
+
+            if (fileExtension != "csv")
+            {
+                throw new ArgumentException("Coordinates file provided was not of type .csv");
+            }
+
+            var filePath        = Properties.Settings.Default.LocationFilePath;
+
+            postedFile.SaveAs(filePath);
         }
 
         public object GetAllInfo(int language)

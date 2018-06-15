@@ -13,7 +13,7 @@ namespace NegevZoo.Controllers
 {
     public class MapController : ControllerBase
     {
-        #region Map
+        #region File Upload
 
         /// <summary>
         /// Uploads a new map image.
@@ -42,6 +42,45 @@ namespace NegevZoo.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the map parameters.
+        /// </summary>
+        /// <param name="coords">The coords to update the map by.</param>
+        [HttpPost]
+        [Route("map/coords/upload")]
+        public void UploadCoords(MapCoords coords)
+        {
+            try
+            {
+                using (var db = GetContext())
+                {
+                    if (ValidateSessionId(db))
+                    {
+                        db.InitMapSettings(coords);
+                    }
+                    else
+                    {
+                        throw new AuthenticationException("Couldn't validate the session");
+                    }
+                }
+            }
+            catch (Exception Exp)
+            {
+                string mapSettingsInput =
+                    "point1Longitude: " + coords.FirstLongitude + ", " +
+                    "point1Latitude: " + coords.FirstLatitude + ", " +
+                    "point1XLocation: " + coords.FirstX + ", " +
+                    "point1YLocation: " + coords.FirstY + ", " +
+                    "point2Longitude: " + coords.SecondLongitude + ", " +
+                    "point2Latitude: " + coords.SecondLatitude + ", " +
+                    "point2XLocation: " + coords.SecondX + ", " +
+                    "point2YLocation: " + coords.SecondY;
+
+                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Map settings: " + mapSettingsInput);
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            }
+        }
+
         #endregion
 
         #region Map Settings
@@ -65,52 +104,6 @@ namespace NegevZoo.Controllers
             catch (Exception Exp)
             {
                 Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace);
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// This method intitiates the map with the given parameters. 
-        /// Note: the values inside the CSV file must be seperated with ","
-        /// </summary>
-        /// <param name="pointsFilePath"> This variables represents the path of the CSV file that contains the points of the map.</param>
-        /// <param name="longitude"> This variable represents the longitude of a point in the map</param>
-        /// <param name="latitude">This variable represents the latitude of a point in the map</param>
-        /// <param name="xLocation"> This variable represents the location of the longitude on the map picture</param>
-        /// <param name="yLocation"> This variable represents the location of the latitude on the map picture</param>
-        [HttpGet]
-        [Route("map/initvars/{point1Longitude}/{point1Latitude}/{point1XLocation}/{point1YLocation}/{point2Longitude}/{point2Latitude}/{point2XLocation}/{point2YLocation}")]
-        public IHttpActionResult InitMapSettings(double point1Longitude, double point1Latitude, int point1XLocation, int point1YLocation, double point2Longitude, double point2Latitude, int point2XLocation, int point2YLocation)
-        {
-            try
-            {
-                using (var db = GetContext())
-                {
-                    if (ValidateSessionId(db))
-                    {
-                        db.InitMapSettings(point1Longitude, point1Latitude, point1XLocation, point1YLocation, point2Longitude, point2Latitude, point2XLocation, point2YLocation);
-
-                        return Ok();
-                    }
-                    else
-                    {
-                        throw new AuthenticationException("Couldn't validate the session");
-                    }
-                }
-            }
-            catch (Exception Exp)
-            {
-                string mapSettingsInput =
-                    "point1Longitude: " + point1Longitude + ", " +
-                    "point1Latitude: " + point1Latitude + ", " +
-                    "point1XLocation: " + point1XLocation + ", " +
-                    "point1YLocation: " + point1YLocation + ", " +
-                    "point2Longitude: " + point2Longitude + ", " +
-                    "point2Latitude: " + point2Latitude + ", " +
-                    "point2XLocation: " + point2XLocation + ", " +
-                    "point2YLocation: " + point2YLocation;
-
-                Logger.GetInstance(isTesting).WriteLine(Exp.Message, Exp.StackTrace, "Map settings: " + mapSettingsInput);
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             }
         }

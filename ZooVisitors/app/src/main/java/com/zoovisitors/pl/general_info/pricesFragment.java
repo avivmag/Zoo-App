@@ -3,6 +3,7 @@ package com.zoovisitors.pl.general_info;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Display;
@@ -26,6 +27,8 @@ import com.zoovisitors.pl.customViews.TextViewTitle;
  */
 public class pricesFragment extends Fragment {
 
+    private TableLayout pricesTable;
+
     public pricesFragment() {
         // Required empty public constructor
     }
@@ -40,7 +43,7 @@ public class pricesFragment extends Fragment {
             public void onSuccess(Object response) {
                 Price[] prices = (Price[]) response;
 
-                TableLayout pricesTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
+                pricesTable = rootView.findViewById(R.id.info_table_table);
 
                 int screenSize = GlobalVariables.appCompatActivity.getResources().getDisplayMetrics().widthPixels;
                 int spaces = 20;
@@ -59,7 +62,7 @@ public class pricesFragment extends Fragment {
                 }
 
 
-                if (prices != null) {
+                if (prices != null && prices.length > 0) {
                     //population title
                     TextViewTitle popTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
                     popTitle.setText(getContext().getResources().getString(R.string.population));
@@ -118,16 +121,32 @@ public class pricesFragment extends Fragment {
                         pricesTable.addView(rowLayout);
                     }
                 }
+                else {
+                    ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
+                    addErrorMessage();
+                }
             }
 
             @Override
             public void onFailure(Object response) {
-                TextView errorText = (TextView) rootView.findViewById(R.id.error_info_text);
-                errorText.setText((String) response);
+                ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
+                addErrorMessage();
             }
 
 
         });
         return rootView;
+    }
+
+    private void addErrorMessage() {
+        pricesTable.removeAllViews();
+        TextView error = new TextView(GlobalVariables.appCompatActivity);
+        error.setVisibility(View.VISIBLE);
+        error.setGravity(Gravity.CENTER_HORIZONTAL);
+        error.setTextColor(getResources().getColor(R.color.black));
+        error.setTextSize(20);
+        error.setText(R.string.error_no_prices);
+
+        pricesTable.addView(error);
     }
 }
