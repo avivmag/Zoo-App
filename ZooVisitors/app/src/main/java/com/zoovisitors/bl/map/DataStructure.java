@@ -1,13 +1,13 @@
 package com.zoovisitors.bl.map;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
+import com.zoovisitors.pl.map.MapActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +42,7 @@ public class DataStructure {
      * max threashold for update, if last update was before that time, then we need to
      * reinitialize the current location
      */
-    private final long MAX_UPDATE_THRESHOLD = 7 * 1000;
+    private long maxUpdateThreshold = 7 * 1000;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
@@ -101,36 +101,9 @@ public class DataStructure {
             }
         }
 
-//        // TODO: only for testing comment this
-//        Map.Entry<Point, Set<Point>> lowest = null, biggest = null;
-//        int lowest_counter = 0, biggest_counter = 0;
-//        int low = 10000,big = 0;
-//        for (Map.Entry<Point, Set<Point>> entry:
-//             routes.entrySet()) {
-//            if(entry.getValue().size() > big)
-//            {
-//                big = entry.getValue().size();
-//                biggest = entry;
-//                biggest_counter = preservation0;
-//            } else if(entry.getValue().size() == big) {
-//                biggest_counter++;
-//            }
-//            if(entry.getValue().size() < low)
-//            {
-//                low = entry.getValue().size();
-//                lowest = entry;
-//                lowest_counter = preservation0;
-//            } else if(entry.getValue().size() == low) {
-//                lowest_counter++;
-//            }
-//            if(entry.getValue().size() == preservation1) {
-//                Log.e("AVIV", "Point " + entry.getKey());
-//            }
-//        }
-//        Log.e("AVIV", "Biggest: " + biggest);
-//        Log.e("AVIV", "Smallest: " + lowest);
-//        Log.e("AVIV", "Biggest: " + biggest_counter);
-//        Log.e("AVIV", "Lowest_counter: " + lowest_counter);
+        if(MapActivity.IS_IN_DEMO_MODE) {
+            maxUpdateThreshold = 0;
+        }
     }
 
     private long lastUpdate = 0;
@@ -139,7 +112,7 @@ public class DataStructure {
 
         Point ans;
         // new update is needed
-        if (System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
+        if (System.currentTimeMillis() - lastUpdate > maxUpdateThreshold) {
             ans = getOnMapPositionFirstTime(point);
         } else {
             ans = getOnMapPositionContinues(point);

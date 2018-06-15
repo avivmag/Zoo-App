@@ -2,15 +2,11 @@ package com.zoovisitors.pl.map;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -19,13 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.MapResult;
-import com.zoovisitors.backend.callbacks.GetObjectInterface;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.bl.map.DataStructure;
@@ -39,6 +35,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    public static final boolean IS_IN_DEMO_MODE = false;
+    private Location demoLocation;
+    private Runnable demoExplorationRunnable;
+    private Thread demoExplorationThread;
     public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 230;
     private MapView mapView;
     private MapResult mapData;
@@ -77,7 +77,6 @@ public class MapActivity extends ProviderBasedActivity
         getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
         getToKnowMeTv = findViewById(R.id.map_get_to_know_me_textview);
         getToKnowMeIb = findViewById(R.id.map_get_to_know_me_imagebutton);
-        getToKnowMeIb.setBackgroundColor(Color.TRANSPARENT);
         getToKnowMeAnimationDeltaPx = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 GET_TO_KNOW_ME_ANIMATION_DELTA_DP,
@@ -124,6 +123,31 @@ public class MapActivity extends ProviderBasedActivity
                 2*OPEN_DOORS_ANIMATION_DURATION);
 
         mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
+
+        if(IS_IN_DEMO_MODE) {
+            findViewById(R.id.demo_layout).setVisibility(View.VISIBLE);
+            demoLocation = new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo().getZooLocationLongitude());
+            onLocationChangedDemo(demoLocation);
+
+            demoExplorationRunnable =  () -> {
+                final double[] lastDemoLocationLatitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
+                final double[] lastDemoLocationLongitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
+                while (explorationState == ExplorationState.ON) {
+                    Location nextDemoLocation = new Location (
+                            demoLocation.getLatitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLatitudeChange[0]) / 2,
+                            demoLocation.getLongitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLongitudeChange[0]) / 2);
+                    runOnUiThread(() -> {
+                        if(onLocationChangedDemo(nextDemoLocation)) {
+                            lastDemoLocationLatitudeChange[0] = nextDemoLocation.getLatitude() - demoLocation.getLatitude();
+                            lastDemoLocationLongitudeChange[0] = nextDemoLocation.getLongitude() - demoLocation.getLongitude();
+                            demoLocation = nextDemoLocation;
+                        }
+                    });
+                    try { Thread.sleep(300); } catch (InterruptedException e) { }
+                }
+                demoExplorationThread = null;
+            };
+        }
     }
 
     @Override
@@ -145,8 +169,7 @@ public class MapActivity extends ProviderBasedActivity
 
     @Override
     public void onLocationChanged(android.location.Location location) {
-        // TODO: Tell the user its accuracy is bad
-        if (location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
+        if (!IS_IN_DEMO_MODE && location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
             synchronized (movementInProgress) {
                 if (movementInProgress.get())
                     return;
@@ -161,11 +184,9 @@ public class MapActivity extends ProviderBasedActivity
                 return;
             }
 
-            Point calibratedPointAndClosestPointFromPoints;
             Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location
                     .getLongitude()));
-            calibratedPointAndClosestPointFromPoints = mapDS
-                    .getOnMapPosition(p);
+            Point calibratedPointAndClosestPointFromPoints = mapDS.getOnMapPosition(p);
             if (calibratedPointAndClosestPointFromPoints == null) {
                 movementInProgress.set(false);
                 return;
@@ -175,7 +196,28 @@ public class MapActivity extends ProviderBasedActivity
             updateGetToKnowMe();
 
             movementInProgress.set(false);
+        } else {
+            // TODO: Think of a better way to show this or at least support all 4 languages
+            Toast.makeText(this, "Bad gps signal", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     *
+     * @param location
+     * @return true if the given location was converted to point and shown on the map
+     */
+    private boolean onLocationChangedDemo(Location location) {
+        Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location
+                .getLongitude()));
+        Point calibratedPointAndClosestPointFromPoints = mapDS.getOnMapPosition(p);
+        if (calibratedPointAndClosestPointFromPoints == null) {
+            return false;
+        }
+
+        updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
+        updateGetToKnowMe();
+        return true;
     }
 
     private void updateVisitorPosition(Point calibratedPointAndClosestPointFromPoints) {
@@ -366,5 +408,60 @@ public class MapActivity extends ProviderBasedActivity
             mapActivityLayout.startAnimation(outSide ? animationDoors : animationLogo);
             logo.setVisibility(outSide ? View.INVISIBLE : View.VISIBLE);
         }, OPEN_DOORS_ANIMATION_DURATION);
+    }
+
+    private double DEMO_MOVEMENT = 0.00007;
+    private enum ExplorationState {ON, OFF};
+    private ExplorationState explorationState = ExplorationState.OFF;
+    public void onDemoClick(View view) {
+        double demoLocationLatitude = demoLocation.getLatitude();
+        double demoLocationLongitude = demoLocation.getLongitude();
+        switch (view.getId()) {
+            case R.id.demo_left_button:
+                explorationModeOff();
+                demoLocationLatitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
+                demoLocationLongitude -= DEMO_MOVEMENT;
+                break;
+            case R.id.demo_top_button:
+                explorationModeOff();
+                demoLocationLatitude += DEMO_MOVEMENT;
+                demoLocationLongitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
+                break;
+            case R.id.demo_right_button:
+                explorationModeOff();
+                demoLocationLatitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
+                demoLocationLongitude += DEMO_MOVEMENT;
+                break;
+            case R.id.demo_bottom_button:
+                explorationModeOff();
+                demoLocationLatitude -= DEMO_MOVEMENT;
+                demoLocationLongitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
+                break;
+            case R.id.demo_explore_button:
+                if(explorationState == ExplorationState.OFF) {
+                    explorationModeOn();
+                } else {
+                    explorationModeOff();
+                }
+                break;
+        }
+        Location nextDemoLocation = new Location(demoLocationLatitude, demoLocationLongitude);
+        if(onLocationChangedDemo(nextDemoLocation)) {
+            demoLocation = nextDemoLocation;
+        }
+    }
+
+    private void explorationModeOn() {
+        if(demoExplorationThread == null || !demoExplorationThread.isAlive()) {
+            explorationState = ExplorationState.ON;
+            demoExplorationThread = new Thread(demoExplorationRunnable);
+            demoExplorationThread.start();
+            ((ImageButton) findViewById(R.id.demo_explore_button)).setImageResource(R.mipmap.round_explore_black_24);
+        }
+    }
+
+    private void explorationModeOff() {
+        explorationState = ExplorationState.OFF;
+        ((ImageButton) findViewById(R.id.demo_explore_button)).setImageResource(R.mipmap.round_explore_off_black_24);
     }
 }
