@@ -39,8 +39,8 @@
                 <md-card-content layout="column">
                     <md-input-container>
                         <label ng-show="openingHour.isNew">הכנס יום</label>
-                        <md-select ng-model="openingHour.day">
-                            <md-option ng-repeat="day in days" ng-value="day.id">{{ day.format }}</md-option>
+                        <md-select name="day-select" ng-model="openingHour.day">
+                            <md-option name="{{ 'day' + $index }}" ng-repeat="day in days" ng-value="day.id">{{ day.format }}</md-option>
                         </md-select>
                     </md-input-container>
 
@@ -81,7 +81,7 @@
                     </div>
                 </md-card-content>
                 
-                <md-button class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">שמור שעת פתיחה חדשה</md-button>
+                <md-button name="save" class="md-primary md-raised" ng-if="openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">שמור שעת פתיחה חדשה</md-button>
                 <md-button class="md-primary md-raised" ng-if="!openingHour.isNew" ng-click="addOpeningHour(openingHour, openingHours)">עדכון שעת פתיחה</md-button>
             </div>
         </md-card-content>

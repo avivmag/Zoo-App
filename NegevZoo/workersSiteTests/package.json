@@ -1,0 +1,14 @@
+{
+  "name": "workerssitetests",
+  "version": "1.0.0",
+  "description": "\"A test package for negev zoo workers site\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "runTest"
+  },
+  "author": "OGGA",
+  "license": "MIT",
+  "dependencies": {
+    "selenium-webdriver": "^3.6"
+  }
+}
