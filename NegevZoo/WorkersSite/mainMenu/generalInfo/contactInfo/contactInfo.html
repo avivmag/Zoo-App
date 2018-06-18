@@ -18,16 +18,16 @@
 
         <md-card-content layout="column">
             <label>הכנס הערה לדף "צור קשר"</label>
-            <textarea rows="8" type="text" ng-model="contactInfoNote.contactInfoNote"></textarea>
+            <textarea name="contact-info-note" rows="8" type="text" ng-model="contactInfoNote.contactInfoNote"></textarea>
         </md-card-content>
 
         <md-card-content layout="column" layout-align="start end">
-            <md-button class="md-raised md-primary" ng-click="addContactInfoNote(contactInfoNote.contactInfoNote, language.id)">שמור הערה</md-button>
+            <md-button name="save-note" class="md-raised md-primary" ng-click="addContactInfoNote(contactInfoNote.contactInfoNote, language.id)">שמור הערה</md-button>
         </md-card-content>
 
         <md-card-content ng-if="contactInfos && contactInfos.length > 0">
             <div style="margin-right: 10%" ng-repeat="contactInfo in contactInfos | orderBy:'id'" layout="row" layout-align="start center">
-                <md-button style="margin-bottom: 25px" ng-if="!contactInfo.isNew" ng-click="confirmDeleteContactInfo($event, contactInfo, contactInfos)" >
+                <md-button name="{{ $last ? 'delete-last' : '' }}" style="margin-bottom: 25px" ng-if="!contactInfo.isNew" ng-click="confirmDeleteContactInfo($event, contactInfo, contactInfos)" >
                     <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
                 </md-button>
                 
@@ -38,16 +38,16 @@
                 <md-card-content layout="row">
                     <md-input-container>
                         <label ng-show="contactInfo.isNew">הכנס דרך התקשרות</label>
-                        <input style="width: 200px" ng-model="contactInfo.via" required type="text">
+                        <input name="{{ $index === 0 ? 'via' : '' }}" style="width: 200px" ng-model="contactInfo.via" required type="text">
                     </md-input-container>
 
                     <md-input-container>
                         <label ng-show="contactInfo.isNew">הכנס כתובת</label>
-                        <input style="width: 400px" ng-model="contactInfo.address" required type="text">
+                        <input name="{{ $index === 0 ? 'address' : '' }}" style="width: 400px" ng-model="contactInfo.address" required type="text">
                     </md-input-container>
                 </md-card-content>
                 
-                <md-button class="md-primary md-raised" ng-if="contactInfo.isNew" ng-click="addContactInfo(contactInfo)">שמור דרך יצירת קשר</md-button>
+                <md-button name="save" class="md-primary md-raised" ng-if="contactInfo.isNew" ng-click="addContactInfo(contactInfo)">שמור דרך יצירת קשר</md-button>
                 <md-button class="md-primary md-raised" ng-if="!contactInfo.isNew" ng-click="addContactInfo(contactInfo)">עדכון דרך יצירת קשר</md-button>
             </div>
         </md-card-content>
