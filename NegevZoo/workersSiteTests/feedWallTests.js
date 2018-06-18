@@ -8,9 +8,11 @@ var driver      = new webdriver.Builder()
 
 let testResults = [];
 
-driver.get('http://negevzoo.sytes.net:50555');
+driver.get('http://negevzoo.sytes.net:8080');
 
-startSuccessLogin();
+driver.sleep(1000).then(function () {
+    startSuccessLogin();
+});
 
 function startTests() {
     startFailFeedWallTitle();
