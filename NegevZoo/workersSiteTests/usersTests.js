@@ -8,7 +8,7 @@ var driver = new webdriver.Builder()
 
 let testResults = [];
 
-driver.get('http://localhost:4646');
+driver.get('http://negevzoo.sytes.net:50555');
 
 startSuccessLogin();
 
