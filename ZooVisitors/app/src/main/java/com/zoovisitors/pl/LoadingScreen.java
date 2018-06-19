@@ -29,10 +29,13 @@ public class LoadingScreen extends BaseActivity {
     private ProgressBarCustomView pb;
     private Map<Integer, String> languageMap;
 
+    private boolean firstRun;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        GlobalVariables.setToken();
+        firstRun = true;
         GlobalVariables.appCompatActivity = this;
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //hiding the action bar in this activity
@@ -61,6 +64,7 @@ public class LoadingScreen extends BaseActivity {
         GlobalVariables.bl.getAllDataInit(new UpdateInterface() {
             @Override
             public void onSuccess(Object response) {
+                firstRun = false;
                 goToMain();
             }
 
@@ -130,5 +134,12 @@ public class LoadingScreen extends BaseActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
+    }
+
+    @Override
+    protected void onResume() {
+        if (!firstRun)
+            goToMain();
+        super.onResume();
     }
 }

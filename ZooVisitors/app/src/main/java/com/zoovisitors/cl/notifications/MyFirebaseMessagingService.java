@@ -75,7 +75,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 builder = new NotificationCompat.Builder(this, id);
 
                 intent = new Intent(this, LoadingScreen.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 builder.setContentTitle(remoteMessage.getData().get("Title"))  // required
@@ -91,7 +90,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 builder = new NotificationCompat.Builder(this);
 
                 intent = new Intent(this, LoadingScreen.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 builder.setContentTitle(remoteMessage.getData().get("Title"))                           // required
