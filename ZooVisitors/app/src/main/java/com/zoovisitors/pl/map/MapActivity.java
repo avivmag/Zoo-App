@@ -1,7 +1,6 @@
 package com.zoovisitors.pl.map;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -28,14 +27,13 @@ import com.zoovisitors.bl.map.DataStructure;
 import com.zoovisitors.cl.gps.ProviderBasedActivity;
 import com.zoovisitors.pl.personalStories.PersonalPopUp;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    public static final boolean IS_IN_DEMO_MODE = false;
+    private Boolean navigatingOutOfActivity = false;
+
     private Location demoLocation;
     private Runnable demoExplorationRunnable;
     private Thread demoExplorationThread;
@@ -44,7 +42,6 @@ public class MapActivity extends ProviderBasedActivity
     private MapResult mapData;
     private DataStructure mapDS;
     private static final int MAX_ALLOWED_ACCURACY = 7;
-    private final double MAX_MARGIN = 10 * 0.0111111;
     private RelativeLayout mapActivityLayout;
     private RelativeLayout getToKnowMeLayout;
     private int initialGetToKnowMeLayoutTop;
@@ -55,7 +52,7 @@ public class MapActivity extends ProviderBasedActivity
     private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
     private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
-    private final AtomicBoolean movementInProgress = new AtomicBoolean(false);
+    private final AtomicBoolean onLocationInProgress = new AtomicBoolean(false);
     private enum GpsState {Off, On, Focused};
     private GpsState gpsState = GpsState.Off;
     private ImageButton gpsButton;
@@ -93,6 +90,8 @@ public class MapActivity extends ProviderBasedActivity
         rightDoor = findViewById(R.id.map_right_door);
 
         mapData = GlobalVariables.bl.getMapResult();
+
+        Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
                 new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
                         .getZooLocationLongitude()),
@@ -104,10 +103,11 @@ public class MapActivity extends ProviderBasedActivity
                 mapData.getMapInfo().getMinLatitude(),
                 mapData.getMapInfo().getMaxLatitude(),
                 mapData.getMapInfo().getMinLongitude(),
-                mapData.getMapInfo().getMaxLongitude()
+                mapData.getMapInfo().getMaxLongitude(),
+                enclosures,
+                GlobalVariables.bl.getPersonalStories()
         );
 
-        Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
         // Note: be aware that cancelFocus should be called only when touching the map view and
         // not other views in activity_map
         mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
@@ -117,14 +117,17 @@ public class MapActivity extends ProviderBasedActivity
                 () -> { cancelFocus(); },
                 // called when someone clicks on enclosure
                 () -> {
+                    synchronized (navigatingOutOfActivity) {
+                        if(navigatingOutOfActivity)
+                            return;
+                        navigatingOutOfActivity = true;
+                    }
                     cancelFocus();
                     moveDoors(false);
                 },
                 2*OPEN_DOORS_ANIMATION_DURATION);
 
-        mapDS.addAnimalStoriesToPoints(enclosures, GlobalVariables.bl.getPersonalStories());
-
-        if(IS_IN_DEMO_MODE) {
+        if(GlobalVariables.DEBUG) {
             findViewById(R.id.demo_layout).setVisibility(View.VISIBLE);
             demoLocation = new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo().getZooLocationLongitude());
             onLocationChangedDemo(demoLocation);
@@ -160,6 +163,7 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     protected void onResume() {
         super.onResume();
+        navigatingOutOfActivity = false;
 
         if(!clickedGetToKnowMe) {
             moveDoors(true);
@@ -169,33 +173,30 @@ public class MapActivity extends ProviderBasedActivity
 
     @Override
     public void onLocationChanged(android.location.Location location) {
-        if (!IS_IN_DEMO_MODE && location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
-            synchronized (movementInProgress) {
-                if (movementInProgress.get())
+        if (!GlobalVariables.DEBUG && location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
+            synchronized (onLocationInProgress) {
+                if (onLocationInProgress.get())
                     return;
-                movementInProgress.set(true);
+                onLocationInProgress.set(true);
             }
 
-            if (location.getLatitude() < mapData.getMapInfo().getMinLatitude() - MAX_MARGIN ||
-                    location.getLatitude() > mapData.getMapInfo().getMaxLatitude() + MAX_MARGIN ||
-                    location.getLongitude() < mapData.getMapInfo().getMinLongitude() - MAX_MARGIN ||
-                    location.getLongitude() > mapData.getMapInfo().getMaxLongitude() + MAX_MARGIN) {
-                movementInProgress.set(false);
+            Location backendLocation = new Location(location.getLatitude(), location
+                    .getLongitude());
+            if (!mapDS.IsInPark(backendLocation)) {
+                onLocationInProgress.set(false);
                 return;
             }
 
-            Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location
-                    .getLongitude()));
-            Point calibratedPointAndClosestPointFromPoints = mapDS.getOnMapPosition(p);
-            if (calibratedPointAndClosestPointFromPoints == null) {
-                movementInProgress.set(false);
+            Point pointOnRoad = mapDS.getOnMapPosition(backendLocation);
+            if (pointOnRoad == null) {
+                onLocationInProgress.set(false);
                 return;
             }
 
-            updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
+            updateVisitorPosition(pointOnRoad);
             updateGetToKnowMe();
 
-            movementInProgress.set(false);
+            onLocationInProgress.set(false);
         } else {
             // TODO: Think of a better way to show this or at least support all 4 languages
             Toast.makeText(this, "Bad gps signal", Toast.LENGTH_LONG).show();
@@ -208,14 +209,13 @@ public class MapActivity extends ProviderBasedActivity
      * @return true if the given location was converted to point and shown on the map
      */
     private boolean onLocationChangedDemo(Location location) {
-        Point p = mapDS.locationToPoint(new Location(location.getLatitude(), location
-                .getLongitude()));
-        Point calibratedPointAndClosestPointFromPoints = mapDS.getOnMapPosition(p);
-        if (calibratedPointAndClosestPointFromPoints == null) {
+        Point pointOnRoad = mapDS.getOnMapPosition(
+                new Location(location.getLatitude(), location.getLongitude()));
+        if (pointOnRoad == null) {
             return false;
         }
 
-        updateVisitorPosition(calibratedPointAndClosestPointFromPoints);
+        updateVisitorPosition(pointOnRoad);
         updateGetToKnowMe();
         return true;
     }
@@ -230,25 +230,18 @@ public class MapActivity extends ProviderBasedActivity
     private Animal.PersonalStories lastPersonalStoryShowed = null;
 
     private boolean isGetToKnowMeShown = false;
-    private Set<Animal.PersonalStories> unwantedStories = new HashSet<>();
     private void updateGetToKnowMe() {
         if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
                 MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
-            Set<Animal.PersonalStories> animalPersonalStories = mapDS.getCloseAnimalStories();
-            animalPersonalStories.removeAll(unwantedStories);
-            if (animalPersonalStories.isEmpty()) {
+            Animal.PersonalStories animalStory = mapDS.getNextAnimalStory();
+            if (animalStory == null) {
                 if (isGetToKnowMeShown)
                     hideGetToKnowMe();
                 return;
             }
-
-            Animal.PersonalStories nextPersonalStory =
-                    animalPersonalStories.toArray(
-                            new Animal.PersonalStories[animalPersonalStories.size()])
-                            [(int) (Math.random() * animalPersonalStories.size())];
-            if (nextPersonalStory != lastPersonalStoryShowed) {
-                updateGetToKnowMe(nextPersonalStory);
-                lastPersonalStoryShowed = nextPersonalStory;
+            if (animalStory != lastPersonalStoryShowed) {
+                updateGetToKnowMe(animalStory);
+                lastPersonalStoryShowed = animalStory;
             }
             lastTimeUpdatedGetToKnowMe = System.currentTimeMillis();
         }
@@ -318,12 +311,17 @@ public class MapActivity extends ProviderBasedActivity
     }
 
     public void getToKnowMeClose(View view) {
-        unwantedStories.add(lastPersonalStoryShowed);
+        mapDS.removeAnimalStory(lastPersonalStoryShowed);
         hideGetToKnowMe();
     }
 
     @Override
     public void onBackPressed() {
+        synchronized (navigatingOutOfActivity) {
+            if(navigatingOutOfActivity)
+                return;
+            navigatingOutOfActivity = true;
+        }
         cancelFocus();
         moveDoors(false);
         mapView.exitMap();
@@ -410,7 +408,7 @@ public class MapActivity extends ProviderBasedActivity
         }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
-    private double DEMO_MOVEMENT = 0.00007;
+    private double DEMO_MOVEMENT = 0.00005;
     private enum ExplorationState {ON, OFF};
     private ExplorationState explorationState = ExplorationState.OFF;
     public void onDemoClick(View view) {

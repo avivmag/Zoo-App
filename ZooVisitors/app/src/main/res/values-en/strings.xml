@@ -89,7 +89,7 @@
     <string name="gps_no_activated_dialog_title">location options</string>
 
     <!--map-->
-    <string name="map_get_to_know_me_text">Click here to get to know me</string>
+    <string name="map_get_to_know_me_text">Click here for more</string>
 
     <string name="no_data">No data</string>
 
