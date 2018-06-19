@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import com.google.gson.annotations.SerializedName;
 import com.zoovisitors.backend.map.Point;
 
+import java.util.Map;
+import java.util.Set;
+
 public class MapResult {
     @SerializedName("mapData")
     private String mapData;
@@ -57,6 +60,7 @@ public class MapResult {
         private Route[] routes;
 
         private Point[] points;
+        private Map<Point, Set<Point>> routesMap;
 
         public double getZooLocationLongitude() {
             return zooLocationLongitude;
@@ -118,14 +122,22 @@ public class MapResult {
             this.points = points;
         }
 
+        public Map<Point, Set<Point>> getRoutesMap() {
+            return routesMap;
+        }
+
+        public void setRoutesMap(Map<Point, Set<Point>> routesMap) {
+            this.routesMap = routesMap;
+        }
+
         public class Route {
             @SerializedName("primaryLeft")
             private int x1;
             @SerializedName("primaryRight")
             private int y1;
-            @SerializedName("secondaryLeft")
+            @SerializedName("secLeft")
             private int x2;
-            @SerializedName("secondaryRight")
+            @SerializedName("secRight")
             private int y2;
 
             public int getX1() {

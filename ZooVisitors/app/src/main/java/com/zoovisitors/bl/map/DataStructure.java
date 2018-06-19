@@ -6,12 +6,14 @@ import android.util.Pair;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
 import com.zoovisitors.pl.map.MapActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,6 +60,7 @@ public class DataStructure {
     private double maxLongitude;
 
     public DataStructure(Point[] points,
+                         Map<Point, Set<Point>> routes,
                          Location zooEntranceLocation,
                          Point zooEntrancePoint,
                          double xLongitudeRatio,
@@ -72,6 +75,7 @@ public class DataStructure {
                          Animal.PersonalStories[] animalStories
     ) {
         this.points = points;
+        this.routes = routes;
         this.zooEntranceLocation = zooEntranceLocation;
         this.zooEntrancePoint = zooEntrancePoint;
         this.sinAlpha = sinAlpha;
@@ -83,29 +87,6 @@ public class DataStructure {
 
         this.xLongitudeRatio = xLongitudeRatio;
         this.yLatitudeRatio = yLatitudeRatio;
-        routes = new HashMap<>();
-
-        for (Point point :
-                points) {
-            routes.put(point, new HashSet<>());
-        }
-
-        // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
-        for (int curr = 0; curr < points.length; curr++) {
-            for (int off = curr + 1; off < points.length &&
-                    (points[curr].getX() - points[off].getX()) *
-                            (points[curr].getX() - points[off].getX())
-                            < MAX_DISTANCE_OF_ROUTE_FLAT; off++) {
-                if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
-                    routes.get(points[curr]).add(points[off]);
-                    routes.get(points[off]).add(points[curr]);
-                }
-            }
-        }
-
-        if (GlobalVariables.DEBUG) {
-            maxUpdateThreshold = 0;
-        }
 
         addAnimalStoriesToPoints(enclosures, animalStories);
     }

@@ -13,7 +13,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,8 +66,31 @@ public class MapDataStructureTests {
         cosAlpha = Math.sqrt(2);
         Arrays.toString(points);
 
+
+        Map<Point, Set<Point>> routes = new HashMap<>();
+
+//        for (Point point :
+//                points) {
+//            routes.put(point, new HashSet<>());
+//        }
+//
+//        // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
+//        for (int curr = 0; curr < points.length; curr++) {
+//            for (int off = curr + 1; off < points.length &&
+//                    (points[curr].getX() - points[off].getX()) *
+//                            (points[curr].getX() - points[off].getX())
+//                            < MAX_DISTANCE_OF_ROUTE_FLAT; off++) {
+//                if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
+//                    routes.get(points[curr]).add(points[off]);
+//                    routes.get(points[off]).add(points[curr]);
+//                }
+//            }
+//        }
+
+
         ds = new DataStructure(
                 points,
+                null, // TODO: Create routes
                 zooEntranceLocation,
                 zooEntrancePoint,
                 xLongitudeRatio,
