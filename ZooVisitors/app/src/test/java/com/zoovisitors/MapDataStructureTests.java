@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,22 +38,48 @@ public class MapDataStructureTests {
 
     @BeforeClass
     public static void beforeClass() {
-        int len = 49;
+        int len = 50;
         List<Point> pointList = new ArrayList<>();
+        Map<Point, Set<Point>> routes = new HashMap<>();
         // create some kind of rectangle
+        pointList.add(new Point(0, 0));
+        pointList.add(new Point(0, 9 * len));
+        pointList.add(new Point(9 * len, 0));
+        pointList.add(new Point(9 * len, 9 * len));
+        routes.put(new Point(0, 0), new HashSet<>());
+        routes.put(new Point(0, 9 * len), new HashSet<>());
+        routes.put(new Point(9 * len, 0), new HashSet<>());
+        routes.put(new Point(9 * len,9 * len), new HashSet<>());
         for (int i = 1; i < 9; i++) {
             pointList.add(new Point(i * len, 0));
             pointList.add(new Point(0, i * len));
             pointList.add(new Point(i * len, 9 * len));
             pointList.add(new Point(9 * len, i * len));
-        }
-        pointList.add(new Point(0, 0));
-        pointList.add(new Point(0, 9 * len));
-        pointList.add(new Point(9 * len, 0));
-        pointList.add(new Point(9 * len, 9 * len));
 
+            routes.put(new Point(i * len, 0), new HashSet<>());
+            routes.put(new Point(0, i * len), new HashSet<>());
+            routes.put(new Point(i * len, 9 * len), new HashSet<>());
+            routes.put(new Point(9 * len,i * len), new HashSet<>());
+
+            routes.get(new Point(i * len, 0)).add(new Point((i-1) * len, 0));
+            routes.get(new Point(0, i * len)).add(new Point(0, (i-1) * len));
+            routes.get(new Point(i * len, 9 * len)).add(new Point((i-1) * len, 9 * len));
+            routes.get(new Point(9 * len, i * len)).add(new Point(9 * len, (i-1) * len));
+
+            routes.get(new Point((i-1) * len, 0)).add(new Point(i * len, 0));
+            routes.get(new Point(0, (i-1) * len)).add(new Point(0, i * len));
+            routes.get(new Point((i-1) * len, 9 * len)).add(new Point(i * len, 9 * len));
+            routes.get(new Point(9 * len, (i-1) * len)).add(new Point(9 * len, i * len));
+        }
         // another interesting point
-        pointList.add(new Point(25, 25));
+        pointList.add(new Point(25,25));
+        routes.put(new Point(25,25), new HashSet<>());
+        routes.get(new Point(0,0)).add(new Point(25,25));
+        routes.get(new Point(25,25)).add(new Point(0,0));
+        routes.get(new Point(50,0)).add(new Point(25,25));
+        routes.get(new Point(25,25)).add(new Point(50,0));
+        routes.get(new Point(0,50)).add(new Point(25,25));
+        routes.get(new Point(25,25)).add(new Point(0,50));
 
         points = new Point[pointList.size()];
         pointList.toArray(points);
@@ -66,31 +93,9 @@ public class MapDataStructureTests {
         cosAlpha = Math.sqrt(2);
         Arrays.toString(points);
 
-
-        Map<Point, Set<Point>> routes = new HashMap<>();
-
-//        for (Point point :
-//                points) {
-//            routes.put(point, new HashSet<>());
-//        }
-//
-//        // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
-//        for (int curr = 0; curr < points.length; curr++) {
-//            for (int off = curr + 1; off < points.length &&
-//                    (points[curr].getX() - points[off].getX()) *
-//                            (points[curr].getX() - points[off].getX())
-//                            < MAX_DISTANCE_OF_ROUTE_FLAT; off++) {
-//                if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
-//                    routes.get(points[curr]).add(points[off]);
-//                    routes.get(points[off]).add(points[curr]);
-//                }
-//            }
-//        }
-
-
         ds = new DataStructure(
                 points,
-                null, // TODO: Create routes
+                routes,
                 zooEntranceLocation,
                 zooEntrancePoint,
                 xLongitudeRatio,
