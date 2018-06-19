@@ -21,7 +21,6 @@ public class GlobalVariables {
     public static String LOG_TAG = "zoovisitors";
     public static int language;
     public static AppCompatActivity appCompatActivity;
-    public static int firstEnter = 0;
     public static BusinessLayer bl;
     public static String firebaseToken = FirebaseInstanceId.getInstance().getToken();
     public static boolean notifications = true;
