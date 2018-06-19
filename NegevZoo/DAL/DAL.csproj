@@ -107,6 +107,7 @@
     <Compile Include="Models\AnimalResult.cs" />
     <Compile Include="Models\AnimalStoryResult.cs" />
     <Compile Include="Models\EnclosureResult.cs" />
+    <Compile Include="Models\MapCoords.cs" />
     <Compile Include="Models\MapResult.cs" />
     <Compile Include="Models\MapSettingsResult.cs" />
     <Compile Include="Models\OpeningHourResult.cs" />

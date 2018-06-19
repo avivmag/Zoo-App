@@ -39,13 +39,15 @@
 
             // Initialize the confirm delete feed function.
             $scope.confirmDeleteFeed    = function (ev, feed, feedWall) {
-                utilitiesService.utilities.confirm({ title: 'מחיקת עדכון', text: 'האם אתה בטוח שברצונך למחוק עדכון זה?' });
+                utilitiesService.utilities.confirm({ title: 'מחיקת עדכון', text: 'האם אתה בטוח שברצונך למחוק עדכון זה?' }).then(
+                    function () { deleteFeed(feed, feedWall); }
+                );
             }
 
             // Initialize the add feed function.
-            $scope.addFeed              = function (feed) {
+            $scope.addFeed              = function (feed, feeds) {
                 // Check the feed validity.
-                if (!checkFeedWall(feed)) {
+                if (!checkFeedWall(feed, feeds)) {
                     return;
                 }
 
@@ -92,7 +94,7 @@
         }
 
         // Checks the feed's validity.
-        function checkFeedWall(feed) {
+        function checkFeedWall(feed, feeds) {
             // If no feed was given, return.
             if (!feed) {
                 return false;
@@ -115,6 +117,12 @@
             // If the feed does not have an info, return.
             if (!angular.isDefined(feed.info)) {
                 utilitiesService.utilities.alert('אנא הכנס תוכן לעדכון');
+
+                return false;
+            }
+
+            if (feeds.filter(f => f.info === feed.info && f.title === feed.title).length > 1) {
+                utilitiesService.utilities.alert('קיים עדכון עם תוכן זהה');
 
                 return false;
             }

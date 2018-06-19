@@ -7,7 +7,7 @@
 <md-card ng-show="!isLoading">
         <md-card-title layout="row" layout-align="space-between">
         <div layout="column">
-            <md-button class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
+            <md-button name="back-enclosure" class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
             <div layout="row" ng-if="isEdit">
                 <img class="picture_small" ng-src="{{ baseURL + animalStory.pictureUrl }}" alt="{{ animalStory.name }}" />
                 <md-card-title-text style="margin-top: 20px" class="md-headline">{{ animalStory.name }}:</md-card-title-text>
@@ -22,7 +22,7 @@
                 <md-input-container layout="row">
                     <label ng-show="!isEdit">הכנס שם מזהה לסיפור האישי</label>
                     <label ng-show="isEdit">שם הסיפור האישי</label>
-                    <input style="width: 200px" ng-model="animalStory.name" required type="text">
+                    <input name="animal-story-name" style="width: 200px" ng-model="animalStory.name" required type="text">
                 </md-input-container>
 
                 <ng-card-content layout="column">
@@ -33,8 +33,8 @@
                 </ng-card-content>
 
                 <div layout="column" layout-align="end end">
-                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimalStory(animalStory)">שמור פרטי סיפור אישי</md-button>
-                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteAnimalStory(animalStory.id)">מחק סיפור אישי</md-button>
+                    <md-button name="animal-story-save" style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimalStory(animalStory)">שמור פרטי סיפור אישי</md-button>
+                    <md-button name="animal-story-delete" ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteAnimalStory(animalStory.id)">מחק סיפור אישי</md-button>
                 </div>
             </md-card-content>
     </md-card-content>
@@ -51,16 +51,16 @@
                 <md-card-content style="margin-right: 4%"  layout="column">
                     <md-input-container layout="row">
                         <label>הכנס שם תצוגה לסיפור האישי</label>
-                        <input style="width: 200px" ng-model="animalStoryDetails[selectedTab].name" required type="text">
+                        <input name="{{ 'detail-name' + $index }}" style="width: 200px" ng-model="animalStoryDetails[selectedTab].name" required type="text">
                     </md-input-container>
                     
                     <md-input-container>
                         <label>הכנס סיפור אישי</label>
-                        <input ng-model="animalStoryDetails[selectedTab].story" type="text">
+                        <input name="{{ 'detail-story' + $index }}" ng-model="animalStoryDetails[selectedTab].story" type="text">
                     </md-input-container>
 
                     <md-input-container>
-                        <md-button class="md-raised md-primary" ng-click="addAnimalStoryDetail(animalStoryDetails[selectedTab])">הוסף תוכן לסיפור האישי בשפה שנבחרה</md-button>
+                        <md-button name="add-detail" class="md-raised md-primary" ng-click="addAnimalStoryDetail(animalStoryDetails[selectedTab])">הוסף תוכן לסיפור האישי בשפה שנבחרה</md-button>
                     </md-input-container>
                 </md-card-content>
             </md-tab>

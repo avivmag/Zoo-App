@@ -17,11 +17,11 @@
         </md-card-title>
 
         <md-card-content layout="column">
-            <textarea rows="8" type="text" ng-model="aboutInfo.aboutUs"></textarea>
+            <textarea name="about-us-note" rows="8" type="text" ng-model="aboutInfo.aboutUs"></textarea>
         </md-card-content>
 
         <md-card-content layout="column" layout-align="start end">
-            <md-button class="md-raised md-primary" ng-click="addAboutUs(aboutInfo.aboutUs, language.id)">שמור תוכן</md-button>
+            <md-button name="save-note" class="md-raised md-primary" ng-click="addAboutUs(aboutInfo.aboutUs, language.id)">שמור תוכן</md-button>
         </md-card-content>
     </md-card>
 </div>

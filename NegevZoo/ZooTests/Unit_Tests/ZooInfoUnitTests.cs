@@ -1326,6 +1326,13 @@ namespace ZooTests.Unit_Tests
         #region GetOpeningHourNote
 
         [TestMethod]
+        public void GetOpeningHourNoteValidTest()
+        {
+            var note = context.GetOpeningHourNote(1);
+            Assert.AreEqual("הקופות יסגרו שעתיים לפני סגירת הגן", note);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language")]
         public void GetOpeningHourNoteLangaugeNotExist()
         {
@@ -1375,6 +1382,13 @@ namespace ZooTests.Unit_Tests
         #endregion
 
         #region GetContactInfoNote
+
+        [TestMethod]
+        public void GetContactInfoNoteValidTest()
+        {
+            var note = context.GetContactInfoNote(1);
+            Assert.AreEqual("ניתן ליצור קשר בין השעות 08:00 לבין 22:00", note);
+        }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Wrong language")]

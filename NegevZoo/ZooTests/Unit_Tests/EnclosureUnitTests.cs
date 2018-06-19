@@ -171,7 +171,6 @@ namespace ZooTests.Unit_Tests
         [TestMethod]
         public void GetEnclosurePictureByIdEmptyUrl()
         {
-            //only 1 result
             var pictures = context.GetEnclosurePicturesById(4);
             Assert.AreEqual(0, pictures.Count());
         }

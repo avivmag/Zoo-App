@@ -7,7 +7,7 @@
 <md-card ng-show="!isLoading">
         <md-card-title layout="row" layout-align="space-between">
         <div layout="column">
-            <md-button class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
+            <md-button name="back-enclosure" class="md-raised md-primary" style="width: 150px" ui-sref="mainMenu.enclosures.enclosure({ enclosure: enclosure })">חזור למתחם</md-button>
             <div layout="row" ng-if="isEdit">
                 <img class="picture_small" ng-src="{{ baseURL + animal.pictureUrl }}" alt="{{ animal.name }}" />
                 <md-card-title-text style="margin-top: 20px" class="md-headline">{{ animal.name }}:</md-card-title-text>
@@ -22,7 +22,7 @@
                 <md-input-container layout="row">
                     <label ng-show="!isEdit">הכנס שם מזהה לחיה</label>
                     <label ng-show="isEdit">שם החיה</label>
-                    <input style="width: 200px" ng-model="animal.name" required type="text">
+                    <input name="animal-name" style="width: 200px" ng-model="animal.name" required type="text">
                 </md-input-container>
 
                 <ng-card-content layout="column">
@@ -34,16 +34,16 @@
 
                 <md-input-container>
                         <label>בחר רמת שימור</label>
-                        <md-select style="width: 250px" ng-model="animal.preservation">
-                            <md-option ng-repeat="p in preservation" ng-value="p.value">
+                        <md-select name="preservation-select" style="width: 250px" ng-model="animal.preservation">
+                            <md-option name="{{ 'p' + $index }}" ng-repeat="p in preservation" ng-value="p.value">
                                 {{ p.format }}
                             </md-option>
                         </md-select>
                 </md-input-container>
 
                 <div layout="column" layout-align="end end">
-                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimal(animal)">שמור פרטי חיה</md-button>
-                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteAnimal(animal.id)">מחק חיה</md-button>
+                    <md-button name="animal-save" style="background-color: darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addAnimal(animal)">שמור פרטי חיה</md-button>
+                    <md-button name="animal-delete" ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteAnimal(animal.id)">מחק חיה</md-button>
                 </div>
             </md-card-content>
     </md-card-content>
@@ -60,7 +60,7 @@
                 <md-card-content style="margin-right: 4%"  layout="column">
                     <md-input-container layout="row">
                         <label>הכנס שם תצוגה לחיה</label>
-                        <input style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
+                        <input name="{{ 'detail-name' + $index }}" style="width: 200px" ng-model="animalDetails[selectedTab].name" required type="text">
                     </md-input-container>
 
                      <md-card-content layout="column" layout-align="start start">
@@ -112,7 +112,7 @@
                     </md-input-container>
                     
                     <md-input-container>
-                        <md-button class="md-raised md-primary" ng-click="addAnimalDetail(animalDetails[selectedTab])">הוסף תוכן לחיה בשפה שנבחרה</md-button>
+                        <md-button name="add-detail" class="md-raised md-primary" ng-click="addAnimalDetail(animalDetails[selectedTab])">הוסף תוכן לחיה בשפה שנבחרה</md-button>
                     </md-input-container>
                 </md-card-content>
             </md-tab>

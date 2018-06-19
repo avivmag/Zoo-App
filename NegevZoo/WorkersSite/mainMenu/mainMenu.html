@@ -1,12 +1,12 @@
 ﻿<meta charset="utf-8" http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 
 <md-tabs md-stretch-tabs="always" md-dynamic-height>
-    <md-tab label="קיר עדכונים" md-on-select="reRoute('mainMenu.feedWall')"></md-tab>
-    <md-tab label="תצוגות" md-on-select="reRoute('mainMenu.enclosures.list')"></md-tab>
-    <md-tab label="אירועים מיוחדים" md-on-select="reRoute('mainMenu.specialEvents')"></md-tab>
-    <md-tab label="מפה"  md-on-select="reRoute('mainMenu.map')"></md-tab>
-    <md-tab label="מידע כללי"  md-on-select="reRoute('mainMenu.generalInfo')"></md-tab>
-    <md-tab label="ניהול משתמשים"  md-on-select="reRoute('mainMenu.userControl')"></md-tab>
+    <md-tab name="feeds" label="קיר עדכונים" md-on-select="reRoute('mainMenu.feedWall')"></md-tab>
+    <md-tab name="enclosures" label="תצוגות" ng-click="reRoute('mainMenu.enclosures.list')" "md-on-select="reRoute('mainMenu.enclosures.list')"></md-tab>
+    <md-tab name="specialEvents" ng-click="reRoute('mainMenu.specialEvents')" label="אירועים מיוחדים" md-on-select="reRoute('mainMenu.specialEvents')"></md-tab>
+    <md-tab name="map" label="מפה"  md-on-select="reRoute('mainMenu.map')"></md-tab>
+    <md-tab name="generalInfo" ng-click="reRoute('mainMenu.generalInfo')" label="מידע כללי"  md-on-select="reRoute('mainMenu.generalInfo')"></md-tab>
+    <md-tab name="users" label="ניהול משתמשים"  ng-click="reRoute('mainMenu.userControl')" md-on-select="reRoute('mainMenu.userControl')"></md-tab>
 </md-tabs>
 
 <ui-view></ui-view>

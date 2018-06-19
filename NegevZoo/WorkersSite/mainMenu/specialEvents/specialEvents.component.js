@@ -131,7 +131,7 @@
         function deleteEvent(event, events) {
             zooInfoService.specialEvents.deleteSpecialEvent(event.id).then(
                 function () {
-                    utilitiesService.utilities.alert('התוכן נמחק בהצלחה');
+                    utilitiesService.utilities.alert('האירוע נמחק בהצלחה');
 
                     // Remove the event from the event's array.
                     events.splice(events.indexOf(event), 1);

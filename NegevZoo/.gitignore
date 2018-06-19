@@ -1,5 +1,6 @@
 **/bin/
 **/obj/
+**/node_modules/
 **/.vs/
 NegevZoo/assets/*
 **/app.config
@@ -8,5 +9,8 @@ NegevZoo/assets/*
 **/Web.Release.config
 WorkersSite/index.local.html
 WorkersSite/app.config.local.js
+
+BL/Properties/Settings.settings
 DAL/Properties/Settings.settings
+BL/Properties/Settings.Designer.cs
 DAL/Properties/Settings.Designer.cs

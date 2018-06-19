@@ -3,8 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DAL;
 using System.Web.Http;
-using BL;
-using DAL.Models;
 using System.Net.Http;
 using System;
 
@@ -130,13 +128,13 @@ namespace ZooTests
         [TestMethod]
         public void GetAllAnimalStoryResultsLangEn()
         {
-            Assert.AreEqual(2, animalsController.GetAllAnimalStoriesResults((int)Languages.en).Count());
+            Assert.AreEqual(1, animalsController.GetAllAnimalStoriesResults((int)Languages.en).Count());
         }
 
         [TestMethod]
         public void GetAllAnimalStoryResultsLangAr()
         {
-            Assert.AreEqual(0, animalsController.GetAllAnimalStoriesResults((int)Languages.ar).Count());
+            Assert.AreEqual(1, animalsController.GetAllAnimalStoriesResults((int)Languages.ar).Count());
         }
 
         [TestMethod]
@@ -755,7 +753,6 @@ namespace ZooTests
         {
             animalsController.DeleteAnimal(-4);
         }
-
 
         #endregion
 
