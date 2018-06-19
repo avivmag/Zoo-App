@@ -1,4 +1,4 @@
-package com.zoovisitors.bl;
+package com.zoovisitors.dal;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

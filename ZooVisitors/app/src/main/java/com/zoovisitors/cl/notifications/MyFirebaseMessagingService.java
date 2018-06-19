@@ -26,30 +26,6 @@ import com.zoovisitors.pl.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private NotificationManager notifManager;
-//    @Override
-//    public void onMessageReceived(RemoteMessage remoteMessage){
-//        Intent intent = null;
-//        try {
-//            Log.e("CLASS", remoteMessage.getData().get("Window"));
-//            intent = new Intent(this, Class.forName(remoteMessage.getData().get("Window")));
-//        } catch (ClassNotFoundException e) {
-//            intent = new Intent(this, MainActivity.class);
-//        }
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-//        notificationBuilder.setContentTitle(remoteMessage.getData().get("Title"));
-//        notificationBuilder.setContentText(remoteMessage.getData().get("Body"));
-//        notificationBuilder.setAutoCancel(true);
-//        //set the sound of the notification
-//        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//
-//        notificationBuilder.setSound(alarmSound);
-//        notificationBuilder.setSmallIcon(R.mipmap.logo);
-//        notificationBuilder.setContentIntent(pendingIntent);
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.notify(0, notificationBuilder.build());
-//    }
 
     public static void sendSelfNotification(Class onClickGo, String headline, String message){
         Intent intent = new Intent(GlobalVariables.appCompatActivity, onClickGo);
