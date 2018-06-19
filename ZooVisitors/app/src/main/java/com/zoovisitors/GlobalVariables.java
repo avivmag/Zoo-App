@@ -25,11 +25,4 @@ public class GlobalVariables {
     public static BusinessLayer bl;
     public static String firebaseToken = FirebaseInstanceId.getInstance().getToken();
     public static boolean notifications = true;
-
-//    public static void setToken(){
-//            while(firebaseToken == null)
-//                firebaseToken = FirebaseInstanceId.getInstance().getToken();
-////            if (firebaseToken == null)
-////                firebaseToken = FirebaseInstanceId.getInstance().getToken();
-//    }
 }
