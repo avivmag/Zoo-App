@@ -32,6 +32,7 @@ public class LoadingScreen extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        GlobalVariables.setToken();
         GlobalVariables.appCompatActivity = this;
         GlobalVariables.bl = new BusinessLayerImpl(GlobalVariables.appCompatActivity);
         //hiding the action bar in this activity
@@ -49,7 +50,6 @@ public class LoadingScreen extends BaseActivity {
 
         //Initialize business layer (change for testing)
         changeLanguage();
-        GlobalVariables.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         pb = (ProgressBarCustomView) findViewById(R.id.loading_progress_bar);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int screenHeightSize = getResources().getDisplayMetrics().heightPixels;

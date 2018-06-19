@@ -33,6 +33,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
@@ -226,7 +228,6 @@ public class MainActivity extends BaseActivity {
 
     public void  onClickNotification(MenuItem item){
         if(item.getItemId() == R.id.notifications) {
-                //item.setChecked(!item.isChecked());
                 int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
                 if (notificationFromPref == 1){
                     writeToPreferences(R.string.notification_preferences, 0);
@@ -358,25 +359,12 @@ public class MainActivity extends BaseActivity {
         Menu menu = popup.getMenu();
         inflater.inflate(R.menu.main_menu, menu);
 
-
         MenuItem notification = menu.findItem(R.id.notifications);
         int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
         if (notificationFromPref == -1){
             notification.setChecked(true);
-            writeToPreferences(R.string.notification_preferences, 1);
-            GlobalVariables.bl.subscribeToNotification(new GetObjectInterface() {
-                @Override
-                public void onSuccess(Object response) {
-                    Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFailure(Object response) {
-                    Toast.makeText(GlobalVariables.appCompatActivity, "Something went wrong...", Toast.LENGTH_LONG).show();
-                }
-            });
         }
-        else if  (notificationFromPref == 1){
+        else if (notificationFromPref == 1){
             notification.setChecked(true);
             writeToPreferences(R.string.notification_preferences, 1);
         }
