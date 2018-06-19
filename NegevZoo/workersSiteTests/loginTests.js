@@ -11,7 +11,7 @@ let testResults = [];
 driver.get('http://negevzoo.sytes.net:8080');
 
 driver.sleep(1000).then(function () {
-    startSuccessLogin();
+    startTests();
 });
 
 
@@ -19,7 +19,6 @@ function startTests() {
 	startFailLoginUsername();
 	startFailLoginPassword();
 	startSuccessLogin();
-	
 	finishTests();
 }
 
