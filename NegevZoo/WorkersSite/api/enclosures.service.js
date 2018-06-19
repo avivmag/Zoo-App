@@ -4,8 +4,6 @@
     var enclosureDetails   = {
         getAllEnclosures:           function (language)                         { return httpService.httpGet({ url: [serviceBaseUrl, 'all', language] }); },
         getEnclosureDetailsById:    function (encId)                            { return httpService.httpGet({ url: [serviceBaseUrl, 'details', 'all', encId] }); },
-        getEnclosureByName:         function (name, language)                   { return httpService.httpGet({ url: [serviceBaseUrl, 'name', name, language] }); },
-        getEnclosureByPosition:     function (longtitude, latitude, language)   { return httpService.httpGet({ url: [serviceBaseUrl, 'position', longtitude, latitude, language] }); },
         getRecurringEvents:         function (encId, language)                  { return httpService.httpGet({ url: [serviceBaseUrl, 'recurring', encId, language] }); },
         updateRecurringEvent:       function (recurringEvent)                   { return httpService.httpPost({ url: [serviceBaseUrl, 'recurring', 'update'], body: recurringEvent }); },
         updateEnclosureDetail:      function (enclosureDetail)                  { return httpService.httpPost({ url: [serviceBaseUrl, 'detail', 'update'], body: enclosureDetail }); },

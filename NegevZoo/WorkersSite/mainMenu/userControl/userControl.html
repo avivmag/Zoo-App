@@ -11,7 +11,7 @@
 
     <md-card-content ng-if="users && users.length > 0">
         <div style="margin-right: 10%" ng-repeat="user in users | orderBy:'id'" layout="row" layout-align="start center">
-            <md-button style="margin-bottom: 25px" ng-if="!user.isNew" ng-click="confirmDeleteUser($event, user, users)" >
+            <md-button name="{{ $last ? 'delete-last' : '' }}" style="margin-bottom: 25px" ng-if="!user.isNew" ng-click="confirmDeleteUser(user, users)" >
                 <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
             </md-button>
             
@@ -22,19 +22,19 @@
             <md-card-content layout="row">
                 <md-input-container>
                     <label ng-if="user.isNew">הכנס שם משתמש</label>
-                    <input style="width: 200px" ng-model="user.name" required type="text">
+                    <input name="{{ $index === 0 ? 'username-save' : ''}}" style="width: 200px" ng-model="user.name" required type="text">
                 </md-input-container>
 
                 <md-input-container ng-if="user.isNew">
                     <label>הכנס סיסמא</label>
-                    <input style="width: 200px" ng-model="user.password" required type="password">
+                    <input name="{{ $index === 0 ? 'password-save' : ''}}" style="width: 200px" ng-model="user.password" required type="password">
                 </md-input-container>
 
             </md-card-content>
             
-            <md-button class="md-raised md-accent" ng-if="!user.isNew" ng-click="confirmResetPassword(user)">אפס סיסמא</md-button>
+            <md-button name="{{ $last ? 'reset-last' : '' }}" class="md-raised md-accent" ng-if="!user.isNew" ng-click="confirmResetPassword(user)">אפס סיסמא</md-button>
             
-            <md-button class="md-primary md-raised" ng-if="user.isNew" ng-click="addUser(user, users)">שמור משתמש חדש</md-button>
+            <md-button name="save" class="md-primary md-raised" ng-if="user.isNew" ng-click="addUser(user, users)">שמור משתמש חדש</md-button>
             <md-button class="md-primary md-raised" ng-if="!user.isNew" ng-click="updateUsername(user, users)">עדכן שם משתמש</md-button>
         </div>
     </md-card-content>

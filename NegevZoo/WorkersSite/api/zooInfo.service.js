@@ -32,7 +32,6 @@
     };
     var specialEvents   = {
         getAllSpecialEvents:    function (language)                         { return httpService.httpGet({ url: [specialEventsBaseUrl, 'all', language] }); },
-        getSpecialEventByDate:  function (startDate, endDate, language)     { return httpService.httpGet({ url: [specialEventsBaseUrl, 'date', startDate, endDate, language] }); },
         updateSpecialEvent:     function (specialEvent, isPush)             { return httpService.httpPost({ url: [specialEventsBaseUrl, 'update', isPush], body: specialEvent }); },
         deleteSpecialEvent:     function (specialEventId)                   { return httpService.httpDelete({ url: [specialEventsBaseUrl, 'delete', specialEventId] }); }
     };

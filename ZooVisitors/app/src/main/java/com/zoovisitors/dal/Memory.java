@@ -19,8 +19,10 @@ import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Memory {
 
@@ -70,20 +72,31 @@ public class Memory {
 
 
         List<Point> points = new ArrayList<>();
+        Map<Point, Set<Point>> routes = new HashMap<>();
         points.add(new Point(mapResult.getMapInfo().getRoutes()[0].getX1(), mapResult.getMapInfo
                 ().getRoutes()[0].getY1()));
+
         Point lastAdded = points.get(0);
+        routes.put(lastAdded, new HashSet<>());
+
         for (MapResult.MapInfo.Route route :
                 mapResult.getMapInfo().getRoutes()) {
-            if(lastAdded.getX() != route.getX1())
+            if(lastAdded.getX() != route.getX1() || lastAdded.getY() != route.getY1())
             {
                 lastAdded = new Point(route.getX1(), route.getY1());
                 points.add(lastAdded);
+                if(!routes.containsKey(lastAdded))
+                    routes.put(lastAdded, new HashSet<>());
             }
+            Point p2 = new Point(route.getX2(), route.getY2());
+            routes.get(lastAdded).add(p2);
+            if(!routes.containsKey(p2))
+                routes.put(p2, new HashSet<>());
+            routes.get(p2).add(lastAdded);
         }
 
-        Point[] pointArr = new Point[points.size()];
-        mapResult.getMapInfo().setPoints(points.toArray(pointArr));
+        mapResult.getMapInfo().setPoints(points.toArray(new Point[points.size()]));
+        mapResult.getMapInfo().setRoutesMap(routes);
     }
 
     public Pair<Integer, Enclosure>[] getIndexEnclosureForMap() {

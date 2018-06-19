@@ -1,16 +1,19 @@
 package com.zoovisitors.bl.map;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
+import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.backend.Animal;
 import com.zoovisitors.backend.Enclosure;
+import com.zoovisitors.backend.MapResult;
 import com.zoovisitors.backend.map.Location;
 import com.zoovisitors.backend.map.Point;
+import com.zoovisitors.pl.map.MapActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,14 +38,14 @@ public class DataStructure {
     private final int MAX_DISTANCE_OF_ROUTE = 50 * 50 + 30 * 30;
     private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT = 2 * MAX_DISTANCE_OF_ROUTE_FLAT;
     private final int MAX_APPROXIMATE_DISTANCE_FROM_POINT_FLAT = 2 * 50;
-//    // taking in account the measurement of gps errors (preservation2 times further).
-//    private final int MAX_DISTANCE_FROM_POINT = MAX_DISTANCE_OF_ROUTE * MAX_DISTANCE_OF_ROUTE *
-//            preservation2;//preservation6 * 0.0111111;
+    private final double MAX_MARGIN_OF_MAP_ROADS = 10 * 0.0111111;
+    // The number of points for the enclosure
+    private final int NUMBER_OF_POINTS_SHOULD_BE_BFS = 10;
     /**
      * max threashold for update, if last update was before that time, then we need to
      * reinitialize the current location
      */
-    private final long MAX_UPDATE_THRESHOLD = 7 * 1000;
+    private long maxUpdateThreshold = 7 * 1000;
 
     private final Location zooEntranceLocation;
     private final Point zooEntrancePoint;
@@ -51,13 +54,13 @@ public class DataStructure {
     double yLatitudeRatio;
     private double sinAlpha;
     private double cosAlpha;
-    // the borders of the zoo
     private double minLatitude;
     private double maxLatitude;
     private double minLongitude;
     private double maxLongitude;
 
     public DataStructure(Point[] points,
+                         Map<Point, Set<Point>> routes,
                          Location zooEntranceLocation,
                          Point zooEntrancePoint,
                          double xLongitudeRatio,
@@ -67,9 +70,12 @@ public class DataStructure {
                          double minLatitude,
                          double maxLatitude,
                          double minLongitude,
-                         double maxLongitude
+                         double maxLongitude,
+                         Pair<Integer, Enclosure>[] enclosures,
+                         Animal.PersonalStories[] animalStories
     ) {
         this.points = points;
+        this.routes = routes;
         this.zooEntranceLocation = zooEntranceLocation;
         this.zooEntrancePoint = zooEntrancePoint;
         this.sinAlpha = sinAlpha;
@@ -81,65 +87,24 @@ public class DataStructure {
 
         this.xLongitudeRatio = xLongitudeRatio;
         this.yLatitudeRatio = yLatitudeRatio;
-        routes = new HashMap<>();
 
-        for (Point point :
-                points) {
-            routes.put(point, new HashSet<>());
-        }
+        addAnimalStoriesToPoints(enclosures, animalStories);
+    }
 
-        // generates the routes based on distance that is lower than MAX_DISTANCE_OF_ROUTE
-        for (int curr = 0; curr < points.length; curr++) {
-            for (int off = curr + 1; off < points.length &&
-                    (points[curr].getX() - points[off].getX()) *
-                            (points[curr].getX() - points[off].getX())
-                            < MAX_DISTANCE_OF_ROUTE_FLAT; off++) {
-                if (squaredDistance(points[curr], points[off]) < MAX_DISTANCE_OF_ROUTE) {
-                    routes.get(points[curr]).add(points[off]);
-                    routes.get(points[off]).add(points[curr]);
-                }
-            }
-        }
-
-//        // TODO: only for testing comment this
-//        Map.Entry<Point, Set<Point>> lowest = null, biggest = null;
-//        int lowest_counter = 0, biggest_counter = 0;
-//        int low = 10000,big = 0;
-//        for (Map.Entry<Point, Set<Point>> entry:
-//             routes.entrySet()) {
-//            if(entry.getValue().size() > big)
-//            {
-//                big = entry.getValue().size();
-//                biggest = entry;
-//                biggest_counter = preservation0;
-//            } else if(entry.getValue().size() == big) {
-//                biggest_counter++;
-//            }
-//            if(entry.getValue().size() < low)
-//            {
-//                low = entry.getValue().size();
-//                lowest = entry;
-//                lowest_counter = preservation0;
-//            } else if(entry.getValue().size() == low) {
-//                lowest_counter++;
-//            }
-//            if(entry.getValue().size() == preservation1) {
-//                Log.e("AVIV", "Point " + entry.getKey());
-//            }
-//        }
-//        Log.e("AVIV", "Biggest: " + biggest);
-//        Log.e("AVIV", "Smallest: " + lowest);
-//        Log.e("AVIV", "Biggest: " + biggest_counter);
-//        Log.e("AVIV", "Lowest_counter: " + lowest_counter);
+    public boolean IsInPark(Location location) {
+        return location.getLatitude() >= minLatitude - MAX_MARGIN_OF_MAP_ROADS &&
+                location.getLatitude() <= maxLatitude + MAX_MARGIN_OF_MAP_ROADS &&
+                location.getLongitude() >= minLongitude - MAX_MARGIN_OF_MAP_ROADS &&
+                location.getLongitude() <= maxLongitude + MAX_MARGIN_OF_MAP_ROADS;
     }
 
     private long lastUpdate = 0;
 
-    public Point getOnMapPosition(Point point) {
-
+    public Point getOnMapPosition(Location location) {
         Point ans;
+        Point point = locationToPoint(location);
         // new update is needed
-        if (System.currentTimeMillis() - lastUpdate > MAX_UPDATE_THRESHOLD) {
+        if (System.currentTimeMillis() - lastUpdate > maxUpdateThreshold) {
             ans = getOnMapPositionFirstTime(point);
         } else {
             ans = getOnMapPositionContinues(point);
@@ -301,7 +266,7 @@ public class DataStructure {
         return ans;
     }
 
-    public Point locationToPoint(Location location) {
+    private Point locationToPoint(Location location) {
         Location locationCenteredToEntranceReversed =
                 calibrateLocationToEntranceAndReverseLongitudeAxis(location);
         Location turnedLocation = rotateLocationAroundEntrance(locationCenteredToEntranceReversed);
@@ -314,8 +279,8 @@ public class DataStructure {
     @NonNull
     private Location calibrateLocationToEntranceAndReverseLongitudeAxis(Location location) {
         // calibrate the position of the location based on the entrance
-        Location locationCenteredToEntrance = new Location(location.getLatitude() -
-                zooEntranceLocation.getLatitude(),
+        Location locationCenteredToEntrance = new Location(
+                location.getLatitude() - zooEntranceLocation.getLatitude(),
                 location.getLongitude() - zooEntranceLocation.getLongitude());
 
         // reverse the latitude axis, so both the before and after would have the same axis
@@ -331,14 +296,11 @@ public class DataStructure {
         return new Point((int) (xLongitudeRatio * locationCenteredToEntranceReversed.getLongitude
                 ()),
                 (int) (yLatitudeRatio * locationCenteredToEntranceReversed.getLatitude()));
-//        return new Location(yLatitudeRatio * locationCenteredToEntranceReversed.getLatitude(),
-//                xLongitudeRatio * locationCenteredToEntranceReversed.getLongitude());
     }
 
     @NonNull
     private Location rotateLocationAroundEntrance(Location locationCenteredAndRatioed) {
         // turn it around
-//        return locationCenteredAndRatioed;
         return new Location(
                 locationCenteredAndRatioed.getLatitude() * cosAlpha
                         + locationCenteredAndRatioed.getLongitude() * sinAlpha,
@@ -347,26 +309,40 @@ public class DataStructure {
         );
     }
 
-    public void addAnimalStoriesToPoints(Pair<Integer, Enclosure>[] enclosures, Animal.PersonalStories[] animalStories) {
+    private void addAnimalStoriesToPoints(Pair<Integer, Enclosure>[] enclosures, Animal
+            .PersonalStories[] animalStories) {
         for (Pair<Integer, Enclosure> enclosure :
                 enclosures) {
             for (Animal.PersonalStories animalStory :
                     animalStories) {
-                if(enclosure.second.getId() == animalStory.getEncId()) {
+                if (enclosure.second.getId() == animalStory.getEncId()) {
                     addAnimalStoryToPoints(enclosure.second, animalStory);
                 }
             }
         }
     }
 
-    public Set<Animal.PersonalStories> getCloseAnimalStories() {
-        return lastPoint.getClosestAnimalStories();
+    private Set<Animal.PersonalStories> unwantedStories = new HashSet<>();
+
+    public Animal.PersonalStories getNextAnimalStory() {
+        Set<Animal.PersonalStories> animalStories = lastPoint.getClosestAnimalStories();
+        animalStories.removeAll(unwantedStories);
+
+        if (animalStories.isEmpty()) {
+            return null;
+        }
+        return animalStories.toArray(new Animal.PersonalStories[animalStories.size()])
+                [(int)(Math.random() * animalStories.size())];
+    }
+
+    public void removeAnimalStory(Animal.PersonalStories as) {
+        unwantedStories.add(as);
     }
 
     private void addAnimalStoryToPoints(Enclosure enclosure, Animal.PersonalStories animalStory) {
         Point onMapPoint = getPointByXY(enclosure.getClosestPointX(), enclosure
                 .getClosestPointY());
-        if(onMapPoint != null) {
+        if (onMapPoint != null) {
             addAnimalStoryToPointByBFS(onMapPoint, animalStory);
         }
     }
@@ -407,13 +383,13 @@ public class DataStructure {
         return null;
     }
 
-    private final int NUMBER_OF_POINTS_SHOULD_BE_BFS = 10;
-
     private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory) {
-        addAnimalStoryToPointByBFS(point, animalStory, new HashSet<>(), NUMBER_OF_POINTS_SHOULD_BE_BFS);
+        addAnimalStoryToPointByBFS(point, animalStory, new HashSet<>(),
+                NUMBER_OF_POINTS_SHOULD_BE_BFS);
     }
 
-    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories animalStory, Set<Point>
+    private final void addAnimalStoryToPointByBFS(Point point, Animal.PersonalStories
+            animalStory, Set<Point>
             checkedPoints, int depth) {
         point.addCloseAnimalStory(animalStory);
         checkedPoints.add(point);

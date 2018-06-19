@@ -26,7 +26,6 @@ public abstract class Icon {
         this.top = top;
         setView();
 
-        // TODO: Check if this block is needed, we are overriding this in the post beneath
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(left, top, Integer.MAX_VALUE, Integer.MAX_VALUE);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
