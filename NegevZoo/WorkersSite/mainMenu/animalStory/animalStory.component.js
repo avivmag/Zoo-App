@@ -125,10 +125,10 @@
             // Initialize the add animal story detail function.
             $scope.addAnimalStoryDetail       = function(animalStoryDetail) {
                 $scope.isLoading            = true;
-                
+
                 // Initialize the return statements.
-                var successContent      = !$scope.isEdit ? 'החיה נוספה בהצלחה!' : 'החיה עודכנה בהצלחה!';
-                var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת החיה' : 'התרחשה שגיאה בעת עדכון החיה';
+                var successContent      = !$scope.isEdit ? 'הסיפור האישי נוסף בהצלחה!' : 'הסיפור האישי עודכן בהצלחה!';
+                var failContent         = !$scope.isEdit ? 'התרחשה שגיאה בעת שמירת הסיפור האישי' : 'התרחשה שגיאה בעת עדכון הסיפור האישי';
 
                 // Update the story detail.
                 animalService.updateAnimalStoryDetail(animalStoryDetail).then(
@@ -173,7 +173,7 @@
 
             // If the animal story did not have a name, or whitespace, return.
             if (!angular.isDefined(checkAnimalStory.name) || checkAnimalStory.name == '') {
-                utilitiesService.utilities.alert('אנא בחר שם לסיפור החיה');
+                utilitiesService.utilities.alert('אנא בחר שם לסיפור האישי');
 
                 return false;
             }

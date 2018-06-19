@@ -44,6 +44,7 @@ public interface BusinessLayer {
     //notification
     void updateIfInPark(boolean isInPark);
     void unsubscribeToNotification(final GetObjectInterface goi);
+    void subscribeToNotification(final GetObjectInterface goi);
 
     //Images
     void getImage(String url, int width, int height, GetObjectInterface goi);

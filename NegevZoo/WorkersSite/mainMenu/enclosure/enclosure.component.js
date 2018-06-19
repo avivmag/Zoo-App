@@ -361,7 +361,7 @@
                     });
 
                 return;
-            }
+            };
 
             // Initialize the play sound function.
             $scope.playSound                    = function(audioFile) {

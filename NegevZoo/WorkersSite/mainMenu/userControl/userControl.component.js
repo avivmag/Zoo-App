@@ -157,7 +157,7 @@ app.controller('zooUserControlCtrl', ['$scope', 'usersService', 'utilitiesServic
                 return false;
             }
 
-            // If the username was alrady taken, return.
+            // If the username was already taken, return.
             if (users && users.filter(u => u.name === user.name).length > 1) {
                 utilitiesService.utilities.alert('שם המשתמש הנבחר כבר בשימוש');
 

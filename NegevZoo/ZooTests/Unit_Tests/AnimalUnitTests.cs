@@ -160,13 +160,13 @@ namespace ZooTests.Unit_Tests
         [TestMethod]
         public void GetAllAnimalStoryResultsLangEn()
         {
-            Assert.AreEqual(2, context.GetAllAnimalStoriesResults((int)Languages.en).Count());
+            Assert.AreEqual(1, context.GetAllAnimalStoriesResults((int)Languages.en).Count());
         }
 
         [TestMethod]
         public void GetAllAnimalStoryResultsLangAr()
         {
-            Assert.AreEqual(0, context.GetAllAnimalStoriesResults((int)Languages.ar).Count());
+            Assert.AreEqual(1, context.GetAllAnimalStoriesResults((int)Languages.ar).Count());
         }
 
         [TestMethod]
@@ -332,24 +332,7 @@ namespace ZooTests.Unit_Tests
             animals = context.GetAllAnimals();
             Assert.AreEqual(4, animals.Count());
         }
-
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentException), "Wrong input in adding animal. Animal name already exists")]
-        //public void UpdateAnimalAddAnimalNameExists()
-        //{
-        //    var animals = context.GetAllAnimals();
-        //    Assert.AreEqual(3, animals.Count());
-
-        //    var an = new Animal
-        //    {
-        //        id = default(int),
-        //        name = "קוף",
-        //        enclosureId = 3,
-        //    };
-
-        //    context.UpdateAnimal(an);
-        //}
-
+        
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Animal name is null or null")]
         public void UpdateAnimalWrongName()
@@ -418,26 +401,7 @@ namespace ZooTests.Unit_Tests
             Assert.IsTrue(animals.Any(a => a.pictureUrl == ""));
             Assert.AreEqual(3, animals.Count());
         }
-
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentException), "Wrong input in updating animal. Animal name already exitst")]
-        //public void UpdateAnimalNameAlreadyExists()
-        //{
-        //    var animals = context.GetAllAnimals();
-        //    Assert.AreEqual(3, animals.Count());
-
-        //    var an = new Animal
-        //    {
-        //        id = 2,
-        //        name = "גורילה",
-        //        enclosureId = 1,
-        //    };
-
-        //    an.name = "קוף";
-
-        //    context.UpdateAnimal(an);
-        //}
-
+        
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Wrong input. Animal id does'nt exits")]
         public void UpdateAnimalWrongId()

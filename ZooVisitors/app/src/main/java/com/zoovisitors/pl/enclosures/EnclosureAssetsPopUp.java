@@ -8,7 +8,6 @@ import android.util.DisplayMetrics;
 
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
-import com.zoovisitors.bl.Memory;
 import com.zoovisitors.pl.BaseActivity;
 
 import java.util.ArrayList;

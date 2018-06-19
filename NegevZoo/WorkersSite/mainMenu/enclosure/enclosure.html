@@ -21,7 +21,7 @@
                 <md-input-container layout="row">
                     <label ng-show="!isEdit">הכנס שם מזהה למתחם</label>
                     <label ng-show="isEdit">שם המתחם</label>
-                    <input style="width: 200px" ng-model="selectedEnclosure.name" required type="text">
+                    <input name="enclosure-name" style="width: 200px" ng-model="selectedEnclosure.name" required type="text">
                 </md-input-container>
 
                 <ng-card-content layout="column">
@@ -39,8 +39,8 @@
                     <md-button class="md-raised md-primary" ng-click="openMap($event, selectedEnclosure)">מקם את המתחם על המפה</md-button>
                 </div>
                 <div layout="column" layout-align="end end">
-                    <md-button style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
-                    <md-button  ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteEnclosure(selectedEnclosure.id)">מחק מתחם</md-button>
+                    <md-button name="save" style="background-color:darkviolet; min-width: 125px" class="md-raised md-accent" ng-click="addEnclosure(selectedEnclosure)">שמור פרטי מתחם</md-button>
+                    <md-button name="delete" ng-if="isEdit" style="background-color: tomato; min-width: 125px" class="md-raised md-accent" ng-click="confirmDeleteEnclosure(selectedEnclosure.id)">מחק מתחם</md-button>
                 </div>
             </md-card-content>
     </md-card-content>
@@ -58,7 +58,7 @@
     </md-card-title>
     <md-card-content ng-if="selectedEnclosure.recurringEvents && selectedEnclosure.recurringEvents.length > 0">
         <div style="margin-right: 10%" ng-repeat="recurringEvent in selectedEnclosure.recurringEvents | orderBy:'id'" layout="row" layout-align="start center">
-            <md-button style="margin-bottom: 25px" ng-if="!recurringEvent.isNew" ng-click="confirmDeleteRecurringEvent(selectedEnclosure.id, selectedEnclosure.recurringEvents, recurringEvent)" >
+            <md-button name="{{ $last ? 'delete-last' : '' }}" style="margin-bottom: 25px" ng-if="!recurringEvent.isNew" ng-click="confirmDeleteRecurringEvent(selectedEnclosure.id, selectedEnclosure.recurringEvents, recurringEvent)" >
                 <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
             </md-button>
             <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="recurringEvent.isNew">
@@ -68,20 +68,20 @@
             <md-card-content layout="row">
                 <md-input-container>
                     <label ng-show="recurringEvent.isNew">הכנס כותרת</label>
-                    <input style="min-width: 200px" ng-model="recurringEvent.title" required type="text">
+                    <input name="{{ $index === 0 ? 'title-save' : ''}}" style="min-width: 200px" ng-model="recurringEvent.title" required type="text">
                 </md-input-container>
 
                 <md-input-container>
                     <label ng-show="recurringEvent.isNew">הכנס תיאור</label>
-                    <input style="min-width: 400px" ng-model="recurringEvent.description" required type="text">
+                    <input name="{{ $index === 0 ? 'description-save' : ''}}"style="min-width: 400px" ng-model="recurringEvent.description" required type="text">
                 </md-input-container>
             </md-card-content>
 
             <md-card-content layout="column">
                 <md-input-container>
                     <label ng-show="recurringEvent.isNew">הכנס יום</label>
-                    <md-select ng-model="recurringEvent.day">
-                        <md-option ng-repeat="day in days" ng-value="day.id">{{ day.format }}</md-option>
+                    <md-select name="day-select" ng-model="recurringEvent.day">
+                        <md-option name="{{ 'day' + $index }}" ng-repeat="day in days" ng-value="day.id">{{ day.format }}</md-option>
                     </md-select>
                 </md-input-container>
 
@@ -90,15 +90,15 @@
 
                     <md-input-container>
                         <label ng-show="recurringEvent.isNew">דקה</label>
-                        <md-select ng-model="recurringEvent.startTime.minute">
-                            <md-option ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
+                        <md-select name="start-minute-select" ng-model="recurringEvent.startTime.minute">
+                            <md-option name="{{ 'start-minute' + $index }}" ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
                         </md-select>
                     </md-input-container>
 
                     <md-input-container>
                         <label ng-show="recurringEvent.isNew">שעה</label>
-                        <md-select ng-model="recurringEvent.startTime.hour">
-                            <md-option ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
+                        <md-select name="start-hour-select" ng-model="recurringEvent.startTime.hour">
+                            <md-option name="{{ 'start-hour' + $index }}" ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
                         </md-select>
                     </md-input-container>
                 </div>
@@ -108,20 +108,20 @@
 
                     <md-input-container>
                         <label ng-show="recurringEvent.isNew">דקה</label>
-                        <md-select ng-model="recurringEvent.endTime.minute">
-                            <md-option ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
+                        <md-select name="end-minute-select" ng-model="recurringEvent.endTime.minute">
+                            <md-option name="{{ 'end-minute' + $index }}" ng-repeat="minute in minutes" ng-value="minute">{{ minute }}</md-option>
                         </md-select>
                     </md-input-container>
 
                     <md-input-container>
                         <label ng-show="recurringEvent.isNew">שעה</label>
-                        <md-select ng-model="recurringEvent.endTime.hour">
-                            <md-option ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
+                        <md-select name="end-hour-select" ng-model="recurringEvent.endTime.hour">
+                            <md-option name="{{ 'end-hour' + $index }}" ng-repeat="hour in hours" ng-value="hour">{{ hour }}</md-option>
                         </md-select>
                     </md-input-container>
                 </div>
             </md-card-content>
-            <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="recurringEvent.isNew" ng-click="addRecurringEvent(recurringEvent)">שמור אירוע חוזר חדש</md-button>
+            <md-button name="save-recurring" class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="recurringEvent.isNew" ng-click="addRecurringEvent(recurringEvent)">שמור אירוע חוזר חדש</md-button>
             <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!recurringEvent.isNew" ng-click="addRecurringEvent(recurringEvent)">עדכון אירוע חוזר</md-button>
         </div>
     </md-card-content>
@@ -137,10 +137,10 @@
         <div layout="row">
             <md-input-container>
                 <label>הוסף וידאו של חיה</label>
-                <input style="width: 200px" ng-model="enclosureVideoUrl" type="text">
+                <input name="videoUrl" style="width: 200px" ng-model="enclosureVideoUrl" type="text">
             </md-input-container>
             <div>
-                <md-button class="md-raised md-primary" ng-click="addEnclosureVideo(selectedEnclosure, enclosureVideoUrl)">הוסף</md-button>
+                <md-button name="addVideo" class="md-raised md-primary" ng-click="addEnclosureVideo(selectedEnclosure, enclosureVideoUrl)">הוסף</md-button>
             </div>
         </div>
     </md-card-title>
@@ -149,7 +149,7 @@
         <div layout="column" ng-repeat="colIndex in [0, 1, 2, 3]">
             <div ng-repeat="video in selectedEnclosure.videos" ng-show="$index % 4 === colIndex" layout="column">
                 <youtube-video class="video" video-id="video.videoUrl"></youtube-video>
-                <md-button class="md-raised md-warn" ng-click="confirmDeleteVideo(selectedEnclosure.id, video, selectedEnclosure.videos)">מחק סרטון</md-button>
+                <md-button name="{{ 'delete-video' + $index }}" class="md-raised md-warn" ng-click="confirmDeleteVideo(selectedEnclosure.id, video, selectedEnclosure.videos)">מחק סרטון</md-button>
             </div>
         </div>
     </md-card-content>
@@ -189,12 +189,12 @@
                 <md-card-content style="margin-right: 4%"  layout="column">
                     <md-input-container layout="row">
                         <label>הכנס שם תצוגה למתחם</label>
-                        <input style="width: 200px" ng-model="enclosureDetails[selectedTab].name" required type="text">
+                        <input name="{{ 'detail-name' + $index }}" style="width: 200px" ng-model="enclosureDetails[selectedTab].name" required type="text">
                     </md-input-container>
                     
                     <md-input-container>
                         <label>הכנס סיפור למתחם</label>
-                        <textarea rows="6" ng-model="enclosureDetails[selectedTab].story" required type="text"></textarea>
+                        <textarea name="{{ 'detail-story' + $index }}" rows="6" ng-model="enclosureDetails[selectedTab].story" required type="text"></textarea>
                     </md-input-container>
 
                     <md-card-content layout="column" layout-align="start start">
@@ -211,7 +211,7 @@
                     </md-card-content>
 
                     <md-input-container>
-                        <md-button class="md-raised md-primary" ng-click="addEnclosureDetail(enclosureDetails[selectedTab])">הוסף תוכן למתחם בשפה שנבחרה</md-button>
+                        <md-button name="add-detail" class="md-raised md-primary" ng-click="addEnclosureDetail(enclosureDetails[selectedTab])">הוסף תוכן למתחם בשפה שנבחרה</md-button>
                     </md-input-container>
                 </md-card-content>
             </md-tab>
@@ -242,7 +242,7 @@
     </md-card-content>
 
     <md-card-content>
-        <md-button class="md-raised md-primary" ui-sref="mainMenu.enclosures.animal({ enclosure: selectedEnclosure })">הוסף חיה למתחם</md-button>
+        <md-button name="new-animal" class="md-raised md-primary" ui-sref="mainMenu.enclosures.animal({ enclosure: selectedEnclosure })">הוסף חיה למתחם</md-button>
     </md-card-content>
 </md-card>
 
@@ -269,6 +269,6 @@
     </md-card-content>
 
     <md-card-content>
-        <md-button class="md-raised md-primary" ui-sref="mainMenu.enclosures.animalStory({ enclosure: selectedEnclosure })">הוסף סיפור אישי</md-button>
+        <md-button name="new-animal-story" class="md-raised md-primary" ui-sref="mainMenu.enclosures.animalStory({ enclosure: selectedEnclosure })">הוסף סיפור אישי</md-button>
     </md-card-content>
 </md-card>

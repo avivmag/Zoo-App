@@ -68,8 +68,8 @@
                 $scope.isLoading        = true;
 
                 // Initialize the return statement.
-                var successContent      = contactInfo.isNew ? 'האירוע נוסף בהצלחה!' : 'האירוע עודכן בהצלחה!';
-                var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת האירוע' : 'התרחשה שגיאה בעת עדכון האירוע';
+                var successContent      = contactInfo.isNew ? 'דרך ההתקשרות נוספה בהצלחה!' : 'דרך ההתקשרות עודכנה בהצלחה!';
+                var failContent         = contactInfo.isNew ? 'התרחשה שגיאה בעת שמירת דרך ההתקשרות' : 'התרחשה שגיאה בעת עדכון דרך ההתקשרות';
 
                 // Update the contact info.
                 zooInfoService.contactInfo.updateContactInfo(contactInfo).then(

@@ -68,7 +68,7 @@
             };
 
             // Initialize the confirm delete price function.
-            $scope.confirmDeletePrice   = function (ev, price, prices) {
+            $scope.confirmDeletePrice   = function (price, prices) {
                 utilitiesService.utilities.confirm({ title: 'מחיקת מחירון', text: 'האם אתה בטוח שברצונך למחוק מחירון זה?' }).then(
                     function () {
                         deletePrice(price, prices);
@@ -85,6 +85,8 @@
 
         // Deletes a price.
         function deletePrice(price, prices) {
+            console.log(price.id);
+
             zooInfoService.prices.deletePrice(price.id).then(
                 function () {
                     utilitiesService.utilities.alert('המחירון נמחק בהצלחה');

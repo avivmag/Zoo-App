@@ -1,5 +1,7 @@
 ﻿<meta charset="utf-8" http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-
+<head>
+    <title>Feed Wall</title>
+</head>
 <div layout="row" layout-align="center center">
     <md-progress-circular ng-show="isLoading" class="md-accent md-hue-1" md-diameter="300"></md-progress-circular>
 </div>
@@ -16,7 +18,7 @@
     </md-card-title>
     <md-card-content ng-if="feedWall && feedWall.length > 0">
         <div style="margin-right: 10%" ng-repeat="feed in feedWall | orderBy:'id'" layout="row" layout-align="start center">
-            <md-button style="margin-bottom: 25px" ng-if="!feed.isNew" ng-click="confirmDeleteFeed($event, feed, feedWall)" >
+            <md-button name="{{ $last ? 'delete-last' : '' }}" style="margin-bottom: 25px" ng-if="!feed.isNew" ng-click="confirmDeleteFeed($event, feed, feedWall)" >
                 <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
             </md-button>
             <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="feed.isNew">
@@ -26,17 +28,17 @@
             <md-card-content layout="row">
                 <md-input-container>
                     <label ng-show="feed.isNew">הכנס כותרת</label>
-                    <input style="min-width: 200px" ng-model="feed.title" required type="text">
+                    <input name="{{ $index === 0 ? 'title-save' : ''}}" style="min-width: 200px" ng-model="feed.title" required type="text">
                 </md-input-container>
 
                 <md-input-container>
                     <label ng-show="feed.isNew">הכנס עדכון</label>
-                    <input style="min-width: 400px" ng-model="feed.info" required type="text">
+                    <input name="{{ $index === 0 ? 'info-save' : ''}}" style="min-width: 400px" ng-model="feed.info" required type="text">
                 </md-input-container>
 
             </md-card-content>
-            <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed)">שמור עדכון חדש</md-button>
-            <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed)">עדכון תוכן</md-button>
+            <md-button name="{{ $index === 0 ? 'save' : ''}}" class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="feed.isNew" ng-click="addFeed(feed, feedWall)">שמור עדכון חדש</md-button>
+            <md-button class="md-primary md-raised" style="margin-bottom: 35px !important" ng-if="!feed.isNew" ng-click="addFeed(feed, feedWall)">עדכון תוכן</md-button>
             
             <div style="margin-right: 15px" layout="row">
                 <div layout="column" style="margin-left: 10px">

@@ -112,15 +112,14 @@ public class LoadingScreen extends BaseActivity {
                     GlobalVariables.language = 1;
                     break;
             }
-            sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(getString(R.string.language_preferences), GlobalVariables.language);
-            editor.commit();
+            sharedPref = GlobalVariables.appCompatActivity.getPreferences(Context.MODE_PRIVATE); //open preferences file
+            SharedPreferences.Editor editor = sharedPref.edit();  //edit it
+            editor.putInt(getString(R.string.language_preferences), GlobalVariables.language);  //insert language
+            editor.commit();                                      //save file
             setLocale();
         }
         else
             setLocale();
-
     }
 
 

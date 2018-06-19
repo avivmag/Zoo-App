@@ -16,7 +16,7 @@
     </md-card-title>
     <md-card-content ng-if="specialEvents && specialEvents.length > 0">
         <md-card style="margin-right: 10%" ng-repeat="event in specialEvents | orderBy:'id'" layout="row">
-            <md-button style="margin-bottom: 25px" ng-if="!event.isNew" ng-click="confirmDeleteSpecialEvent(event, specialEvents)" >
+            <md-button name="{{ $last ? 'delete-last' : '' }}" style="margin-bottom: 25px" ng-if="!event.isNew" ng-click="confirmDeleteSpecialEvent(event, specialEvents)" >
                 <md-icon md-svg-src="icons/ic_not_interested_black_24px.svg"></md-icon>
             </md-button>
             <md-button style="margin-bottom: 25px" ng-disabled="true" ng-if="event.isNew">
@@ -27,23 +27,23 @@
                 <md-card-content style="margin-right: 15px" layout="row" layout-align="space-between">
                     <md-input-container>
                         <label ng-show="event.isNew">הכנס כותרת</label>
-                        <input style="min-width: 400px" ng-model="event.title" required type="text">
+                        <input name="{{ $index === 0 ? 'title-save' : ''}}" style="min-width: 400px" ng-model="event.title" required type="text">
                     </md-input-container>
 
                     <md-input-container>
                         <label ng-show="event.isNew">הכנס תיאור</label>
-                        <textarea style="min-width: 400px" ng-model="event.description" required type="text"></textarea>
+                        <textarea name="{{ $index === 0 ? 'description-save' : ''}}" style="min-width: 400px" ng-model="event.description" required type="text"></textarea>
                     </md-input-container>
                 </md-card-content>
 
                 <md-card-content>
                     <md-input-container>
                         <label ng-show="event.isNew">בחר תאריך התחלה</label>
-                        <md-datepicker style="min-width: 90px" ng-model="event.startDate"></md-datepicker>
+                        <md-datepicker name="{{ $index === 0 ? 'start-date-save' : ''}}"style="min-width: 90px" ng-model="event.startDate"></md-datepicker>
                     </md-input-container>
                     <md-input-container>
                         <label ng-show="event.isNew">בחר תאריך סיום</label>
-                        <md-datepicker style="min-width: 90px" ng-model="event.endDate"></md-datepicker>
+                        <md-datepicker name="{{ $index === 0 ? 'end-date-save' : ''}}"style="min-width: 90px" ng-model="event.endDate"></md-datepicker>
                     </md-input-container>
                 </md-card-content>
 
@@ -61,7 +61,7 @@
                         ng-src="{{ baseURL + event.imageUrl }}" />
 
                 <div layout="row">
-                    <md-button style="min-width:105px" class="md-primary md-raised" ng-if="event.isNew" ng-click="addEvent(event)">שמור אירוע חדש</md-button>
+                    <md-button name="save" style="min-width:105px" class="md-primary md-raised" ng-if="event.isNew" ng-click="addEvent(event)">שמור אירוע חדש</md-button>
                     <md-button style="min-width:105px" class="md-primary md-raised" ng-if="!event.isNew" ng-click="addEvent(event)">עדכון אירוע</md-button>
                     
                     <md-checkbox style="margin-top: 12px" ng-model="event.isPushMessage">שלח כהודעת פוש</md-checkbox>
