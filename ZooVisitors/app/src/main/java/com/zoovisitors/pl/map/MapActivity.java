@@ -93,6 +93,7 @@ public class MapActivity extends ProviderBasedActivity
 
         Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
+                mapData.getMapInfo().getRoutesMap(),
                 new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
                         .getZooLocationLongitude()),
                 new Point(mapData.getMapInfo().getZooPointX(), mapData.getMapInfo().getZooPointY()),
