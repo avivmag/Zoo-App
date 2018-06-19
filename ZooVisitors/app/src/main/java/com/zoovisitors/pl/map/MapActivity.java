@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private Boolean navigatingOutOfActivity = false;
+
     private Location demoLocation;
     private Runnable demoExplorationRunnable;
     private Thread demoExplorationThread;
@@ -115,6 +117,11 @@ public class MapActivity extends ProviderBasedActivity
                 () -> { cancelFocus(); },
                 // called when someone clicks on enclosure
                 () -> {
+                    synchronized (navigatingOutOfActivity) {
+                        if(navigatingOutOfActivity)
+                            return;
+                        navigatingOutOfActivity = true;
+                    }
                     cancelFocus();
                     moveDoors(false);
                 },
@@ -156,6 +163,7 @@ public class MapActivity extends ProviderBasedActivity
     @Override
     protected void onResume() {
         super.onResume();
+        navigatingOutOfActivity = false;
 
         if(!clickedGetToKnowMe) {
             moveDoors(true);
@@ -307,13 +315,12 @@ public class MapActivity extends ProviderBasedActivity
         hideGetToKnowMe();
     }
 
-    private Boolean backPressed = false;
     @Override
     public void onBackPressed() {
-        synchronized (backPressed) {
-            if(backPressed)
+        synchronized (navigatingOutOfActivity) {
+            if(navigatingOutOfActivity)
                 return;
-            backPressed = true;
+            navigatingOutOfActivity = true;
         }
         cancelFocus();
         moveDoors(false);
@@ -401,7 +408,7 @@ public class MapActivity extends ProviderBasedActivity
         }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
-    private double DEMO_MOVEMENT = 0.00003;
+    private double DEMO_MOVEMENT = 0.00005;
     private enum ExplorationState {ON, OFF};
     private ExplorationState explorationState = ExplorationState.OFF;
     public void onDemoClick(View view) {
