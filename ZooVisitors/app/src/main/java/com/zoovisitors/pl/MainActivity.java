@@ -229,11 +229,11 @@ public class MainActivity extends BaseActivity {
                 //item.setChecked(!item.isChecked());
                 int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
                 if (notificationFromPref == 1){
-                    item.setChecked(false);
                     writeToPreferences(R.string.notification_preferences, 0);
                     GlobalVariables.bl.unsubscribeToNotification(new GetObjectInterface() {
                         @Override
                         public void onSuccess(Object response) {
+                            item.setChecked(false);
                             Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: Off", Toast.LENGTH_LONG).show();
                         }
 
@@ -247,9 +247,18 @@ public class MainActivity extends BaseActivity {
                 else {
                     item.setChecked(true);
                     writeToPreferences(R.string.notification_preferences, 1);
-                    //TODO: Change to Or's subscribe method
-                    GlobalVariables.bl.updateIfInPark(true);
-                    Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
+
+                    GlobalVariables.bl.subscribeToNotification(new GetObjectInterface() {
+                        @Override
+                        public void onSuccess(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object response) {
+                            Toast.makeText(GlobalVariables.appCompatActivity, "Something went wrong...", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
         }
     }
@@ -352,11 +361,24 @@ public class MainActivity extends BaseActivity {
 
         MenuItem notification = menu.findItem(R.id.notifications);
         int notificationFromPref = readFromPreferences(R.string.notification_preferences, R.integer.notification_not_instantiate);
-        if (notificationFromPref == -1 || notificationFromPref == 1){
+        if (notificationFromPref == -1){
             notification.setChecked(true);
             writeToPreferences(R.string.notification_preferences, 1);
-            //TODO: change to Or's subscribe method
-            GlobalVariables.bl.updateIfInPark(false);
+            GlobalVariables.bl.subscribeToNotification(new GetObjectInterface() {
+                @Override
+                public void onSuccess(Object response) {
+                    Toast.makeText(GlobalVariables.appCompatActivity, "Notifications: On", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Object response) {
+                    Toast.makeText(GlobalVariables.appCompatActivity, "Something went wrong...", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        else if  (notificationFromPref == 1){
+            notification.setChecked(true);
+            writeToPreferences(R.string.notification_preferences, 1);
         }
         else {
             notification.setChecked(false);

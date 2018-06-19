@@ -16,7 +16,6 @@ import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Enclosure;
 import com.zoovisitors.backend.callbacks.GetObjectInterface;
-import com.zoovisitors.bl.Memory;
 
 /**
  * Created by Gili on 28/12/2017.

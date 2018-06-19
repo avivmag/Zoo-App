@@ -3,6 +3,7 @@ package com.zoovisitors.bl;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.util.Pair;
 
 import com.google.gson.Gson;
@@ -23,7 +24,7 @@ import com.zoovisitors.cl.network.NetworkImpl;
 import com.zoovisitors.cl.network.NetworkInterface;
 import com.zoovisitors.backend.callbacks.ResponseInterface;
 import com.zoovisitors.dal.DataFromServer;
-import com.zoovisitors.dal.InternalStorage;
+import com.zoovisitors.dal.Memory;
 import com.zoovisitors.pl.customViews.CustomRelativeLayout;
 
 import java.util.ArrayList;
@@ -293,16 +294,16 @@ public class BusinessLayerImpl implements BusinessLayer {
     public void updateIfInPark(boolean isInPark){
         ni.post("notification/updateDevice/" + GlobalVariables.firebaseToken + "/" + isInPark, new ResponseInterface<String>() {
             @Override
-            public void onSuccess(String response) { }
+            public void onSuccess(String response) {Log.e("AVIV", "" + isInPark); }
 
             @Override
-            public void onFailure(String response) { }
+            public void onFailure(String response) {Log.e("AVIV", "Failed    " + isInPark); }
         });
     }
 
     @Override
     public void unsubscribeToNotification(final GetObjectInterface goi) {
-        ni.post("notification/unsubscribe/" + GlobalVariables.firebaseToken, new ResponseInterface<String>() {
+        ni.post("notification/" + GlobalVariables.firebaseToken + "/unsubscribe", new ResponseInterface<String>() {
             @Override
             public void onSuccess(String response) {
                 goi.onSuccess("Unsubscribe success");
@@ -311,6 +312,21 @@ public class BusinessLayerImpl implements BusinessLayer {
             @Override
             public void onFailure(String response) {
                 goi.onFailure("Unsubscribe failed");
+            }
+        });
+    }
+
+    @Override
+    public void subscribeToNotification(final GetObjectInterface goi) {
+        ni.post("notification/" + GlobalVariables.firebaseToken + "/subscribe", new ResponseInterface<String>() {
+            @Override
+            public void onSuccess(String response) {
+                goi.onSuccess(goi);
+            }
+
+            @Override
+            public void onFailure(String response) {
+                goi.onFailure(goi);
             }
         });
     }
@@ -427,5 +443,7 @@ public class BusinessLayerImpl implements BusinessLayer {
             }
         }
     }
+
+
 
 }
