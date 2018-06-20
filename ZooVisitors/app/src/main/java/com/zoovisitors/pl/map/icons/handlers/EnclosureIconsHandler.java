@@ -1,11 +1,9 @@
 package com.zoovisitors.pl.map.icons.handlers;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,7 +15,6 @@ import com.zoovisitors.pl.map.MapView;
 import com.zoovisitors.pl.map.icons.EnclosureIcon;
 import com.zoovisitors.pl.map.icons.RecurringEventCountDownIcon;
 import com.zoovisitors.pl.map.icons.RecurringEventIcon;
-import com.zoovisitors.pl.map.icons.TextIcon;
 
 import java.util.List;
 import java.util.Timer;
@@ -31,7 +28,6 @@ public class EnclosureIconsHandler {
 
     private int enclosureId;
     private EnclosureIcon enclosureIcon;
-    private View.OnTouchListener onTouchListener;
     private RecurringEventCountDownIcon recurringEventCountDownIcon;
     private RecurringEventIcon recurringEventIcon;
     private RecurringEventsHandler recurringEventsHandler;
@@ -47,7 +43,8 @@ public class EnclosureIconsHandler {
         this.timerSlowRunnables = timerSlowRunnables;
         this.timer = timer;
         recurringEventsHandler = new RecurringEventsHandler(enclosure.getRecurringEvents());
-        onTouchListener = createOnTouchListener(onEnclosureClick, encIndex, delayToClick);
+        View.OnTouchListener onTouchListener = createOnTouchListener(onEnclosureClick, encIndex,
+                delayToClick);
         enclosureIcon = new EnclosureIcon(mapView, enclosure.getMarkerBitmap(), onTouchListener,
                 enclosure.getMarkerX(),
                 enclosure.getMarkerY());
@@ -64,7 +61,6 @@ public class EnclosureIconsHandler {
         // should be ran after the view was added to front and the sizes are known, cool trick..
         enclosureIcon.view.post(() -> {
             recurringEventCountDownIcon.top -= enclosureIcon.height / 2;
-//                    + recurringEventCountDownIcon.textView.getLineHeight();
             recurringEventIcon.top = recurringEventCountDownIcon.top;
         });
 

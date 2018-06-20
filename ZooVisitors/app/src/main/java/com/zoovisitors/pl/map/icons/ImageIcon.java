@@ -1,14 +1,11 @@
 package com.zoovisitors.pl.map.icons;
 
-import android.graphics.Color;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.zoovisitors.pl.map.MapView;
 
 public abstract class ImageIcon extends Icon {
-    public ImageIcon(MapView mapView, Object[] additionalData, int left, int top, boolean isVisible) {
+    ImageIcon(MapView mapView, Object[] additionalData, int left, int top, boolean isVisible) {
         super(additionalData, mapView, left, top, isVisible);
     }
 

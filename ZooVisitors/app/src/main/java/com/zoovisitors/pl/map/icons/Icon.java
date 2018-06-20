@@ -1,6 +1,5 @@
 package com.zoovisitors.pl.map.icons;
 
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;

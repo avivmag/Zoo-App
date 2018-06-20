@@ -86,6 +86,7 @@
 
     <!--map-->
     <string name="map_get_to_know_me_text">לחץ כאן כדי להכיר אותי</string>
+    <string name="map_bad_gps_signal">קליטת מיקום חלשה, לא ניתן לקבוע מיקום</string>
 
     <string name="no_data">אין מידע</string>
 

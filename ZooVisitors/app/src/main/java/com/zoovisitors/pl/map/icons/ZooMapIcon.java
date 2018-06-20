@@ -12,11 +12,12 @@ public class ZooMapIcon extends ImageIcon {
     public ZooMapIcon(MapView mapView, Object[] additionalData) {
         super(mapView, additionalData, 0, 0, true);
     }
+
     @Override
     protected void doOnPost(boolean isVisible) {
-        this.left = this.left + width/2;
-        this.top = this.top + height/2;
-        mapView.SetInitialParameters(width, height);
+        this.left = this.left + width / 2;
+        this.top = this.top + height / 2;
+        mapView.initiateVariablesWithSize(width, height);
         super.doOnPost(isVisible);
     }
 
