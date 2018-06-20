@@ -7,14 +7,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.zoovisitors.GlobalVariables;
-import com.zoovisitors.backend.callbacks.GetObjectInterface;
 
 public class GpsService extends Service
 {
-    private static final double MAX_MARGIN = 10 * 0.0111111;
+    //                                                                    10 meters
+    private static final double maxMargin = GlobalVariables.DEBUG ? 100 : 10 * 0.000009;
     private LocationListener mLocationListener = new LocationListener();
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 30 * 1000;
@@ -26,10 +25,10 @@ public class GpsService extends Service
         public void onLocationChanged(Location location) {
             if(!GlobalVariables.notifications)
                 return;
-            boolean isInPark = (location.getLatitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLatitude() - MAX_MARGIN &&
-                    location.getLatitude() <= GlobalVariables.bl.getMapResult().getMapInfo().getMaxLatitude() + MAX_MARGIN &&
-                    location.getLongitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLongitude() - MAX_MARGIN &&
-                    location.getLongitude() <= GlobalVariables.bl.getMapResult().getMapInfo().getMaxLongitude() + MAX_MARGIN);
+            boolean isInPark = (location.getLatitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLatitude() - maxMargin &&
+                    location.getLatitude() <= GlobalVariables.bl.getMapResult().getMapInfo().getMaxLatitude() + maxMargin &&
+                    location.getLongitude() >= GlobalVariables.bl.getMapResult().getMapInfo().getMinLongitude() - maxMargin &&
+                    location.getLongitude() <= GlobalVariables.bl.getMapResult().getMapInfo().getMaxLongitude() + maxMargin);
             GlobalVariables.bl.updateIfInPark(isInPark);
         }
 

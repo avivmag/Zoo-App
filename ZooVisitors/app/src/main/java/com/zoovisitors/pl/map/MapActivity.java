@@ -2,6 +2,7 @@ package com.zoovisitors.pl.map;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.Pair;
@@ -32,16 +33,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MapActivity extends ProviderBasedActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private Boolean navigatingOutOfActivity = false;
+    public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 230;
+    public static final long OPEN_DOORS_ANIMATION_DURATION = 750;
+    private static final int MAX_ALLOWED_ACCURACY = 7;
+    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
+    private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
+    private double DEMO_MOVEMENT = 0.00005;
+    private enum ExplorationState {ON, OFF};
 
+    private DataStructure mapDS;
+    private Boolean navigatingOutOfActivity = false;
     private Location demoLocation;
     private Runnable demoExplorationRunnable;
     private Thread demoExplorationThread;
-    public static final int GET_TO_KNOW_ME_ANIMATION_DELTA_DP = 230;
     private MapView mapView;
     private MapResult mapData;
-    private DataStructure mapDS;
-    private static final int MAX_ALLOWED_ACCURACY = 7;
     private RelativeLayout mapActivityLayout;
     private RelativeLayout getToKnowMeLayout;
     private int initialGetToKnowMeLayoutTop;
@@ -49,8 +55,6 @@ public class MapActivity extends ProviderBasedActivity
     private int getToKnowMeIndex = -1;
     private TextView getToKnowMeTv;
     private ImageView getToKnowMeIb;
-    private final long MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES = 10 * 1000;
-    private final long GET_TO_KNOW_ME_ANIMATION_TIME = 1500;
     private int getToKnowMeAnimationDeltaPx;
     private final AtomicBoolean onLocationInProgress = new AtomicBoolean(false);
     private enum GpsState {Off, On, Focused};
@@ -59,16 +63,31 @@ public class MapActivity extends ProviderBasedActivity
     private ImageView logo;
     private ImageView leftDoor;
     private ImageView rightDoor;
-    private android.support.v7.app.ActionBar actionBar;
-    public static final long OPEN_DOORS_ANIMATION_DURATION = 750;
+    private long lastTimeUpdatedGetToKnowMe = 0;
+    private Animal.PersonalStories lastPersonalStoryShowed = null;
+    private boolean isGetToKnowMeShown = false;
+    private boolean clickedGetToKnowMe = false;
+    private ExplorationState explorationState = ExplorationState.OFF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+        initiateVariables();
 
+        Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
+        initiateDataStructure(enclosures);
+        initiateMapView(enclosures);
+        if(GlobalVariables.DEBUG) {
+            initiateDemo();
+        }
+    }
+
+    /**
+     * Initiate the class variables
+     */
+    private void initiateVariables() {
+        getSupportActionBar().hide();
         mapActivityLayout = findViewById(R.id.activity_map_layout);
         mapView = findViewById(R.id.map_view_layout);
         getToKnowMeLayout = findViewById(R.id.map_get_to_know_me_layout);
@@ -88,10 +107,14 @@ public class MapActivity extends ProviderBasedActivity
         logo = findViewById(R.id.map_logo);
         leftDoor = findViewById(R.id.map_left_door);
         rightDoor = findViewById(R.id.map_right_door);
-
         mapData = GlobalVariables.bl.getMapResult();
+    }
 
-        Pair<Integer, Enclosure>[] enclosures = GlobalVariables.bl.getEnclosuresForMap();
+    /**
+     * Initiate map datastructure
+     * @param enclosures
+     */
+    private void initiateDataStructure(Pair<Integer, Enclosure>[] enclosures) {
         mapDS = new DataStructure(mapData.getMapInfo().getPoints(),
                 mapData.getMapInfo().getRoutesMap(),
                 new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo()
@@ -108,10 +131,16 @@ public class MapActivity extends ProviderBasedActivity
                 enclosures,
                 GlobalVariables.bl.getPersonalStories()
         );
+    }
 
+    /**
+     * Initiates the map view.
+     * @param enclosures
+     */
+    private void initiateMapView(Pair<Integer, Enclosure>[] enclosures) {
         // Note: be aware that cancelFocus should be called only when touching the map view and
         // not other views in activity_map
-        mapView.SetInitialValues(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
+        mapView.initiateVariables(GlobalVariables.bl.getMapResult().getMapBitmap(), enclosures,
                 GlobalVariables.bl.getMiscs(),
                 getIntent().getIntExtra("enclosureID", -1),
                 // called when someone touches the map
@@ -127,31 +156,34 @@ public class MapActivity extends ProviderBasedActivity
                     moveDoors(false);
                 },
                 2*OPEN_DOORS_ANIMATION_DURATION);
+    }
 
-        if(GlobalVariables.DEBUG) {
-            findViewById(R.id.demo_layout).setVisibility(View.VISIBLE);
-            demoLocation = new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo().getZooLocationLongitude());
-            onLocationChangedDemo(demoLocation);
+    /**
+     * Initiates demo
+     */
+    private void initiateDemo() {
+        findViewById(R.id.demo_layout).setVisibility(View.VISIBLE);
+        demoLocation = new Location(mapData.getMapInfo().getZooLocationLatitude(), mapData.getMapInfo().getZooLocationLongitude());
+        onLocationChangedDemo(demoLocation);
 
-            demoExplorationRunnable =  () -> {
-                final double[] lastDemoLocationLatitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
-                final double[] lastDemoLocationLongitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
-                while (explorationState == ExplorationState.ON) {
-                    Location nextDemoLocation = new Location (
-                            demoLocation.getLatitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLatitudeChange[0]) / 2,
-                            demoLocation.getLongitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLongitudeChange[0]) / 2);
-                    runOnUiThread(() -> {
-                        if(onLocationChangedDemo(nextDemoLocation)) {
-                            lastDemoLocationLatitudeChange[0] = nextDemoLocation.getLatitude() - demoLocation.getLatitude();
-                            lastDemoLocationLongitudeChange[0] = nextDemoLocation.getLongitude() - demoLocation.getLongitude();
-                            demoLocation = nextDemoLocation;
-                        }
-                    });
-                    try { Thread.sleep(300); } catch (InterruptedException e) { }
-                }
-                demoExplorationThread = null;
-            };
-        }
+        demoExplorationRunnable =  () -> {
+            final double[] lastDemoLocationLatitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
+            final double[] lastDemoLocationLongitudeChange = {(Math.random() * 2 - 1) * DEMO_MOVEMENT};
+            while (explorationState == ExplorationState.ON) {
+                Location nextDemoLocation = new Location (
+                        demoLocation.getLatitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLatitudeChange[0]) / 2,
+                        demoLocation.getLongitude() + ((Math.random() * 2 - 1) * DEMO_MOVEMENT + lastDemoLocationLongitudeChange[0]) / 2);
+                runOnUiThread(() -> {
+                    if(onLocationChangedDemo(nextDemoLocation)) {
+                        lastDemoLocationLatitudeChange[0] = nextDemoLocation.getLatitude() - demoLocation.getLatitude();
+                        lastDemoLocationLongitudeChange[0] = nextDemoLocation.getLongitude() - demoLocation.getLongitude();
+                        demoLocation = nextDemoLocation;
+                    }
+                });
+                try { Thread.sleep(300); } catch (InterruptedException e) { }
+            }
+            demoExplorationThread = null;
+        };
     }
 
     @Override
@@ -160,7 +192,6 @@ public class MapActivity extends ProviderBasedActivity
         setIntent(intent);
     }
 
-    private boolean clickedGetToKnowMe = false;
     @Override
     protected void onResume() {
         super.onResume();
@@ -172,6 +203,23 @@ public class MapActivity extends ProviderBasedActivity
         clickedGetToKnowMe = false;
     }
 
+    @Override
+    public void onBackPressed() {
+        synchronized (navigatingOutOfActivity) {
+            if(navigatingOutOfActivity)
+                return;
+            navigatingOutOfActivity = true;
+        }
+        cancelFocus();
+        moveDoors(false);
+        mapView.InitiateExitMapAnimation();
+        new Handler().postDelayed(super::onBackPressed, OPEN_DOORS_ANIMATION_DURATION * 2);
+    }
+
+    /**
+     * Called when a new location is determined.
+     * @param location
+     */
     @Override
     public void onLocationChanged(android.location.Location location) {
         if (!GlobalVariables.DEBUG && location.getAccuracy() <= MAX_ALLOWED_ACCURACY) {
@@ -195,19 +243,16 @@ public class MapActivity extends ProviderBasedActivity
             }
 
             updateVisitorPosition(pointOnRoad);
-            updateGetToKnowMe();
+            refreshGetToKnowMe();
 
             onLocationInProgress.set(false);
         } else {
-            // TODO: Think of a better way to show this or at least support all 4 languages
-            Toast.makeText(this, "Bad gps signal", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.map_bad_gps_signal, Toast.LENGTH_LONG).show();
         }
     }
 
     /**
-     *
-     * @param location
-     * @return true if the given location was converted to point and shown on the map
+     * Returns true if the given location was converted to point and can be shown on the map routes
      */
     private boolean onLocationChangedDemo(Location location) {
         Point pointOnRoad = mapDS.getOnMapPosition(
@@ -217,7 +262,7 @@ public class MapActivity extends ProviderBasedActivity
         }
 
         updateVisitorPosition(pointOnRoad);
-        updateGetToKnowMe();
+        refreshGetToKnowMe();
         return true;
     }
 
@@ -227,11 +272,7 @@ public class MapActivity extends ProviderBasedActivity
                 gpsState == GpsState.Focused);
     }
 
-    private long lastTimeUpdatedGetToKnowMe = 0;
-    private Animal.PersonalStories lastPersonalStoryShowed = null;
-
-    private boolean isGetToKnowMeShown = false;
-    private void updateGetToKnowMe() {
+    private void refreshGetToKnowMe() {
         if (System.currentTimeMillis() - lastTimeUpdatedGetToKnowMe >
                 MAX_TIME_BETWEEN_GET_TO_KNOW_ME_UPDATES) {
             Animal.PersonalStories animalStory = mapDS.getNextAnimalStory();
@@ -303,30 +344,17 @@ public class MapActivity extends ProviderBasedActivity
         isGetToKnowMeShown = false;
     }
 
+    public void getToKnowMeClose(View view) {
+        mapDS.removeAnimalStory(lastPersonalStoryShowed);
+        hideGetToKnowMe();
+    }
+
     public void getToKnowMeClick(View view) {
         clickedGetToKnowMe = true;
         Intent intent = new Intent(GlobalVariables.appCompatActivity, PersonalPopUp
                 .class);
         intent.putExtra("animalId", getToKnowMeIndex);
         startActivity(intent);
-    }
-
-    public void getToKnowMeClose(View view) {
-        mapDS.removeAnimalStory(lastPersonalStoryShowed);
-        hideGetToKnowMe();
-    }
-
-    @Override
-    public void onBackPressed() {
-        synchronized (navigatingOutOfActivity) {
-            if(navigatingOutOfActivity)
-                return;
-            navigatingOutOfActivity = true;
-        }
-        cancelFocus();
-        moveDoors(false);
-        mapView.exitMap();
-        new Handler().postDelayed(super::onBackPressed, OPEN_DOORS_ANIMATION_DURATION * 2);
     }
 
     @Override
@@ -364,7 +392,7 @@ public class MapActivity extends ProviderBasedActivity
                         .round_gps_fixed_black_24));
                 break;
             case Focused:
-                mapView.animationInterrupt = true;
+                mapView.interruptAnimation(true);
                 cancelFocus();
                 break;
         }
@@ -378,69 +406,85 @@ public class MapActivity extends ProviderBasedActivity
         }
     }
 
-    private void moveDoors(boolean outSide) {
+    /**
+     * Move the doors for when entering/exiting the map activity.
+     * @param openDoors True if the doors should open, false otherwise.
+     */
+    private void moveDoors(boolean openDoors) {
         LinearLayout.LayoutParams leftDoorParams = (LinearLayout.LayoutParams) leftDoor.getLayoutParams();
         LinearLayout.LayoutParams rightDoorParams = (LinearLayout.LayoutParams) rightDoor.getLayoutParams();
 
-        int halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
+        Animation animationLogo = getLogoAnimation(openDoors);
+        Animation animationDoors = getDoorsAnimation(openDoors, leftDoorParams, rightDoorParams,
+                getResources().getDisplayMetrics().widthPixels / 2);
+        startMoveDoorsAnimations(openDoors, animationLogo, animationDoors);
+    }
+
+    @NonNull
+    private Animation getLogoAnimation(boolean openDoors) {
         Animation animationLogo = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                logo.setAlpha((outSide ? (1 - interpolatedTime) : interpolatedTime));
+                logo.setAlpha((openDoors ? (1 - interpolatedTime) : interpolatedTime));
             }
         };
+        animationLogo.setDuration(OPEN_DOORS_ANIMATION_DURATION);
+        return animationLogo;
+    }
+
+    @NonNull
+    private Animation getDoorsAnimation(boolean openDoors, LinearLayout.LayoutParams
+            leftDoorParams, LinearLayout.LayoutParams rightDoorParams, int halfScreenWidth) {
         Animation animationDoors = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                leftDoorParams.rightMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
-                leftDoorParams.leftMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
+                leftDoorParams.rightMargin = (int) ((openDoors ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
+                leftDoorParams.leftMargin = (int) ((openDoors ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
                 leftDoor.setLayoutParams(leftDoorParams);
-                rightDoorParams.rightMargin = (int) ((outSide ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
-                rightDoorParams.leftMargin = (int) ((outSide ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
+                rightDoorParams.rightMargin = (int) ((openDoors ? -interpolatedTime : (interpolatedTime - 1)) * halfScreenWidth);
+                rightDoorParams.leftMargin = (int) ((openDoors ? interpolatedTime : (1 - interpolatedTime)) * halfScreenWidth);
                 rightDoor.setLayoutParams(rightDoorParams);
             }
         };
         animationDoors.setDuration(OPEN_DOORS_ANIMATION_DURATION);
-        animationLogo.setDuration(OPEN_DOORS_ANIMATION_DURATION);
-        mapActivityLayout.startAnimation(outSide ? animationLogo : animationDoors);
+        return animationDoors;
+    }
+
+    private void startMoveDoorsAnimations(boolean openDoors, Animation animationLogo,
+                                          Animation animationDoors) {
+        mapActivityLayout.startAnimation(openDoors ? animationLogo : animationDoors);
         new Handler().postDelayed(() -> {
-            mapActivityLayout.startAnimation(outSide ? animationDoors : animationLogo);
-            logo.setVisibility(outSide ? View.INVISIBLE : View.VISIBLE);
+            mapActivityLayout.startAnimation(openDoors ? animationDoors : animationLogo);
+            logo.setVisibility(openDoors ? View.INVISIBLE : View.VISIBLE);
         }, OPEN_DOORS_ANIMATION_DURATION);
     }
 
-    private double DEMO_MOVEMENT = 0.00005;
-    private enum ExplorationState {ON, OFF};
-    private ExplorationState explorationState = ExplorationState.OFF;
     public void onDemoClick(View view) {
         double demoLocationLatitude = demoLocation.getLatitude();
         double demoLocationLongitude = demoLocation.getLongitude();
+        if(view.getId() != R.id.demo_explore_button || explorationState != ExplorationState.OFF) {
+            explorationModeOff();
+        }
         switch (view.getId()) {
             case R.id.demo_left_button:
-                explorationModeOff();
                 demoLocationLatitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
                 demoLocationLongitude -= DEMO_MOVEMENT;
                 break;
             case R.id.demo_top_button:
-                explorationModeOff();
                 demoLocationLatitude += DEMO_MOVEMENT;
                 demoLocationLongitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
                 break;
             case R.id.demo_right_button:
-                explorationModeOff();
                 demoLocationLatitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
                 demoLocationLongitude += DEMO_MOVEMENT;
                 break;
             case R.id.demo_bottom_button:
-                explorationModeOff();
                 demoLocationLatitude -= DEMO_MOVEMENT;
                 demoLocationLongitude += (Math.random() * 2 - 1) * DEMO_MOVEMENT;
                 break;
             case R.id.demo_explore_button:
                 if(explorationState == ExplorationState.OFF) {
                     explorationModeOn();
-                } else {
-                    explorationModeOff();
                 }
                 break;
         }

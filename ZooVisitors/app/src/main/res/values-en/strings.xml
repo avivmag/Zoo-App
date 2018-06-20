@@ -90,6 +90,7 @@
 
     <!--map-->
     <string name="map_get_to_know_me_text">Click here for more</string>
+    <string name="map_bad_gps_signal">Bad GPS signle, cannot determine location</string>
 
     <string name="no_data">No data</string>
 

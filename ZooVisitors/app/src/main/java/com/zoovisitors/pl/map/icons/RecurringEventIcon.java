@@ -9,6 +9,9 @@ public class RecurringEventIcon extends TextIcon {
     private static final float MINIMAL_IMAGE_ALPHA = 0.2f;
     private static final float MAXIMAL_IMAGE_ALPHA = 1f;
 
+    private float lastAlpha = MAXIMAL_IMAGE_ALPHA;
+    private boolean directionIsUp = false;
+
     public RecurringEventIcon(MapView mapView, View.OnTouchListener onTouchListener, int left, int top) {
         super(new Object[] {onTouchListener}, mapView, left, top);
         // Note: be aware that the visibility is handled by the timer scheduling, not here.
@@ -17,11 +20,8 @@ public class RecurringEventIcon extends TextIcon {
     public void setText(String text) {
         updateViewText(text);
         updateViewWidthHeight();
-//        updateIconPosition();
     }
 
-    float lastAlpha = MAXIMAL_IMAGE_ALPHA;
-    boolean directionIsUp = false;
     public void updateOpacity()
     {
         if(lastAlpha <= MINIMAL_IMAGE_ALPHA)

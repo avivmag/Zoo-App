@@ -33,7 +33,6 @@ public class RecurringEventCountDownIcon extends TextIcon {
                 break;
         }
         updateViewWidthHeight();
-//        updateIconPosition();
         // Note: be aware that the visibility is handled by the timer scheduling, not here.
     }
 
