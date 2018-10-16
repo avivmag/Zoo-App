@@ -1,6 +1,5 @@
 package com.zoovisitors.pl.general_info;
 
-
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -8,10 +7,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.zoovisitors.GlobalVariables;
@@ -67,8 +64,6 @@ public class contactInfoFragment extends Fragment {
 
 
                 if (contactInfos.getContactInfo() != null && contactInfos.getContactInfo().length > 0) {
-
-                    ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.swan);
 
                     //way title
                     TextViewTitle wayTitle = new TextViewTitle(getContext(), View.TEXT_ALIGNMENT_CENTER);
@@ -141,14 +136,12 @@ public class contactInfoFragment extends Fragment {
                     noteText.setText(contactInfos.getContactInfoNote());
                 }
                 else {
-                    ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
                     addErrorMessage();
                 }
             }
 
             @Override
             public void onFailure(Object response) {
-                ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
                 addErrorMessage();
             }
         });

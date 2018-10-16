@@ -1,20 +1,15 @@
 package com.zoovisitors.pl.general_info;
 
-import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.Price;
@@ -122,14 +117,12 @@ public class pricesFragment extends Fragment {
                     }
                 }
                 else {
-                    ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
                     addErrorMessage();
                 }
             }
 
             @Override
             public void onFailure(Object response) {
-                ((ConstraintLayout)rootView).removeView(rootView.findViewById(R.id.info_table_image));
                 addErrorMessage();
             }
 

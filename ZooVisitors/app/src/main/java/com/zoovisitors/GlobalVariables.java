@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class GlobalVariables {
     public static boolean DEBUG = false;
-    public static String ServerAddress = "negevzoo.sytes.net:50" +
+    public static String ServerAddress = "app.negev.negevzoo.co.il:50" +
             (DEBUG ? "555/" : "000/");
     public static String LOG_TAG = "zoovisitors";
     public static int language;
