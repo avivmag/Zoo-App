@@ -25,15 +25,15 @@
                 <md-icon md-svg-src="icons/ic_new_releases_black_24px.svg"></md-icon>
             </md-button>
 
-            <md-card-content layout="row">
+            <md-card-content layout="row" layout-align="start center">
                 <md-input-container>
                     <label ng-show="feed.isNew">הכנס כותרת</label>
-                    <input name="{{ $index === 0 ? 'title-save' : ''}}" style="min-width: 200px" ng-model="feed.title" required type="text">
+                    <textarea rows="3" name="{{ $index === 0 ? 'title-save' : ''}}" style="min-width: 200px" ng-model="feed.title" required type="text"></textarea>
                 </md-input-container>
 
                 <md-input-container>
                     <label ng-show="feed.isNew">הכנס עדכון</label>
-                    <input name="{{ $index === 0 ? 'info-save' : ''}}" style="min-width: 400px" ng-model="feed.info" required type="text">
+                    <textarea rows="3" name="{{ $index === 0 ? 'info-save' : ''}}" style="min-width: 400px" ng-model="feed.info" required type="text"></textarea>
                 </md-input-container>
 
             </md-card-content>
