@@ -75,30 +75,27 @@ public class EnclosureIconsHandler {
 
     @NonNull
     private View.OnTouchListener createOnTouchListener(Runnable onEnclosureClick, int encIndex, long delayToClick) {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        onEnclosureClick.run();
+        return (v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    onEnclosureClick.run();
 
-                        Intent intent = new Intent(GlobalVariables.appCompatActivity,
-                                EnclosureActivity.class);
-                        Bundle clickedEnclosure = new Bundle();
+                    Intent intent = new Intent(GlobalVariables.appCompatActivity,
+                            EnclosureActivity.class);
+                    Bundle clickedEnclosure = new Bundle();
 
-                        clickedEnclosure.putSerializable("enc", encIndex);
-                        intent.putExtras(clickedEnclosure); //Put your id to your next Intent
-                        new Handler().postDelayed(() -> {
-                            GlobalVariables.appCompatActivity.startActivity(intent);
-                        }, delayToClick);
+                    clickedEnclosure.putSerializable("enc", encIndex);
+                    intent.putExtras(clickedEnclosure); //Put your id to your next Intent
+                    new Handler().postDelayed(() -> {
+                        GlobalVariables.appCompatActivity.startActivity(intent);
+                    }, delayToClick);
 
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        break;
-                }
-
-                return true;
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    break;
             }
+
+            return true;
         };
     }
 

@@ -392,7 +392,7 @@ public class MapActivity extends ProviderBasedActivity
                         .round_gps_fixed_black_24));
                 break;
             case Focused:
-                mapView.interruptAnimation(true);
+                mapView.setAnimationInterrupted(true);
                 cancelFocus();
                 break;
         }
