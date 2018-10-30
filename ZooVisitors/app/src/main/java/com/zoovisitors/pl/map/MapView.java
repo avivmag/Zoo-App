@@ -119,6 +119,12 @@ public class MapView extends RelativeLayout {
     }
 
     @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        timer.cancel();
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (MotionEvent.ACTION_DOWN == ev.getAction()) {
             mLastTouchX = ev.getX();
@@ -133,14 +139,8 @@ public class MapView extends RelativeLayout {
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        timer.cancel();
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        interruptAnimation(true);
+        setAnimationInterrupted(true);
         onTouchEvent.run();
         // Let the ScaleGestureDetector inspect all events.
         mScaleDetector.onTouchEvent(ev);
@@ -330,7 +330,7 @@ public class MapView extends RelativeLayout {
     public float getmPosY() { return mPosY; }
     public float getmScaleFactor() { return mScaleFactor; }
     public boolean isAnimationInterrupt() { return animationInterrupt; }
-    public void interruptAnimation(boolean animationInterrupted) { this.animationInterrupt = animationInterrupted; }
+    public void setAnimationInterrupted(boolean animationInterrupted) { this.animationInterrupt = animationInterrupted; }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
@@ -409,7 +409,7 @@ public class MapView extends RelativeLayout {
         float initialMPosX = mPosX;
         float initialMPosY = mPosY;
 
-        interruptAnimation(false);
+        setAnimationInterrupted(false);
 
         Animation a = new Animation() {
             @Override
