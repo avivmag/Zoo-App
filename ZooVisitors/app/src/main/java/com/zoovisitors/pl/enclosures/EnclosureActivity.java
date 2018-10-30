@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.LayoutDirection;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.CallbackManager;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Gili on 28/12/2017.
@@ -68,6 +71,7 @@ public class EnclosureActivity extends BaseActivity {
     private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
 
     private HorizontalScrollView picAndVidScroller;
+    private CountDownLatch movePicAndVidScrollerCdl;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -116,11 +120,6 @@ public class EnclosureActivity extends BaseActivity {
         if (enclosure.getRecurringEvents().length > 0) {
             //initialize the closest event section
             LinearLayout enclosureColsestEventLayout = findViewById(R.id.enclosureClosestEventLayout);
-            if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
-                enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            } else {
-                enclosureColsestEventLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-            }
             handleClosestEvent();
         }
         else{
@@ -183,6 +182,21 @@ public class EnclosureActivity extends BaseActivity {
         else {
             picAndVidLayout = findViewById(R.id.pic_and_vid_layout);
             picAndVidScroller = findViewById(R.id.vid_and_pic_scrollView);
+            if (GlobalVariables.language == 1 || GlobalVariables.language == 3) {
+                picAndVidScroller.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            } else {
+                picAndVidScroller.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            }
+
+            movePicAndVidScrollerCdl = new CountDownLatch(enclosure.getPictures().length + enclosure.getVideos().length);
+            new Thread(() -> {
+                try { movePicAndVidScrollerCdl.await(); } catch (InterruptedException e) {}
+                picAndVidLayout.post(() -> {
+                    // if its hebrew or english scroll to the right.
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        picAndVidScroller.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                    }});
+            }).start();
 
             addImagesToAssets();
             addVideosToAssets();
@@ -293,11 +307,6 @@ public class EnclosureActivity extends BaseActivity {
                     //add the image to the layout
                     picAndVidLayout.addView(imageView);
 
-                    // if its hebrew or english scroll to the right.
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        picAndVidScroller.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
-                    }
-
                     //initialize the image in the popup
                     imagesInAsset.add((Bitmap) response);
                     GlobalVariables.bl.insertStringandBitmap(pe.getPictureUrl(), (Bitmap) response);
@@ -309,6 +318,7 @@ public class EnclosureActivity extends BaseActivity {
                         assetsPopUp.putExtra("pos", imageViewIntegerMap.get(imageView));
                         startActivity(assetsPopUp);
                     });
+                    movePicAndVidScrollerCdl.countDown();
                 }
 
                 @Override
@@ -332,11 +342,9 @@ public class EnclosureActivity extends BaseActivity {
                 @Override
                 public void onSuccess(Object response) {
                     //initialize the frame of the video
-                    FrameLayout frameLayout = new FrameLayout(getBaseContext());
+                    RelativeLayout frameLayout = new RelativeLayout(getBaseContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.width = layoutWidth;
-                    params.height = layoutWidth;
-                    params.setMargins(2,0,2,0);
+                    params.setMargins(2,2,2,2);
                     frameLayout.setLayoutParams(params);
 
                     //initialize the video image
@@ -345,22 +353,20 @@ public class EnclosureActivity extends BaseActivity {
                             v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoPrefix + ve.getVideoUrl()))));
 
                     //initialize the play image
-                    ImageView youtubeImageView = new ImageView(getBaseContext());
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+                    ImageView youtubeImageView = new
+                            ImageView(getBaseContext());
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(layoutWidth/3, layoutWidth/3);
                     youtubeImageView.setLayoutParams(layoutParams);
                     youtubeImageView.setImageResource(R.mipmap.youtube_play);
-                    youtubeImageView.setX(95);
-                    youtubeImageView.setY(115);
+                    youtubeImageView.setX((GlobalVariables.language == 1 || GlobalVariables.language == 3) ? -100 : 100);
+                    youtubeImageView.setY(100);
 
                     //add the button and play images
                     frameLayout.addView(imageButton);
                     frameLayout.addView(youtubeImageView);
                     picAndVidLayout.addView(frameLayout);
 
-                    // if its hebrew or english scroll to the right.
-                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
-                        picAndVidScroller.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
-                    }
+                    movePicAndVidScrollerCdl.countDown();
                 }
 
                 @Override
