@@ -6,10 +6,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
 import com.zoovisitors.GlobalVariables;
 import com.zoovisitors.R;
 import com.zoovisitors.backend.OpeningHoursResult;
@@ -39,8 +39,6 @@ public class openingHoursFragment extends Fragment {
 
 
                 TableLayout openingHoursTable = (TableLayout) rootView.findViewById(R.id.info_table_table);
-
-                ((ImageView) rootView.findViewById(R.id.info_table_image)).setImageResource(R.mipmap.aligator);
 
                 //calculate the screen width.
                 int screenSize = GlobalVariables.appCompatActivity.getResources().getDisplayMetrics().widthPixels;

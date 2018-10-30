@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,6 +66,8 @@ public class EnclosureActivity extends BaseActivity {
 
     private int screenSize;
     private final long DAY_TIME_LONG = 24 * 60 * 60 * 1000;
+
+    private HorizontalScrollView picAndVidScroller;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -179,6 +182,7 @@ public class EnclosureActivity extends BaseActivity {
         }
         else {
             picAndVidLayout = findViewById(R.id.pic_and_vid_layout);
+            picAndVidScroller = findViewById(R.id.vid_and_pic_scrollView);
 
             addImagesToAssets();
             addVideosToAssets();
@@ -271,6 +275,7 @@ public class EnclosureActivity extends BaseActivity {
         int layoutWidth = Double.valueOf(screenSize/2.5).intValue();
 
         Intent assetsPopUp = new Intent(getBaseContext(), EnclosureAssetsPopUp.class);
+
         for (Enclosure.PictureEnc pe : enclosure.getPictures()) {
             GlobalVariables.bl.getImage(pe.getPictureUrl(), layoutWidth, layoutWidth, new GetObjectInterface() {
                 @Override
@@ -287,6 +292,11 @@ public class EnclosureActivity extends BaseActivity {
 
                     //add the image to the layout
                     picAndVidLayout.addView(imageView);
+
+                    // if its hebrew or english scroll to the right.
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        picAndVidScroller.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                    }
 
                     //initialize the image in the popup
                     imagesInAsset.add((Bitmap) response);
@@ -323,6 +333,11 @@ public class EnclosureActivity extends BaseActivity {
                 public void onSuccess(Object response) {
                     //initialize the frame of the video
                     FrameLayout frameLayout = new FrameLayout(getBaseContext());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.width = layoutWidth;
+                    params.height = layoutWidth;
+                    params.setMargins(2,0,2,0);
+                    frameLayout.setLayoutParams(params);
 
                     //initialize the video image
                     imageButton.setImageBitmap((Bitmap) response);
@@ -334,13 +349,18 @@ public class EnclosureActivity extends BaseActivity {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
                     youtubeImageView.setLayoutParams(layoutParams);
                     youtubeImageView.setImageResource(R.mipmap.youtube_play);
-                    youtubeImageView.setX(140);
-                    youtubeImageView.setY(110);
+                    youtubeImageView.setX(95);
+                    youtubeImageView.setY(115);
 
                     //add the button and play images
                     frameLayout.addView(imageButton);
                     frameLayout.addView(youtubeImageView);
                     picAndVidLayout.addView(frameLayout);
+
+                    // if its hebrew or english scroll to the right.
+                    if (GlobalVariables.language == 1 || GlobalVariables.language == 3){
+                        picAndVidScroller.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                    }
                 }
 
                 @Override
